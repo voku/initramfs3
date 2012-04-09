@@ -68,7 +68,7 @@ do
 	fi;
 	if [ -e $i/queue/rq_affinity ];
 	then
-	echo "1"   >  $i/queue/rq_affinity;   
+		echo "1" > $i/queue/rq_affinity;   
 	fi;
 #disable iostats to reduce overhead  # idea by kodos96 - thanks !
 	if [ -e $i/queue/iostats ];
@@ -105,12 +105,12 @@ done;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
   then
-    echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
+    echo "512" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
   then
-    echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
+    echo "512" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
@@ -132,6 +132,6 @@ fi;
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
 #sync;
-busybox mount -o remount,noatime $k;
+busybox mount -o remount,rw,noatime $k;
 done;
 
