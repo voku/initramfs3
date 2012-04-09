@@ -1,10 +1,4 @@
 #!/sbin/busybox sh
-#ThunderBolt!
-#Credits:
-# zacharias.maladroit
-# voku1987
-# collin_ph@xda
-# TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
 # =========
 # Optimize io scheduler
@@ -89,7 +83,6 @@ do
     #   echo "1000000000" > $i/queue/iosched/back_seek_max;
     #fi;
 
-
 done;
 
 # =========
@@ -119,9 +112,8 @@ do
 	sync;
 	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=15 $l;
 done;
-
-mount -o noatime,nodiratime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
-mount -o noatime,nodiratime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
 
 # =========
 # TWEAKS: for TCP read/write
@@ -202,7 +194,7 @@ echo "3000" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "5" > /proc/sys/vm/dirty_ratio;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
 echo "3" > /proc/sys/vm/drop_caches;
-echo "1" > /proc/sys/vm/overcommit_memory;
+echo "0" > /proc/sys/vm/overcommit_memory;
 echo "8" > /proc/sys/vm/min_free_order_shift;
 echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj;
 echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;

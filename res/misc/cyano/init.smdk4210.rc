@@ -271,7 +271,7 @@ on post-fs-data
     
 # DVFS - cpufreq ondemand
     write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
-    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 on boot
     chown system system /sys/class/backlight/pwm-backlight/brightness
