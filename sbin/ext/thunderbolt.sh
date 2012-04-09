@@ -194,13 +194,13 @@ echo "0" > /proc/sys/vm/panic_on_oom;
 # =========
 # MEMORY-TWEAKS
 # =========
-echo "0" > /proc/sys/vm/swappiness;
+echo "50" > /proc/sys/vm/swappiness;
 echo "50" > /proc/sys/vm/vfs_cache_pressure;
 echo "2048" > /proc/sys/vm/min_free_kbytes;
 echo "500" > /proc/sys/vm/dirty_expire_centisecs;
 echo "3000" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "22" > /proc/sys/vm/dirty_ratio;
-echo "4" > /proc/sys/vm/dirty_background_ratio;
+echo "5" > /proc/sys/vm/dirty_ratio;
+echo "15" > /proc/sys/vm/dirty_background_ratio;
 echo "3" > /proc/sys/vm/drop_caches;
 echo "1" > /proc/sys/vm/overcommit_memory;
 echo "8" > /proc/sys/vm/min_free_order_shift;
