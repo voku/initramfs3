@@ -28,7 +28,7 @@ on init
     #mount /tmp /tmp tmpfs   
 
 on fs
-	mount ext4 /dev/block/mmcblk0p9 /system wait ro
+	mount ext4 /dev/block/mmcblk0p9 /system wait rw
 	mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait
 
 	mkdir /data/log 0777
