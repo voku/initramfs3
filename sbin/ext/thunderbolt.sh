@@ -103,13 +103,13 @@ fi;
 # =========
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
-	sync;
+	#sync;
 	busybox mount -o remount,noatime,nodiratime $k;
 done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
-	sync;
+	#sync;
 	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=15 $l;
 done;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
@@ -220,7 +220,7 @@ renice 19 `pidof kswapd0`;
 # CleanUp
 # =========
 #drop caches to free some memory
-sync;
+#sync;
 /system/xbin/echo "3" > /proc/sys/vm/drop_caches;
 sleep 1;
 /system/xbin/echo "1" > /proc/sys/vm/drop_caches; 
