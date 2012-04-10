@@ -63,25 +63,25 @@ do
 		echo "1" > $i/queue/rq_affinity;   
 	fi;
 
-    if [ -e $i/queue/iosched/slice_async_rq ];
-    then
-        echo "2" > $i/queue/iosched/slice_async_rq;
-    fi;
+	if [ -e $i/queue/iosched/slice_async_rq ];
+	then
+		echo "2" > $i/queue/iosched/slice_async_rq;
+	fi;
 
-    if [ -e $i/queue/iosched/quantum ];
-    then
-        echo "8" > $i/queue/iosched/quantum;
-    fi;
+	if [ -e $i/queue/iosched/quantum ];
+	then
+		echo "8" > $i/queue/iosched/quantum;
+	fi;
 
-    #if [ -e $i/queue/nr_requests ];
-    #then
-    #   echo "1024" > $i/queue/nr_requests;
-    #fi;
+	#if [ -e $i/queue/nr_requests ];
+	#then
+	#	echo "1024" > $i/queue/nr_requests;
+	#fi;
 
-    #if [ -e $i/queue/iosched/back_seek_max ];
-    #then
-    #   echo "1000000000" > $i/queue/iosched/back_seek_max;
-    #fi;
+	#if [ -e $i/queue/iosched/back_seek_max ];
+	#then
+	#	echo "1000000000" > $i/queue/iosched/back_seek_max;
+	#fi;
 
 done;
 
@@ -211,3 +211,16 @@ CONTENT_PROVIDER_MEM=16384;
 EMPTY_APP_MEM=20480;
 echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
+# =========
+# Renice - kernel thread responsible for managing the memory
+# =========
+renice 19 `pidof kswapd0`;
+
+# =========
+# CleanUp
+# =========
+#drop caches to free some memory
+sync;
+/system/xbin/echo "3" > /proc/sys/vm/drop_caches;
+sleep 1;
+/system/xbin/echo "1" > /proc/sys/vm/drop_caches; 
