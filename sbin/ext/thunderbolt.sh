@@ -105,17 +105,17 @@ done;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
   then
-    echo "512" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
+    echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
   then
-    echo "512" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
+    echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
   then
-    echo "256" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+    echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 
@@ -128,10 +128,10 @@ fi;
 # ==============================================================
 
 
-# Remount all partitions with noatime
+# Remount all partitions with noatime and nodiratime
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
 #sync;
-busybox mount -o remount,rw,noatime $k;
+busybox mount -o remount,rw,noatime,nodiratime $k;
 done;
 

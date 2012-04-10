@@ -29,8 +29,8 @@ fi
 
 #thanks to pikachu01@XDA and Dorimanx
 /sbin/busybox sh /sbin/siyah/thunderbolt.sh
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
-mount -o remount,rw /system
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
+mount -o remount,rw,noatime,nodiratime /system /system
 
 
