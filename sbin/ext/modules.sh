@@ -22,7 +22,8 @@ insmod /lib/modules/fuse.ko
 insmod /lib/modules/lzo_compress.ko
 insmod /lib/modules/lzo_decompress.ko
 insmod /lib/modules/zram.ko num_devices=3
-# Now we load the ZRAM as RAM SWAP and gain 150MB more 
+# Now we load the ZRAM as RAM SWAP and gain 150MB more compressed RAM.
+# ZRAM compress ratio is 50% so 300MB will give clean 150MB More RAM, this gives us 1GB RAM device. 
 if [ -e /dev/block/zram0 ]; then
 	# Setting swappines
 	echo 60 > /proc/sys/vm/swappiness 
