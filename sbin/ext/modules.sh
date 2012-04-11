@@ -18,8 +18,6 @@ insmod /lib/modules/Si4709_driver.ko
 # for ntfs automounting
 insmod /lib/modules/fuse.ko
 # For ZRAM auto load
-insmod /lib/modules/lzo_compress.ko
-insmod /lib/modules/lzo_decompress.ko
 insmod /lib/modules/zram.ko num_devices=3
 # Now we load the ZRAM as RAM SWAP and gain 150MB more compressed RAM.
 # ZRAM compress ratio is 50% so 300MB will give clean 150MB More RAM, this gives us 1GB RAM device. 
