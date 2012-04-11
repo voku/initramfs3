@@ -11,8 +11,7 @@ chmod 777 /data/.siyah
 read_defaults
 read_config
 
-# We need logs. no logs no Android simple debuging.
-insmod /lib/modules/logger.ko
+# reduce logcat priority.
 renice 10 `pgrep logcat`
 #fm radio, I have no idea why it isn't loaded in init -gm
 insmod /lib/modules/Si4709_driver.ko

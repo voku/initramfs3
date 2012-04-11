@@ -228,9 +228,6 @@ on boot
     write /proc/sys/vm/dirty_expire_centisecs 500
     write /proc/sys/vm/dirty_background_ratio  5
 
-    # Add logcat dir
-    mkdir /dev/log/ 0771 system system
-
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state
     chown radio system /sys/android_power/request_state
