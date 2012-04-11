@@ -40,6 +40,7 @@ on fs
 	chmod 0666 /dev/log/event    
 
 on post-fs-data
+# param.lfs
 # insmod kernel modules
 	insmod /lib/modules/j4fs.ko
 	mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs ro
