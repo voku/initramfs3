@@ -23,13 +23,15 @@ on init
     mkdir /mnt/.lfs 0775 root root
     #mount /tmp /tmp tmpfs   
 
-on fs
-	mount ext4 /dev/block/mmcblk0p9 /system wait rw
+on early-fs
+	insmod /lib/modules/j4fs.ko
+	mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs ro
+	insmod /lib/modules/vibrator.ko
+ 
+	mount ext4 /dev/block/mmcblk0p9 /system wait ro
 	mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait
 
 	mkdir /data/log 0777
-	mkdir /data/anr 0777
-	mount ext4 /dev/block/mmcblk0p10 /data remount rw
 
 	chmod 0666 /dev/log/radio
 	chmod 0666 /dev/log/main
@@ -80,4 +82,5 @@ on property:persist.service.adb.enable=1
 
 on property:persist.service.adb.enable=0
     stop adbd
+
 
