@@ -11,16 +11,22 @@ chmod 777 /data/.siyah
 read_defaults
 read_config
 
-#For some reason the  in not loaded! so i load it here.
-insmod /lib/modules/j4fs.ko
-mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-
 # reduce logcat priority.
 renice 10 `pgrep logcat`
 #fm radio, I have no idea why it isn't loaded in init -gm
+if [ -e /lib/modules/Si4709_driver.ko ]; then
 insmod /lib/modules/Si4709_driver.ko
+fi
 # for ntfs automounting
+if [ -e /lib/modules/fuse.ko ]; then
 insmod /lib/modules/fuse.ko
+fi
+# Load CIFS with all that needed
+if [ -e /lib/modules/cifs.ko ]; then
+insmod /lib/modules/md4.ko
+insmod /lib/modules/dns_resolver.ko
+insmod /lib/modules/cifs.ko
+fi
 # For ZRAM auto load
 # insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)
 # Now we load the ZRAM as RAM SWAP and gain 150MB more compressed RAM.
