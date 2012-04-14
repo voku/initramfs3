@@ -1,4 +1,4 @@
-#!/system/bin/bash
+#!/system/xbin/bash
 #Tweaked by Dorimanx
 ##
 # Show stats for all (initialized) zram devices
