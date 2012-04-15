@@ -27,5 +27,4 @@ if [ "$logger" == "off" ];then
   echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
 fi
 
-#thanks to pikachu01@XDA and Dorimanx
-/sbin/busybox sh /sbin/siyah/thunderbolt.sh
+/sbin/busybox sh /sbin/ext/tweak_lite.sh
