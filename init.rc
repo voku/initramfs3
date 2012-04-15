@@ -72,8 +72,6 @@ loglevel 3
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
-    write /proc/sys/kernel/sched_latency_ns 10000000
-    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
 
@@ -294,8 +292,8 @@ on post-fs-data
     chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
 
 # MTP Device permission.
-	chmod 0660 /dev/usb_mtp_gadget
-	chown system system /dev/usb_mtp_gadget
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system system /dev/usb_mtp_gadget
 
 # terminal mode
     chmod 0660 /sys/class/android_usb/android0/terminal_version
@@ -359,18 +357,6 @@ on boot
     setprop ro.HOME_APP_MEM 14336
     setprop ro.HIDDEN_APP_MEM 16384
     setprop ro.EMPTY_APP_MEM 20480
-
-    # Old values for phones.  Should probably be adjusted up for the next
-    # phone version.
-    #setprop ro.FOREGROUND_APP_MEM 2048
-    #setprop ro.VISIBLE_APP_MEM 3072
-    #setprop ro.PERCEPTIBLE_APP_MEM 4096
-    #setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    #setprop ro.SECONDARY_SERVER_MEM 6144
-    #setprop ro.BACKUP_APP_MEM 6144
-    #setprop ro.HOME_APP_MEM 6144
-    #setprop ro.HIDDEN_APP_MEM 7168
-    #setprop ro.EMPTY_APP_MEM 8192
 
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have combined some of
@@ -857,20 +843,20 @@ service dumpstate /system/bin/dumpstate -s
 
 #for WiFi MFG(TestMode)
 service mfgloader /system/bin/mfgloader
-	class main
-	disabled
-	oneshot
+    class main
+    disabled
+    oneshot
 
 service wlandutservice /system/bin/wlandutservice
-	class main
-	user system
-	group wifi net_raw net_admin system inet
-	disabled
-	oneshot
+    class main
+    user system
+    group wifi net_raw net_admin system inet
+    disabled
+    oneshot
 
 service macloader /system/bin/macloader
-	class main
-	oneshot
+    class main
+    oneshot
 # end of wifi
 
 # Vibetonz
@@ -882,9 +868,9 @@ service immvibed /system/bin/immvibed
 
 # TVout
 service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group graphics
+    class main
+    user system
+    group graphics
 
 # RTC logging daemon
 service rtc_log /system/bin/sh /system/bin/rtc_log.sh
@@ -895,20 +881,20 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 
 # DVFS - limit cpufreq during booting sequence
 #service dvfs /system/bin/sh /system/bin/dvfs.sh
-#    class main
-#    user root
-#    oneshot
+#   class main
+#   user root
+#   oneshot
     
 # 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/bugmailer.sh -v
-	class main
-	disabled
-	oneshot
-	keycodes 114 115 116
+    class main
+    disabled
+    oneshot
+    keycodes 114 115 116
 on property:sys.boot_completed=1
     stop samsungani
 
 service postinit /sbin/ext/post-init.sh
-	class core
-	user root
-	oneshot
+    class core
+    user root
+    oneshot
