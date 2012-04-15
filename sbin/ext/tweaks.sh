@@ -27,10 +27,9 @@ if [ "$logger" == "off" ];then
   echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
 fi
 
-#thanks to pikachu01@XDA and Dorimanx
-/sbin/busybox sh /sbin/siyah/thunderbolt.sh
+#thanks to pikachu01@XDA ,Dorimanx@XDA and ELITE Developer Gokhanmoral
+/sbin/busybox sh /sbin/ext/thunderbolt.sh
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
 mount -o remount,rw,noatime,nodiratime /system /system
-
 
