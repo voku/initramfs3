@@ -31,7 +31,7 @@ mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
 umount /preload
 umount /mnt/sdcard
 
-if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]];then
+if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
   /sbin/choose_rom
 else
   /sbin/choose_rom $SECONDROM
