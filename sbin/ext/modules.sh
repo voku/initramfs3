@@ -1,16 +1,5 @@
 #!/sbin/busybox sh
 
-mkdir /data/.siyah
-chmod 777 /data/.siyah
-[ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
-[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
-[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
-
-
-. /res/customconfig/customconfig-helper
-read_defaults
-read_config
-
 # reduce logcat priority.
 renice 10 `pgrep logcat`
 #fm radio, I have no idea why it isn't loaded in init -gm
@@ -23,9 +12,11 @@ insmod /lib/modules/fuse.ko
 fi
 # Load CIFS with all that needed
 if [ -e /lib/modules/cifs.ko ]; then
-insmod /lib/modules/md4.ko
-insmod /lib/modules/dns_resolver.ko
 insmod /lib/modules/cifs.ko
+fi
+# for ntfs automounting
+if [ -e /lib/modules/fuse.ko ]; then
+insmod /lib/modules/fuse.ko
 fi
 # For ZRAM auto load
 # insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)
@@ -49,3 +40,4 @@ if [ -e /dev/block/zram0 ]; then
 	# Show to user that swap is ON
 	free
 fi
+

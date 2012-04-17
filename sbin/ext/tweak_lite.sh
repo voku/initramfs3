@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 #
 # adapted from "screenstate_scaling" (florian.schaefer(at)gmail(dot)com) & "battery tweak" (collin_ph@xda)
-# & "SSSwitch" voku1987@samdroid.net
+# & "SSSwitch" voku1987@samdroid
 # 
 
 # =========
@@ -107,21 +107,23 @@ fi;
 # =========
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
-	sync;
+	#sync;
 	busybox mount -o remount,noatime,nodiratime $k;
 done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
-	sync;
+	#sync;
 	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=15 $l;
 done;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=1,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
+mount -o remount,rw,noatime,nodiratime /system /system
 
 # =========
 # TWEAKS
 # =========
+echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 setprop ro.media.dec.jpeg.memcap 20000000;
 setprop ro.media.enc.jpeg.quality 90,80,70;
 
@@ -130,28 +132,30 @@ setprop ro.media.enc.jpeg.quality 90,80,70;
 # =========
 #echo "50" > /proc/sys/vm/swappiness;
 #echo "50" > /proc/sys/vm/vfs_cache_pressure;
-#echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+#echo "8" > /proc/sys/vm/min_free_order_shift;
+echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+echo "1" > /proc/sys/vm/overcommit_memory;
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
-FOREGROUND_APP_MEM=8192;
-VISIBLE_APP_MEM=10240;
-SECONDARY_SERVER_MEM=12288;
-BACKUP_APP_MEM=12288;
-HOME_APP_MEM=12288;
-HIDDEN_APP_MEM=14336;
-CONTENT_PROVIDER_MEM=16384;
-EMPTY_APP_MEM=20480;
+#FOREGROUND_APP_MEM=8192;
+#VISIBLE_APP_MEM=10240;
+#SECONDARY_SERVER_MEM=12288;
+#BACKUP_APP_MEM=12288;
+#HOME_APP_MEM=12288;
+#HIDDEN_APP_MEM=14336;
+#CONTENT_PROVIDER_MEM=16384;
+#EMPTY_APP_MEM=20480;
 #echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
 # =========
 # CPU - Tweaks
 # =========
-echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
-echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+#echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+#echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+#echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+#echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
+#echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+#echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 
 # =========
 # Renice - kernel thread responsible for managing the memory
@@ -162,10 +166,10 @@ renice 19 `pidof kswapd0`;
 # CleanUp
 # =========
 #drop caches to free some memory
-sync;
-echo "3" > /proc/sys/vm/drop_caches;
-sleep 1;
-echo "1" > /proc/sys/vm/drop_caches; 
+#sync;
+#echo "3" > /proc/sys/vm/drop_caches;
+#sleep 1;
+#echo "1" > /proc/sys/vm/drop_caches; 
 
 # =========
 # Explanations
