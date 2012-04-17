@@ -15,6 +15,7 @@ chmod 777 /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
 [ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
 
+if [ "$logger" == "off" ]; then
 # disable debugging on some modules
 	echo 0 > /sys/module/ump/parameters/ump_debug_level
 	echo 0 > /sys/module/mali/parameters/mali_debug_level
@@ -27,6 +28,7 @@ chmod 777 /data/.siyah
 	echo 0 > /sys/module/alarm_dev/parameters/debug_mask
 	echo 0 > /sys/module/binder/parameters/debug_mask
 	echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
+fi
 
 #Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
