@@ -93,12 +93,12 @@ done;
 # TWEAKS: raising read_ahead_kb cache-value for mounts that are sdcard-like to 1024 
 # =========
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
-  then
+then
     echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
-  then
+then
     echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
@@ -107,18 +107,15 @@ fi;
 # =========
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
-	#sync;
 	busybox mount -o remount,noatime,nodiratime $k;
 done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
-	#sync;
 	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=15 $l;
 done;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
-mount -o remount,rw,noatime,nodiratime /system /system
 
 # =========
 # TWEAKS
@@ -131,10 +128,11 @@ setprop ro.media.enc.jpeg.quality 90,80,70;
 # MEMORY-TWEAKS
 # =========
 #echo "50" > /proc/sys/vm/swappiness;
-#echo "50" > /proc/sys/vm/vfs_cache_pressure;
+echo "50" > /proc/sys/vm/vfs_cache_pressure;
 #echo "8" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
-echo "1" > /proc/sys/vm/overcommit_memory;
+echo "2" > /proc/sys/vm/overcommit_memory;
+echo "3" > /proc/sys/vm/drop_caches;
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
 #FOREGROUND_APP_MEM=8192;
@@ -146,6 +144,11 @@ echo "1" > /proc/sys/vm/overcommit_memory;
 #CONTENT_PROVIDER_MEM=16384;
 #EMPTY_APP_MEM=20480;
 #echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
+
+# =========
+# FS-TWEAKS
+# =========
+echo "10" > /proc/sys/fs/lease-break-time;
 
 # =========
 # CPU - Tweaks
@@ -161,15 +164,6 @@ echo "1" > /proc/sys/vm/overcommit_memory;
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
-
-# =========
-# CleanUp
-# =========
-#drop caches to free some memory
-#sync;
-#echo "3" > /proc/sys/vm/drop_caches;
-#sleep 1;
-#echo "1" > /proc/sys/vm/drop_caches; 
 
 # =========
 # Explanations
