@@ -152,7 +152,6 @@ echo "0" > /proc/sys/kernel/hung_task_panic;
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 15 `pidof kswapd0`;
-renice -17 `pgrep htcleo_touch_wq`
 
 # =========
 # CleanUp
