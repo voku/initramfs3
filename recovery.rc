@@ -5,10 +5,13 @@ on init
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export ANDROID_ROOT /system
     export ANDROID_DATA /data
-    export EXTERNAL_STORAGE /sdcard
+    export ANDROID_CACHE /cache
+    export EXTERNAL_STORAGE /emmc
+    export SECONDARY_STORAGE /sdcard
 
     #symlink /system/etc /etc
 
+    mkdir /emmc
     mkdir /sdcard
     mkdir /sdcard1
     mkdir /system
@@ -30,6 +33,10 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on boot
+    chown system media_rw /sys/class/mdnie/mdnie/mode
+    chown system media_rw /sys/class/mdnie/mdnie/outdoor
+    chown system media_rw /sys/class/mdnie/mdnie/scenario
+    write /sys/class/mdnie/mdnie/scenario 4
 
     ifup lo
     hostname localhost
