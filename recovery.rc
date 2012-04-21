@@ -5,16 +5,12 @@ on init
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export ANDROID_ROOT /system
     export ANDROID_DATA /data
-    export ANDROID_CACHE /cache
-    export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
     #symlink /system/etc /etc
 
-    mkdir /emmc
     mkdir /sdcard
     mkdir /sdcard1
-    mkdir /usbdisk
     mkdir /system
     mkdir /data
     mkdir /cache
