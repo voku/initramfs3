@@ -114,8 +114,8 @@ for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
 	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=15 $l;
 done;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=10,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
 
 # =========
 # TWEAKS

@@ -1,33 +1,33 @@
 import init.smdk4210.usb.rc
 
 on early-init
-    export EXTERNAL_STORAGE /mnt/sdcard
     export SECONDARY_STORAGE /mnt/emmc
+    export EXTERNAL_STORAGE /mnt/sdcard
     mkdir /mnt 0775 system system
-    mkdir /mnt/sdcard 0775 system system
     mkdir /mnt/emmc 0775 system system
+    mkdir /mnt/sdcard 0775 system system
     mkdir /mnt/usbdisk 0775 system system
     mkdir /efs 0771 radio system
-	mkdir /preload 0771 system system
-	mkdir /mnt/.lfs 0755 root root
+    mkdir /preload 0771 system system
+    mkdir /mnt/.lfs 0755 root root
 
-	# for backwards compatibility
-	symlink /mnt/sdcard /sdcard
-	symlink /mnt/emmc /emmc
+    # for backwards compatibility
+    symlink /mnt/sdcard /sdcard
+    symlink /mnt/emmc /emmc
 
 # Disable CFQ slice idle delay
     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
 
 # FIXME: permissions for tvout
-	chmod 0777 /dev/graphics/fb0
-	chmod 0777 /dev/graphics/fb10
-	chmod 0777 /dev/graphics/fb11	
+    chmod 0777 /dev/graphics/fb0
+    chmod 0777 /dev/graphics/fb10
+    chmod 0777 /dev/graphics/fb11
     chown media graphics /sys/class/switch/hdmi
     chmod 0777 /sys/class/switch/hdmi
 
 # FIXME: permission for HDMI audio path
     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
-	chmod 0777 /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
+    chmod 0777 /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
 on fs
 # mount ext4 partitions
@@ -104,8 +104,8 @@ on post-fs-data
     chmod 0775 /efs/.files/.mp301
     
 # MTP Device permission.
-	chmod 0660 /dev/usb_mtp_gadget
-	chown system system /dev/usb_mtp_gadget
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system system /dev/usb_mtp_gadget
 
 # terminal mode
     chmod 0660 /sys/class/android_usb/android0/terminal_version
@@ -253,8 +253,8 @@ on post-fs-data
     chown system radio /mnt/.lfs/sw_sel
 
 # Permissions for OTG Test
-	chown system radio /sys/class/host_notify/usb_otg/booster
-	chmod 0664 /sys/class/host_notify/usb_otg/booster
+    chown system radio /sys/class/host_notify/usb_otg/booster
+    chmod 0664 /sys/class/host_notify/usb_otg/booster
 
 # Permission for radio
     chown system radio /sys/devices/platform/s5p-ehci/ehci_power
@@ -272,16 +272,16 @@ on post-fs-data
     write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 3
     write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
-on boot
-    chown system system /sys/class/backlight/pwm-backlight/brightness
-    chmod 0660 /sys/class/backlight/pwm-backlight/brightness
-    chown radio system /sys/devices/virtual/misc/melfas_touchkey/brightness
-    chmod 0660 /sys/devices/virtual/misc/melfas_touchkey/brightness
-
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
     chown system system /data/pxtmpdir
     chmod 0775 /data/pxtmpdir
+
+# backlight permissions
+    chown system system /sys/class/backlight/pwm-backlight/brightness
+    chmod 0660 /sys/class/backlight/pwm-backlight/brightness
+    chown radio system /sys/devices/virtual/misc/melfas_touchkey/brightness
+    chmod 0660 /sys/devices/virtual/misc/melfas_touchkey/brightness
 
 # Permissions for dvfs lock
     chown system system /sys/power/cpufreq_max_limit
@@ -292,18 +292,22 @@ on boot
     chown system system /sys/power/gpu_lock
     chmod 0660 /sys/power/gpu_lock
 
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
-
-    setprop ro.build.product GT-I9100
-    setprop ro.product.device GT-I9100
-    setprop ro.radio.noril yes
-
 # Permisions for sensors
     chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_selftest
     chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_get_temp
     chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_power_on
     chown radio system /sys/devices/virtual/accelerometer/accelerometer/acc_file
     chown radio system /sys/devices/virtual/sec/gsensorcal/calibration
+
+# for device encryption
+    setprop vold.post_fs_data_done 1
+
+on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+    setprop ro.build.product GT-I9100
+    setprop ro.product.device GT-I9100
+    setprop ro.radio.noril yes
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"
@@ -348,8 +352,8 @@ service iprenew_p2p /system/bin/dhcpcd -n
 
 # for bluetooth
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2bytes --tosleep 50000 \
-	--baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
-	--scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
+    --baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
+    --scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
     class main
     user bluetooth
     group bluetooth net_bt_admin
@@ -372,7 +376,7 @@ service TvoutService_C /system/bin/bintvoutservice
 # bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/bugmailer.sh -v
     class main
-	disabled
-	oneshot
-	keycodes 114 115 116
+    disabled
+    oneshot
+    keycodes 114 115 116
 
