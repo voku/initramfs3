@@ -102,7 +102,6 @@ done;
 # TWEAKS
 # =========
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-echo "10" > /proc/sys/kernel/hung_task_timeout_secs;
 setprop ro.media.dec.jpeg.memcap 20000000;
 setprop ro.media.enc.jpeg.quality 100,100,100;
 
