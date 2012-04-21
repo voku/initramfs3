@@ -30,10 +30,10 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on boot
-    chown system media_rw /sys/class/mdnie/mdnie/mode
-    chown system media_rw /sys/class/mdnie/mdnie/outdoor
-    chown system media_rw /sys/class/mdnie/mdnie/scenario
-    write /sys/class/mdnie/mdnie/scenario 4
+    #chown system media_rw /sys/class/mdnie/mdnie/mode
+    #chown system media_rw /sys/class/mdnie/mdnie/outdoor
+    #chown system media_rw /sys/class/mdnie/mdnie/scenario
+    #write /sys/class/mdnie/mdnie/scenario 4
 
     ifup lo
     hostname localhost
