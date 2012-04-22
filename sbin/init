@@ -43,20 +43,19 @@ if [ "$?" == "1" ]; then
   mv /init.miui.2 /init.miui
 fi
 
-
 /sbin/busybox mount -t ext4 /res/dev/system /system
-
-if [ -f /system/recovery.cpio.gz ];
-then
-mount -o remount,rw /
-zcat /system/recovery.cpio.gz | cpio -idmu
-fi;
 
 if [ ! -d /system/lib/modules ]; then
 	mount -o remount,rw /system
 	mkdir /system/lib/modules
 fi;
 cp -f /lib/modules/* /system/lib/modules
+
+if [ -f /system/recovery.cpio.gz ];
+then
+mount -o remount,rw /
+zcat /system/recovery.cpio.gz | cpio -idmu
+fi;
 
 AOSP=0
 MIUI=0
@@ -77,6 +76,8 @@ MIUI=0
 if [ "$AOSP" == 1 ];
 then
 echo 1 > /proc/sys/kernel/rom_feature_set
+cp /res/misc/cyano/sql/libsqlite.so /system/lib/
+chmod 0644 /system/lib/libsqlite.so
 /sbin/busybox umount /system
 exec /sbin/init.cm
 fi;
