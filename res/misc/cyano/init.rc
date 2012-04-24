@@ -241,9 +241,6 @@ on boot
     setprop dalvik.vm.execution-mode=int:jit
     setprop persist.adb.notify=0
     setprop persist.sys.use_dithering=1
-    setprop debug.performance.tuning 1;
-    setprop video.accelerate.hw 1;
-    setprop debug.sf.hw 1;
     setprop ro.telephony.call_ring.delay 1000;
     setprop ro.media.dec.jpeg.memcap 20000000; 
 

@@ -102,7 +102,6 @@ done;
 # TWEAKS
 # =========
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-setprop ro.media.dec.jpeg.memcap 20000000;
 setprop ro.media.enc.jpeg.quality 100,100,100;
 # to help with wifi toggling problems (thanks to wjchen)
 echo 16384 > /proc/sys/vm/min_free_kbytes
