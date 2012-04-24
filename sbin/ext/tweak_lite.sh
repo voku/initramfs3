@@ -127,8 +127,6 @@ echo "64000" > /proc/sys/kernel/msgmni;
 echo "64000" > /proc/sys/kernel/msgmax;
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 echo "8" > /proc/sys/vm/page-cluster;
-setprop ro.media.dec.jpeg.memcap 20000000;
-setprop ro.media.enc.jpeg.quality 90,80,70;
 
 # =========
 # MEMORY-TWEAKS
