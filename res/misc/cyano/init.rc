@@ -237,12 +237,12 @@ on boot
     write /proc/sys/vm/dirty_background_ratio  5
 
     # Tweaks For ROM
-    setprop windowsmgr.max_events_per_sec=120
-    setprop dalvik.vm.execution-mode=int:jit
-    setprop persist.adb.notify=0
-    setprop persist.sys.use_dithering=1
-    setprop ro.telephony.call_ring.delay 1000;
-    setprop ro.media.dec.jpeg.memcap 20000000; 
+    setprop windowsmgr.max_events_per_sec 120
+    setprop dalvik.vm.execution-mode int:jit
+    setprop persist.adb.notify 0
+    setprop persist.sys.use_dithering 1
+    setprop ro.telephony.call_ring.delay 1000
+    setprop ro.media.dec.jpeg.memcap 20000000 
 
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state

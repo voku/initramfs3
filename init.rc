@@ -236,14 +236,12 @@ on post-fs-data
     # create directory for DRM plug-ins
     mkdir /data/drm 0774 drm drm
 
-	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
-
-	mkdir /data/system/databases 0771 system system
-	copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
-	chown system system /data/system/databases/drmdatabase.db
-	chmod 0774 /data/system/databases/drmdatabase.db	
-
-	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
+    #Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
+    mkdir /data/system/databases 0771 system system
+    copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
+    chown system system /data/system/databases/drmdatabase.db
+    chmod 0774 /data/system/databases/drmdatabase.db	
+    #Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
 	
 #SISO-PLAYREADY-CHANGES
 #DRM directory creation
@@ -333,17 +331,39 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
+# Memory management.  Basic kernel parameters, and allow the high
+# level system server to be able to adjust the kernel OOM driver
+# paramters to match how it is managing things.
+    write /proc/sys/vm/overcommit_memory 0
+    write /proc/sys/vm/min_free_order_shift 4
+    chown root system /sys/module/lowmemorykiller/parameters/adj
+    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
+    chown root system /sys/module/lowmemorykiller/parameters/minfree
+    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
     setprop ro.VISIBLE_APP_ADJ 1
     setprop ro.PERCEPTIBLE_APP_ADJ 2
-    setprop ro.HEAVY_WEIGHT_APP_ADJ 3
-    setprop ro.SECONDARY_SERVER_ADJ 4
+    setprop ro.HEAVY_WEIGHT_APP_ADJ 4
+    setprop ro.SECONDARY_SERVER_ADJ 3
     setprop ro.BACKUP_APP_ADJ 5
-    setprop ro.HOME_APP_ADJ 6
-    setprop ro.HIDDEN_APP_MIN_ADJ 7
+    setprop ro.HOME_APP_ADJ 1
+    setprop ro.HIDDEN_APP_MIN_ADJ 25
     setprop ro.EMPTY_APP_ADJ 15
+
+    # Tweak background writeout
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
+
+    # Tweaks For ROM
+    setprop windowsmgr.max_events_per_sec 120
+    setprop dalvik.vm.execution-mode int:jit
+    setprop persist.adb.notify 0
+    setprop persist.sys.use_dithering 1
+    setprop ro.telephony.call_ring.delay 1000
+    setprop ro.media.dec.jpeg.memcap 20000000
 
 # Define the memory thresholds at which the above process classes will
 # be killed.  These numbers are in pages (4k).
@@ -761,11 +781,11 @@ service samsungani /sbin/bootanimation.sh
 
 #for samsung boot sound
 service playsound /system/bin/playsound
-	class main
-	user media
-	group system
-	disabled
-	oneshot
+    class main
+    user media
+    group system
+    disabled
+    oneshot
 #for samsung boot sound
 
 service dbus /system/bin/dbus-daemon --system --nofork
@@ -785,8 +805,8 @@ service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
 
 # for bluetooth
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2bytes --tosleep 50000 \
-	--baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
-	--scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
+    --baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
+    --scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
     class main
     user bluetooth
     group bluetooth net_bt_admin
@@ -801,9 +821,9 @@ service bt_dut_cmd /system/bin/bcm_dut
 
 # for bluetooth pan
 service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
-	class main
-	disabled
-	oneshot
+    class main
+    disabled
+    oneshot
 
 service installd /system/bin/installd
     class main
