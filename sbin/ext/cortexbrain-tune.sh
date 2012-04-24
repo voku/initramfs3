@@ -15,6 +15,9 @@
 # ==============================================================
 # ==============================================================
 
+# to help with wifi toggling problems (thanks to wjchen)
+echo 16384 > /proc/sys/vm/min_free_kbytes
+
 DM=`ls -d /sys/block/dm*`;
 LOOP=`ls -d /sys/block/loop*`;
 MMC=`ls -d /sys/block/mmc*`;
