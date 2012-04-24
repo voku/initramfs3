@@ -242,8 +242,8 @@ on boot
     setprop persist.adb.notify 0
     setprop persist.sys.use_dithering 1
     setprop ro.telephony.call_ring.delay 1000
-    setprop ro.media.dec.jpeg.memcap 20000000 
-	setprop wifi.supplicant_scan_interval 120
+	setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
 
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state
