@@ -135,9 +135,7 @@ echo "8" > /proc/sys/vm/page-cluster;
 echo "50" > /proc/sys/vm/vfs_cache_pressure;
 # to help with wifi toggling problems (thanks to wjchen)
 echo "16384" > /proc/sys/vm/min_free_kbytes
-echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
-echo "0" > /proc/sys/vm/overcommit_memory;
 echo "3" > /proc/sys/vm/drop_caches;
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
