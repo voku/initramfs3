@@ -129,14 +129,15 @@ echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 echo "8" > /proc/sys/vm/page-cluster;
 echo "500" > /proc/sys/vm/dirty_expire_centisecs;
 echo "3000" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "20" > /proc/sys/vm/dirty_ratio;
+echo "5" > /proc/sys/vm/dirty_background_ratio;
+echo "90" > /proc/sys/vm/dirty_ratio;
 echo "5" > /proc/sys/vm/laptop_mode;
 
 # =========
 # MEMORY-TWEAKS
 # =========
-echo "0" > /proc/sys/vm/swappiness;
-echo "50" > /proc/sys/vm/vfs_cache_pressure;
+echo "50" > /proc/sys/vm/swappiness;
+echo "10" > /proc/sys/vm/vfs_cache_pressure;
 # to help with wifi toggling problems (thanks to wjchen)
 echo "8192" > /proc/sys/vm/min_free_kbytes
 echo "4" > /proc/sys/vm/min_free_order_shift;
