@@ -42,9 +42,9 @@
       <spinner description="This setting will set step counts of CPU (Reboot required). You need to review smooth scaling settings and make necessary modifications by yourself." name="CPU Step Count" action="generic /tmp/cpustepcount">
              <spinnerItem name="5 (Samsung default)" value="5"/> 
              <spinnerItem name="6 (SiyahKernel 3.x default)" value="6"/> 
-             <spinnerItem name="7 (6 + 1500MHz)" value="6"/> 
+             <spinnerItem name="7 (6 + 1400MHz)" value="6"/> 
              <spinnerItem name="8 (SiyahKernel 2.x default)" value="8"/> 
-             <spinnerItem name="9 (8 + 1500MHz)" value="8"/> 
+             <spinnerItem name="9 (8 + 1400MHz)" value="8"/> 
              <spinnerItem name="18 (All available)" value="18"/> 
       </spinner>
       <seekBar description="smooth_target controls both smooth-scaling and cpu throttling. Default value is 2 which corresponds to 1200MHz. If the cpu gets hot the cpu is throttled to L3(1000MHz) and L4(800MHz) depending on the temperature. If you decrease this value, both smooth scaling and throttling targets will decrease."

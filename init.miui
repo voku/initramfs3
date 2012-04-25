@@ -355,10 +355,6 @@ on boot
     setprop ro.HIDDEN_APP_MIN_ADJ 25
     setprop ro.EMPTY_APP_ADJ 15
 
-    # Tweak background writeout
-    write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
-
     # Tweaks For ROM
     setprop windowsmgr.max_events_per_sec 120
     setprop dalvik.vm.execution-mode int:jit
@@ -392,10 +388,6 @@ on boot
 
     # Set init its forked children's oom_adj.
     write /proc/1/oom_adj -16
-
-    # Tweak background writeout
-    write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775

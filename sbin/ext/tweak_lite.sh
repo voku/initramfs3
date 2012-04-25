@@ -127,16 +127,24 @@ echo "64000" > /proc/sys/kernel/msgmni;
 echo "64000" > /proc/sys/kernel/msgmax;
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 echo "8" > /proc/sys/vm/page-cluster;
+echo "500" > /proc/sys/vm/dirty_expire_centisecs;
+echo "3000" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "20" > /proc/sys/vm/dirty_ratio;
+echo "5" > /proc/sys/vm/laptop_mode;
+setprop ro.media.dec.jpeg.memcap 20000000;
+setprop ro.media.enc.jpeg.quality 90,80,70;
 
 # =========
 # MEMORY-TWEAKS
 # =========
-#echo "50" > /proc/sys/vm/swappiness;
+echo "0" > /proc/sys/vm/swappiness;
 echo "50" > /proc/sys/vm/vfs_cache_pressure;
 # to help with wifi toggling problems (thanks to wjchen)
-echo "16384" > /proc/sys/vm/min_free_kbytes
-echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+echo "8192" > /proc/sys/vm/min_free_kbytes
+echo "4" > /proc/sys/vm/min_free_order_shift;
+echo "1" > /proc/sys/vm/overcommit_memory;
 echo "3" > /proc/sys/vm/drop_caches;
+echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
 #FOREGROUND_APP_MEM=8192;
