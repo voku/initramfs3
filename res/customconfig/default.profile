@@ -1,6 +1,6 @@
 GPUFREQ1=100
 GPUFREQ2=160
-GPUFREQ3=200
+GPUFREQ3=267
 GPUVOLT1=900
 GPUVOLT2=950
 GPUVOLT3=1000
@@ -22,7 +22,7 @@ smooth_step=1
 chargecurrent=2
 logger=off
 secondcore=hotplug
-scheduler=deadline
+scheduler=sio
 scaling_governor=ondemand
 load_l1=20
 load_h0=30
