@@ -131,8 +131,6 @@ echo "500" > /proc/sys/vm/dirty_expire_centisecs;
 echo "3000" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "20" > /proc/sys/vm/dirty_ratio;
 echo "5" > /proc/sys/vm/laptop_mode;
-setprop ro.media.dec.jpeg.memcap 20000000;
-setprop ro.media.enc.jpeg.quality 90,80,70;
 
 # =========
 # MEMORY-TWEAKS
