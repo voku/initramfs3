@@ -238,7 +238,7 @@ on boot
 
     # Tweaks For ROM
     setprop windowsmgr.max_events_per_sec 120
-#   setprop dalvik.vm.execution-mode int:jit
+    setprop dalvik.vm.execution-mode int:jit
     setprop persist.adb.notify 0
     setprop persist.sys.use_dithering 1
     setprop ro.telephony.call_ring.delay 1000
