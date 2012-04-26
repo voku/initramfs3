@@ -28,7 +28,7 @@ if [ -e /dev/block/zram0 ]; then
 	# Setting size of each ZRAM swap drives
 	echo 100000000 > /sys/block/zram0/disksize
 	echo 100000000 > /sys/block/zram1/disksize
-        echo 100000000 > /sys/block/zram2/disksize
+	echo 100000000 > /sys/block/zram2/disksize
 	# Creating SWAPS from ZRAM drives
 	mkswap /dev/block/zram0 >/dev/null
 	mkswap /dev/block/zram1 >/dev/null

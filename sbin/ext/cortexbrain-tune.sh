@@ -110,6 +110,15 @@ echo 16384 > /proc/sys/vm/min_free_kbytes
 setprop wifi.supplicant_scan_interval=120
 
 # =========
+# BATTERY-TWEAKS
+# =========
+# USB
+for i in $(ls /sys/bus/usb/devices/*/power/level);
+do 
+	echo "auto" > $i;
+done
+
+# =========
 # MEMORY-TWEAKS
 # =========
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
