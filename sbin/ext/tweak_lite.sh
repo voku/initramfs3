@@ -136,7 +136,6 @@ for i in $(ls /sys/bus/usb/devices/*/power/level);
 do 
 	echo "auto" > $i;
 done;
-echo "5" > /proc/sys/vm/laptop_mode;
 # CFS (Completely Fair Scheduler)
 echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
