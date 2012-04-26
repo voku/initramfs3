@@ -229,7 +229,7 @@ on boot
     setprop ro.SECONDARY_SERVER_ADJ 3
     setprop ro.BACKUP_APP_ADJ 5
     setprop ro.HOME_APP_ADJ 1
-    setprop ro.HIDDEN_APP_MIN_ADJ 25
+    setprop ro.HIDDEN_APP_MIN_ADJ 7
     setprop ro.EMPTY_APP_ADJ 15
 
     # Tweaks For ROM
@@ -237,8 +237,7 @@ on boot
     setprop dalvik.vm.execution-mode int:jit
     setprop persist.adb.notify 0
     setprop persist.sys.use_dithering 1
-    setprop ro.telephony.call_ring.delay 1000
-    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.telephony.call_ring.delay 300
     setprop ro.media.dec.jpeg.memcap 20000000
 
     # Permissions for System Server and daemons.
