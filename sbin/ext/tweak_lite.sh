@@ -125,18 +125,34 @@ sysctl -w kernel.shmmax="268435456";
 echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 echo "64000" > /proc/sys/kernel/msgmni;
 echo "64000" > /proc/sys/kernel/msgmax;
-echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 echo "8" > /proc/sys/vm/page-cluster;
-echo "500" > /proc/sys/vm/dirty_expire_centisecs;
-echo "3000" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "5" > /proc/sys/vm/dirty_background_ratio;
-echo "90" > /proc/sys/vm/dirty_ratio;
+
+# =========
+# BATTERY-TWEAKS
+# =========
+# USB
+for i in $(ls /sys/bus/usb/devices/*/power/level);
+do 
+	echo auto > $i;
+done
 echo "5" > /proc/sys/vm/laptop_mode;
+# CFS (Completely Fair Scheduler)
+echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+# Frequency Scaling Governor
+echo "lulzactive" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor;
+
 
 # =========
 # MEMORY-TWEAKS
 # =========
-echo "50" > /proc/sys/vm/swappiness;
+echo "0" > /proc/sys/vm/swappiness;
+echo "0" > /proc/sys/vm/dirty_expire_centisecs;
+echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "60" > /proc/sys/vm/dirty_background_ratio;
+echo "95" > /proc/sys/vm/dirty_ratio;
 echo "10" > /proc/sys/vm/vfs_cache_pressure;
 # to help with wifi toggling problems (thanks to wjchen)
 echo "8192" > /proc/sys/vm/min_free_kbytes

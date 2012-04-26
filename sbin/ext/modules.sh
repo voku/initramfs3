@@ -22,13 +22,15 @@ fi
 # insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)
 # Now we load the ZRAM as RAM SWAP and gain 150MB more compressed RAM.
 # ZRAM compress ratio is 50% so 300MB will give clean 150MB More RAM, this gives us 1GB RAM device. 
-if [ -e /dev/block/zram0 ]; then
+#
+# 1 == 0 => off 
+if [[ -e /dev/block/zram0 && 1 == 0 ]]; then
 	# Setting swappines
 	echo 60 > /proc/sys/vm/swappiness 
 	# Setting size of each ZRAM swap drives
 	echo 100000000 > /sys/block/zram0/disksize
 	echo 100000000 > /sys/block/zram1/disksize
-        echo 100000000 > /sys/block/zram2/disksize
+	echo 100000000 > /sys/block/zram2/disksize
 	# Creating SWAPS from ZRAM drives
 	mkswap /dev/block/zram0 >/dev/null
 	mkswap /dev/block/zram1 >/dev/null
