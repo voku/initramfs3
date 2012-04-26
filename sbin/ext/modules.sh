@@ -3,20 +3,20 @@
 # reduce logcat priority.
 renice 10 `pgrep logcat`
 #fm radio, I have no idea why it isn't loaded in init -gm
-if [ -e /lib/modules/Si4709_driver.ko ]; then
-insmod /lib/modules/Si4709_driver.ko
+if [ -e /system/lib/modules/Si4709_driver.ko ]; then
+insmod /system/lib/modules/Si4709_driver.ko
 fi
 # for ntfs automounting
-if [ -e /lib/modules/fuse.ko ]; then
-insmod /lib/modules/fuse.ko
+if [ -e /system/lib/modules/fuse.ko ]; then
+insmod /system/lib/modules/fuse.ko
 fi
 # Load CIFS with all that needed
-if [ -e /lib/modules/cifs.ko ]; then
-insmod /lib/modules/cifs.ko
+if [ -e /system/lib/modules/cifs.ko ]; then
+insmod /system/lib/modules/cifs.ko
 fi
 # for ntfs automounting
-if [ -e /lib/modules/fuse.ko ]; then
-insmod /lib/modules/fuse.ko
+if [ -e /system/lib/modules/fuse.ko ]; then
+insmod /system/lib/modules/fuse.ko
 fi
 # For ZRAM auto load
 # insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)

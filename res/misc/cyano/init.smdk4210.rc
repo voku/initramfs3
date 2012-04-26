@@ -33,11 +33,13 @@ on fs
 # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait ro
 
+    exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
+    exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
-    #mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
+    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
     
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     mkdir /efs/bluetooth
@@ -53,7 +55,7 @@ on fs
 
 on post-fs-data
 # insmod kernel modules
-	insmod /system/lib/modules/Si4709_driver.ko
+    insmod /system/lib/modules/Si4709_driver.ko
     
 # mount param.lfs
     mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
