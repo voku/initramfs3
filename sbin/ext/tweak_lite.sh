@@ -141,10 +141,10 @@ echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
 # Frequency Scaling Governor
-# echo "lulzactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+echo "lazy" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 # CPU
-# echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-# echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 # =========
 # MEMORY-TWEAKS
