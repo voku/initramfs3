@@ -112,7 +112,7 @@ done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
-	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=30 $l;
+	busybox mount -o remount,noatime,nodiratime,delalloc,noauto_da_alloc,commit=15 $l;
 done;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
@@ -141,7 +141,10 @@ echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
 # Frequency Scaling Governor
-# echo "lulzactive" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor;
+# echo "lulzactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+# CPU
+# echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 # =========
 # MEMORY-TWEAKS
