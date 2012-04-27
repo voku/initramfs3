@@ -42,10 +42,10 @@
       <spinner description="This setting will change CPU step count, Steps are in MHZ (Restart required)." name="CPU Step Count" action="generic /tmp/cpustepcount">
              <spinnerItem name="5 (1200->200-5-Steps)" value="5"/> 
              <spinnerItem name="6 (1400->200-6-Steps)" value="6"/> 
-             <spinnerItem name="7 (1500->200-7-Steps)" value="7"/> 
+             <spinnerItem name="7 (1500->200-7-Steps-default)" value="7"/> 
              <spinnerItem name="8 (1500->100-8-Steps)" value="8"/> 
              <spinnerItem name="9 (1500->50-9-Steps)" value="9"/> 
-             <spinnerItem name="17 (1500->25-17-Steps-default)" value="17"/> 
+             <spinnerItem name="17 (1500->25-17-Steps)" value="17"/> 
       </spinner>
     </settingsPane>
 
