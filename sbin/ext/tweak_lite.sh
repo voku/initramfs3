@@ -141,12 +141,12 @@ echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
 # Frequency Scaling Governor
-echo "conservative" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor;
+# echo "lulzactive" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor;
 
 # =========
 # MEMORY-TWEAKS
 # =========
-echo "0" > /proc/sys/vm/swappiness;
+echo "40" > /proc/sys/vm/swappiness;
 echo "0" > /proc/sys/vm/dirty_expire_centisecs;
 echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "60" > /proc/sys/vm/dirty_background_ratio;

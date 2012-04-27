@@ -24,7 +24,7 @@ fi
 # ZRAM compress ratio is 50% so 300MB will give clean 150MB More RAM, this gives us 1GB RAM device. 
 #
 # 1 == 0 => off 
-if [[ -e /dev/block/zram0 && 1 == 0 ]]; then
+if [[ -e /dev/block/zram0 && 1 == 1 ]]; then
 	# Setting swappines
 	echo 60 > /proc/sys/vm/swappiness 
 	# Setting size of each ZRAM swap drives
