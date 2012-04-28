@@ -271,6 +271,7 @@ fi
 # =========
 echo "Android-VM" > /proc/sys/kernel/hostname;
 echo "0" > /proc/sys/kernel/hung_task_panic;
+echo "4096" > /proc/sys/vm/min_free_kbytes
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -291,7 +292,7 @@ echo "0" > /proc/sys/kernel/hung_task_panic;
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
-renice 15 `pidof kswapd0`;
+renice 19 `pidof kswapd0`;
 
 # =========
 # CleanUp

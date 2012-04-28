@@ -74,17 +74,17 @@ on early-fs
 on fs
     mount tmpfs tmpfs /tmp
 				
-    mount ext4 /dev/block/mmcblk0p9 /system wait
+    mount ext4 /dev/block/mmcblk0p9 /system wait nodelalloc
     
-    mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait
+    mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait nodelalloc
     chown system system /data
     chmod 0771 /data
     mkdir /data/fota
     chown system system /data/fota 
     chmod 0777 /data/fota
  
-	  #mount rfs /dev/block/stl11 /cache nosuid nodev check=no
-	  mount ext4 /dev/block/mmcblk0p7 /cache nosuid nodev noatime wait
+    #mount rfs /dev/block/stl11 /cache nosuid nodev check=no
+    mount ext4 /dev/block/mmcblk0p7 /cache nosuid nodev noatime wait nodelalloc
     chown system cache /cache
     chmod 0770 /cache
     mkdir /cache/fota
