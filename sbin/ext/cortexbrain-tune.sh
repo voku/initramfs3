@@ -102,12 +102,35 @@ done;
 # TWEAKS
 # =========
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-setprop ro.media.enc.jpeg.quality 100,100,100;
-# to help with wifi toggling problems (thanks to wjchen)
-echo 16384 > /proc/sys/vm/min_free_kbytes
 
 # WIFI scan interval to 2 MIn to save power
-setprop wifi.supplicant_scan_interval=120
+setprop wifi.supplicant_scan_interval 120
+
+#Enable Hardware Rendering
+setprop video.accelerate.hw 1
+setprop debug.performance.tuning 1
+setprop persist.sys.use_dithering 1
+
+#Render UI with GPU
+setprop hwui.render_dirty_regions false
+setprop windowsmgr.max_events_per_sec 240
+setprop debug.sf.hw 1
+setprop profiler.force_disable_err_rpt 1
+setprop profiler.force_disable_ulog 1
+
+#Proximity tweak
+setprop mot.proximity.delay 15
+
+#Set PM mode.
+setprop pm.sleep_mode 1
+
+#More Tweaks
+setprop dalvik.vm.execution-mode int:jit
+setprop persist.adb.notify 0
+setprop hs.systemserver 16m
+setprop hs.app.process 16m
+setprop hs.su 8m
+setprop hs.app_process 16m
 
 # =========
 # BATTERY-TWEAKS
@@ -270,7 +293,7 @@ fi
 # KERNEL-TWEAKS
 # =========
 echo "Android-VM" > /proc/sys/kernel/hostname;
-echo "0" > /proc/sys/kernel/hung_task_panic;
+echo "60" > /proc/sys/kernel/hung_task_panic;
 echo "4096" > /proc/sys/vm/min_free_kbytes
 
 # Define the memory thresholds at which the above process classes will
