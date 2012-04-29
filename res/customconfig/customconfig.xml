@@ -38,14 +38,7 @@
     </settingsPane>
 
     <settingsPane description="" 
-            name="CPU Stepping Settings">
-      <spinner description="This setting will set step counts of CPU (Reboot required). You need to review smooth scaling settings and make necessary modifications by yourself." name="CPU Step Count" action="generic /tmp/cpustepcount">
-             <spinnerItem name="5 (Samsung default)" value="5"/> 
-             <spinnerItem name="6 (SiyahKernel 3.x default)" value="6"/> 
-             <spinnerItem name="7 (6 + 1200MHz)" value="6"/> 
-             <spinnerItem name="8 (SiyahKernel 2.x default)" value="8"/> 
-             <spinnerItem name="9 (8 + 1200MHz)" value="8"/> 
-             <spinnerItem name="18 (All available)" value="18"/> 
+            name="CPU Smooth Scaling Settings">
       </spinner>
       <seekBar description="smooth_target controls both smooth-scaling and cpu throttling. Default value is 2 which corresponds to 1200MHz. If the cpu gets hot the cpu is throttled to L3(1000MHz) and L4(800MHz) depending on the temperature. If you decrease this value, both smooth scaling and throttling targets will decrease."
             name="smooth_target" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_target" unit="" min="0" reversed="false" step="1" max="4"/>
@@ -152,7 +145,7 @@
              <spinnerItem name="800MHz" value="800000"/> 
              <spinnerItem name="500MHz" value="500000"/> 
              <spinnerItem name="200MHz" value="200000"/> 
-			 <spinnerItem name="100MHz" value="100000"/> 
+             <spinnerItem name="100MHz" value="100000"/> 
       </spinner>
       <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
              <spinnerItem name="ondemand" value="ondemand"/> 
@@ -163,15 +156,14 @@
              <spinnerItem name="smartass" value="smartass"/> 
              <spinnerItem name="smartassV2" value="smartassV2"/> 
              <spinnerItem name="interactive" value="interactive"/> 
-			 <spinnerItem name="interactivex" value="interactivex"/> 
-			 <spinnerItem name="brazilianwax" value="brazilianwax"/>
-			 <spinnerItem name="scary" value="scary"/>
-			 <spinnerItem name="lagfree" value="lagfree"/>
-			 <spinnerItem name="savagedzen" value="savagedzen"/>
-			 <spinnerItem name="intellidemand" value="intellidemand"/>
-			 <spinnerItem name="sakuractive" value="sakuractive"/>
-			 <spinnerItem name="wheatley" value="wheatley"/>
-			 <spinnerItem name="lazy" value="lazy"/>
+             <spinnerItem name="interactivex" value="interactivex"/> 
+             <spinnerItem name="brazilianwax" value="brazilianwax"/>
+             <spinnerItem name="scary" value="scary"/>
+             <spinnerItem name="lagfree" value="lagfree"/>
+             <spinnerItem name="savagedzen" value="savagedzen"/>
+             <spinnerItem name="intellidemand" value="intellidemand"/>
+             <spinnerItem name="sakuractive" value="sakuractive"/>
+             <spinnerItem name="lazy" value="lazy"/>
       </spinner>
       <spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
              <spinnerItem name="sio" value="sio"/> 
@@ -179,7 +171,7 @@
              <spinnerItem name="deadline" value="deadline"/> 
              <spinnerItem name="vr" value="vr"/> 
              <spinnerItem name="cfq" value="cfq"/>
-			 <spinnerItem name="bfq" value="bfq"/> 
+             <spinnerItem name="bfq" value="bfq"/> 
       </spinner>
       <spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
              <spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
