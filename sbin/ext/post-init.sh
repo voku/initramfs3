@@ -67,6 +67,8 @@ fi
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/tweaks.sh
 
+/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
+
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 
 ##### EFS Backup #####
