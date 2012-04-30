@@ -292,8 +292,6 @@ fi
 # =========
 # KERNEL-TWEAKS
 # =========
-echo "Android-VM" > /proc/sys/kernel/hostname;
-echo "60" > /proc/sys/kernel/hung_task_panic;
 echo "4096" > /proc/sys/vm/min_free_kbytes
 
 # Define the memory thresholds at which the above process classes will
