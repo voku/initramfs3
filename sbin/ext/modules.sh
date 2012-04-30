@@ -1,22 +1,22 @@
 #!/sbin/busybox sh
 
 # reduce logcat priority.
-renice 10 `pgrep logcat`
-#fm radio, I have no idea why it isn't loaded in init -gm
+renice 19 `pgrep logcat`
+#Fm radio, I have no idea why it isn't loaded in init -gm
 if [ -e /system/lib/modules/Si4709_driver.ko ]; then
 insmod /system/lib/modules/Si4709_driver.ko
-fi
-# for ntfs automounting
-if [ -e /system/lib/modules/fuse.ko ]; then
-insmod /system/lib/modules/fuse.ko
 fi
 # Load CIFS with all that needed
 if [ -e /system/lib/modules/cifs.ko ]; then
 insmod /system/lib/modules/cifs.ko
 fi
-# for ntfs automounting
+# For ntfs automounting
 if [ -e /system/lib/modules/fuse.ko ]; then
 insmod /system/lib/modules/fuse.ko
+fi
+# Enable KSM by default.
+if [ -e /sys/kernel/mm/ksm/run ]; then
+echo "1" > /sys/kernel/mm/ksm/run
 fi
 # For ZRAM auto load
 # insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)
@@ -24,7 +24,7 @@ fi
 # ZRAM compress ratio is 50% so 300MB will give clean 150MB More RAM, this gives us 1GB RAM device. 
 if [ -e /dev/block/zram0 ]; then
 	# Setting swappines
-	echo 60 > /proc/sys/vm/swappiness 
+	echo 40 > /proc/sys/vm/swappiness 
 	# Setting size of each ZRAM swap drives
 	echo 100000000 > /sys/block/zram0/disksize
 	echo 100000000 > /sys/block/zram1/disksize
