@@ -107,12 +107,12 @@ fi;
 # =========
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
-	busybox mount -o remount,noatime,nodiratime $k;
+	busybox mount -o remount,noatime,nodiratime ${k};
 done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
-	busybox mount -o remount,noatime,nodiratime,nobh,nouser_xattr,data=ordered,delalloc,noauto_da_alloc,commit=15 $l;
+	busybox mount -o remount,noatime,nodiratime,nobh,nouser_xattr,delalloc,data=ordered,noauto_da_alloc,commit=15 ${l};
 done;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,data=writeback,barrier=0,delalloc,noauto_da_alloc,commit=15 /cache /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,data=writeback,barrier=0,delalloc,noauto_da_alloc,commit=15 /data /data;
@@ -120,6 +120,10 @@ mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,data=writeback,ba
 # =========
 # TWEAKS
 # =========
+setprop windowsmgr.max_events_per_sec 240;
+setprop video.accelerate.hw 1;
+setprop persist.adb.notify 0;
+setprop dalvik.vm.execution-mode int:jit;
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax="268435456";
 echo "0" > /proc/sys/kernel/hung_task_timeout_secs;

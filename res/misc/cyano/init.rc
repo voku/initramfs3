@@ -233,12 +233,19 @@ on boot
     setprop ro.EMPTY_APP_ADJ 15
 
     # Tweaks For ROM
-    setprop windowsmgr.max_events_per_sec 120
-    setprop dalvik.vm.execution-mode int:jit
-    setprop persist.adb.notify 0
-    setprop persist.sys.use_dithering 1
-    setprop ro.telephony.call_ring.delay 300
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.ril.fast.dormancy.rule 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
     setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
 
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state

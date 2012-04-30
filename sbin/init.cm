@@ -11,6 +11,14 @@ rm /init
 mv /innt /init
 busybox cp -a /res/misc/cyano/* /
 
+#Setting journal_data_writeback to DATA.
+umount -l /cache
+umount -l /data
+/sbin/tune2fs -o journal_data_writeback /res/dev/data
+/sbin/tune2fs -o journal_data_writeback /res/dev/cache
+/sbin/e2fsck -p /res/dev/data
+/sbin/e2fsck -p /res/dev/cache
+
 busybox date >>boot.txt
 busybox rm -fr /res/misc/cyano /dev/*
 export PATH="${_PATH}"
