@@ -164,7 +164,6 @@ echo "95" > /proc/sys/vm/dirty_ratio;
 echo "10" > /proc/sys/vm/vfs_cache_pressure;
 # to help with wifi toggling problems (thanks to wjchen)
 # echo "8192" > /proc/sys/vm/min_free_kbytes
-echo "60" > /proc/sys/kernel/hung_task_panic;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "1" > /proc/sys/vm/overcommit_memory;
 echo "3" > /proc/sys/vm/drop_caches;
