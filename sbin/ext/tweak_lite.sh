@@ -120,16 +120,19 @@ mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,data=writeback,ba
 # =========
 # TWEAKS
 # =========
-setprop windowsmgr.max_events_per_sec 240;
+# setprop windowsmgr.max_events_per_sec 240;
 setprop video.accelerate.hw 1;
+setprop hwui.render_dirty_regions false;
 setprop persist.adb.notify 0;
 setprop dalvik.vm.execution-mode int:jit;
+# sysctl -w vm.panic_on_oom="0";
+# sysctl -w kernel.tainted="0";
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax="268435456";
 echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 echo "64000" > /proc/sys/kernel/msgmni;
 echo "64000" > /proc/sys/kernel/msgmax;
-echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 echo "8" > /proc/sys/vm/page-cluster;
 
 # =========
@@ -137,7 +140,7 @@ echo "8" > /proc/sys/vm/page-cluster;
 # =========
 # SYSTEM
 setprop pm.sleep_mode 1;
-setprop wifi.supplicant_scan_interval 120;
+setprop wifi.supplicant_scan_interval 160;
 # USB
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do 
