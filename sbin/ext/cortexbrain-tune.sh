@@ -102,9 +102,11 @@ done;
 # TWEAKS
 # =========
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+sysctl -w vm.panic_on_oom=0
+sysctl -w kernel.tainted=0
 
 # WIFI scan interval to 2 MIn to save power
-setprop wifi.supplicant_scan_interval 120
+setprop wifi.supplicant_scan_interval 180
 
 #Enable Hardware Rendering
 setprop video.accelerate.hw 1
@@ -113,7 +115,7 @@ setprop persist.sys.use_dithering 1
 
 #Render UI with GPU
 setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 240
+setprop windowsmgr.max_events_per_sec 60
 setprop debug.sf.hw 1
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
