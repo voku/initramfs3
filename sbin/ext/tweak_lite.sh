@@ -160,17 +160,17 @@ echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 # MEMORY-TWEAKS
 # =========
 echo "40" > /proc/sys/vm/swappiness;
-echo "0" > /proc/sys/vm/dirty_expire_centisecs;
-echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "60" > /proc/sys/vm/dirty_background_ratio;
-echo "95" > /proc/sys/vm/dirty_ratio;
+#echo "0" > /proc/sys/vm/dirty_expire_centisecs;
+#echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+#echo "60" > /proc/sys/vm/dirty_background_ratio;
+#echo "95" > /proc/sys/vm/dirty_ratio;
 echo "10" > /proc/sys/vm/vfs_cache_pressure;
 # to help with wifi toggling problems (thanks to wjchen)
 # echo "8192" > /proc/sys/vm/min_free_kbytes
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "1" > /proc/sys/vm/overcommit_memory;
 echo "3" > /proc/sys/vm/drop_caches;
-echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+#echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
 #FOREGROUND_APP_MEM=8192;
@@ -186,7 +186,7 @@ echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
 # =========
 # FS-TWEAKS
 # =========
-echo "10" > /proc/sys/fs/lease-break-time;
+echo "15" > /proc/sys/fs/lease-break-time;
 
 # =========
 # TWEAKS: for TCP read/write
