@@ -207,9 +207,13 @@ echo "4096 16384 404480" > /proc/sys/net/ipv4/tcp_wmem;
 echo "4096 87380 404480" > /proc/sys/net/ipv4/tcp_rmem;
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-setprop net.tcp.buffersize.default 4096,87380,404480,4096,16384,404480;
-setprop net.tcp.buffersize.wifi 4096,87380,404480,4096,16384,404480;
-setprop net.tcp.buffersize.umts 4096,87380,404480,4096,16384,404480;
+setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
+setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208
+setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
+setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
+setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
 
 # =========
 # TWEAKS: optimized for 3G/Edge speed
