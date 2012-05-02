@@ -120,7 +120,7 @@ mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,data=writeback,ba
 # =========
 # TWEAKS
 # =========
-# setprop windowsmgr.max_events_per_sec 240;
+setprop windowsmgr.max_events_per_sec 120;
 setprop video.accelerate.hw 1;
 setprop hwui.render_dirty_regions false;
 setprop persist.adb.notify 0;
