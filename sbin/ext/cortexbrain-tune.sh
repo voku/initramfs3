@@ -115,7 +115,7 @@ setprop persist.sys.use_dithering 1
 
 #Render UI with GPU
 setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 60
+setprop windowsmgr.max_events_per_sec 120
 setprop debug.sf.hw 1
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
