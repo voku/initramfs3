@@ -53,7 +53,7 @@
             name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
     </settingsPane>
 
-    <settingsPane description="" 
+    <!--settingsPane description="" 
 		name="CPU Stepping Settings">
       <spinner description="This setting will change CPU step count, Steps are in MHZ (Restart required)." name="CPU Step Count" action="generic /tmp/cpustepcount">
              <spinnerItem name="5 (1200->200-5-Steps)" value="5"/> 
@@ -63,7 +63,7 @@
              <spinnerItem name="9 (1600->50-9-Steps)" value="9"/> 
              <spinnerItem name="18 (1500->25-17-Steps)" value="17"/> 
       </spinner>
-    </settingsPane>
+    </settingsPane> -->
 
   </settingsTab>
 
