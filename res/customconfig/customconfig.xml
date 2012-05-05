@@ -11,6 +11,10 @@
              <spinnerItem name="Second core always-off" value="always-off"/> 
              <spinnerItem name="Second core always-on" value="always-on"/> 
        </spinner>
+       <seekBar description="Maximum CPU Speed (default is 1400)"
+                name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="Mhz" min="100000" reversed="false" step="100000" max="1500000"/>
+       <seekBar description="Minimum CPU Speed (default is 100)"
+                name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="Mhz" min="100000" reversed="false" step="100000" max="1500000"/>
        <seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
                 name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="100"/>
        <seekBar description="second core will be disabled when the load goes below this threshold (default is 20)"
