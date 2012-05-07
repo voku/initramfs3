@@ -47,35 +47,35 @@ do
 		echo "512" >  $i/queue/read_ahead_kb;
 	fi;
 
-    #if [ -e $i/queue/iosched/group_isolation ];
-    #then
-    #   echo "0" > $i/queue/iosched/group_isolation;
-    #fi;
+	#if [ -e $i/queue/iosched/group_isolation ];
+	#then
+	#	echo "0" > $i/queue/iosched/group_isolation;
+	#fi;
 
-    #if [ -e $i/queue/iosched/back_seek_penalty ];
-    #then
-    #   echo "1" > $i/queue/iosched/back_seek_penalty;
-    #fi;
+	#if [ -e $i/queue/iosched/back_seek_penalty ];
+	#then
+	#	echo "1" > $i/queue/iosched/back_seek_penalty;
+	#fi;
 
-    #if [ -e $i/queue/iosched/writes_starved ];
-    #then
-    #    echo "1" > $i/queue/iosched/writes_starved;
-    #fi;
+	#if [ -e $i/queue/iosched/writes_starved ];
+	#then
+	#	echo "1" > $i/queue/iosched/writes_starved;
+	#fi;
 
-    #if [ -e $i/queue/iosched/rev_penalty ];
-    #then
-    #    echo "1" > $i/queue/iosched/rev_penalty;
-    #fi;
+	#if [ -e $i/queue/iosched/rev_penalty ];
+	#then
+	#	echo "1" > $i/queue/iosched/rev_penalty;
+	#fi;
 
-    #if [ -e $i/queue/iosched/slice_async_rq ];
-    #then
-    #    echo "2" > $i/queue/iosched/slice_async_rq;
-    #fi;
+	#if [ -e $i/queue/iosched/slice_async_rq ];
+	#then
+	#	echo "2" > $i/queue/iosched/slice_async_rq;
+	#fi;
 
-    #if [ -e $i/queue/iosched/back_seek_max ];
-    #then
-    #   echo "1000000000" > $i/queue/iosched/back_seek_max;
-    #fi;
+	#if [ -e $i/queue/iosched/back_seek_max ];
+	#then
+	#	echo "1000000000" > $i/queue/iosched/back_seek_max;
+	#fi;
 done;
 
 for i in $DM $LOOP $MMC $ZRM $RAM;
@@ -83,8 +83,8 @@ do
 	case $IO_SCHEDULER in
 	"cfq")
  		echo "0" > $i/queue/iosched/slice_idle;
-  		#echo "16" > $i/queue/iosched/quantum;
-  		echo "1024" > $i/queue/nr_requests;;
+		#echo "16" > $i/queue/iosched/quantum;
+		echo "1024" > $i/queue/nr_requests;;
 	"bfq")
 		#echo "3" > $i/queue/iosched/slice_idle;
 		#echo "16" > $i/queue/iosched/quantum;
@@ -93,7 +93,7 @@ do
 		#echo "4" > $i/queue/iosched/quantum;
 		#echo "248" > $i/queue/nr_requests;;
 	"deadline")
-  		#echo "16" > $i/queue/iosched/fifo_batch;;
+		#echo "16" > $i/queue/iosched/fifo_batch;;
 	"sio")
 		#echo "4" > $i/queue/iosched/quantum;
 		#echo "16" > $i/queue/iosched/fifo_batch;
@@ -102,18 +102,18 @@ do
 done;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
-  then
-    echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
+then
+	echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
-  then
-    echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
+then
+	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
-  then
-    echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+then
+	echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 # =========
@@ -126,7 +126,11 @@ done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
+<<<<<<< HEAD
         mount -o remount,noatime,nodiratime,inode_readahead_blks=0,barrier=0 $l;
+=======
+	mount -o remount,noatime,nodiratime,inode_readahead_blks=0,barrier=0 $l;
+>>>>>>> 73735dc... clean syntax ...
 done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,barrier=0,commit=0,noauto_da_alloc,delalloc /cache;
@@ -167,7 +171,6 @@ setprop hs.systemserver 16m
 setprop hs.app.process 16m
 setprop hs.su 8m
 setprop hs.app_process 16m
-
 
 # =========
 # BATTERY-TWEAKS
