@@ -18,7 +18,6 @@ chmod 777 /data/.siyah
 read_defaults
 read_config
 
-
 #change cpu step count
 #case "${cpustepcount}" in
 #  5)
@@ -41,8 +40,8 @@ read_config
 #    ;;
 #esac;
 
+# disable debugging on some modules
 if [ "$logger" == "off" ]; then
-	# disable debugging on some modules
 	echo 0 > /sys/module/ump/parameters/ump_debug_level
 	echo 0 > /sys/module/mali/parameters/mali_debug_level
 	echo 0 > /sys/module/kernel/parameters/initcall_debug

@@ -44,7 +44,6 @@ on early-fs
     # insmod /lib/modules/rfs_glue.ko
     # insmod /lib/modules/rfs_fat.ko
        
-
     # parameter block
     mkdir /mnt/.lfs 0755 root root
     insmod /lib/modules/j4fs.ko
@@ -91,7 +90,6 @@ on fs
     chown system system /cache/fota 
     chmod 0777 /cache/fota
     
-    
     #mount rfs /dev/block/stl3 /efs nosuid nodev check=no
 
 on post-fs
@@ -120,4 +118,4 @@ service ueventd /sbin/ueventd
     critical
     
 service redbend_ua /sbin/redbend_ua all
-	  oneshot
+    oneshot
