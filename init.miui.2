@@ -147,6 +147,7 @@ on post-fs
     chmod 0770 /cache
 
     # This may have been created by the recovery system with odd permissions
+    mkdir /cache/recovery 0770
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
@@ -357,39 +358,38 @@ on boot
     setprop ro.HIDDEN_APP_MIN_ADJ 7
     setprop ro.EMPTY_APP_ADJ 15
 
+    # Tweak background writeout
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
+
     # Tweaks For ROM
-    setprop windowsmgr.max_events_per_sec 120
-    setprop dalvik.vm.execution-mode int:jit
-    setprop persist.adb.notify 0
-    setprop persist.sys.use_dithering 1
-    setprop ro.telephony.call_ring.delay 300
+    # Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.ril.fast.dormancy.rule 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
     setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
 
-# Define the memory thresholds at which the above process classes will
-# be killed.  These numbers are in pages (4k).
-    # These are currently tuned for tablets with approx 1GB RAM.
-    setprop ro.FOREGROUND_APP_MEM 8192
-    setprop ro.VISIBLE_APP_MEM 10240
-    setprop ro.PERCEPTIBLE_APP_MEM 12288
-    setprop ro.HEAVY_WEIGHT_APP_MEM 12288
-    setprop ro.SECONDARY_SERVER_MEM 14336
-    setprop ro.BACKUP_APP_MEM 14336
-    setprop ro.HOME_APP_MEM 14336
-    setprop ro.HIDDEN_APP_MEM 16384
-    setprop ro.EMPTY_APP_MEM 20480
-
-# Write value must be consistent with the above properties.
-# Note that the driver only supports 6 slots, so we have combined some of
-# the classes into the same memory level; the associated processes of higher
-# classes will still be killed first.
-    write /sys/module/lowmemorykiller/parameters/adj 0,1,2,4,7,15
-
-    write /proc/sys/vm/overcommit_memory 1
-    write /proc/sys/vm/min_free_order_shift 4
-    write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
+    # Just in case.
+    setprop ro.config.htc.nocheckin 1
 
     # Set init its forked children's oom_adj.
     write /proc/1/oom_adj -16
+
+    # Tweak background writeout
+    write /proc/sys/vm/dirty_expire_centisecs 200
+    write /proc/sys/vm/dirty_background_ratio  5
+
+    # BOOT CPU TUNING
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 200000
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775

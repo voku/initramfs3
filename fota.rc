@@ -91,6 +91,7 @@ on fs
     chown system system /cache/fota 
     chmod 0777 /cache/fota
     
+    
     #mount rfs /dev/block/stl3 /efs nosuid nodev check=no
 
 on post-fs

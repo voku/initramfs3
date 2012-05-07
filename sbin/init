@@ -3,6 +3,7 @@ cd /
 
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
+tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
   echo 0 > /proc/sys/kernel/rom_feature_set
@@ -16,9 +17,6 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
   rm init.smdk4210.rc
   exec /sbin/init.samsung
 fi
-
-tar xvf /res/misc/dev.tar
-
 
 SECONDROM=1
 NOBOOTLOGO=0
@@ -45,11 +43,11 @@ fi
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
 
-if [ ! -d /system/lib/modules ]; then
-	mount -o remount,rw /system
-	mkdir /system/lib/modules
-fi;
-cp -f /lib/modules/* /system/lib/modules
+#Copy new Kernel modules to system/lib/modules
+rm -f /system/lib/modules/*
+cp /lib/modules/* /system/lib/modules/
+chmod 755 /system/lib/modules/*
+#Now we using correct modules.
 
 if [ -f /system/recovery.cpio.gz ];
 then

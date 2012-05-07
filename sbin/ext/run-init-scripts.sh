@@ -14,4 +14,3 @@ fi;
 if [ -f /data/local/customboot.sh ]; then
   /sbin/busybox sh /data/local/customboot.sh
 fi;
-
