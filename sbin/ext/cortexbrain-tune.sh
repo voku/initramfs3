@@ -7,10 +7,7 @@
 # Voku1987
 # Collin_ph@xda
 # Dorimanx@xda
-<<<<<<< .merge_file_ApdwQK
-=======
 # Gokhanmoral@xda
->>>>>>> .merge_file_famVwK
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
@@ -132,14 +129,9 @@ do
 	mount -o remount,noatime,nodiratime,inode_readahead_blks=0,barrier=0 $l;
 done;
 
-<<<<<<< .merge_file_ApdwQK
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data;
-=======
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,barrier=0,commit=0,noauto_da_alloc,delalloc /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,barrier=0,commit=0,noauto_da_alloc,delalloc /data;
 mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=0,barrier=0 /system
->>>>>>> .merge_file_famVwK
 
 # ==============================================================
 # TWEAKS
@@ -179,11 +171,7 @@ setprop hs.app_process 16m
 # =========
 # BATTERY-TWEAKS
 # =========
-<<<<<<< .merge_file_ApdwQK
-setprop wifi.supplicant_scan_interval 180
-=======
 setprop wifi.supplicant_scan_interval 240 
->>>>>>> .merge_file_famVwK
 setprop pm.sleep_mode 1
 
 for i in $(ls /sys/bus/usb/devices/*/power/level);
@@ -207,10 +195,7 @@ then
 	echo "1" > /proc/sys/kernel/rr_interval;
 	echo "100" > /proc/sys/kernel/iso_cpu;
 else
-<<<<<<< .merge_file_ApdwQK
-=======
 # For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
->>>>>>> .merge_file_famVwK
 	# CFS;
 	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
@@ -237,11 +222,7 @@ then
 	else
 		if [ $MORE_SPEED == 1 ];
 			echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-<<<<<<< .merge_file_ApdwQK
-			echo "40000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-=======
 			echo "60000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
->>>>>>> .merge_file_famVwK
 			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
@@ -648,3 +629,4 @@ renice 19 `pidof kswapd0`;
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
+
