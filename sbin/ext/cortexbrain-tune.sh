@@ -1,30 +1,26 @@
 #!/sbin/busybox sh
-#ThunderBolt!
+
+#ThunderBolt! & TweakLite
+
 #Credits:
 # zacharias.maladroit
 # voku1987
 # collin_ph@xda
 # Dorimanx@xda
+
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
 # ==============================================================
-# ==============================================================
-# ==============================================================
 # I/O related tweaks 
 # ==============================================================
-# ==============================================================
-# ==============================================================
-
 DM=`ls -d /sys/block/dm*`;
 LOOP=`ls -d /sys/block/loop*`;
 MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
 RAM=`ls -d /sys/block/ram*`;
 
-# Optimize storage drives and ram drives; 
 for i in $DM $LOOP $MMC $ZRM $RAM;
 do
-	#IMPORTANT!
 	if [ -e $i/queue/rotational ]; 
 	then
 		echo "0" > $i/queue/rotational;
@@ -35,20 +31,9 @@ do
 		echo "0" > $i/queue/iostats;
 	fi;
 
-	if [ -e $i/queue/nr_requests ];
-	then
-		echo "1024" > $i/queue/nr_requests; # for starters: keep it sane
-	fi;
-
 	if [ -e $i/queue/iosched/low_latency ];
 	then
 		echo "1" > $i/queue/iosched/low_latency;
-	fi;
-
-	#CFQ Specific
-	if [ -e $i/queue/iosched/slice_idle ];
-	then 
-		echo "0" > $i/queue/iosched/slice_idle; # previous: 1
 	fi;
 
 	if [ -e $i/queue/rq_affinity ];
@@ -56,18 +41,64 @@ do
 		echo "1" > $i/queue/rq_affinity;   
 	fi;
 
-# Optimize for read- & write-throughput; 
-# Optimize for readahead; 
 	if [ -e $i/queue/read_ahead_kb ];
 	then
 		echo "512" >  $i/queue/read_ahead_kb;
 	fi;
 
+    #if [ -e $i/queue/iosched/group_isolation ];
+    #then
+    #   echo "0" > $i/queue/iosched/group_isolation;
+    #fi;
+
+    #if [ -e $i/queue/iosched/back_seek_penalty ];
+    #then
+    #   echo "1" > $i/queue/iosched/back_seek_penalty;
+    #fi;
+
+    #if [ -e $i/queue/iosched/writes_starved ];
+    #then
+    #    echo "1" > $i/queue/iosched/writes_starved;
+    #fi;
+
+    #if [ -e $i/queue/iosched/rev_penalty ];
+    #then
+    #    echo "1" > $i/queue/iosched/rev_penalty;
+    #fi;
+
+    #if [ -e $i/queue/iosched/slice_async_rq ];
+    #then
+    #    echo "2" > $i/queue/iosched/slice_async_rq;
+    #fi;
+
+    #if [ -e $i/queue/iosched/back_seek_max ];
+    #then
+    #   echo "1000000000" > $i/queue/iosched/back_seek_max;
+    #fi;
 done;
 
-# =========
-# TWEAKS: raising read_ahead_kb cache-value for mounts that are sdcard-like to 1024 
-# =========
+for i in $DM $LOOP $MMC $ZRM $RAM;
+do
+	case $IO_SCHEDULER in
+	"cfq")
+ 		echo "0" > $i/queue/iosched/slice_idle;
+  		#echo "16" > $i/queue/iosched/quantum;
+  		echo "1024" > $i/queue/nr_requests;;
+	"bfq")
+		#echo "3" > $i/queue/iosched/slice_idle;
+		#echo "16" > $i/queue/iosched/quantum;
+		#echo "512" > $i/queue/nr_requests;;
+	"noop")
+		#echo "4" > $i/queue/iosched/quantum;
+		#echo "248" > $i/queue/nr_requests;;
+	"deadline")
+  		#echo "16" > $i/queue/iosched/fifo_batch;;
+	"sio")
+		#echo "4" > $i/queue/iosched/quantum;
+		#echo "16" > $i/queue/iosched/fifo_batch;
+		#echo "256" > $i/queue/nr_requests;;
+	esac;
+done;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
   then
@@ -84,49 +115,42 @@ if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
     echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
-# ==============================================================
-# ==============================================================
-# ==============================================================
-# Mount related tweaks (Applied globally)
-# ==============================================================
-# ==============================================================
-# ==============================================================
-
-# Remount all partitions with noatime and nodiratime
+# =========
+# Remount all partitions
+# =========
 for k in $(busybox mount | grep relatime | cut -d " " -f3);
 do
 	busybox mount -o remount,rw,noatime,nodiratime $k;
 done;
 
-# =========
+# ==============================================================
 # TWEAKS
-# =========
+# ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
 sysctl -w kernel.tainted=0
+#sysctl -w kernel.sem="500 512000 100 2048";
+#sysctl -w kernel.shmmax="268435456";
+#echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
+#echo "64000" > /proc/sys/kernel/msgmni;
+#echo "64000" > /proc/sys/kernel/msgmax;
 
-# WIFI scan interval to 2 MIn to save power
-setprop wifi.supplicant_scan_interval 180
-
-#Enable Hardware Rendering
+# enable Hardware Rendering
 setprop video.accelerate.hw 1
 setprop debug.performance.tuning 1
 setprop persist.sys.use_dithering 1
 
-#Render UI with GPU
+# render UI with GPU
 setprop hwui.render_dirty_regions false
 setprop windowsmgr.max_events_per_sec 120
 setprop debug.sf.hw 1
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
-#Proximity tweak
+# Proximity tweak
 setprop mot.proximity.delay 15
 
-#Set PM mode.
-setprop pm.sleep_mode 1
-
-#More Tweaks
+# more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
 setprop hs.systemserver 16m
@@ -134,24 +158,157 @@ setprop hs.app.process 16m
 setprop hs.su 8m
 setprop hs.app_process 16m
 
+
 # =========
 # BATTERY-TWEAKS
 # =========
-# USB
+setprop wifi.supplicant_scan_interval 180
+setprop pm.sleep_mode 1
+
 for i in $(ls /sys/bus/usb/devices/*/power/level);
-do 
-	echo "auto" > $i;
-done
+do
+    echo "auto" > $i;
+done;
+
+# =========
+# CPU-TWEAKS
+# ========= 
+# Frequency Scaling Governor
+#echo "lulzactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+# MAX
+#echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# MIN
+#echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
+if [ -e /proc/sys/kernel/rr_interval ];
+then
+	# BFS;
+	echo "1" > /proc/sys/kernel/rr_interval;
+	echo "100" > /proc/sys/kernel/iso_cpu;
+else
+	# CFS;
+	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+	echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+fi;
+
+# 
+# THX @mecss
+# http://www.android-hilfe.de/kernel-fuer-samsung-galaxy-s2/214829-tweaks-kernel-parameter-einstellungen-governor-oc-uv.html
+#
+MORE_BATTERY=0;
+MORE_SPEED=0;
+KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+if [ $KERNEL_GOVERNOR == "ondemand" ];
+then
+	if [ $MORE_BATTERY == 1 ];
+	then
+		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+	else
+		if [ $MORE_SPEED == 1 ];
+			echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "40000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		fi;
+fi;
+if [ $KERNEL_GOVERNOR == "lulzactive" ];
+then
+	if [ $MORE_BATTERY == 1 ];
+	then
+		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+	else
+		if [ $MORE_SPEED == 1 ];
+			echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+			echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+			echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+			echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+			echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+			echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+	fi;
+fi;
+if [ $KERNEL_GOVERNOR == "smartassV2" ];
+then
+	if [ $MORE_BATTERY == 1 ];
+	then
+		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
+		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
+		echo "85" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+		echo "70" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
+		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
+		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
+	else
+		if [ $MORE_SPEED == 1 ];
+			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
+			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
+			echo "75" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+			echo "45" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
+			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
+			echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
+			echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
+		fi;
+if [ $KERNEL_GOVERNOR == "conservative" ];
+then
+	if [ $MORE_BATTERY == 1 ];
+	then
+		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+	else
+		if [ $MORE_SPEED == 1 ];
+			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+			echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		fi;
+fi;
 
 # =========
 # MEMORY-TWEAKS
 # =========
+#echo "40" > /proc/sys/vm/swappiness;
+#echo "0" > /proc/sys/vm/dirty_expire_centisecs;
+#echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+#echo "60" > /proc/sys/vm/dirty_background_ratio;
+#echo "95" > /proc/sys/vm/dirty_ratio;
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "1" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
+echo "4096" > /proc/sys/vm/min_free_kbytes
+#echo "3" > /proc/sys/vm/drop_caches;
+
+# Define the memory thresholds at which the above process classes will
+# be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
+#FOREGROUND_APP_MEM=8192;
+#VISIBLE_APP_MEM=10240;
+#SECONDARY_SERVER_MEM=12288;
+#BACKUP_APP_MEM=12288;
+#HOME_APP_MEM=12288;
+#HIDDEN_APP_MEM=14336;
+#CONTENT_PROVIDER_MEM=16384;
+#EMPTY_APP_MEM=20480;
+#echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
 # =========
 # FS-TWEAKS
@@ -181,12 +338,15 @@ echo "4096 16384 404480" > /proc/sys/net/ipv4/tcp_wmem;
 echo "4096 87380 404480" > /proc/sys/net/ipv4/tcp_rmem;
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-setprop net.tcp.buffersize.default 4096,87380,404480,4096,16384,404480;
-setprop net.tcp.buffersize.wifi 4096,87380,404480,4096,16384,404480;
-setprop net.tcp.buffersize.umts 4096,87380,404480,4096,16384,404480;
+setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
+setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208
+setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
+setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
+setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
 }
 #NETSETTINGS
-
 
 # =========
 # TWEAKS: optimized for 3G/Edge speed
@@ -198,7 +358,6 @@ setprop ro.ril.hsdpa.category 6;
 setprop ro.ril.gprsclass 12;
 }
 #NETPROPS
-
 
 # =========
 # Firewall-TWEAKS
@@ -292,38 +451,14 @@ fi
 #FWTWEAKS
 
 # =========
-# KERNEL-TWEAKS
-# =========
-echo "4096" > /proc/sys/vm/min_free_kbytes
-
-# Define the memory thresholds at which the above process classes will
-# be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
-#FOREGROUND_APP_MEM=8192;
-#VISIBLE_APP_MEM=10240;
-#SECONDARY_SERVER_MEM=12288;
-#BACKUP_APP_MEM=12288;
-#HOME_APP_MEM=12288;
-#HIDDEN_APP_MEM=14336;
-#CONTENT_PROVIDER_MEM=16384;
-#EMPTY_APP_MEM=20480;
-#echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
-
-# =========
-# CPU - Tweaks
-# =========
-
-# =========
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
 
-# =========
-# CleanUp
-# =========
-
-# =========
+# ==============================================================
 # Explanations
-# =========
+# ==============================================================
+#
 # scaling_governor: Using Frequency Scaling Governors -> cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
 #
 # 				-> http://publib.boulder.ibm.com/infocenter/lnxinfo/v3r0m0/index.jsp?topic=/liaai/cpufreq/TheOndemandGovernor.htm
@@ -479,3 +614,8 @@ renice 19 `pidof kswapd0`;
 #
 # 				echo XXX XXX XXX XXX > /proc/sys/kernel/sem;
 
+# read_ahead_kb: Optimize for read-throughput (cache-value)
+#
+# 				example of C program for finding correct vaules for Linux 
+# 				-> http://pastebin.com/Rg6qVJQH
+#
