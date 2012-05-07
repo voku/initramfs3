@@ -126,11 +126,7 @@ done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
-<<<<<<< HEAD
-        mount -o remount,noatime,nodiratime,inode_readahead_blks=0,barrier=0 $l;
-=======
 	mount -o remount,noatime,nodiratime,inode_readahead_blks=0,barrier=0 $l;
->>>>>>> 73735dc... clean syntax ...
 done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,barrier=0,commit=0,noauto_da_alloc,delalloc /cache;
