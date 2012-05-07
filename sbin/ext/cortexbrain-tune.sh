@@ -3,10 +3,11 @@
 #ThunderBolt! & TweakLite
 
 #Credits:
-# zacharias.maladroit
-# voku1987
-# collin_ph@xda
+# Zacharias.maladroit
+# Voku1987
+# Collin_ph@xda
 # Dorimanx@xda
+# Gokhanmoral@xda
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
@@ -171,7 +172,7 @@ setprop hs.app_process 16m
 # =========
 # BATTERY-TWEAKS
 # =========
-setprop wifi.supplicant_scan_interval 180
+setprop wifi.supplicant_scan_interval 240 
 setprop pm.sleep_mode 1
 
 for i in $(ls /sys/bus/usb/devices/*/power/level);
@@ -195,6 +196,7 @@ then
 	echo "1" > /proc/sys/kernel/rr_interval;
 	echo "100" > /proc/sys/kernel/iso_cpu;
 else
+# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
 	# CFS;
 	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
@@ -221,7 +223,7 @@ then
 	else
 		if [ $MORE_SPEED == 1 ];
 			echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "40000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "60000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
@@ -322,7 +324,7 @@ echo "4096" > /proc/sys/vm/min_free_kbytes
 # =========
 # FS-TWEAKS
 # =========
-echo "10" > /proc/sys/fs/lease-break-time;
+echo "15" > /proc/sys/fs/lease-break-time;
 
 # =========
 # TWEAKS: for TCP read/write
