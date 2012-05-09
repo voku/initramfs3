@@ -78,6 +78,7 @@ do
 	#fi;
 done;
 
+NEEDTOFINISH () {
 for i in $DM $LOOP $MMC $ZRM $RAM;
 do
 	case $IO_SCHEDULER in
@@ -100,6 +101,9 @@ do
 		#echo "256" > $i/queue/nr_requests;;
 	esac;
 done;
+}
+#NEEDTOFINISH
+
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
 then
