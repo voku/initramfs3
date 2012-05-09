@@ -10,6 +10,12 @@ echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/de
 
 mkdir /data/.siyah
 chmod 777 /data/.siyah
+ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
+if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
+then
+  rm -f /data/.siyah/*.profile
+  echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
+fi
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
 [ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
