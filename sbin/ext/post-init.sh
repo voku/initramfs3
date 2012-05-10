@@ -14,6 +14,7 @@ ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
 then
   rm -f /data/.siyah/*.profile
+  rm -f /data/.siyah/.active.profile
   echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
 fi
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
@@ -24,27 +25,33 @@ fi
 read_defaults
 read_config
 
-#change cpu step count
-#case "${cpustepcount}" in
-#  5)
+//change cpu step count
+case "${cpustepcount}" in
+  5)
+    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 #    echo 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-#    ;;
-#  6)
+    ;;
+  6)
+    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 #    echo 1400 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-#    ;;
-#  7)
+    ;;
+  7)
+    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 #    echo 1500 1400 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-#    ;;
-#  8)
+    ;;
+  8)
+    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 #    echo 1600 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-#    ;;
-#  9)
+    ;;
+  9)
+    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 #    echo 1600 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-#    ;;
-#  18)
+    ;;
+  18)
+    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 #    echo 1600 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 50 25 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-#    ;;
-#esac;
+    ;;
+esac;
 
 # disable debugging on some modules
 if [ "$logger" == "off" ]; then
