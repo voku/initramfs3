@@ -25,16 +25,10 @@ fi
 read_defaults
 read_config
 
-<<<<<<< HEAD
-#change cpu step count
-#case "${cpustepcount}" in
-#  5)
-=======
 //change cpu step count
 case "${cpustepcount}" in
   5)
     echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
->>>>>>> f979142f2d5e691b9952ab84f155ac1975a2e516
 #    echo 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   6)
