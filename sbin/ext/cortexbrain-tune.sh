@@ -78,6 +78,7 @@ do
 	#fi;
 done;
 
+<<<<<<< HEAD
 for i in $DM $LOOP $MMC $ZRM $RAM;
 do
 	case $IO_SCHEDULER in
@@ -101,6 +102,8 @@ do
 	esac;
 done;
 
+=======
+>>>>>>> f979142f2d5e691b9952ab84f155ac1975a2e516
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
 then
 	echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
@@ -126,12 +129,21 @@ done;
 
 for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
 do
+<<<<<<< HEAD
 	mount -o remount,noatime,nodiratime,inode_readahead_blks=0,barrier=0 $l;
 done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,barrier=0,commit=0,noauto_da_alloc,delalloc /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=0,barrier=0,commit=0,noauto_da_alloc,delalloc /data;
 mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=0,barrier=0 /system
+=======
+	mount -o remount,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 $l;
+done;
+
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
+mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=0 /system
+>>>>>>> f979142f2d5e691b9952ab84f155ac1975a2e516
 
 # ==============================================================
 # TWEAKS
@@ -629,4 +641,7 @@ renice 19 `pidof kswapd0`;
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
+<<<<<<< HEAD
 
+=======
+>>>>>>> f979142f2d5e691b9952ab84f155ac1975a2e516
