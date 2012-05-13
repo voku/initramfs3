@@ -296,8 +296,8 @@ fi;
 # MEMORY-TWEAKS
 # =========
 echo "40" > /proc/sys/vm/swappiness;
-echo "0" > /proc/sys/vm/dirty_expire_centisecs;
-echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+#echo "0" > /proc/sys/vm/dirty_expire_centisecs;
+#echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
 #echo "60" > /proc/sys/vm/dirty_background_ratio;
 #echo "95" > /proc/sys/vm/dirty_ratio;
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
