@@ -77,7 +77,7 @@ do
 	#	echo "1000000000" > $i/queue/iosched/back_seek_max;
 	#fi;
 
-	IO_SCHEDULER = `cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
+	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
 	case $IO_SCHEDULER in
 		"cfq")
 			echo "0" > $i/queue/iosched/slice_idle;
@@ -92,7 +92,7 @@ do
 		"sio")
 			echo "1" > $i/queue/iosched/fifo_batch;
 			echo "256" > $i/queue/nr_requests;;
-		esac;
+	esac;
 done;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
@@ -135,7 +135,6 @@ sysctl -w vm.panic_on_oom=0
 sysctl -w kernel.tainted=0
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax="268435456";
-echo "1" > /proc/sys/kernel/hung_task_timeout_secs;
 echo "64000" > /proc/sys/kernel/msgmni;
 echo "64000" > /proc/sys/kernel/msgmax;
 
@@ -189,7 +188,6 @@ then
 	echo "1" > /proc/sys/kernel/rr_interval;
 	echo "100" > /proc/sys/kernel/iso_cpu;
 else
-# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
 	# CFS;
 	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
 	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
@@ -215,11 +213,13 @@ then
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "60000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
+	fi;
 fi;
 if [ $KERNEL_GOVERNOR == "lulzactive" ];
 then
@@ -233,12 +233,14 @@ then
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 			echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
 			echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 			echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
 			echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		fi;
 	fi;
 fi;
 if [ $KERNEL_GOVERNOR == "smartassV2" ];
@@ -256,6 +258,7 @@ then
 		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
@@ -266,6 +269,8 @@ then
 			echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
 			echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
 		fi;
+	fi;
+fi;
 if [ $KERNEL_GOVERNOR == "conservative" ];
 then
 	if [ $MORE_BATTERY == 1 ];
@@ -277,22 +282,24 @@ then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 			echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		fi;
+	fi;
 fi;
 
 # =========
 # MEMORY-TWEAKS
 # =========
 echo "40" > /proc/sys/vm/swappiness;
-#echo "0" > /proc/sys/vm/dirty_expire_centisecs;
-#echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "60" > /proc/sys/vm/dirty_background_ratio;
-echo "95" > /proc/sys/vm/dirty_ratio;
+echo "0" > /proc/sys/vm/dirty_expire_centisecs;
+echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+#echo "60" > /proc/sys/vm/dirty_background_ratio;
+#echo "95" > /proc/sys/vm/dirty_ratio;
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
@@ -301,6 +308,7 @@ echo "1" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
 echo "3" > /proc/sys/vm/drop_caches;
+echo "1" > /proc/sys/vm/drop_caches;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -341,13 +349,13 @@ echo "4096 16384 404480" > /proc/sys/net/ipv4/tcp_wmem;
 echo "4096 87380 404480" > /proc/sys/net/ipv4/tcp_rmem;
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
-setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208
-setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
-setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
-setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
+setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208;
+setprop net.tcp.buffersize.wifi	   4095,87380,256960,4096,16384,256960;
+setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208;
+setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040;
+setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680;
+setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
+setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
 
 # =========
 # TWEAKS: optimized for 3G/Edge speed
@@ -368,17 +376,17 @@ echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
 if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts ];
 then
 	echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_all ];
 then
 	echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_all;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses ];
 then
 	echo "1" > /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses;
-fi
+fi;
 
 # syn protection
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
@@ -386,17 +394,17 @@ echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 if [ -e /proc/sys/net/ipv6/tcp_synack_retries ];
 then
 	echo "2" > /proc/sys/net/ipv6/tcp_synack_retries;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/tcp_syncookies ];
 then
 	echo "0" > /proc/sys/net/ipv6/tcp_syncookies;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv4/tcp_syncookies ];
 then
 	echo "1" > /proc/sys/net/ipv4/tcp_syncookies;
-fi
+fi;
 
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr;
@@ -413,37 +421,37 @@ echo "0" > /proc/sys/net/ipv4/conf/default/accept_source_route;
 if [ -e /proc/sys/net/ipv6/conf/all/rp_filter ];
 then
 	echo "1" > /proc/sys/net/ipv6/conf/all/rp_filter;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/conf/default/rp_filter ];
 then
 	echo "1" > /proc/sys/net/ipv6/conf/default/rp_filter;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/conf/all/send_redirects ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/all/send_redirects;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/conf/default/send_redirects ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/default/send_redirects;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/conf/default/accept_redirects ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_redirects;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/conf/all/accept_source_route ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/all/accept_source_route;
-fi
+fi;
 
 if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_source_route;
-fi
+fi;
 
 # =========
 # Renice - kernel thread responsible for managing the memory
