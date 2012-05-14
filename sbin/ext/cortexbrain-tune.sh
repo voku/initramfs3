@@ -198,8 +198,8 @@ then
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	else
 		if [ $MORE_SPEED == 1 ];
-			echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "60000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
