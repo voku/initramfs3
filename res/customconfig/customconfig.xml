@@ -219,7 +219,7 @@
       </spinner>
       <spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
              <spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
-             <spinnerItem name="AC:850mA, Misc:750mA, USB:500mA" value="2"/> 
+             <spinnerItem name="AC:700mA, Misc:650mA, USB:500mA" value="2"/> 
              <spinnerItem name="All:650mA (risky for USB ports)" value="3"/> 
       </spinner>
       <button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for those period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>

@@ -44,11 +44,7 @@ fi
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
 
-#Copy new Kernel modules to system/lib/modules
-#rm -f /system/lib/modules/*
-#cp /lib/modules/* /system/lib/modules/
 chmod 755 /system/lib/modules/*
-#Now we using correct modules.
 
 if [ -f /system/recovery.cpio.gz ];
 then
@@ -85,7 +81,7 @@ fi;
 if [ "$AOSP" == 1 ];
 then
 echo 1 > /proc/sys/kernel/rom_feature_set
-cp /res/misc/cyano/sql/libsqlite.so /system/lib/
+cp -a /system/lib/sql/libsqlite.so /system/lib/
 chmod 0644 /system/lib/libsqlite.so
 /sbin/busybox umount /system
 exec /sbin/init.cm
