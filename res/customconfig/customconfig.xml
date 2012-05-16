@@ -58,8 +58,8 @@
             name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
     </settingsPane>
 
-    <settingsPane description="" 
-		name="CPU Step Count & Undervolting">
+    <settingsPane description=""
+		name="CPU Step Count + Undervolting">
       <spinner description="This setting will change CPU step count (Restart required)." name="CPU Step Count" action="generic /tmp/cpustepcount">
              <spinnerItem name="6 (1200-1000-800-500-200-100MHz)" value="6"/> 
              <spinnerItem name="7 (1400->100-7-Steps)" value="7"/> 
