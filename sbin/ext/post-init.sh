@@ -84,6 +84,7 @@ fi
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 
 cp -a /res/200mountperm /system/etc/init.d/
+chmod 755 /system/etc/init.d/200mountperm
 
 ##### EFS Backup #####
 (
@@ -102,4 +103,3 @@ sleep 30
 
 #read sync < /data/sync_fifo
 #rm /data/sync_fifo
-
