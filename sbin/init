@@ -88,7 +88,7 @@ fi;
 if [ "$AOSP" == 1 ];
 then
 echo 1 > /proc/sys/kernel/rom_feature_set
-cp -a /system/lib/sql/libsqlite.so /system/lib/
+cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
 chmod 0644 /system/lib/libsqlite.so
 /sbin/busybox umount /system
 exec /sbin/init.cm
