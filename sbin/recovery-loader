@@ -31,7 +31,7 @@ eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
 dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xzcat | tar x
 
 # why don't we use thunderbolt scripts in recovery?
-. sbin/ext/thunderbolt.sh 
+. /sbin/ext/thunderbolt.sh
 
 mkdir /mnt/.secondrom
 mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom

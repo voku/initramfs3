@@ -91,14 +91,11 @@ loglevel 3
 # This is needed by any process that uses socket tagging.
     chmod 0644 /dev/xt_qtaguid
 
-on fs
-# mount mtd partitions
-    # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount yaffs2 mtd@system /system
-    mount yaffs2 mtd@system /system ro remount
-    mount yaffs2 mtd@userdata /data nosuid nodev
-    mount yaffs2 mtd@cache /cache nosuid nodev
+# ko files for FM Radio
+    insmod /lib/modules/Si4709_driver.ko
 
+on fs
+    
 on post-fs
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -125,15 +122,24 @@ on post-fs
     # create the lost+found directories, so as to enforce our permissions
     mkdir /cache/lost+found 0770 root root
 
+    # double check the perms, in case lost+found already exists, and set owner
+    chown root root /cache/lost+found
+    chmod 0770 /cache/lost+found
+
 on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+    mkdir /data/system
+    chown system system /data/system
+    chmod 0771 /data/system
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
     # storing dumps on platforms which do not have a dedicated dump partition.
     mkdir /data/dontpanic 0750 root log
+    chown root log /data/dontpanic
+    chmod 0750 /data/dontpanic
 
     # Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
@@ -146,6 +152,16 @@ on post-fs-data
 
     write /proc/apanic_console 1
 
+    # GPS
+    chown root system /dev/ttySAC1
+    chmod 0660 /dev/ttySAC1
+    chown root system /sys/class/sec/gps/GPS_PWR_EN/value
+    chmod 0664 /sys/class/sec/gps/GPS_PWR_EN/value
+    chown root system /sys/class/sec/gps/GPS_nRST/value
+    chmod 0664 /sys/class/sec/gps/GPS_nRST/value
+    mkdir /data/gps 771 system system
+    chown system system /data/gps
+
     # create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
@@ -154,17 +170,20 @@ on post-fs-data
     mkdir /data/misc/keychain 0771 system system
     mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
+    mkdir /data/misc/vpn/profiles 0770 system system
+    mkdir /data/misc/radio 0775 radio system
+
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
+    chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0771 shell shell
+    mkdir /data/local 0771 root root
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/local/download 0771 system cache
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
-
     mkdir /cache/download 0771 system cache
 
     # create dalvik-cache and double-check the perms, so as to enforce our permissions
@@ -184,9 +203,30 @@ on post-fs-data
     # create the lost+found directories, so as to enforce our permissions
     mkdir /data/lost+found 0770 root root
 
+    # double check the perms, in case lost+found already exists, and set owner
+    chown root root /data/lost+found
+    chmod 0770 /data/lost+found
+
     # create directory for DRM plug-ins - give drm the read/write access to
     # the following directory.
-    mkdir /data/drm 0770 drm drm
+    mkdir /data/drm 0774 drm drm
+
+    mkdir /system/etc/security/.drm 0775
+    chown root root /system/etc/security/.drm
+    chmod 0775 /system/etc/security/.drm
+
+    # Added for Playready DRM Support
+    mkdir /data/data/.drm 0775
+    chown drm system /data/data/.drm
+    chmod 0775 /data/data/.drm
+    mkdir /data/data/.drm/.playready 0775
+    chown drm system /data/data/.drm/.playready
+    chmod 0775 /data/data/.drm/.playready
+
+    #Added drm folder to copy drm plugins
+    mkdir /system/lib/drm 0775
+    chown root root /system/lib/drm
+    chmod 0775 /system/lib/drm
 
     # If there is no fs-post-data action in the init.<device>.rc file, you
     # must uncomment this line, otherwise encrypted filesystems
@@ -201,6 +241,37 @@ on post-fs-data
 
 # Include extra init file
     import /system/etc/init.local.rc
+
+# MTP Device permission.
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system system /dev/usb_mtp_gadget
+
+# terminal mode
+    chmod 0660 /sys/class/android_usb/android0/terminal_version
+    chown system system /sys/class/android_usb/android0/terminal_version
+
+# NFC
+    setprop ro.nfc.port "I2C"
+    chmod 0600 /dev/pn544
+    chown nfc nfc /dev/pn544
+
+# Added by Yamaha Corporation. -----------------------------------------
+    # setup for alsa snd device
+    chmod 0770 /dev/snd/pcmC0D0c
+    chmod 0770 /dev/snd/pcmC0D0p
+    chmod 0770 /dev/snd/controlC0
+    chmod 0770 /dev/snd/timer
+    chmod 0770 /dev/snd/hwC0D0
+#-----------------------------------------------------------------------
+
+    # create log system
+    mkdir /data/log 0775 system log
+    chown system log /data/log
+    chmod 0775 /data/log
+    chmod 0775 /data/anr
+    chmod 0662 /dev/log/radio
+    chmod 0662 /dev/log/main
+    chmod 0662 /dev/log/event
 
 on boot
 # basic network init
@@ -233,19 +304,21 @@ on boot
     setprop ro.HIDDEN_APP_MIN_ADJ 7
     setprop ro.EMPTY_APP_ADJ 15
 
+    # Set init its forked children's oom_adj.
+    write /proc/1/oom_adj -16
+
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
+    write /proc/sys/vm/dirty_background_ratio  10
 
     # BOOT CPU TUNING
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 200000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 100000
 
     # Tweaks For ROM
     setprop ro.kernel.android.checkjni 0
     setprop ro.telephony.call_ring.delay 0
     setprop ro.ril.disable.power.collapse 0
-    setprop ro.ril.fast.dormancy.rule 0
     setprop ro.lge.proximity.delay 15
 
     #Video Quality
@@ -257,6 +330,14 @@ on boot
     setprop ro.config.nocheckin 1
     # Just in case.
     setprop ro.config.htc.nocheckin 1
+
+#panorama directory creation
+    mkdir /data/pxtmpdir 0775
+    chown system system /data/pxtmpdir
+    chmod 0775 /data/pxtmpdir
+
+    # permission for HDMI audio path
+    chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
     # Permissions for System Server and daemons.
     chown radio system /sys/android_power/state
@@ -270,9 +351,11 @@ on boot
     chmod 0660 /sys/power/state
     chmod 0660 /sys/power/wake_lock
     chmod 0660 /sys/power/wake_unlock
+
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/backlight/panel/brightness
     chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/jogball-backlight/brightness
     chown system system /sys/class/leds/red/brightness
@@ -295,6 +378,7 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_min
     chown system system /sys/kernel/ipv4/tcp_rmem_def
     chown system system /sys/kernel/ipv4/tcp_rmem_max
+    chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
 
     # allow system to modify cpufreq control files
@@ -305,13 +389,35 @@ on boot
     chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
+# Permissions for input devices
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_firm_version_panel
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_firm_version_phone
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_firm_update_status 
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_firm_update 
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_threshold
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_config_version
+    chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_touchtype
+
+# Permissions for LCD
+    chown system radio /sys/class/lcd/panel/lcd_power
+    chown system radio /sys/class/lcd/panel/lcd_type
+    chown system media_rw /sys/class/lcd/panel/gamma_mode
+    chown system media_rw /sys/class/lcd/panel/power_reduce
+    chown system system /sys/class/backlight/panel/auto_brightness
+
+# Permissions for mDNIe
+    chown system media_rw /sys/class/mdnie/mdnie/mode
+    chown system media_rw /sys/class/mdnie/mdnie/outdoor
+    chown system media_rw /sys/class/mdnie/mdnie/scenario
+    chown system system /sys/class/mdnie/mdnie/negative
+
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
+    setprop net.tcp.buffersize.hspa    4094,87380,704512,4096,16384,262144
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
@@ -330,7 +436,6 @@ on boot
 
 # Run sysinit
     exec /system/bin/sysinit
-
     class_start core
     class_start main
 
@@ -359,6 +464,13 @@ on property:vold.decrypt=trigger_restart_framework
 on property:vold.decrypt=trigger_shutdown_framework
     class_reset late_start
     class_reset main
+
+on property:persist.sys.storage_preload=1
+    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
+    setprop storage.preload.complete 1
+
+on property:persist.sys.storage_preload=0
+    exec /system/bin/umount /preload
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none
@@ -398,8 +510,6 @@ on property:sys.usb.config=accessory,adb
     start adbd
     setprop sys.usb.state $sys.usb.config
 
-# Used to set USB configuration at boot and to switch the configuration
-# when changing the default configuration
 on property:persist.sys.usb.config=*
     setprop sys.usb.config $persist.sys.usb.config
 
@@ -454,6 +564,7 @@ service vold /system/bin/vold
     class core
     socket vold stream 0660 root mount
     ioprio be 2
+    socket dir_enc_report stream 0660 root mount
 
 service netd /system/bin/netd
     class main
@@ -468,7 +579,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
+    group radio cache inet misc audio sdcard_rw qcom_oncrpc diag log
 
 service surfaceflinger /system/bin/surfaceflinger
     class main
@@ -487,12 +598,12 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
 service drm /system/bin/drmserver
     class main
     user drm
-    group system inet drmrpc
+    group system inet sdcard_rw media_rw radio drmrpc
 
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+    group system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
     ioprio rt 4
 
 service bootanim /system/bin/bootanimation
@@ -553,6 +664,7 @@ service dumpstate /system/bin/dumpstate -s
 on property:service.adb.tcp.port=5555
     stop adbd
     start adbd
+
 on property:service.adb.tcp.port=-1
     stop adbd
     start adbd

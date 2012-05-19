@@ -31,14 +31,12 @@ on early-init
 
 on fs
 # mount ext4 partitions
-    mount ext4 /res/dev/system /system noatime wait ro
-
+    mount ext4 /res/dev/system /system noatime wait rw
     exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
     exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
-
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
     
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -266,7 +264,7 @@ on post-fs-data
     chown system radio /sys/devices/platform/s5p-ehci/ehci_power
     chown system radio /sys/devices/platform/s5p-ehci/ehci_runtime
     chown system radio /sys/devices/virtual/misc/multipdp/waketime    
-    
+
 # for datarouter
     chown system system /dev/dun
     chown system system /dev/ttyGS0
@@ -275,7 +273,7 @@ on post-fs-data
     chown system system /dev/ttyGS3
 
 # DVFS - cpufreq ondemand
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 3
+    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 2
     write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 #panorama directory creation
@@ -322,7 +320,7 @@ on boot
 
 # Device Encryption by B2B Security Lab. 
     setprop ro.crypto.keyfile.userdata /efs/metadata
-    
+
 # fake some battery state
     setprop status.battery.state Slow
     setprop status.battery.level 5
@@ -366,6 +364,12 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2
     disabled
     oneshot
 
+# for bluetooth pan
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
 # bluetooth mac address
 service bdaddr /system/bin/bdaddr_read
     class main
@@ -375,13 +379,6 @@ service bdaddr /system/bin/bdaddr_read
 
 # TVout
 service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group graphics 
-
-# bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/bugmailer.sh -v
     class main
-    disabled
-    oneshot
-    keycodes 114 115 116
+    user system
+    group graphics 

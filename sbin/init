@@ -8,8 +8,11 @@ tar xvf /res/misc/dev.tar
 if grep -q bootmode=2 /proc/cmdline ; then
   echo 0 > /proc/sys/kernel/rom_feature_set
   mv /recovery.rc /init.rc
+  cp /res/misc/recovery-init/init.smdk4210.rc /init.smdk4210.rc
+  cp /res/misc/recovery-init/lpm.rc /lpm.rc
   exec /sbin/init.samsung
 fi
+
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
   # low power mode
   echo 0 > /proc/sys/kernel/rom_feature_set
@@ -61,6 +64,7 @@ B2G=0
 [ "`/sbin/busybox grep Slim /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i aosp /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i hydrog /system/build.prop`" ] && AOSP=1
+[ "`/sbin/busybox grep -i DragonICS /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i =aokp /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i CyanogenMod /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i AdyScorpius /system/build.prop`" ] && AOSP=1
