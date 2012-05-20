@@ -1,4 +1,4 @@
-GPUFREQ1=160
+PUFREQ1=160
 GPUFREQ2=267
 GPUFREQ3=267
 GPUVOLT1=900
@@ -44,3 +44,4 @@ touchkey_brightness=3000
 led_fadeout=on
 led_on_touch=off
 cpu_undervolting=0
+smooth_level0=8
