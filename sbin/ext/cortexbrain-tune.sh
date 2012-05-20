@@ -84,9 +84,9 @@ do
     		echo "1024" > $i/queue/nr_requests;;
 		"bfq")
 			echo "3" > $i/queue/iosched/slice_idle;
-		    echo "512" > $i/queue/nr_requests;;
+			echo "512" > $i/queue/nr_requests;;
 		"noop")
-		    echo "256" > $i/queue/nr_requests;;
+			echo "256" > $i/queue/nr_requests;;
 		"deadline")
 			echo "16" > $i/queue/iosched/fifo_batch;;
 		"sio")
@@ -295,7 +295,7 @@ fi;
 # =========
 # MEMORY-TWEAKS
 # =========
-echo "40" > /proc/sys/vm/swappiness;
+echo "25" > /proc/sys/vm/swappiness;
 #echo "0" > /proc/sys/vm/dirty_expire_centisecs;
 #echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
 #echo "60" > /proc/sys/vm/dirty_background_ratio;
