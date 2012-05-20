@@ -92,6 +92,8 @@ do
 		"sio")
 			echo "1" > $i/queue/iosched/fifo_batch;
 			echo "256" > $i/queue/nr_requests;;
+		"vr")
+			echo "1" > $i/queue/iosched/fifo_batch;;
 	esac;
 done;
 
