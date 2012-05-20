@@ -72,8 +72,6 @@ loglevel 3
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
-    write /proc/sys/kernel/sched_latency_ns 10000000
-    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
 
@@ -239,12 +237,14 @@ on post-fs-data
     # create directory for DRM plug-ins
     mkdir /data/drm 0774 drm drm
 
-    #Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
-    mkdir /data/system/databases 0771 system system
-    copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
-    chown system system /data/system/databases/drmdatabase.db
-    chmod 0774 /data/system/databases/drmdatabase.db	
-    #Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
+	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
+
+	mkdir /data/system/databases 0771 system system
+	copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
+	chown system system /data/system/databases/drmdatabase.db
+	chmod 0774 /data/system/databases/drmdatabase.db	
+
+	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
 	
 #SISO-PLAYREADY-CHANGES
 #DRM directory creation
@@ -334,13 +334,23 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
-# Memory management.  Basic kernel parameters, and allow the high
-# level system server to be able to adjust the kernel OOM driver
-# paramters to match how it is managing things.
-    chown root system /sys/module/lowmemorykiller/parameters/adj
-    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
-    chown root system /sys/module/lowmemorykiller/parameters/minfree
-    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+    # BOOT CPU TUNING
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 100000
+
+    # Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
 
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
@@ -395,35 +405,6 @@ on boot
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
     write /proc/sys/vm/dirty_background_ratio  5
-
-    # Tweaks For ROM
-    # Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
-    setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.ril.fast.dormancy.rule 0
-    setprop ro.lge.proximity.delay 15
-
-    #Video Quality
-    setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
-
-    #Disable Google OTA Update checkin
-    setprop ro.config.nocheckin 1
-    # Just in case.
-    setprop ro.config.htc.nocheckin 1
-
-    # Set init its forked children's oom_adj.
-    write /proc/1/oom_adj -16
-
-    # Tweak background writeout
-    write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
-
-    # BOOT CPU TUNING
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 200000
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
@@ -615,18 +596,11 @@ on boot
     chown system system /system/bin/rtc_log.sh
 
 # DVFS - cpufreq ondemand
-#    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
-#    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
-
-# DVFS - limit cpufreq during booting sequence
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
-#    write /data/dvfs "sleep 10 && echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && sleep 30 && echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-#    chmod 0770 /data/dvfs
+    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 2
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
-
     class_start core
     class_start main
 
@@ -824,7 +798,7 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
+service bluetoothd /system/bin/bluetoothd -n -d
     class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
@@ -929,19 +903,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     group log
     oneshot
 
-# DVFS - limit cpufreq during booting sequence
-#service dvfs /system/bin/sh /system/bin/dvfs.sh
-#   class main
-#   user root
-#   oneshot
-    
-# 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/bugmailer.sh -v
-    class main
-    disabled
-    oneshot
-    keycodes 114 115 116
-
 on property:sys.boot_completed=1
     stop samsungani
 
@@ -949,3 +910,4 @@ service postinit /sbin/ext/post-init.sh
     class core
     user root
     oneshot
+

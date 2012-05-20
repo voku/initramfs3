@@ -282,6 +282,24 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
+    # BOOT CPU TUNING
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 100000
+
+    # Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
+
 # Memory management.  Basic kernel parameters, and allow the high
 # level system server to be able to adjust the kernel OOM driver
 # paramters to match how it is managing things.
@@ -310,26 +328,6 @@ on boot
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
     write /proc/sys/vm/dirty_background_ratio  10
-
-    # BOOT CPU TUNING
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 100000
-
-    # Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
-    setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.lge.proximity.delay 15
-
-    #Video Quality
-    setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
-
-    #Disable Google OTA Update checkin
-    setprop ro.config.nocheckin 1
-    # Just in case.
-    setprop ro.config.htc.nocheckin 1
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
