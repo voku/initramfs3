@@ -84,6 +84,32 @@ do
 	then
 		echo "5" > $i/queue/iosched/writes_starved;
 	fi;
+
+	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
+	case $IO_SCHEDULER in
+		"cfq")
+			echo "1000000000" > $i/queue/iosched/back_seek_max;
+			echo "1" > $i/queue/iosched/back_seek_penalty;
+			echo "1" > $i/queue/iosched/low_latency;
+			echo "1" > $i/queue/iosched/slice_idle;
+			echo "8" > $i/queue/iosched/quantum;
+			echo "4" > $i/queue/iosched/slice_async_rq;
+    		echo "1024" > $i/queue/nr_requests;;
+		"bfq")
+			echo "3" > $i/queue/iosched/slice_idle;
+			echo "512" > $i/queue/nr_requests;;
+		"noop")
+			echo "256" > $i/queue/nr_requests;;
+		"deadline")
+			echo "16" > $i/queue/iosched/fifo_batch;;
+		"sio")
+			echo "1" > $i/queue/iosched/fifo_batch;
+			echo "256" > $i/queue/nr_requests;;
+		"vr")
+			echo "1" > $i/queue/iosched/rev_penalty;
+			echo "1" > $i/queue/iosched/fifo_batch;;
+	esac;
+
 done;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
