@@ -15,3 +15,6 @@ while : ; do
         sleep 5
 done
 ) &
+
+exit 1
+

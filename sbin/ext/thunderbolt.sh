@@ -14,14 +14,14 @@
 # ==============================================================
 # ==============================================================
 
-STL=`ls -d /sys/block/stl*`;
-BML=`ls -d /sys/block/bml*`;
+DM=`ls -d /sys/block/dm*`;
+LOOP=`ls -d /sys/block/loop*`;
 MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
-MTD=`ls -d /sys/block/mtd*`;
+RAM=`ls -d /sys/block/ram*`;
 
-# Optimize non-rotating storage; 
-for i in $STL $BML $MMC $ZRM $MTD;
+# Optimize non-rotating storage;
+for i in $DM $LOOP $MMC $ZRM $RAM;
 do
 	#IMPORTANT!
 	if [ -e $i/queue/rotational ]; 
@@ -95,16 +95,12 @@ do
 #          echo "0"   >  $i/queue/nomerges
 #          echo "128" >  $i/queue/max_sectors_kb
 	
-done;
 # Specifically for NAND devices where reads are faster than writes, writes starved 2:1 is good
-for i in $STL $BML $ZRM $MTD;
-do
 	if [ -e $i/queue/iosched/writes_starved ];
 	then
 		echo 2 > $i/queue/iosched/writes_starved;
 	fi;
 done;
-
 
 
 # =========
@@ -147,8 +143,11 @@ fi;
 
 
 # Remount all partitions with noatime
-for k in $(busybox mount | grep relatime | cut -d " " -f3);
+for k in $(busybox mount | grep relatime | grep -v /acct | grep -v /dev/cpuctl | cut -d " " -f3);
 do
 #sync;
 busybox mount -o remount,noatime $k;
 done;
+
+exit 1
+

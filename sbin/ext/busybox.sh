@@ -2,7 +2,7 @@
 # magic busybox
 
 # mount system and rootfs r/w
-mount -o rw,remount /system
+mount -o remount,rw /system
 mount -t rootfs -o remount,rw rootfs
 
 # make sure we have /system/xbin
@@ -11,17 +11,18 @@ mount -t rootfs -o remount,rw rootfs
 # if symlinked busybox in /system/bin or /system/xbin, remove them
 LINK=$(/sbin/ext/busybox find /system/bin/busybox -type l)
 if /sbin/ext/busybox [ $LINK = "/system/bin/busybox" ]; then
-  /sbin/ext/busybox rm -rf /system/bin/busybox;
+  	/sbin/ext/busybox rm -rf /system/bin/busybox;
 fi;
+
 LINK=$(find /system/xbin/busybox -type l)
 if [ $LINK = "/system/xbin/busybox" ]; then
-  rm -rf /system/xbin/busybox;
+  	rm -rf /system/xbin/busybox;
 fi;
 
 # if real busybox in /system/bin, move to /system/xbin
 if [ -f /system/bin/busybox ]; then
-  rm -rf /system/xbin/busybox
-  mv /system/bin/busybox /system/xbin/busybox
+  	rm -rf /system/xbin/busybox
+  	mv /system/bin/busybox /system/xbin/busybox
 fi;
 
 # place wrapper script
@@ -29,4 +30,7 @@ fi;
 
 # mount system and rootfs r/o
 mount -t rootfs -o remount,ro rootfs
-mount -o remount,ro /system
+mount -o remount,rw /system
+
+exit 1
+

@@ -36,6 +36,14 @@ kmemhelper -n mxt224_data -t char -o 67 50
 kmemhelper -n mxt224_data -t char -o 77 46
 )&
 
+# =========
+# Renice - kernel thread responsible for managing the memory
+# =========
+renice 19 `pidof kswapd0`;
+renice 19 `pgrep logcat`;
+renice -10 `pidof com.android.phone`;
+renice -5 `pidof android.process.media`;
+
 # ==============================================================
 # I/O related tweaks 
 # ==============================================================
@@ -106,14 +114,9 @@ fi;
 # =========
 # Remount all partitions
 # =========
-for k in $(busybox mount | grep relatime | cut -d " " -f3);
+for k in $(busybox mount | grep relatime | grep -v /acct | grep -v /dev/cpuctl | cut -d " " -f3);
 do
 	busybox mount -o remount,rw,noatime,nodiratime $k;
-done;
-
-for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
-do
-	mount -o remount,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 $l;
 done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
@@ -158,7 +161,7 @@ setprop pm.sleep_mode 1
 
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do
-    echo "auto" > $i;
+	echo "auto" > $i;
 done;
 
 # =========
@@ -198,11 +201,13 @@ then
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
+	fi;
 fi;
 if [ $KERNEL_GOVERNOR == "lulzactive" ];
 then
@@ -216,12 +221,14 @@ then
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 			echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
 			echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 			echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
 			echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		fi;
 	fi;
 fi;
 if [ $KERNEL_GOVERNOR == "smartassV2" ];
@@ -239,6 +246,7 @@ then
 		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
@@ -249,6 +257,8 @@ then
 			echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
 			echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
 		fi;
+	fi;
+fi;
 if [ $KERNEL_GOVERNOR == "conservative" ];
 then
 	if [ $MORE_BATTERY == 1 ];
@@ -260,12 +270,14 @@ then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 	else
 		if [ $MORE_SPEED == 1 ];
+		then
 			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 			echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		fi;
+	fi;
 fi;
 
 # =========
@@ -437,11 +449,6 @@ fi
 }
 #FWTWEAKS #DISABLED FOR NOW
 
-# =========
-# Renice - kernel thread responsible for managing the memory
-# =========
-renice 19 `pidof kswapd0`;
-
 # ==============================================================
 # Explanations
 # ==============================================================
@@ -606,3 +613,6 @@ renice 19 `pidof kswapd0`;
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
+
+exit 1
+
