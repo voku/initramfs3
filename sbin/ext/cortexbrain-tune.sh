@@ -44,39 +44,19 @@ do
 
 	if [ -e $i/queue/read_ahead_kb ];
 	then
-		echo "512" >  $i/queue/read_ahead_kb;
+		echo "1024" >  $i/queue/read_ahead_kb;
 	fi;
 
-	#if [ -e $i/queue/iosched/group_isolation ];
-	#then
-	#	echo "0" > $i/queue/iosched/group_isolation;
-	#fi;
-
-	#if [ -e $i/queue/iosched/back_seek_penalty ];
-	#then
-	#	echo "1" > $i/queue/iosched/back_seek_penalty;
-	#fi;
-
-	#if [ -e $i/queue/iosched/writes_starved ];
-	#then
-	#	echo "1" > $i/queue/iosched/writes_starved;
-	#fi;
-
-	#if [ -e $i/queue/iosched/rev_penalty ];
-	#then
-	#	echo "1" > $i/queue/iosched/rev_penalty;
-	#fi;
-
-	#if [ -e $i/queue/iosched/slice_async_rq ];
-	#then
-	#	echo "2" > $i/queue/iosched/slice_async_rq;
-	#fi;
-
-	#if [ -e $i/queue/iosched/back_seek_max ];
-	#then
-	#	echo "1000000000" > $i/queue/iosched/back_seek_max;
-	#fi;
+	if [ -e $i/queue/iosched/writes_starved ];
+	then
+		echo "5" > $i/queue/iosched/writes_starved;
+	fi;
 done;
+
+if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
+then
+        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
 then
@@ -88,9 +68,14 @@ then
 	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
-if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
 then
-	echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+	echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi;
+
+if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
+then
+	echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
 fi;
 
 # =========
@@ -108,29 +93,28 @@ done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=0 /system
+mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=1,commit=0 /system
 
 # ==============================================================
 # TWEAKS
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-sysctl -w kernel.tainted=0
-#sysctl -w kernel.sem="500 512000 100 2048";
-#sysctl -w kernel.shmmax="268435456";
+sysctl -w kernel.sem="500 512000 100 2048";
+sysctl -w kernel.shmmax="268435456";
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
 #echo "64000" > /proc/sys/kernel/msgmax;
 
 # enable Hardware Rendering
-setprop video.accelerate.hw 1
-setprop debug.performance.tuning 1
+#setprop video.accelerate.hw 1
+#setprop debug.performance.tuning 1
+#setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
 setprop windowsmgr.max_events_per_sec 120
-setprop debug.sf.hw 1
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
@@ -140,10 +124,6 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
-setprop hs.systemserver 16m
-setprop hs.app.process 16m
-setprop hs.su 8m
-setprop hs.app_process 16m
 
 # =========
 # BATTERY-TWEAKS
@@ -159,12 +139,6 @@ done;
 # =========
 # CPU-TWEAKS
 # ========= 
-# Frequency Scaling Governor
-#echo "lulzactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-# MAX
-#echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-# MIN
-#echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 if [ -e /proc/sys/kernel/rr_interval ];
 then
@@ -172,13 +146,14 @@ then
 	echo "1" > /proc/sys/kernel/rr_interval;
 	echo "100" > /proc/sys/kernel/iso_cpu;
 else
+echo "have a nice day"
 # For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
 	# CFS;
-	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-	echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+#	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+#	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+#	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+#	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+#	echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 fi;
 
 # 
@@ -274,13 +249,13 @@ fi;
 #echo "40" > /proc/sys/vm/swappiness;
 #echo "0" > /proc/sys/vm/dirty_expire_centisecs;
 #echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
-#echo "60" > /proc/sys/vm/dirty_background_ratio;
-#echo "95" > /proc/sys/vm/dirty_ratio;
-echo "25" > /proc/sys/vm/vfs_cache_pressure;
+echo "15" > /proc/sys/vm/dirty_background_ratio;
+echo "10" > /proc/sys/vm/dirty_ratio;
+#echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
-echo "1" > /proc/sys/vm/page-cluster;
+echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
 #echo "3" > /proc/sys/vm/drop_caches;
@@ -333,7 +308,7 @@ setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
 setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
 }
-#NETSETTINGS
+#NETSETTINGS #DISABLED FOR NOW
 
 # =========
 # TWEAKS: optimized for 3G/Edge speed
@@ -344,7 +319,7 @@ setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
 setprop ro.ril.gprsclass 12;
 }
-#NETPROPS
+#NETPROPS #DISABLED FOR NOW
 
 # =========
 # Firewall-TWEAKS
@@ -435,7 +410,7 @@ then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_source_route;
 fi
 }
-#FWTWEAKS
+#FWTWEAKS #DISABLED FOR NOW
 
 # =========
 # Renice - kernel thread responsible for managing the memory
