@@ -74,8 +74,6 @@ loglevel 3
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
-    write /proc/sys/kernel/sched_latency_ns 10000000
-    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
 
@@ -342,6 +340,24 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
+    # BOOT CPU TUNING
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1400000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 100000
+
+    # Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
+
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
@@ -586,14 +602,8 @@ on boot
     chown system system /system/bin/rtc_log.sh
 
 # DVFS - cpufreq ondemand
-#    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
-#    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
-
-# DVFS - limit cpufreq during booting sequence
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
-#    write /data/dvfs "sleep 10 && echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && sleep 30 && echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-#    chmod 0770 /data/dvfs
+    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 2
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
@@ -756,7 +766,7 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 666
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
@@ -901,12 +911,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     group log
     oneshot
 
-# DVFS - limit cpufreq during booting sequence
-#service dvfs /system/bin/sh /system/bin/dvfs.sh
-#    class main
-#    user root
-#    oneshot
-
 service fakeperm /system/bin/fakeperm
     class b2g
     user root
@@ -927,12 +931,6 @@ service mount-sdcard /system/bin/mountvol.sh sdcard
     class b2g
     oneshot
     
-# 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/bugmailer.sh -v
-	class main
-	disabled
-	oneshot
-	keycodes 114 115 116
 on property:sys.boot_completed=1
     stop samsungani
 
@@ -940,3 +938,4 @@ service postinit /sbin/ext/post-init.sh
 	class core
 	user root
 	oneshot
+
