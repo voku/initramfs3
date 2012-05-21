@@ -332,6 +332,12 @@ on boot
     setprop status.battery.level_raw  50
     setprop status.battery.level_scale 9
 
+service notified_event /system/bin/notified_event
+    class main
+    user system
+    group system
+    socket notified_event stream 0660 root system
+
 service wpa_supplicant /system/bin/wpa_supplicant \
     -Dnl80211 -puse_p2p_group_interface=1 -e/data/misc/wifi/entropy.bin
     class main

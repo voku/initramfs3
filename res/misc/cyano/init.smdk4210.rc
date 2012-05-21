@@ -30,7 +30,7 @@ on early-init
     chmod 0777 /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
 on fs
-# mount ext4 partitions
+    # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait rw
     exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
@@ -38,7 +38,7 @@ on fs
     exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
-    
+
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     mkdir /efs/bluetooth
     mkdir /efs/wifi
@@ -326,6 +326,12 @@ on boot
     setprop status.battery.level 5
     setprop status.battery.level_raw  50
     setprop status.battery.level_scale 9
+
+service notified_event /system/bin/notified_event
+    class main
+    user system
+    group system
+    socket notified_event stream 0660 root system
 
 service wpa_supplicant /system/bin/wpa_supplicant \
     -Dnl80211 -puse_p2p_group_interface=1 -e/data/misc/wifi/entropy.bin

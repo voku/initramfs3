@@ -8,6 +8,9 @@ on early-init
     mkdir /mnt 0775 root system
 
 on init
+# Vibetonz
+    export VIBE_PIPE_PATH /dev/pipes
+    mkdir /dev/pipes 0771 shell shell
 
 sysclktz 0
 
@@ -61,6 +64,7 @@ loglevel 3
     mkdir /mnt/obb 0700 root system
     mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
 
+    mkdir /mnt/.lfs 0755 root root
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
@@ -96,6 +100,12 @@ loglevel 3
 
 on fs
     
+    # check encryption status, checking UMS & data should be excuted after this command 
+    exec check_encryption_status /dev/block/mmcblk0p10
+    
+    # verfiy filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+
 on post-fs
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -227,6 +237,18 @@ on post-fs-data
     mkdir /system/lib/drm 0775
     chown root root /system/lib/drm
     chmod 0775 /system/lib/drm
+
+    # DivX DRM
+    mkdir /efs/.files 0775
+    mkdir /efs/.files/.dx1 0775
+    mkdir /efs/.files/.dm33 0775
+    mkdir /efs/.files/.mp301 0775
+    chown media system /efs/.files/.dx1
+    chown media system /efs/.files/.dm33
+    chown media system /efs/.files/.mp301
+    chmod 0775 /efs/.files/.dx1
+    chmod 0775 /efs/.files/.dm33
+    chmod 0775 /efs/.files/.mp301
 
     # If there is no fs-post-data action in the init.<device>.rc file, you
     # must uncomment this line, otherwise encrypted filesystems
@@ -396,6 +418,10 @@ on boot
     chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_config_version
     chown system radio /sys/devices/virtual/sec/sec_touchscreen/tsp_touchtype
 
+# Vibetonz
+    chmod 0660 /dev/tspdrv
+    chown root shell /dev/tspdrv
+
 # Permissions for LCD
     chown system radio /sys/class/lcd/panel/lcd_power
     chown system radio /sys/class/lcd/panel/lcd_type
@@ -464,7 +490,7 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset main
 
 on property:persist.sys.storage_preload=1
-    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
+    #mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
     setprop storage.preload.complete 1
 
 on property:persist.sys.storage_preload=0
@@ -573,7 +599,7 @@ service debuggerd /system/bin/debuggerd
 
 service ril-daemon /system/bin/rild
     class main
-    socket rild stream 660 root radio
+    socket rild stream 666 root radio
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio sdcard_rw qcom_oncrpc diag log
@@ -665,6 +691,20 @@ on property:service.adb.tcp.port=5555
 on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
+
+# Vibetonz
+service immvibed /system/bin/immvibed
+    class core
+    user shell
+    group shell
+    oneshot
+
+# TVout
+service TvoutService_C /system/bin/bintvoutservice
+     class main
+     user system
+     group graphics
+
 
 service postinit /sbin/ext/post-init.sh
     class core

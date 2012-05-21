@@ -11,6 +11,39 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
+
+# ==============================================================
+# Touch Screen tweaks
+# ==============================================================
+
+# touch sensitivity settings. by GokhanMoral
+(
+# offset 59: MXT224_THRESHOLD_BATT_INIT
+kmemhelper -n mxt224_data -t char -o 59 50
+# offset 60: MXT224_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 60 55
+# offset 61: MXT224_NOISE_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 61 30
+# offset 62: MXT224_NOISE_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 62 40
+# offset 63: MXT224_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 63 11
+# offset 64: MXT224_MOVFILTER_CHRG
+kmemhelper -n mxt224_data -t char -o 64 46
+# offset 67: MXT224E_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 67 50
+# offset 77: MXT224E_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 77 46
+)&
+
+# =========
+# Renice - kernel thread responsible for managing the memory
+# =========
+renice 19 `pidof kswapd0`;
+renice 19 `pgrep logcat`;
+renice -10 `pidof com.android.phone`;
+renice -5 `pidof android.process.media`;
+
 # ==============================================================
 # I/O related tweaks 
 # ==============================================================
@@ -44,58 +77,19 @@ do
 
 	if [ -e $i/queue/read_ahead_kb ];
 	then
-		echo "512" >  $i/queue/read_ahead_kb;
+		echo "1024" >  $i/queue/read_ahead_kb;
 	fi;
 
-	#if [ -e $i/queue/iosched/group_isolation ];
-	#then
-	#	echo "0" > $i/queue/iosched/group_isolation;
-	#fi;
-
-	#if [ -e $i/queue/iosched/back_seek_penalty ];
-	#then
-	#	echo "1" > $i/queue/iosched/back_seek_penalty;
-	#fi;
-
-	#if [ -e $i/queue/iosched/writes_starved ];
-	#then
-	#	echo "1" > $i/queue/iosched/writes_starved;
-	#fi;
-
-	#if [ -e $i/queue/iosched/rev_penalty ];
-	#then
-	#	echo "1" > $i/queue/iosched/rev_penalty;
-	#fi;
-
-	#if [ -e $i/queue/iosched/slice_async_rq ];
-	#then
-	#	echo "2" > $i/queue/iosched/slice_async_rq;
-	#fi;
-
-	#if [ -e $i/queue/iosched/back_seek_max ];
-	#then
-	#	echo "1000000000" > $i/queue/iosched/back_seek_max;
-	#fi;
-
-	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
-	case $IO_SCHEDULER in
-		"cfq")
-			echo "0" > $i/queue/iosched/slice_idle;
-    		echo "1024" > $i/queue/nr_requests;;
-		"bfq")
-			echo "3" > $i/queue/iosched/slice_idle;
-			echo "512" > $i/queue/nr_requests;;
-		"noop")
-			echo "256" > $i/queue/nr_requests;;
-		"deadline")
-			echo "16" > $i/queue/iosched/fifo_batch;;
-		"sio")
-			echo "1" > $i/queue/iosched/fifo_batch;
-			echo "256" > $i/queue/nr_requests;;
-		"vr")
-			echo "1" > $i/queue/iosched/fifo_batch;;
-	esac;
+	if [ -e $i/queue/iosched/writes_starved ];
+	then
+		echo "5" > $i/queue/iosched/writes_starved;
+	fi;
 done;
+
+if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
+then
+        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
 then
@@ -107,48 +101,48 @@ then
 	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
-if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
 then
-	echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+	echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi;
+
+if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
+then
+	echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
 fi;
 
 # =========
 # Remount all partitions
 # =========
-for k in $(busybox mount | grep relatime | cut -d " " -f3);
+for k in $(busybox mount | grep relatime | grep -v /acct | grep -v /dev/cpuctl | cut -d " " -f3);
 do
 	busybox mount -o remount,rw,noatime,nodiratime $k;
 done;
 
-for l in $(busybox mount | grep ext[3-4] | cut -d " " -f3);
-do
-	mount -o remount,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 $l;
-done;
-
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=0 /system
+mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=1,commit=0 /system
 
 # ==============================================================
 # TWEAKS
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-sysctl -w kernel.tainted=0
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax="268435456";
-echo "64000" > /proc/sys/kernel/msgmni;
-echo "64000" > /proc/sys/kernel/msgmax;
+#echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
+#echo "64000" > /proc/sys/kernel/msgmni;
+#echo "64000" > /proc/sys/kernel/msgmax;
 
 # enable Hardware Rendering
-setprop video.accelerate.hw 1
-setprop debug.performance.tuning 1
+#setprop video.accelerate.hw 1
+#setprop debug.performance.tuning 1
+#setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
 setprop windowsmgr.max_events_per_sec 120
-setprop debug.sf.hw 1
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
@@ -158,10 +152,6 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
-setprop hs.systemserver 16m
-setprop hs.app.process 16m
-setprop hs.su 8m
-setprop hs.app_process 16m
 
 # =========
 # BATTERY-TWEAKS
@@ -171,18 +161,12 @@ setprop pm.sleep_mode 1
 
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do
-    echo "auto" > $i;
+	echo "auto" > $i;
 done;
 
 # =========
 # CPU-TWEAKS
 # ========= 
-# Frequency Scaling Governor
-#echo "lulzactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-# MAX
-#echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-# MIN
-#echo "100000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 if [ -e /proc/sys/kernel/rr_interval ];
 then
@@ -190,12 +174,14 @@ then
 	echo "1" > /proc/sys/kernel/rr_interval;
 	echo "100" > /proc/sys/kernel/iso_cpu;
 else
+echo "have a nice day"
+# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
 	# CFS;
-	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-	echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+#	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+#	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+#	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+#	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+#	echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 fi;
 
 # 
@@ -297,20 +283,19 @@ fi;
 # =========
 # MEMORY-TWEAKS
 # =========
-echo "25" > /proc/sys/vm/swappiness;
+#echo "40" > /proc/sys/vm/swappiness;
 #echo "0" > /proc/sys/vm/dirty_expire_centisecs;
 #echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
-#echo "60" > /proc/sys/vm/dirty_background_ratio;
-#echo "95" > /proc/sys/vm/dirty_ratio;
-echo "25" > /proc/sys/vm/vfs_cache_pressure;
+echo "15" > /proc/sys/vm/dirty_background_ratio;
+echo "10" > /proc/sys/vm/dirty_ratio;
+#echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
-echo "1" > /proc/sys/vm/page-cluster;
+echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "3" > /proc/sys/vm/drop_caches;
-echo "1" > /proc/sys/vm/drop_caches;
+#echo "3" > /proc/sys/vm/drop_caches;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -332,6 +317,7 @@ echo "15" > /proc/sys/fs/lease-break-time;
 # =========
 # TWEAKS: for TCP read/write
 # =========
+NETSETTINGS () {
 echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
 echo "1" > /proc/sys/net/ipv4/tcp_sack;
@@ -351,26 +337,32 @@ echo "4096 16384 404480" > /proc/sys/net/ipv4/tcp_wmem;
 echo "4096 87380 404480" > /proc/sys/net/ipv4/tcp_rmem;
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208;
-setprop net.tcp.buffersize.wifi	   4095,87380,256960,4096,16384,256960;
-setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208;
-setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040;
-setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680;
-setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
-setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
+setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
+setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208
+setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
+setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
+setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
+}
+#NETSETTINGS #DISABLED FOR NOW
 
 # =========
 # TWEAKS: optimized for 3G/Edge speed
 # =========
+NETPROPS () { 
 setprop ro.ril.hsxpa 2;
 setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
 setprop ro.ril.gprsclass 12;
+}
+#NETPROPS #DISABLED FOR NOW
 
 # =========
 # Firewall-TWEAKS
 # =========
 # ping/icmp protection
+FWTWEAKS () {
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
 echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
@@ -378,17 +370,17 @@ echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
 if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts ];
 then
 	echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_all ];
 then
 	echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_all;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses ];
 then
 	echo "1" > /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses;
-fi;
+fi
 
 # syn protection
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
@@ -396,17 +388,17 @@ echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 if [ -e /proc/sys/net/ipv6/tcp_synack_retries ];
 then
 	echo "2" > /proc/sys/net/ipv6/tcp_synack_retries;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/tcp_syncookies ];
 then
 	echo "0" > /proc/sys/net/ipv6/tcp_syncookies;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv4/tcp_syncookies ];
 then
 	echo "1" > /proc/sys/net/ipv4/tcp_syncookies;
-fi;
+fi
 
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr;
@@ -423,42 +415,39 @@ echo "0" > /proc/sys/net/ipv4/conf/default/accept_source_route;
 if [ -e /proc/sys/net/ipv6/conf/all/rp_filter ];
 then
 	echo "1" > /proc/sys/net/ipv6/conf/all/rp_filter;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/conf/default/rp_filter ];
 then
 	echo "1" > /proc/sys/net/ipv6/conf/default/rp_filter;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/conf/all/send_redirects ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/all/send_redirects;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/conf/default/send_redirects ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/default/send_redirects;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/conf/default/accept_redirects ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_redirects;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/conf/all/accept_source_route ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/all/accept_source_route;
-fi;
+fi
 
 if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ];
 then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_source_route;
-fi;
-
-# =========
-# Renice - kernel thread responsible for managing the memory
-# =========
-renice 19 `pidof kswapd0`;
+fi
+}
+#FWTWEAKS #DISABLED FOR NOW
 
 # ==============================================================
 # Explanations
@@ -624,3 +613,6 @@ renice 19 `pidof kswapd0`;
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
+
+exit 1
+

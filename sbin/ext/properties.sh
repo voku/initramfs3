@@ -11,4 +11,7 @@ echo true >> /customkernel/property/customkernel.bootani.zip
 echo true >> /customkernel/property/customkernel.bootani.bin 
 echo true >> /customkernel/property/customkernel.cwm 
 echo 5.0.2.7 >> /customkernel/property/customkernel.cwm.version 
-/sbin/ext/busybox mount -t rootfs -o remount,ro rootfs 
+/sbin/ext/busybox mount -t rootfs -o remount,ro rootfs
+
+exit 1
+

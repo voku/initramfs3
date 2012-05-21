@@ -13,8 +13,8 @@ chmod 777 /data/.siyah
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
 then
-  rm -f /data/.siyah/*.profile
-  echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
+	rm -f /data/.siyah/*.profile
+	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
 fi
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
@@ -29,26 +29,26 @@ echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
 //change cpu step count
 case "${cpustepcount}" in
-  6)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    echo 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    ;;
-  7)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    echo 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    ;;
-  8)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    echo 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    ;;
-  9)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    echo 1500 1400 1200 1000 800 500 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    ;;
-  15)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    ;;
+	6)
+    	echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    	echo 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+    	;;
+  	7)
+    	echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    	echo 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+    	;;
+  	8)
+    	echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    	echo 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+    	;;
+  	9)
+    	echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    	echo 1500 1400 1200 1000 800 500 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+    	;;
+  	15)
+    	echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    	echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+    	;;
 esac;
 
 # disable debugging on some modules
@@ -101,5 +101,5 @@ sleep 30
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 
-#read sync < /data/sync_fifo
-#rm /data/sync_fifo
+exit 1
+

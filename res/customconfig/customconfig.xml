@@ -55,7 +55,7 @@
              <spinnerItem name="Idle only" value="0"/> 
       </spinner>
       <spinner description="Sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
-             <spinnerItem name="1600MHz" value="0"/> 
+             <spinnerItem name="1500MHz" value="1"/> 
              <spinnerItem name="1200MHz" value="4"/> 
              <spinnerItem name="1000MHz" value="6"/> 
              <spinnerItem name="800MHz" value="8"/> 

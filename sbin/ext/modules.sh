@@ -1,8 +1,5 @@
 #!/sbin/busybox sh
 
-# reduce logcat priority.
-renice 19 `pgrep logcat`;
-
 #Fm radio, I have no idea why it isn't loaded in init -gm
 if [ -e /system/lib/modules/Si4709_driver.ko ]; then
 	insmod /system/lib/modules/Si4709_driver.ko;
@@ -45,4 +42,6 @@ if [ -e /dev/block/zram0 ]; then
 	# Show to user that swap is ON
 	free;
 fi;
+
+exit 1
 
