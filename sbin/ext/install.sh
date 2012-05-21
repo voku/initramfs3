@@ -67,10 +67,6 @@ fi
 
 echo "liblights..."
 romtype=`cat /proc/sys/kernel/rom_feature_set`
-# only for non-cm7 roms
-#if [ "${romtype}a" == "0a" ];
-#then
-#if [ ! -f /system/.siyah/liblights-installed ];then
 	lightsmd5sum=`/sbin/busybox md5sum /system/lib/hw/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
 	blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
 
@@ -82,9 +78,6 @@ romtype=`cat /proc/sys/kernel/rom_feature_set`
     		/sbin/busybox chown 0.0 /system/lib/hw/lights.exynos4.so
     		/sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
   	fi
-  		echo 1 > /system/.siyah/liblights-installed
-#fi
-#fi
 		rm -rf /res/misc/payload
 
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
