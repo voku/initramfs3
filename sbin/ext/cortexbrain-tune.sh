@@ -139,6 +139,7 @@ sysctl -w kernel.shmmax="268435456";
 #setprop debug.performance.tuning 1
 #setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
+setprop persist.sys.ui.hw true
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false

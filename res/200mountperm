@@ -1,4 +1,0 @@
-#!/sbin/busybox sh
-
-mount -o remount,rw /system
-
