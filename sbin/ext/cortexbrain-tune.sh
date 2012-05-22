@@ -47,13 +47,16 @@ renice -5 `pidof android.process.media`;
 # ==============================================================
 # I/O related tweaks 
 # ==============================================================
+STL=`ls -d /sys/block/stl*`;
+BML=`ls -d /sys/block/bml*`;
 DM=`ls -d /sys/block/dm*`;
 LOOP=`ls -d /sys/block/loop*`;
 MMC=`ls -d /sys/block/mmc*`;
+MTD=`ls -d /sys/block/mtd*`;
 ZRM=`ls -d /sys/block/zram*`;
 RAM=`ls -d /sys/block/ram*`;
 
-for i in $DM $LOOP $MMC $ZRM $RAM;
+for i in $STL $BML $DM $LOOP $MMC $MTD $ZRM $RAM;
 do
 	if [ -e $i/queue/rotational ]; 
 	then
@@ -82,7 +85,7 @@ do
 
 	if [ -e $i/queue/iosched/writes_starved ];
 	then
-		echo "5" > $i/queue/iosched/writes_starved;
+		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
 
 	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
@@ -91,20 +94,20 @@ do
 			echo "1000000000" > $i/queue/iosched/back_seek_max;
 			echo "1" > $i/queue/iosched/back_seek_penalty;
 			echo "1" > $i/queue/iosched/low_latency;
-			echo "1" > $i/queue/iosched/slice_idle;
+			echo "0" > $i/queue/iosched/slice_idle;
 			echo "8" > $i/queue/iosched/quantum;
 			echo "4" > $i/queue/iosched/slice_async_rq;
-    		echo "1024" > $i/queue/nr_requests;;
+    		echo "2048" > $i/queue/nr_requests;;
 		"bfq")
 			echo "3" > $i/queue/iosched/slice_idle;
-			echo "512" > $i/queue/nr_requests;;
+			echo "2048" > $i/queue/nr_requests;;
 		"noop")
-			echo "256" > $i/queue/nr_requests;;
+			echo "2048" > $i/queue/nr_requests;;
 		"deadline")
 			echo "16" > $i/queue/iosched/fifo_batch;;
 		"sio")
 			echo "1" > $i/queue/iosched/fifo_batch;
-			echo "256" > $i/queue/nr_requests;;
+			echo "2048" > $i/queue/nr_requests;;
 		"vr")
 			echo "1" > $i/queue/iosched/rev_penalty;
 			echo "1" > $i/queue/iosched/fifo_batch;;
@@ -114,7 +117,7 @@ done;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
 then
-        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+	echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
