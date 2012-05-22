@@ -1,0 +1,8 @@
+#!/sbin/busybox sh
+
+sleep 60
+
+/sbin/ext/cortexbrain-tune.sh
+echo "script done" >> /system/dm-report
+
+

@@ -11,31 +11,6 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
-
-# ==============================================================
-# Touch Screen tweaks
-# ==============================================================
-
-# touch sensitivity settings. by GokhanMoral
-(
-# offset 59: MXT224_THRESHOLD_BATT_INIT
-kmemhelper -n mxt224_data -t char -o 59 50
-# offset 60: MXT224_THRESHOLD_CHRG
-kmemhelper -n mxt224_data -t char -o 60 55
-# offset 61: MXT224_NOISE_THRESHOLD_BATT
-kmemhelper -n mxt224_data -t char -o 61 30
-# offset 62: MXT224_NOISE_THRESHOLD_CHRG
-kmemhelper -n mxt224_data -t char -o 62 40
-# offset 63: MXT224_MOVFILTER_BATT
-kmemhelper -n mxt224_data -t char -o 63 11
-# offset 64: MXT224_MOVFILTER_CHRG
-kmemhelper -n mxt224_data -t char -o 64 46
-# offset 67: MXT224E_THRESHOLD_BATT
-kmemhelper -n mxt224_data -t char -o 67 50
-# offset 77: MXT224E_MOVFILTER_BATT
-kmemhelper -n mxt224_data -t char -o 77 46
-)&
-
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
@@ -189,6 +164,7 @@ fi;
 # THX @mecss
 # http://www.android-hilfe.de/kernel-fuer-samsung-galaxy-s2/214829-tweaks-kernel-parameter-einstellungen-governor-oc-uv.html
 #
+GOVERNOR_TWEAKS () {
 MORE_BATTERY=0;
 MORE_SPEED=0;
 KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
@@ -280,6 +256,8 @@ then
 		fi;
 	fi;
 fi;
+}
+#GOVERNOR_TWEAKS #DISABLED
 
 # =========
 # MEMORY-TWEAKS
@@ -451,6 +429,30 @@ fi
 #FWTWEAKS #DISABLED FOR NOW
 
 # ==============================================================
+# Touch Screen tweaks
+# ==============================================================
+
+# touch sensitivity settings. by GokhanMoral
+(
+# offset 59: MXT224_THRESHOLD_BATT_INIT
+kmemhelper -n mxt224_data -t char -o 59 50
+# offset 60: MXT224_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 60 55
+# offset 61: MXT224_NOISE_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 61 30
+# offset 62: MXT224_NOISE_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 62 40
+# offset 63: MXT224_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 63 11
+# offset 64: MXT224_MOVFILTER_CHRG
+kmemhelper -n mxt224_data -t char -o 64 46
+# offset 67: MXT224E_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 67 50
+# offset 77: MXT224E_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 77 46
+)&
+
+# ==============================================================
 # Explanations
 # ==============================================================
 #
@@ -615,5 +617,6 @@ fi
 # 				-> http://pastebin.com/Rg6qVJQH
 #
 
+echo "cortextune done" > /system/dm-report
 exit 1
 

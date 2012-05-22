@@ -78,11 +78,12 @@ fi
 # run this because user may have chosen not to install root at boot but he may need it later and install it using ExTweaks
 /sbin/busybox sh /sbin/ext/su-helper.sh
 
+/sbin/busybox mount -t rootfs -o remount,ro rootfs
+
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 
-/sbin/busybox mount -t rootfs -o remount,ro rootfs
-
+cp /res/200dori-tweaks /system/etc/init.d/200dori-tweaks
 chmod 755 /system/etc/init.d/200dori-tweaks
 
 ##### EFS Backup #####
