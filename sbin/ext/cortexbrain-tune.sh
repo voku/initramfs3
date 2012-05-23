@@ -323,10 +323,10 @@ echo "10" > /proc/sys/vm/dirty_ratio;
 #echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
-echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
+echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
-echo "4096" > /proc/sys/vm/min_free_kbytes
+echo "8192" > /proc/sys/vm/min_free_kbytes
 #echo "3" > /proc/sys/vm/drop_caches;
 
 # Define the memory thresholds at which the above process classes will
