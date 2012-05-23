@@ -11,6 +11,30 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
+# ==============================================================
+# Touch Screen tweaks
+# ==============================================================
+
+# touch sensitivity settings. by GokhanMoral
+(
+# offset 59: MXT224_THRESHOLD_BATT_INIT
+kmemhelper -n mxt224_data -t char -o 59 50
+# offset 60: MXT224_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 60 55
+# offset 61: MXT224_NOISE_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 61 30
+# offset 62: MXT224_NOISE_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 62 40
+# offset 63: MXT224_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 63 11
+# offset 64: MXT224_MOVFILTER_CHRG
+kmemhelper -n mxt224_data -t char -o 64 46
+# offset 67: MXT224E_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 67 50
+# offset 77: MXT224E_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 77 46
+)&
+
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
@@ -59,6 +83,35 @@ do
 	then
 		echo "5" > $i/queue/iosched/writes_starved;
 	fi;
+
+IO_SCHEDULER_TWEAK () {
+	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
+	case $IO_SCHEDULER in
+		"cfq")
+			echo "1000000000" > $i/queue/iosched/back_seek_max;
+			echo "1" > $i/queue/iosched/back_seek_penalty;
+			echo "1" > $i/queue/iosched/low_latency;
+			echo "0" > $i/queue/iosched/slice_idle;
+			echo "8" > $i/queue/iosched/quantum;
+			echo "4" > $i/queue/iosched/slice_async_rq;
+    		echo "2048" > $i/queue/nr_requests;;
+		"bfq")
+			echo "3" > $i/queue/iosched/slice_idle;
+			echo "2048" > $i/queue/nr_requests;;
+		"noop")
+			echo "2048" > $i/queue/nr_requests;;
+		"deadline")
+			echo "16" > $i/queue/iosched/fifo_batch;;
+		"sio")
+			echo "1" > $i/queue/iosched/fifo_batch;
+			echo "2048" > $i/queue/nr_requests;;
+		"vr")
+			echo "1" > $i/queue/iosched/rev_penalty;
+			echo "1" > $i/queue/iosched/fifo_batch;;
+	esac;
+}
+#IO_SCHEDULER_TWEAK #DISABLED
+
 done;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
@@ -165,7 +218,7 @@ fi;
 # http://www.android-hilfe.de/kernel-fuer-samsung-galaxy-s2/214829-tweaks-kernel-parameter-einstellungen-governor-oc-uv.html
 #
 GOVERNOR_TWEAKS () {
-MORE_BATTERY=0;
+MORE_BATTERY=1;
 MORE_SPEED=0;
 KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 if [ $KERNEL_GOVERNOR == "ondemand" ];
@@ -427,30 +480,6 @@ then
 fi
 }
 #FWTWEAKS #DISABLED FOR NOW
-
-# ==============================================================
-# Touch Screen tweaks
-# ==============================================================
-
-# touch sensitivity settings. by GokhanMoral
-(
-# offset 59: MXT224_THRESHOLD_BATT_INIT
-kmemhelper -n mxt224_data -t char -o 59 50
-# offset 60: MXT224_THRESHOLD_CHRG
-kmemhelper -n mxt224_data -t char -o 60 55
-# offset 61: MXT224_NOISE_THRESHOLD_BATT
-kmemhelper -n mxt224_data -t char -o 61 30
-# offset 62: MXT224_NOISE_THRESHOLD_CHRG
-kmemhelper -n mxt224_data -t char -o 62 40
-# offset 63: MXT224_MOVFILTER_BATT
-kmemhelper -n mxt224_data -t char -o 63 11
-# offset 64: MXT224_MOVFILTER_CHRG
-kmemhelper -n mxt224_data -t char -o 64 46
-# offset 67: MXT224E_THRESHOLD_BATT
-kmemhelper -n mxt224_data -t char -o 67 50
-# offset 77: MXT224E_MOVFILTER_BATT
-kmemhelper -n mxt224_data -t char -o 77 46
-)&
 
 # ==============================================================
 # Explanations
