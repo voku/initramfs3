@@ -35,6 +35,11 @@ kmemhelper -n mxt224_data -t char -o 67 50
 kmemhelper -n mxt224_data -t char -o 77 46
 )&
 
+# GokhanMoral favorite mdnie settings for red and blue :)
+echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
+echo "135" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb
+echo "120" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr
+
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
