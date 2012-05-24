@@ -84,7 +84,21 @@ romtype=`cat /proc/sys/kernel/rom_feature_set`
     		/sbin/busybox chown 0.0 /system/lib/hw/lights.exynos4.so
     		/sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
   	fi
-		rm -rf /res/misc/payload
+
+echo "ntfs-3g..."
+mkdir /mnt/ntfs
+mount -t tmpfs tmpfs /mnt/ntfs
+if [ ! -s /system/xbin/ntfs-3g ];
+then
+	if [ "$payload_extracted" == "0" ];then
+		extract_payload
+  	fi
+		xzcat /res/misc/payload/ntfs-3g.xz > /system/xbin/ntfs-3g
+		chown 0.0 /system/xbin/ntfs-3g
+		chmod 755 /system/xbin/ntfs-3g
+fi
+
+rm -rf /res/misc/payload
 
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 mount -o remount,rw /system
