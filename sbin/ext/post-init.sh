@@ -46,9 +46,6 @@ case "${cpustepcount}" in
     	;;
 esac;
 
-# for ntfs automounting
-mount -t tmpfs tmpfs /mnt/ntfs
-
 # disable debugging on some modules
 if [ "$logger" == "off" ]; then
 	echo 0 > /sys/module/ump/parameters/ump_debug_level
@@ -66,6 +63,11 @@ fi
 
 #Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
+
+# for ntfs automounting
+mkdir /mnt/ntfs
+mount -t tmpfs tmpfs /mnt/ntfs
+chmod 777 /mnt/ntfs
 
 #/sbin/busybox sh /sbin/ext/busybox.sh
 
