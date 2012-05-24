@@ -5,9 +5,6 @@
 #exec >>/data/user.log
 #exec 2>&1
 
-#For now static freq 1500->100
-echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-
 mkdir /data/.siyah
 chmod 777 /data/.siyah
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
@@ -16,9 +13,13 @@ then
 	rm -f /data/.siyah/*.profile
 	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
 fi
+
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
 [ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
+
+#For now static freq 1500->100
+echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
 
 . /res/customconfig/customconfig-helper
 read_defaults
@@ -78,7 +79,7 @@ chmod 777 /mnt/ntfs
 # run this because user may have chosen not to install root at boot but he may need it later and install it using ExTweaks
 /sbin/busybox sh /sbin/ext/su-helper.sh
 
-/sbin/busybox mount -t rootfs -o remount,ro rootfs
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
@@ -100,6 +101,4 @@ sleep 30
 (
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
-
-exit 1
 

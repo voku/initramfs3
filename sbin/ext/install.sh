@@ -98,8 +98,6 @@ fi
 
 rm -rf /res/misc/payload
 
-/sbin/busybox mount -t rootfs -o remount,ro rootfs
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
 mount -o remount,rw /system
-
-exit 1
 

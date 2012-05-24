@@ -13,5 +13,3 @@ then
   	) &
 fi
 
-exit 1
-

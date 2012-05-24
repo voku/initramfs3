@@ -149,5 +149,4 @@ do
 busybox mount -o remount,noatime $k;
 done;
 
-exit 1
 

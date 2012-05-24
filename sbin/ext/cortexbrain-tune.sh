@@ -45,8 +45,6 @@ echo "120" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr
 # =========
 renice 19 `pidof kswapd0`;
 renice 19 `pgrep logcat`;
-renice -10 `pidof com.android.phone`;
-renice -5 `pidof android.process.media`;
 
 # ==============================================================
 # I/O related tweaks 
@@ -154,15 +152,15 @@ done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=1,commit=0 /system
+mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system
 
 # ==============================================================
 # TWEAKS
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-sysctl -w kernel.sem="500 512000 100 2048";
-sysctl -w kernel.shmmax="268435456";
+#sysctl -w kernel.sem="500 512000 100 2048";
+#sysctl -w kernel.shmmax="268435456";
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
 #echo "64000" > /proc/sys/kernel/msgmax;
@@ -172,10 +170,10 @@ sysctl -w kernel.shmmax="268435456";
 #setprop debug.performance.tuning 1
 #setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
-setprop persist.sys.ui.hw true
+#setprop persist.sys.ui.hw true
 
 # render UI with GPU
-setprop hwui.render_dirty_regions false
+#setprop hwui.render_dirty_regions false
 setprop windowsmgr.max_events_per_sec 120
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
@@ -328,7 +326,7 @@ echo "10" > /proc/sys/vm/dirty_ratio;
 #echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
-echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "8192" > /proc/sys/vm/min_free_kbytes
@@ -652,5 +650,4 @@ fi
 #
 
 echo "cortextune done" > /system/dm-report
-exit 1
 
