@@ -84,8 +84,7 @@ chmod 777 /mnt/ntfs
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 
-cp /res/200dori-tweaks /system/etc/init.d/200dori-tweaks
-chmod 755 /system/etc/init.d/200dori-tweaks
+/sbin/busybox rm /system/etc/init.d/200dori-tweaks
 
 ##### EFS Backup #####
 (
@@ -101,4 +100,8 @@ sleep 30
 (
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
+
+sleep 60
+
+/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 
