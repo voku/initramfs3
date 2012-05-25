@@ -101,7 +101,8 @@ sleep 30
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 
+(
 sleep 60
-
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
+)&
 
