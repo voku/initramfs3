@@ -203,6 +203,9 @@
     </settingsPane>
   </settingsTab>
   <settingsTab name="Misc">
+    <settingsPane description="Dual Mount-SDCARD and MMC via USB after USB disconnected Dual Mount Disabled!" name="DUAL MOUNT USB">
+      <button description="Dual Mount USB Switch" name="DUAL MOUNT" action="dualmount" label="Dual Mount"/>
+    </settingsPane>
     <settingsPane description="Misc Settings" name="Misc Settings">
       <!-- button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/ -->
       <checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>

@@ -15,6 +15,7 @@
 # Touch Screen tweaks
 # ==============================================================
 
+TOUCHSCREENTUNE () {
 # touch sensitivity settings. by GokhanMoral
 (
 # offset 59: MXT224_THRESHOLD_BATT_INIT
@@ -34,6 +35,8 @@ kmemhelper -n mxt224_data -t char -o 67 50
 # offset 77: MXT224E_MOVFILTER_BATT
 kmemhelper -n mxt224_data -t char -o 77 46
 )&
+}
+#TOUCHSCREENTUNE #DISABLED
 
 # GokhanMoral favorite mdnie settings for red and blue :)
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
@@ -81,7 +84,7 @@ do
 
 	if [ -e $i/queue/read_ahead_kb ];
 	then
-		echo "1024" >  $i/queue/read_ahead_kb;
+		echo "2048" >  $i/queue/read_ahead_kb;
 	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ];
@@ -119,29 +122,35 @@ IO_SCHEDULER_TWEAK () {
 
 done;
 
+SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
+for i in $SDCARDREADAHEAD
+do
+	echo 2048 > $i/read_ahead_kb
+done
+
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
 then
-        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+        echo "2048" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
 then
-	echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
+	echo "2048" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
 then
-	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
+	echo "2048" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
 then
-	echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+	echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
 then
-	echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
+	echo "2048" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
 fi;
 
 # =========

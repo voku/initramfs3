@@ -71,10 +71,9 @@ then
   		echo 1 > /system/.siyah/cwmmanager3-installed
 fi
 
-echo "liblights..."
 romtype=`cat /proc/sys/kernel/rom_feature_set`
-	lightsmd5sum=`/sbin/busybox md5sum /system/lib/hw/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
-	blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
+lightsmd5sum=`/sbin/busybox md5sum /system/lib/hw/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
+blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
 
   	if [ "${lightsmd5sum}a" != "${blnlightsmd5sum}a" ];
   	then
@@ -85,7 +84,6 @@ romtype=`cat /proc/sys/kernel/rom_feature_set`
     		/sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
   	fi
 
-echo "ntfs-3g..."
 if [ ! -s /system/xbin/ntfs-3g ];
 then
 	if [ "$payload_extracted" == "0" ];then
@@ -96,7 +94,7 @@ then
 		chmod 755 /system/xbin/ntfs-3g
 fi
 
-rm -rf /res/misc/payload
+#rm -rf /res/misc/payload
 
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 mount -o remount,rw /system
