@@ -571,8 +571,8 @@ on boot
     chown system radio /mnt/.lfs/sw_sel
 
 # Permissions for OTG Test
-	chown system radio /sys/class/host_notify/usb_otg/booster
-	chmod 0664 /sys/class/host_notify/usb_otg/booster
+    chown system radio /sys/class/host_notify/usb_otg/booster
+    chmod 0664 /sys/class/host_notify/usb_otg/booster
 
 # Permission for radio
     chown system radio /sys/devices/platform/s5p-ehci/ehci_power
@@ -614,7 +614,6 @@ on boot
     chown system system /system/bin/rtc_log.sh
 
 # DVFS - cpufreq ondemand
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
     write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 # Set this property so surfaceflinger is not started by system_init
@@ -806,11 +805,11 @@ service samsungani /sbin/bootanimation.sh
 
 #for samsung boot sound
 service playsound /system/bin/playsound
-	class main
-	user media
-	group system
-	disabled
-	oneshot
+    class main
+    user media
+    group system
+    disabled
+    oneshot
 #for samsung boot sound
 
 service dbus /system/bin/dbus-daemon --system --nofork
@@ -893,20 +892,20 @@ on property:service.adb.tcp.port=-1
 
 #for WiFi MFG(TestMode)
 service mfgloader /system/bin/mfgloader
-	class main
-	disabled
-	oneshot
+    class main
+    disabled
+    oneshot
 
 service wlandutservice /system/bin/wlandutservice
-	class main
-	user system
-	group wifi net_raw net_admin system inet
-	disabled
-	oneshot
+    class main
+    user system
+    group wifi net_raw net_admin system inet
+    disabled
+    oneshot
 
 service macloader /system/bin/macloader
-	class main
-	oneshot
+    class main
+    oneshot
 # end of wifi
 
 # Vibetonz
@@ -918,9 +917,9 @@ service immvibed /system/bin/immvibed
 
 # TVout
 service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group graphics
+    class main
+    user system
+    group graphics
 
 # RTC logging daemon
 service rtc_log /system/bin/sh /system/bin/rtc_log.sh
@@ -956,3 +955,4 @@ service postinit /sbin/ext/post-init.sh
     class core
     user root
     oneshot
+

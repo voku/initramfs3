@@ -276,7 +276,6 @@ on post-fs-data
     chown system system /dev/ttyGS3
 
 # DVFS - cpufreq ondemand
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
     write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 #panorama directory creation
@@ -364,6 +363,12 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2
     class main
     user bluetooth
     group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+# for bluetooth pan
+service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
+    class main
     disabled
     oneshot
 

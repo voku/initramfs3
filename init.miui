@@ -611,7 +611,6 @@ on boot
     chown system system /system/bin/rtc_log.sh
 
 # DVFS - cpufreq ondemand
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
     write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
 
 # Set this property so surfaceflinger is not started by system_init
@@ -932,3 +931,4 @@ service postinit /sbin/ext/post-init.sh
     class core
     user root
     oneshot
+
