@@ -38,18 +38,11 @@ kmemhelper -n mxt224_data -t char -o 77 46
 }
 #TOUCHSCREENTUNE #DISABLED
 
-# GokhanMoral favorite mdnie settings for red and blue :)
-echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
-echo "135" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb
-echo "120" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr
-
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
 renice 19 `pgrep logcat`;
-renice -10 `pidof com.android.phone`;
-renice -5 `pidof android.process.media`;
 
 # ==============================================================
 # I/O related tweaks 
@@ -84,12 +77,12 @@ do
 
 	if [ -e $i/queue/read_ahead_kb ];
 	then
-		echo "2048" >  $i/queue/read_ahead_kb;
+		echo "1024" >  $i/queue/read_ahead_kb;
 	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ];
 	then
-		echo "5" > $i/queue/iosched/writes_starved;
+		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
 
 IO_SCHEDULER_TWEAK () {
@@ -125,32 +118,32 @@ done;
 SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
 for i in $SDCARDREADAHEAD
 do
-	echo 2048 > $i/read_ahead_kb
+	echo 1024 > $i/read_ahead_kb
 done
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
 then
-        echo "2048" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+        echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
 then
-	echo "2048" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
+	echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
 then
-	echo "2048" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
+	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
 then
-	echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+	echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
 then
-	echo "2048" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
+	echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
 fi;
 
 # =========
@@ -170,8 +163,8 @@ mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=2
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-sysctl -w kernel.sem="500 512000 100 2048";
-sysctl -w kernel.shmmax="268435456";
+#sysctl -w kernel.sem="500 512000 100 2048";
+#sysctl -w kernel.shmmax="268435456";
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
 #echo "64000" > /proc/sys/kernel/msgmax;
