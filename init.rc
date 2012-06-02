@@ -24,9 +24,6 @@ loglevel 3
     export LOOP_MOUNTPOINT /mnt/obb
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 
-# Disable CFQ slice idle delay
-    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
-
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
@@ -293,8 +290,8 @@ on post-fs-data
     chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
 
 # MTP Device permission.
-	chmod 0660 /dev/usb_mtp_gadget
-	chown system system /dev/usb_mtp_gadget
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system system /dev/usb_mtp_gadget
 
 # terminal mode
     chmod 0660 /sys/class/android_usb/android0/terminal_version
@@ -376,18 +373,6 @@ on boot
     setprop ro.HOME_APP_MEM 14336
     setprop ro.HIDDEN_APP_MEM 16384
     setprop ro.EMPTY_APP_MEM 20480
-
-    # Old values for phones.  Should probably be adjusted up for the next
-    # phone version.
-    #setprop ro.FOREGROUND_APP_MEM 2048
-    #setprop ro.VISIBLE_APP_MEM 3072
-    #setprop ro.PERCEPTIBLE_APP_MEM 4096
-    #setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    #setprop ro.SECONDARY_SERVER_MEM 6144
-    #setprop ro.BACKUP_APP_MEM 6144
-    #setprop ro.HOME_APP_MEM 6144
-    #setprop ro.HIDDEN_APP_MEM 7168
-    #setprop ro.EMPTY_APP_MEM 8192
 
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have combined some of
@@ -603,6 +588,9 @@ on boot
     chmod 0770 /system/bin/rtc_log.sh
     chown system system /system/bin/rtc_log.sh
 
+# DVFS - cpufreq ondemand
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 60
+
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
     class_start core
@@ -811,7 +799,7 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service bluetoothd /system/bin/bluetoothd -n -d
+service bluetoothd /system/bin/bluetoothd -n
     class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth

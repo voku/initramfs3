@@ -43,5 +43,3 @@ if [ -e /dev/block/zram0 ]; then
 	free;
 fi;
 
-exit 1
-

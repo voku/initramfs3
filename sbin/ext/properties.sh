@@ -13,5 +13,3 @@ echo true >> /customkernel/property/customkernel.cwm
 echo 5.0.2.7 >> /customkernel/property/customkernel.cwm.version 
 /sbin/ext/busybox mount -t rootfs -o remount,ro rootfs
 
-exit 1
-

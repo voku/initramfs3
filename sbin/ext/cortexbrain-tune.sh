@@ -11,11 +11,11 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
-
 # ==============================================================
 # Touch Screen tweaks
 # ==============================================================
 
+TOUCHSCREENTUNE () {
 # touch sensitivity settings. by GokhanMoral
 (
 # offset 59: MXT224_THRESHOLD_BATT_INIT
@@ -35,28 +35,25 @@ kmemhelper -n mxt224_data -t char -o 67 50
 # offset 77: MXT224E_MOVFILTER_BATT
 kmemhelper -n mxt224_data -t char -o 77 46
 )&
+}
+#TOUCHSCREENTUNE #DISABLED
 
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
 renice 19 `pgrep logcat`;
-renice -10 `pidof com.android.phone`;
-renice -5 `pidof android.process.media`;
 
 # ==============================================================
 # I/O related tweaks 
 # ==============================================================
-STL=`ls -d /sys/block/stl*`;
-BML=`ls -d /sys/block/bml*`;
 DM=`ls -d /sys/block/dm*`;
 LOOP=`ls -d /sys/block/loop*`;
 MMC=`ls -d /sys/block/mmc*`;
-MTD=`ls -d /sys/block/mtd*`;
 ZRM=`ls -d /sys/block/zram*`;
 RAM=`ls -d /sys/block/ram*`;
 
-for i in $STL $BML $DM $LOOP $MMC $MTD $ZRM $RAM;
+for i in $DM $LOOP $MMC $ZRM $RAM;
 do
 	if [ -e $i/queue/rotational ]; 
 	then
@@ -88,6 +85,7 @@ do
 		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
 
+IO_SCHEDULER_TWEAK () {
 	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
 	case $IO_SCHEDULER in
 		"cfq")
@@ -112,12 +110,20 @@ do
 			echo "1" > $i/queue/iosched/rev_penalty;
 			echo "1" > $i/queue/iosched/fifo_batch;;
 	esac;
+}
+#IO_SCHEDULER_TWEAK #DISABLED
 
 done;
 
+SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
+for i in $SDCARDREADAHEAD
+do
+	echo 1024 > $i/read_ahead_kb
+done
+
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
 then
-	echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+        echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
@@ -150,15 +156,15 @@ done;
 
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
 mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=1,commit=0 /system
+mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system
 
 # ==============================================================
 # TWEAKS
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-sysctl -w kernel.sem="500 512000 100 2048";
-sysctl -w kernel.shmmax="268435456";
+#sysctl -w kernel.sem="500 512000 100 2048";
+#sysctl -w kernel.shmmax="268435456";
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
 #echo "64000" > /proc/sys/kernel/msgmax;
@@ -168,6 +174,7 @@ sysctl -w kernel.shmmax="268435456";
 #setprop debug.performance.tuning 1
 #setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
+setprop persist.sys.ui.hw true
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
@@ -217,6 +224,7 @@ fi;
 # THX @mecss
 # http://www.android-hilfe.de/kernel-fuer-samsung-galaxy-s2/214829-tweaks-kernel-parameter-einstellungen-governor-oc-uv.html
 #
+GOVERNOR_TWEAKS () {
 MORE_BATTERY=1;
 MORE_SPEED=0;
 KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
@@ -308,6 +316,8 @@ then
 		fi;
 	fi;
 fi;
+}
+#GOVERNOR_TWEAKS #DISABLED
 
 # =========
 # MEMORY-TWEAKS
@@ -320,7 +330,7 @@ echo "10" > /proc/sys/vm/dirty_ratio;
 #echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
-echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
+echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
@@ -643,5 +653,5 @@ fi
 # 				-> http://pastebin.com/Rg6qVJQH
 #
 
-exit 1
+echo "cortextune done" > /system/dm-report
 

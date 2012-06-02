@@ -78,7 +78,7 @@ do
 	fi;
 	if [ -e $i/queue/rq_affinity ];
 	then
-		echo "1"   >  $i/queue/rq_affinity;   
+	echo "1"   >  $i/queue/rq_affinity;   
 	fi;
 #disable iostats to reduce overhead  # idea by kodos96 - thanks !
 	if [ -e $i/queue/iostats ];
@@ -149,5 +149,4 @@ do
 busybox mount -o remount,noatime $k;
 done;
 
-exit 1
 

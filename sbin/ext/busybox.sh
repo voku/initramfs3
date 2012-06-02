@@ -29,8 +29,6 @@ fi;
 #cp /sbin/ext/busybox-wrapper /sbin/busybox
 
 # mount system and rootfs r/o
-mount -t rootfs -o remount,ro rootfs
+mount -t rootfs -o remount,rw rootfs
 mount -o remount,rw /system
-
-exit 1
 

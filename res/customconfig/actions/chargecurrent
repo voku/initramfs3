@@ -13,10 +13,10 @@ case "${chargecurrent}" in
     echo "650 450 450" > /sys/devices/virtual/misc/charge_current/charge_current
     ;;
   2)
-    echo "700 650 500" > /sys/devices/virtual/misc/charge_current/charge_current
+    echo "700 600 500" > /sys/devices/virtual/misc/charge_current/charge_current
     ;;
   3)
-    echo "650 650 650" > /sys/devices/virtual/misc/charge_current/charge_current
+    echo "700 700 500" > /sys/devices/virtual/misc/charge_current/charge_current
     ;;
   *)
     chargecurrent=1

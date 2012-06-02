@@ -1,0 +1,16 @@
+#!/system/xbin/bash
+
+CPULOAD=$(cat /proc/loadavg | cut -d " " -f1)
+sleep 1
+while [[ ! $CPULOAD < 3.00 ]]
+do
+	echo "Waiting For CPU to cool down"
+	sleep 5
+	CPULOAD=$(cat /proc/loadavg | cut -d " " -f1)
+	sleep 1
+done
+
+/sbin/ext/cortexbrain-tune.sh
+echo "script done" >> /system/dm-report
+
+
