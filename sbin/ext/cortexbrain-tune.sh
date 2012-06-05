@@ -188,10 +188,7 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
-<<<<<<< HEAD
-=======
 echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
->>>>>>> Dorimanx-SG2-I9100-initramfs3/master
 
 # =========
 # BATTERY-TWEAKS
