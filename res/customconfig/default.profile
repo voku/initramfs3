@@ -11,9 +11,15 @@ GPUTHRESHOLD3DOWN=40
 GPUSTAYCOUNT1=1
 GPUSTAYCOUNT2=1
 GPUSTAYCOUNT3=1
+<<<<<<< HEAD
 min_bl=30
 min_gamma=1
 max_gamma=24
+=======
+min_bl=50
+min_gamma=1
+max_gamma=20
+>>>>>>> Dorimanx-SG2-I9100-initramfs3/master
 rate=200
 enable_mask=3
 sched_mc_power_savings=0
@@ -25,10 +31,17 @@ scaling_governor=ondemand
 scaling_max_freq=1200000
 scaling_min_freq=100000
 load_l1=30
+<<<<<<< HEAD
 load_h0=35
 load_rq=20
 min_rq=2
 freq_min=400000
+=======
+load_h0=25
+load_rq=20
+min_rq=2
+freq_min=600000
+>>>>>>> Dorimanx-SG2-I9100-initramfs3/master
 install_root=on
 mov_hysti=3
 suspend_freq=700000
