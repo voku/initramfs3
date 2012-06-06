@@ -11,6 +11,18 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
+MAX_TEMP=500; # -> 50° Celsius
+SLEEP_GOVERNOR="lazy";
+SLEEP_MAX_FREQ=100000;
+PIDOFCORTEX=$(pidof cortexbrain-tune);
+PROFILE=$(cat /data/.siyah/.active.profile);
+KERNEL_GOVERNOR=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor);
+KERNEL_MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
+KERNEL_SWAP=$(cat /proc/sys/vm/swappiness);
+LEVEL=$(cat /sys/class/power_supply/battery/capacity);
+CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
+BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
+
 # ==============================================================
 # Touch Screen tweaks
 # ==============================================================
@@ -195,12 +207,12 @@ setprop persist.adb.notify 0
 # =========
 # BATTERY-TWEAKS
 # =========
-MORE_BATTERY=1;
-MORE_SPEED=0;
-KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
-LEVEL=$(cat /sys/class/power_supply/battery/capacity)
-CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc)
-BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check)
+if [ "$PROFILE" == "battery"]; then
+	MORE_BATTERY=1;
+fi;
+if [ "$PROFILE" == "performance"]; then
+	MORE_SPEED=1;
+fi;
 
 # battery-calibration if battery is full
 echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
@@ -473,6 +485,145 @@ if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_source_route;
 fi
 
+log -p i -t cortexbrain-tune.sh "*** BOOT tweaks ***: applied";
+/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
+renice -10 ${PIDOFCORTEX};
+
+# =========
+# TWEAKS: if Screen-ON
+# =========
+AWAKE_MODE()
+{
+# Free pagecache, dentries and inodes:
+echo "0" > /proc/sys/vm/drop_caches;
+
+TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
+if [ $TEMP -ge $MAX_TEMP ]; then
+	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	log -p i -t cortexbrain-tune.sh "*** TEMPERATURE over 50° ***";
+	exit;
+else 
+	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+	if [ $CHARGING -ge 1 ]; then
+		# CPU-Freq;
+		echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		# VM parameters;
+		echo "$KERNEL_SWAP" > /proc/sys/vm/swappiness;
+		echo "150" > /proc/sys/vm/vfs_cache_pressure;
+		echo "200" > /proc/sys/vm/dirty_expire_centisecs;
+		echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
+		# CPU scheduler;
+		if [ -e /proc/sys/kernel/rr_interval ]; then
+	        	# BFS
+		        echo "1" > /proc/sys/kernel/rr_interval;
+		        echo "100" > /proc/sys/kernel/iso_cpu;
+		else
+		        # For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+       			if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+				# CFS
+               			echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+               			echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+               			echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
+               			echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+               			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+       			fi;
+		fi;
+		log -p i -t cortexbrain-tune.sh "*** CHARGING Mode ***";
+	else
+		# CPU-Freq;
+		echo "$KERNEL_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		echo "$KERNEL_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		# VM parameters;
+		echo "$KERNEL_SWAP" > /proc/sys/vm/swappiness;
+		echo "70" > /proc/sys/vm/vfs_cache_pressure;
+		echo "200" > /proc/sys/vm/dirty_expire_centisecs;
+		echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
+		# CPU scheduler;
+		if [ -e /proc/sys/kernel/rr_interval ]; then
+  			# BFS
+			echo "1" > /proc/sys/kernel/rr_interval;
+			echo "100" > /proc/sys/kernel/iso_cpu;
+		else
+			# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+			if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+				# CFS
+				echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+				echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+				echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+				echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+				echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+			fi;
+		fi;
+		log -p i -t cortexbrain-tune.sh "*** AWAKE Mode ***";
+	fi;
+fi;
+}
+
+# =========
+# TWEAKS: if Screen-OFF
+# =========
+SLEEP_MODE()
+{
+# Free pagecache, dentries and inodes:
+echo "3" > /proc/sys/vm/drop_caches;
+
+# kill some processes
+sync;
+googlemaps=`pidof com.google.android.apps.maps`;	
+gapps=`pidof com.google.process.gapps`;
+voice=`com.google.android.apps.googlevoice`;
+kill -9 $googlemaps $gapps $voice;
+
+TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
+if [ $TEMP -ge $MAX_TEMP ];
+then
+	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	log -p i -t cortexbrain-tune.sh "*** TEMPERATURE over 50° ***";
+	exit;
+else
+	# CPU-Freq;
+	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	# VM parameters;
+	echo "0" > /proc/sys/vm/swappiness;
+	echo "0" > /proc/sys/vm/vfs_cache_pressure;
+	echo "0" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+	# CPU scheduler;
+	if [ -e /proc/sys/kernel/rr_interval ];
+	then
+		# BFS;
+		echo "6" > /proc/sys/kernel/rr_interval;
+		echo "90" > /proc/sys/kernel/iso_cpu;
+	else
+		# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+		if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+			# CFS;
+			echo "20000000" > /proc/sys/kernel/sched_latency_ns;
+			echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+			echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+			echo "950000" > /proc/sys/kernel/sched_rt_runtime_us;
+			echo "1000000" > /proc/sys/kernel/sched_rt_period_us;
+		fi;
+	fi;
+	log -p i -t cortexbrain-tune.sh "*** SLEEP mode ***";
+fi;
+}
+
+# =========
+# Background process to check screen state
+# =========
+(while [ 1 ]; 
+do	
+	STATE=`cat /sys/power/wait_for_fb_wake`;
+	AWAKE_MODE;
+	sleep 3;
+	
+	STATE=`cat /sys/power/wait_for_fb_sleep`;
+	SLEEP_MODE;
+	sleep 3;
+done &);
+
 # ==============================================================
 # Explanations
 # ==============================================================
@@ -637,6 +788,3 @@ fi
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
-
-echo "cortextune done" > /system/dm-report
-echo "cortextune script done"
