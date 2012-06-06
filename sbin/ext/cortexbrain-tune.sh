@@ -321,7 +321,6 @@ fi;
 # =========
 # MEMORY-TWEAKS
 # =========
-#echo "40" > /proc/sys/vm/swappiness;
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
@@ -332,21 +331,19 @@ echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
-#echo "3" > /proc/sys/vm/drop_caches;
-#echo "70" > /proc/sys/vm/vfs_cache_pressure;
-#sysctl -w vm.vfs_cache_pressure=70
+echo "70" > /proc/sys/vm/vfs_cache_pressure;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
-#FOREGROUND_APP_MEM=8192;
-#VISIBLE_APP_MEM=10240;
-#SECONDARY_SERVER_MEM=12288;
-#BACKUP_APP_MEM=12288;
-#HOME_APP_MEM=12288;
-#HIDDEN_APP_MEM=14336;
-#CONTENT_PROVIDER_MEM=16384;
-#EMPTY_APP_MEM=20480;
-#echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
+FOREGROUND_APP_MEM=8192;
+VISIBLE_APP_MEM=10240;
+SECONDARY_SERVER_MEM=12288;
+BACKUP_APP_MEM=12288;
+HOME_APP_MEM=12288;
+HIDDEN_APP_MEM=14336;
+CONTENT_PROVIDER_MEM=16384;
+EMPTY_APP_MEM=20480;
+echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
 # =========
 # FS-TWEAKS
@@ -356,7 +353,6 @@ echo "15" > /proc/sys/fs/lease-break-time;
 # =========
 # TWEAKS: for TCP read/write
 # =========
-NETSETTINGS () {
 echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
 echo "1" > /proc/sys/net/ipv4/tcp_sack;
@@ -376,15 +372,13 @@ echo "4096 16384 404480" > /proc/sys/net/ipv4/tcp_wmem;
 echo "4096 87380 404480" > /proc/sys/net/ipv4/tcp_rmem;
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
-setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208
-setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
-setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
-setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
-}
-#NETSETTINGS #DISABLED FOR NOW
+setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208;
+setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208;
+setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208;
+setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040;
+setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680;
+setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
+setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
 
 # =========
 # TWEAKS: optimized for 3G/Edge speed
