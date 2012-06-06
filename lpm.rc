@@ -27,25 +27,12 @@ on init
     mkdir /tmp
     mkdir /dbdata
     mkdir /mnt 0775 root root
-    mkdir /mnt/.lfs 0775 root root
-    #mount /tmp /tmp tmpfs   
 
-on fs
-    mount ext4 /dev/block/mmcblk0p9 /system wait rw
     mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait
 
     mkdir /data/log 0777
     mkdir /data/anr 0777
     mount ext4 /dev/block/mmcblk0p10 /data remount rw
-
-    chmod 0666 /dev/log/radio
-    chmod 0666 /dev/log/main
-    chmod 0666 /dev/log/event
-
-on post-fs-data
-# insmod kernel modules
-    insmod /lib/modules/j4fs.ko
-    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs ro
 
 on boot
 # CPU Frequency Governor
@@ -77,6 +64,9 @@ service lpmkey /system/bin/lpmkey
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
 #    disabled
+
+service charger /charger
+     class default
 
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1

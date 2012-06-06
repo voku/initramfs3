@@ -188,7 +188,6 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
-echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
 
 # =========
 # BATTERY-TWEAKS
@@ -655,4 +654,4 @@ fi
 #
 
 echo "cortextune done" > /system/dm-report
-
+echo "cortextune script done"

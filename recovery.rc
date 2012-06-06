@@ -17,9 +17,6 @@ on init
     mkdir /preload
     mount /tmp /tmp tmpfs
 
-on fs
-    mount ext4 /dev/block/mmcblk0p9 /system noatime wait
-
 #    mkdir /efs
 #    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
 
