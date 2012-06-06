@@ -151,8 +151,8 @@ done;
 
 # remount ext4 partitions with optimizations
 for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
-sync;
-/sbin/busybox mount -o remount,noatime,nodiratime,commit=20 $k
+	sync;
+	/sbin/busybox mount -o remount,noatime,nodiratime,commit=20 $k
 done;
 
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
