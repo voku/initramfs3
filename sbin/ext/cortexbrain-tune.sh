@@ -53,110 +53,113 @@ MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
 RAM=`ls -d /sys/block/ram*`;
 
-for i in $DM $LOOP $MMC $ZRM $RAM;
-do
-	if [ -e $i/queue/rotational ]; 
-	then
+for i in $DM $LOOP $MMC $ZRM $RAM; do
+	if [ -e $i/queue/rotational ]; then
 		echo "0" > $i/queue/rotational;
 	fi;
 
-	if [ -e $i/queue/iostats ];
-	then
+	if [ -e $i/queue/iostats ]; then
 		echo "0" > $i/queue/iostats;
 	fi;
 
-	if [ -e $i/queue/iosched/low_latency ];
-	then
+	if [ -e $i/queue/iosched/low_latency ]; then
 		echo "1" > $i/queue/iosched/low_latency;
 	fi;
 
-	if [ -e $i/queue/rq_affinity ];
-	then
+	if [ -e $i/queue/rq_affinity ]; then
 		echo "1" > $i/queue/rq_affinity;   
 	fi;
 
-	if [ -e $i/queue/read_ahead_kb ];
-	then
+	if [ -e $i/queue/read_ahead_kb ]; then
 		echo "1024" >  $i/queue/read_ahead_kb;
 	fi;
 
-	if [ -e $i/queue/iosched/writes_starved ];
-	then
+	if [ -e $i/queue/iosched/writes_starved ]; then
 		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
 
-IO_SCHEDULER_TWEAK () {
-	IO_SCHEDULER=`cat $i/queue/scheduler | sed 's/.*\[//g' | sed 's/\].*//g'`; 
-	case $IO_SCHEDULER in
-		"cfq")
-			echo "1000000000" > $i/queue/iosched/back_seek_max;
-			echo "1" > $i/queue/iosched/back_seek_penalty;
-			echo "1" > $i/queue/iosched/low_latency;
-			echo "0" > $i/queue/iosched/slice_idle;
-			echo "8" > $i/queue/iosched/quantum;
-			echo "4" > $i/queue/iosched/slice_async_rq;
-    		echo "2048" > $i/queue/nr_requests;;
-		"bfq")
-			echo "3" > $i/queue/iosched/slice_idle;
-			echo "2048" > $i/queue/nr_requests;;
-		"noop")
-			echo "2048" > $i/queue/nr_requests;;
-		"deadline")
-			echo "16" > $i/queue/iosched/fifo_batch;;
-		"sio")
-			echo "1" > $i/queue/iosched/fifo_batch;
-			echo "2048" > $i/queue/nr_requests;;
-		"vr")
-			echo "1" > $i/queue/iosched/rev_penalty;
-			echo "1" > $i/queue/iosched/fifo_batch;;
-	esac;
-}
-#IO_SCHEDULER_TWEAK #DISABLED
+	if [ -e $i/queue/iosched/back_seek_max ]; then
+		echo "1000000000" > $i/queue/iosched/back_seek_max;
+	fi;
 
+	if [ -e $i/queue/iosched/back_seek_penalty ]; then
+		echo "1" > $i/queue/iosched/back_seek_penalty;
+	fi;
+
+	if [ -e $i/queue/iosched/low_latency ]; then
+		echo "1" > $i/queue/iosched/low_latency;
+	fi;
+
+	if [ -e $i/queue/iosched/slice_idle ]; then
+		echo "0" > $i/queue/iosched/slice_idle;
+	fi;
+
+	if [ -e $i/queue/iosched/quantum ]; then
+		echo "8" > $i/queue/iosched/quantum;
+	fi;
+
+	if [ -e $i/queue/iosched/slice_async_rq ]; then
+		echo "4" > $i/queue/iosched/slice_async_rq;
+	fi;
+
+	if [ -e $i/queue/nr_requests ]; then
+		echo "8192" > $i/queue/nr_requests;
+	fi;
+
+	if [ -e $i/queue/iosched/fifo_batch ]; then
+		echo "1" > $i/queue/iosched/fifo_batch;
+	fi;
+
+	if [ -e $i/queue/iosched/rev_penalty ]; then
+		echo "1" > $i/queue/iosched/rev_penalty;
+	fi;
 done;
 
 SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
-for i in $SDCARDREADAHEAD
-do
+for i in $SDCARDREADAHEAD; do
 	echo 1024 > $i/read_ahead_kb
 done
 
-if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ];
-then
+if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
-if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
-then
+if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ]; then
 	echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
 fi;
 
-if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ];
-then
+if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ]; then
 	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
 fi;
 
-if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
-then
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]; then
 	echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 fi;
 
-if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
-then
+if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ]; then
 	echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
 fi;
 
 # =========
 # Remount all partitions
 # =========
-for k in $(busybox mount | grep relatime | grep -v /acct | grep -v /dev/cpuctl | cut -d " " -f3);
-do
-	busybox mount -o remount,rw,noatime,nodiratime $k;
+# remount all partitions with noatime, nodiratime
+for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
+	sync;
+	/sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
 
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
-mount -o remount,rw,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-mount -o remount,rw,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system
+# remount ext4 partitions with optimizations
+for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
+	sync;
+	/sbin/busybox mount -o remount,commit=20 $k
+done;
+
+/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
+/sbin/busybox -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+/sbin/busybox -o remount,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system
+
+echo "filesystem boost enabled";
 
 # ==============================================================
 # TWEAKS
@@ -192,6 +195,19 @@ setprop persist.adb.notify 0
 # =========
 # BATTERY-TWEAKS
 # =========
+MORE_BATTERY=1;
+MORE_SPEED=0;
+KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+LEVEL=$(cat /sys/class/power_supply/battery/capacity)
+CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc)
+BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check)
+
+# battery-calibration if battery is full
+echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
+if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
+        rm -f /data/system/batterystats.bin;
+fi;
+
 setprop wifi.supplicant_scan_interval 240 
 setprop pm.sleep_mode 1
 
@@ -200,78 +216,50 @@ do
 	echo "auto" > $i;
 done;
 
+if [ $MORE_BATTERY == 1 ]; then
+        echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
+        echo "schedmc enabled";
+else
+        echo "0" > /sys/devices/system/cpu/sched_mc_power_savings;
+        echo "schedmc disabled";
+fi;
+
 # =========
 # CPU-TWEAKS
 # ========= 
 
-if [ -e /proc/sys/kernel/rr_interval ];
-then
-	# BFS;
+if [ -e /proc/sys/kernel/rr_interval ]; then
+	# BFS
 	echo "1" > /proc/sys/kernel/rr_interval;
 	echo "100" > /proc/sys/kernel/iso_cpu;
 else
-echo "have a nice day"
-# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
-	# CFS;
-#	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-#	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-#	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-#	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-#	echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+	# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+	if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+		# CFS
+		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+		echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+	fi;
 fi;
 
-# 
-# THX @mecss
-# http://www.android-hilfe.de/kernel-fuer-samsung-galaxy-s2/214829-tweaks-kernel-parameter-einstellungen-governor-oc-uv.html
-#
-GOVERNOR_TWEAKS () {
-MORE_BATTERY=1;
-MORE_SPEED=0;
-KERNEL_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
-if [ $KERNEL_GOVERNOR == "ondemand" ];
-then
-	if [ $MORE_BATTERY == 1 ];
-	then
+if [ $MORE_BATTERY == 1 ]; then
+	if [ $KERNEL_GOVERNOR == "ondemand" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-	else
-		if [ $MORE_SPEED == 1 ];
-		then
-			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		fi;
 	fi;
-fi;
-if [ $KERNEL_GOVERNOR == "lulzactive" ];
-then
-	if [ $MORE_BATTERY == 1 ];
-	then
+	if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
 		echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
 		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
-	else
-		if [ $MORE_SPEED == 1 ];
-		then
-			echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
-			echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
-			echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
-			echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
-			echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
-			echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
-		fi;
 	fi;
-fi;
-if [ $KERNEL_GOVERNOR == "smartassV2" ];
-then
-	if [ $MORE_BATTERY == 1 ];
-	then
+	if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
 		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
 		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
@@ -281,53 +269,63 @@ then
 		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
 		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
 		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
-	else
-		if [ $MORE_SPEED == 1 ];
-		then
-			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
-			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
-			echo "75" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-			echo "45" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
-			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
-			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
-			echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
-			echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
-		fi;
 	fi;
-fi;
-if [ $KERNEL_GOVERNOR == "conservative" ];
-then
-	if [ $MORE_BATTERY == 1 ];
-	then
+	if [ $KERNEL_GOVERNOR == "conservative" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-	else
-		if [ $MORE_SPEED == 1 ];
-		then
-			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
-			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-		fi;
 	fi;
+
+	echo "CPU GOVERNOR - battery";
+
+else if [ $MORE_SPEED == 1 ]; then
+
+	if [ $KERNEL_GOVERNOR == "ondemand" ]; then
+		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+	fi;
+	if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
+		echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+		echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+		echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+	fi;
+	if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
+		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
+		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
+		echo "75" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+		echo "45" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+		echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
+		echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
+		echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
+		echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
+	fi;
+	if [ $KERNEL_GOVERNOR == "conservative" ]; then
+		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+		echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+	fi;
+
+	echo "CPU GOVERNOR - speed";
 fi;
-}
-#GOVERNOR_TWEAKS #DISABLED
 
 # =========
 # MEMORY-TWEAKS
 # =========
 #echo "40" > /proc/sys/vm/swappiness;
-#echo "0" > /proc/sys/vm/dirty_expire_centisecs;
-#echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "200" > /proc/sys/vm/dirty_expire_centisecs;
+echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
 echo "10" > /proc/sys/vm/dirty_ratio;
-#echo "25" > /proc/sys/vm/vfs_cache_pressure;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
 echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
@@ -335,6 +333,8 @@ echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
 #echo "3" > /proc/sys/vm/drop_caches;
+#echo "70" > /proc/sys/vm/vfs_cache_pressure;
+#sysctl -w vm.vfs_cache_pressure=70
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -389,53 +389,43 @@ setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208
 # =========
 # TWEAKS: optimized for 3G/Edge speed
 # =========
-NETPROPS () { 
 setprop ro.ril.hsxpa 2;
 setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
 setprop ro.ril.gprsclass 12;
-}
-#NETPROPS #DISABLED FOR NOW
 
 # =========
 # Firewall-TWEAKS
 # =========
 # ping/icmp protection
-FWTWEAKS () {
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
 echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
 
-if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts ];
-then
+if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts ]; then
 	echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts;
 fi
 
-if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_all ];
-then
+if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_all ]; then
 	echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_all;
 fi
 
-if [ -e /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses ];
-then
+if [ -e /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses ]; then
 	echo "1" > /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses;
 fi
 
 # syn protection
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 
-if [ -e /proc/sys/net/ipv6/tcp_synack_retries ];
-then
+if [ -e /proc/sys/net/ipv6/tcp_synack_retries ]; then
 	echo "2" > /proc/sys/net/ipv6/tcp_synack_retries;
 fi
 
-if [ -e /proc/sys/net/ipv6/tcp_syncookies ];
-then
+if [ -e /proc/sys/net/ipv6/tcp_syncookies ]; then
 	echo "0" > /proc/sys/net/ipv6/tcp_syncookies;
 fi
 
-if [ -e /proc/sys/net/ipv4/tcp_syncookies ];
-then
+if [ -e /proc/sys/net/ipv4/tcp_syncookies ]; then
 	echo "1" > /proc/sys/net/ipv4/tcp_syncookies;
 fi
 
@@ -451,42 +441,33 @@ echo "0" > /proc/sys/net/ipv4/conf/default/accept_redirects;
 echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route;
 echo "0" > /proc/sys/net/ipv4/conf/default/accept_source_route;
 
-if [ -e /proc/sys/net/ipv6/conf/all/rp_filter ];
-then
+if [ -e /proc/sys/net/ipv6/conf/all/rp_filter ]; then
 	echo "1" > /proc/sys/net/ipv6/conf/all/rp_filter;
 fi
 
-if [ -e /proc/sys/net/ipv6/conf/default/rp_filter ];
-then
+if [ -e /proc/sys/net/ipv6/conf/default/rp_filter ]; then
 	echo "1" > /proc/sys/net/ipv6/conf/default/rp_filter;
 fi
 
-if [ -e /proc/sys/net/ipv6/conf/all/send_redirects ];
-then
+if [ -e /proc/sys/net/ipv6/conf/all/send_redirects ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/all/send_redirects;
 fi
 
-if [ -e /proc/sys/net/ipv6/conf/default/send_redirects ];
-then
+if [ -e /proc/sys/net/ipv6/conf/default/send_redirects ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/default/send_redirects;
 fi
 
-if [ -e /proc/sys/net/ipv6/conf/default/accept_redirects ];
-then
+if [ -e /proc/sys/net/ipv6/conf/default/accept_redirects ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_redirects;
 fi
 
-if [ -e /proc/sys/net/ipv6/conf/all/accept_source_route ];
-then
+if [ -e /proc/sys/net/ipv6/conf/all/accept_source_route ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/all/accept_source_route;
 fi
 
-if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ];
-then
+if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_source_route;
 fi
-}
-#FWTWEAKS #DISABLED FOR NOW
 
 # ==============================================================
 # Explanations
