@@ -117,8 +117,8 @@ done;
 
 SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
 for i in $SDCARDREADAHEAD; do
-	echo 1024 > $i/read_ahead_kb
-done
+	echo 1024 > $i/read_ahead_kb;
+done;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
@@ -151,8 +151,8 @@ done;
 
 # remount ext4 partitions with optimizations
 for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
-	sync;
-	/sbin/busybox mount -o remount,commit=20 $k
+sync;
+/sbin/busybox mount -o remount,noatime,nodiratime,commit=20 $k
 done;
 
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
@@ -245,12 +245,14 @@ else
 fi;
 
 if [ $MORE_BATTERY == 1 ]; then
+
 	if [ $KERNEL_GOVERNOR == "ondemand" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	fi;
+
 	if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
@@ -259,6 +261,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
+
 	if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
 		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
@@ -270,6 +273,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
 		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
 	fi;
+
 	if [ $KERNEL_GOVERNOR == "conservative" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
@@ -280,39 +284,45 @@ if [ $MORE_BATTERY == 1 ]; then
 
 	echo "CPU GOVERNOR - battery";
 
-else if [ $MORE_SPEED == 1 ]; then
+else 
+	if [ $MORE_SPEED == 1 ]; then
 
-	if [ $KERNEL_GOVERNOR == "ondemand" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-	fi;
-	if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
-		echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
-		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
-		echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
-		echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
-		echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
-	fi;
-	if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
-		echo "75" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-		echo "45" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
-		echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
-		echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
-		echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
-		echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
-	fi;
-	if [ $KERNEL_GOVERNOR == "conservative" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
-		echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		if [ $KERNEL_GOVERNOR == "ondemand" ]; then
+			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		fi;
+
+		if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
+			echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+			echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+			echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+			echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+			echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+			echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		fi;
+
+		if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
+			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
+			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
+			echo "75" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+			echo "45" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
+			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
+			echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
+			echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
+		fi;
+
+		if [ $KERNEL_GOVERNOR == "conservative" ]; then
+			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+			echo "25" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		fi;
+
 	fi;
 
 	echo "CPU GOVERNOR - speed";
