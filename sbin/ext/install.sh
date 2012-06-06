@@ -94,7 +94,7 @@ then
 		chmod 755 /system/xbin/ntfs-3g
 fi
 
-#rm -rf /res/misc/payload
+rm -rf /res/misc/payload
 
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 mount -o remount,rw /system

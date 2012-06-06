@@ -385,9 +385,3 @@ service TvoutService_C /system/bin/bintvoutservice
     user system
     group graphics 
 
-# bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/bugmailer.sh -v
-    class main
-    disabled
-    oneshot
-    keycodes 114 115 116
