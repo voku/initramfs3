@@ -15,8 +15,9 @@
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
+FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_GOVERNOR="powersave";
+SLEEP_GOVERNOR="lazy";
 SLEEP_MAX_FREQ=100000;
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
@@ -54,7 +55,7 @@ kmemhelper -n mxt224_data -t char -o 77 46
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
-renice 19 `pgrep logcat`;
+#renice 19 `pgrep logcat`;
 
 # ==============================================================
 # I/O related tweaks 
@@ -66,6 +67,7 @@ ZRM=`ls -d /sys/block/zram*`;
 RAM=`ls -d /sys/block/ram*`;
 
 for i in $DM $LOOP $MMC $ZRM $RAM; do
+
 	if [ -e $i/queue/rotational ]; then
 		echo "0" > $i/queue/rotational;
 	fi;
@@ -74,16 +76,16 @@ for i in $DM $LOOP $MMC $ZRM $RAM; do
 		echo "0" > $i/queue/iostats;
 	fi;
 
-	if [ -e $i/queue/iosched/low_latency ]; then
-		echo "1" > $i/queue/iosched/low_latency;
-	fi;
-
 	if [ -e $i/queue/rq_affinity ]; then
 		echo "1" > $i/queue/rq_affinity;   
 	fi;
 
 	if [ -e $i/queue/read_ahead_kb ]; then
 		echo "1024" >  $i/queue/read_ahead_kb;
+	fi;
+
+	if [ -e $i/queue/nr_requests ]; then
+		echo "8192" > $i/queue/nr_requests;
 	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ]; then
@@ -114,10 +116,6 @@ for i in $DM $LOOP $MMC $ZRM $RAM; do
 		echo "4" > $i/queue/iosched/slice_async_rq;
 	fi;
 
-	if [ -e $i/queue/nr_requests ]; then
-		echo "8192" > $i/queue/nr_requests;
-	fi;
-
 	if [ -e $i/queue/iosched/fifo_batch ]; then
 		echo "1" > $i/queue/iosched/fifo_batch;
 	fi;
@@ -125,6 +123,11 @@ for i in $DM $LOOP $MMC $ZRM $RAM; do
 	if [ -e $i/queue/iosched/rev_penalty ]; then
 		echo "1" > $i/queue/iosched/rev_penalty;
 	fi;
+
+	if [ -e $i/queue/iosched/low_latency ]; then
+		echo "1" > $i/queue/iosched/low_latency;
+	fi;
+
 done;
 
 SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
@@ -171,7 +174,9 @@ done;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
 /sbin/busybox mount -o remount,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system;
 
-echo "filesystem boost enabled";
+echo "15" > /proc/sys/fs/lease-break-time;
+
+log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 
 # ==============================================================
 # TWEAKS
@@ -204,6 +209,8 @@ setprop mot.proximity.delay 15
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
 
+log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
+
 # =========
 # BATTERY-TWEAKS
 # =========
@@ -218,6 +225,7 @@ fi;
 echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
 if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
         rm -f /data/system/batterystats.bin;
+		echo "battery-calibration done ...";
 fi;
 
 setprop wifi.supplicant_scan_interval 240 
@@ -230,11 +238,11 @@ done;
 
 if [ $MORE_BATTERY == 1 ]; then
         echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
-        echo "schedmc enabled";
 else
         echo "0" > /sys/devices/system/cpu/sched_mc_power_savings;
-        echo "schedmc disabled";
 fi;
+
+log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 
 # =========
 # CPU-TWEAKS
@@ -296,8 +304,6 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 	fi;
 
-	echo "CPU GOVERNOR - battery";
-
 else 
 
 	if [ $MORE_SPEED == 1 ]; then
@@ -340,8 +346,9 @@ else
 
 	fi;
 
-	echo "CPU GOVERNOR - speed";
 fi;
+
+log -p i -t $FILE_NAME "*** cpu tweaks ***: enabled";
 
 # =========
 # MEMORY-TWEAKS
@@ -370,10 +377,7 @@ echo "70" > /proc/sys/vm/vfs_cache_pressure;
 #EMPTY_APP_MEM=20480;
 #echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
-# =========
-# FS-TWEAKS
-# =========
-echo "15" > /proc/sys/fs/lease-break-time;
+log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 
 # =========
 # TWEAKS: for TCP read/write
@@ -405,6 +409,8 @@ setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680;
 setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
 setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
 
+log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
+
 # =========
 # TWEAKS: optimized for 3G/Edge speed
 # =========
@@ -412,6 +418,8 @@ setprop ro.ril.hsxpa 2;
 setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
 setprop ro.ril.gprsclass 12;
+
+log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
 
 # =========
 # Firewall-TWEAKS
@@ -488,7 +496,10 @@ if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ]; then
 	echo "0" > /proc/sys/net/ipv6/conf/default/accept_source_route;
 fi
 
-log -p i -t cortexbrain-tune.sh "*** BOOT tweaks ***: applied";
+log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
+
+## TODO - check if prozess is already running
+#if ps | grep -v grep | grep $FILE_NAME > /dev/null; then
 
 /system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 renice -10 ${PIDOFCORTEX};
@@ -501,7 +512,7 @@ CHECK_TEMPERATURE()
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	log -p i -t cortexbrain-tune.sh "*** TEMPERATURE over 50° ***";
+	log -p i -t $FILE_NAME "*** TEMPERATURE over 50° ***";
 	exit;
 fi;
 }
@@ -511,14 +522,19 @@ fi;
 # =========
 AWAKE_MODE()
 {
+
 # check for temperature
 CHECK_TEMPERATURE;
+
+# charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
-	# CPU-Freq;
+
+	# CPU-Freq
 	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	# CPU scheduler;
+
+	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
         # BFS
 		echo "1" > /proc/sys/kernel/rr_interval;
@@ -534,12 +550,15 @@ if [ $CHARGING -ge 1 ]; then
 			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 		fi;
 	fi;
+
 	MODE="SPEED";
 else
-	# CPU-Freq;
+
+	# CPU-Freq
 	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	# CPU scheduler;
+
+	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
   		# BFS
 		echo "1" > /proc/sys/kernel/rr_interval;
@@ -555,9 +574,10 @@ else
 			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 		fi;
 	fi;
+
 	MODE="AWAKE";
 fi;
-log -p i -t cortexbrain-tune.sh "*** $MODE Mode ***";
+log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
 
 # =========
@@ -565,26 +585,35 @@ log -p i -t cortexbrain-tune.sh "*** $MODE Mode ***";
 # =========
 SLEEP_MODE()
 {
+
+# charging & screen is off 
 CHECK_TEMPERATURE;
+
+# charging & screen is off
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
-	# CPU-Freq;
+
+	# CPU-Freq
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	MODE="CHARGING";
+
 else
-	# CPU-Freq;
+
+	# CPU-Freq
 	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	MODE="SLEEP";
+
 fi;
-# CPU scheduler;
+
+# CPU scheduler
 if [ -e /proc/sys/kernel/rr_interval ]; then
-	# BFS;
+	# BFS
 	echo "6" > /proc/sys/kernel/rr_interval;
 	echo "90" > /proc/sys/kernel/iso_cpu;
 else
 	# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
 	if [ -e /proc/sys/kernel/sched_latency_ns ]; then
-		# CFS;
+		# CFS
 		echo "20000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 		echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
@@ -592,7 +621,8 @@ else
 		echo "1000000" > /proc/sys/kernel/sched_rt_period_us;
 	fi;
 fi;
-log -p i -t cortexbrain-tune.sh "*** $MODE mode ***";
+
+log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
 
 # =========
