@@ -3,29 +3,76 @@
 busybox date >>boot.txt
 exec >>boot.txt 2>&1
 
-# Checking Partitions.
-/sbin/e2fsck -p /dev/block/mmcblk0p10 >> /dm-log
-/sbin/e2fsck -p /dev/block/mmcblk0p7 >> /dm-log
-/sbin/e2fsck -p /dev/block/mmcblk0p12 >> /dm-log
-
-#Setting journal_data_writeback to DATA CACHE.
+#Setting journal_data_writeback to DATA CACHE and PAYLOAD-SEC-ROM.
 busybox umount -l /dev/block/mmcblk0p7 > /dm-log
 busybox umount -l /dev/block/mmcblk0p10 >> /dm-log
 busybox umount -l /dev/block/mmcblk0p12 >> /dm-log
 
-#Tune DATA
-/sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p10 >> /dm-log
+# Checking Partitions.
+/sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
+/sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
+/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
 
-#Tune Cache
-/sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p7 >> /dm-log
+CHECKP10=`cat data-log | grep /dev/block/mmcblk0p10 | cut -c 1-28`
+CHECKP7=`cat cache-log | grep /dev/block/mmcblk0p7 | cut -c 1-27`
+CHECKP12=`cat preload-log | grep /dev/block/mmcblk0p12 | cut -c 1-28`
 
-#Tune Preload, ROM sec system.
-/sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p12 >> /dm-log
+if [ "$CHECKP10" == "/dev/block/mmcblk0p10: clean" ]; then
+        echo "DATA OK"
+        #Tune DATA
+        /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p10 >> /data-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p10
+else
+        echo "DATA partition damaged fixing"
+        /sbin/e2fsck -y /dev/block/mmcblk0p10 > /data-log
+        #Sec run just in case
+        /sbin/e2fsck -y /dev/block/mmcblk0p10 >> /data-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p10 >> /data-log
 
-#Run disk checks after writeback journal.
-/sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
-/sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
-/sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
+        CHECKP10=`cat data-log | grep /dev/block/mmcblk0p10 | cut -c 1-28`
+        if [ "$CHECKP10" == "/dev/block/mmcblk0p10: clean" ]; then
+                /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p10 >> /data-log
+                /sbin/e2fsck -p /dev/block/mmcblk0p10
+        fi
+fi
+
+if [ "$CHECKP7" == "/dev/block/mmcblk0p7: clean" ]; then
+        echo "CACHE OK"
+        #Tune Cache
+        /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p7 >> /cache-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p7
+else
+        echo "partition damaged fixing"
+        /sbin/e2fsck -y /dev/block/mmcblk0p7 > /cache-log
+        #Sec run just in case
+        /sbin/e2fsck -y /dev/block/mmcblk0p7 >> /cache-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p7 >> /cache-log
+
+        CHECKP7=`cat dm-log | grep /dev/block/mmcblk0p7 | cut -c 1-27`
+        if [ "$CHECKP7" == "/dev/block/mmcblk0p7: clean" ]; then
+                /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p7 >> /cache-log
+                /sbin/e2fsck -p /dev/block/mmcblk0p7
+        fi
+fi
+
+if [ "$CHECKP12" == "/dev/block/mmcblk0p12: clean" ]; then
+        echo "PRELOAD OK"
+        #Tune PRELOAD-SEC-ROM
+        /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p12 >> /preload-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p12
+else
+        echo "partition damaged fixing"
+        /sbin/e2fsck -y /dev/block/mmcblk0p12 > /preload-log
+        #Sec run just in case
+        /sbin/e2fsck -y /dev/block/mmcblk0p12 >> /preload-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p12 >> /preload-log
+
+        CHECKP12=`cat dm-log | grep /dev/block/mmcblk0p12 | cut -c 1-28`
+        if [ "$CHECKP12" == "/dev/block/mmcblk0p12: clean" ]; then
+                /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p12 >> /preload-log
+                /sbin/e2fsck -p /dev/block/mmcblk0p12
+        fi
+fi
 
 /sbin/busybox unmount /system
 

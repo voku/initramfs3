@@ -133,7 +133,7 @@ for i in $SDCARDREADAHEAD; do
 done;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-        echo "256" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 # =========
@@ -152,7 +152,7 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d 
 done;
 
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
-/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=60,noauto_da_alloc,delalloc /data;
+/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 /system;
 
 echo "15" > /proc/sys/fs/lease-break-time;
@@ -253,7 +253,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	fi;
 
 	if [ $scaling_governor == "lulzactive" ]; then
@@ -292,8 +292,8 @@ else
 		if [ $scaling_governor == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
 
 		if [ $scaling_governor == "lulzactive" ]; then
