@@ -3,27 +3,34 @@ export _PATH="$PATH"
 export PATH=/sbin
 
 busybox cd /
+busybox date >>boot.txt
+exec >>boot.txt 2>&1
 
+# Checking Partitions.
 /sbin/e2fsck -p /dev/block/mmcblk0p10 >> /dm-log
 /sbin/e2fsck -p /dev/block/mmcblk0p7 >> /dm-log
 /sbin/e2fsck -p /dev/block/mmcblk0p12 >> /dm-log
+
 #Setting journal_data_writeback to DATA CACHE.
 busybox umount -l /dev/block/mmcblk0p7 > /dm-log
 busybox umount -l /dev/block/mmcblk0p10 >> /dm-log
+busybox umount -l /dev/block/mmcblk0p12 >> /dm-log
+
 #Tune DATA
 /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p10 >> /dm-log
+
 #Tune Cache
 /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p7 >> /dm-log
-#Run disk check after writeback journal.
+
+#Tune Preload, ROM sec system.
+/sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p12 >> /dm-log
+
+#Run disk checks after writeback journal.
 /sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
 /sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
 /sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
 
 /sbin/busybox umount /system
-
-busybox date >>boot.txt
-exec >>boot.txt 2>&1
-busybox rm init
 
 rm -f /init
 mv /innt /init
