@@ -18,7 +18,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 MAX_TEMP=500; # -> 50° Celsius
 SLEEP_GOVERNOR="powersave";
 SLEEP_MAX_FREQ=100000;
-PIDOFCORTEX=$(pidof cortexbrain-tune);
+PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
 BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
@@ -488,65 +488,75 @@ if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ]; then
 fi
 
 log -p i -t cortexbrain-tune.sh "*** BOOT tweaks ***: applied";
+
 /system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 renice -10 ${PIDOFCORTEX};
 
 # =========
-# TWEAKS: if Screen-ON
+# check for temperature
 # =========
-AWAKE_MODE()
+CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	log -p i -t cortexbrain-tune.sh "*** TEMPERATURE over 50° ***";
 	exit;
-else 
-	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-	if [ $CHARGING -ge 1 ]; then
-		# CPU-Freq;
-		echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-		echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		# CPU scheduler;
-		if [ -e /proc/sys/kernel/rr_interval ]; then
-	        	# BFS
-		        echo "1" > /proc/sys/kernel/rr_interval;
-		        echo "100" > /proc/sys/kernel/iso_cpu;
-		else
-		        # For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
-       			if [ -e /proc/sys/kernel/sched_latency_ns ]; then
-				# CFS
-               			echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-               			echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-               			echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
-               			echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-               			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
-       			fi;
-		fi;
-		log -p i -t cortexbrain-tune.sh "*** CHARGING Mode ***";
-	else
-		# CPU-Freq;
-		echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		# CPU scheduler;
-		if [ -e /proc/sys/kernel/rr_interval ]; then
-  			# BFS
-			echo "1" > /proc/sys/kernel/rr_interval;
-			echo "100" > /proc/sys/kernel/iso_cpu;
-		else
-			# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
-			if [ -e /proc/sys/kernel/sched_latency_ns ]; then
-				# CFS
-				echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-				echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-				echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-				echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-				echo "100000" > /proc/sys/kernel/sched_rt_period_us;
-			fi;
-		fi;
-		log -p i -t cortexbrain-tune.sh "*** AWAKE Mode ***";
-	fi;
 fi;
+}
+
+# =========
+# TWEAKS: if Screen-ON
+# =========
+AWAKE_MODE()
+{
+# check for temperature
+CHECK_TEMPERATURE;
+CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+if [ $CHARGING -ge 1 ]; then
+	# CPU-Freq;
+	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	# CPU scheduler;
+	if [ -e /proc/sys/kernel/rr_interval ]; then
+        # BFS
+		echo "1" > /proc/sys/kernel/rr_interval;
+		echo "100" > /proc/sys/kernel/iso_cpu;
+	else
+		# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+		if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+			# CFS
+    		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+            echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+    		echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
+			echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+		fi;
+	fi;
+	MODE="SPEED";
+else
+	# CPU-Freq;
+	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	# CPU scheduler;
+	if [ -e /proc/sys/kernel/rr_interval ]; then
+  		# BFS
+		echo "1" > /proc/sys/kernel/rr_interval;
+		echo "100" > /proc/sys/kernel/iso_cpu;
+	else
+		# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+		if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+			# CFS
+			echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+			echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+			echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+			echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+		fi;
+	fi;
+	MODE="AWAKE";
+fi;
+log -p i -t cortexbrain-tune.sh "*** $MODE Mode ***";
 }
 
 # =========
@@ -554,34 +564,34 @@ fi;
 # =========
 SLEEP_MODE()
 {
-TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
-if [ $TEMP -ge $MAX_TEMP ];
-then
+CHECK_TEMPERATURE;
+CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+if [ $CHARGING -ge 1 ]; then
+	# CPU-Freq;
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	log -p i -t cortexbrain-tune.sh "*** TEMPERATURE over 50° ***";
-	exit;
+	MODE="CHARGING";
 else
 	# CPU-Freq;
 	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	# CPU scheduler;
-	if [ -e /proc/sys/kernel/rr_interval ];
-	then
-		# BFS;
-		echo "6" > /proc/sys/kernel/rr_interval;
-		echo "90" > /proc/sys/kernel/iso_cpu;
-	else
-		# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
-		if [ -e /proc/sys/kernel/sched_latency_ns ]; then
-			# CFS;
-			echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-			echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-			echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-			echo "950000" > /proc/sys/kernel/sched_rt_runtime_us;
-			echo "1000000" > /proc/sys/kernel/sched_rt_period_us;
-		fi;
-	fi;
-	log -p i -t cortexbrain-tune.sh "*** SLEEP mode ***";
+	MODE="SLEEP";
 fi;
+# CPU scheduler;
+if [ -e /proc/sys/kernel/rr_interval ]; then
+	# BFS;
+	echo "6" > /proc/sys/kernel/rr_interval;
+	echo "90" > /proc/sys/kernel/iso_cpu;
+else
+	# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+	if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+		# CFS;
+		echo "20000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "950000" > /proc/sys/kernel/sched_rt_runtime_us;
+		echo "1000000" > /proc/sys/kernel/sched_rt_period_us;
+	fi;
+fi;
+log -p i -t cortexbrain-tune.sh "*** $MODE mode ***";
 }
 
 # =========
