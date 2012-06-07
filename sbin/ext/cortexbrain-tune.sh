@@ -11,13 +11,14 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
+# read setting
+PROFILE=$(cat /data/.siyah/.active.profile);
+. /data/.siyah/$PROFILE.profile;
+
 MAX_TEMP=500; # -> 50° Celsius
 SLEEP_GOVERNOR="powersave";
 SLEEP_MAX_FREQ=100000;
 PIDOFCORTEX=$(pidof cortexbrain-tune);
-PROFILE=$(cat /data/.siyah/.active.profile);
-KERNEL_GOVERNOR=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor);
-KERNEL_MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
 BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
@@ -255,16 +256,18 @@ else
 	fi;
 fi;
 
+echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
 if [ $MORE_BATTERY == 1 ]; then
 
-	if [ $KERNEL_GOVERNOR == "ondemand" ]; then
+	if [ $scaling_governor == "ondemand" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	fi;
 
-	if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
+	if [ $scaling_governor == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
 		echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
@@ -273,7 +276,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
-	if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
+	if [ $scaling_governor == "smartassV2" ]; then
 		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
 		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
@@ -285,7 +288,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
 	fi;
 
-	if [ $KERNEL_GOVERNOR == "conservative" ]; then
+	if [ $scaling_governor == "conservative" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
@@ -298,14 +301,14 @@ if [ $MORE_BATTERY == 1 ]; then
 else 
 	if [ $MORE_SPEED == 1 ]; then
 
-		if [ $KERNEL_GOVERNOR == "ondemand" ]; then
+		if [ $scaling_governor == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
 
-		if [ $KERNEL_GOVERNOR == "lulzactive" ]; then
+		if [ $scaling_governor == "lulzactive" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 			echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
@@ -314,7 +317,7 @@ else
 			echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 		fi;
 
-		if [ $KERNEL_GOVERNOR == "smartassV2" ]; then
+		if [ $scaling_governor == "smartassV2" ]; then
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
@@ -326,7 +329,7 @@ else
 			echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
 		fi;
 
-		if [ $KERNEL_GOVERNOR == "conservative" ]; then
+		if [ $scaling_governor == "conservative" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
@@ -523,8 +526,8 @@ else
 		log -p i -t cortexbrain-tune.sh "*** CHARGING Mode ***";
 	else
 		# CPU-Freq;
-		echo "$KERNEL_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-		echo "$KERNEL_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		# CPU scheduler;
 		if [ -e /proc/sys/kernel/rr_interval ]; then
   			# BFS
@@ -586,9 +589,6 @@ fi;
 # =========
 (while [ 1 ]; 
 do	
-	KERNEL_GOVERNOR=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor);
-	KERNEL_MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
-
 	STATE=$(cat /sys/power/wait_for_fb_wake);
 	AWAKE_MODE;
 	sleep 3;
