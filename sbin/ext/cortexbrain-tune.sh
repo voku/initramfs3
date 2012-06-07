@@ -168,8 +168,8 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d 
 done;
 
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
-/sbin/busybox -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-/sbin/busybox -o remount,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system
+/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+/sbin/busybox mount -o remount,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system;
 
 echo "filesystem boost enabled";
 
