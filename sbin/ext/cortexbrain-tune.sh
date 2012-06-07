@@ -12,13 +12,12 @@
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_GOVERNOR="lazy";
+SLEEP_GOVERNOR="powersave";
 SLEEP_MAX_FREQ=100000;
 PIDOFCORTEX=$(pidof cortexbrain-tune);
 PROFILE=$(cat /data/.siyah/.active.profile);
 KERNEL_GOVERNOR=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor);
 KERNEL_MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
-KERNEL_SWAP=$(cat /proc/sys/vm/swappiness);
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
 BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
@@ -357,15 +356,15 @@ echo "70" > /proc/sys/vm/vfs_cache_pressure;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
-FOREGROUND_APP_MEM=8192;
-VISIBLE_APP_MEM=10240;
-SECONDARY_SERVER_MEM=12288;
-BACKUP_APP_MEM=12288;
-HOME_APP_MEM=12288;
-HIDDEN_APP_MEM=14336;
-CONTENT_PROVIDER_MEM=16384;
-EMPTY_APP_MEM=20480;
-echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
+#FOREGROUND_APP_MEM=8192;
+#VISIBLE_APP_MEM=10240;
+#SECONDARY_SERVER_MEM=12288;
+#BACKUP_APP_MEM=12288;
+#HOME_APP_MEM=12288;
+#HIDDEN_APP_MEM=14336;
+#CONTENT_PROVIDER_MEM=16384;
+#EMPTY_APP_MEM=20480;
+#echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
 # =========
 # FS-TWEAKS
@@ -494,9 +493,6 @@ renice -10 ${PIDOFCORTEX};
 # =========
 AWAKE_MODE()
 {
-# Free pagecache, dentries and inodes:
-echo "0" > /proc/sys/vm/drop_caches;
-
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
 	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -508,11 +504,6 @@ else
 		# CPU-Freq;
 		echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 		echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		# VM parameters;
-		echo "$KERNEL_SWAP" > /proc/sys/vm/swappiness;
-		echo "150" > /proc/sys/vm/vfs_cache_pressure;
-		echo "200" > /proc/sys/vm/dirty_expire_centisecs;
-		echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 		# CPU scheduler;
 		if [ -e /proc/sys/kernel/rr_interval ]; then
 	        	# BFS
@@ -534,11 +525,6 @@ else
 		# CPU-Freq;
 		echo "$KERNEL_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 		echo "$KERNEL_MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		# VM parameters;
-		echo "$KERNEL_SWAP" > /proc/sys/vm/swappiness;
-		echo "70" > /proc/sys/vm/vfs_cache_pressure;
-		echo "200" > /proc/sys/vm/dirty_expire_centisecs;
-		echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 		# CPU scheduler;
 		if [ -e /proc/sys/kernel/rr_interval ]; then
   			# BFS
@@ -565,16 +551,6 @@ fi;
 # =========
 SLEEP_MODE()
 {
-# Free pagecache, dentries and inodes:
-echo "3" > /proc/sys/vm/drop_caches;
-
-# kill some processes
-sync;
-googlemaps=`pidof com.google.android.apps.maps`;	
-gapps=`pidof com.google.process.gapps`;
-voice=`com.google.android.apps.googlevoice`;
-kill -9 $googlemaps $gapps $voice;
-
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ];
 then
@@ -584,11 +560,6 @@ then
 else
 	# CPU-Freq;
 	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	# VM parameters;
-	echo "0" > /proc/sys/vm/swappiness;
-	echo "0" > /proc/sys/vm/vfs_cache_pressure;
-	echo "0" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "0" > /proc/sys/vm/dirty_writeback_centisecs;
 	# CPU scheduler;
 	if [ -e /proc/sys/kernel/rr_interval ];
 	then
@@ -615,11 +586,14 @@ fi;
 # =========
 (while [ 1 ]; 
 do	
-	STATE=`cat /sys/power/wait_for_fb_wake`;
+	KERNEL_GOVERNOR=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor);
+	KERNEL_MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
+
+	STATE=$(cat /sys/power/wait_for_fb_wake);
 	AWAKE_MODE;
 	sleep 3;
 	
-	STATE=`cat /sys/power/wait_for_fb_sleep`;
+	STATE=$(cat /sys/power/wait_for_fb_sleep);
 	SLEEP_MODE;
 	sleep 3;
 done &);
