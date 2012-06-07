@@ -207,10 +207,10 @@ setprop persist.adb.notify 0
 # =========
 # BATTERY-TWEAKS
 # =========
-if [ "$PROFILE" == "battery"]; then
+if [[ "$PROFILE" == "battery" ]]; then
 	MORE_BATTERY=1;
 fi;
-if [ "$PROFILE" == "performance"]; then
+if [[ "$PROFILE" == "performance" ]]; then
 	MORE_SPEED=1;
 fi;
 
@@ -299,6 +299,7 @@ if [ $MORE_BATTERY == 1 ]; then
 	echo "CPU GOVERNOR - battery";
 
 else 
+
 	if [ $MORE_SPEED == 1 ]; then
 
 		if [ $scaling_governor == "ondemand" ]; then
