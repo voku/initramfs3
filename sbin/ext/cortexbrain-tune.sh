@@ -137,9 +137,9 @@ if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
-# =========
+# ==============================================================
 # Remount all partitions
-# =========
+# ==============================================================
 # remount all partitions with noatime, nodiratime
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
 	sync;
@@ -166,7 +166,7 @@ echo "15" > /proc/sys/fs/lease-break-time;
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 
 # ==============================================================
-# TWEAKS
+# KERNEL-TWEAKS
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
@@ -175,6 +175,12 @@ sysctl -w vm.panic_on_oom=0
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
 #echo "64000" > /proc/sys/kernel/msgmax;
+
+log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
+
+# ==============================================================
+# SYSTEM-TWEAKS
+# ==============================================================
 
 # enable Hardware Rendering
 #setprop video.accelerate.hw 1
@@ -198,9 +204,9 @@ setprop persist.adb.notify 0
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
 
-# =========
+# ==============================================================
 # BATTERY-TWEAKS
-# =========
+# ==============================================================
 if [[ "$PROFILE" == "battery" ]]; then
 	MORE_BATTERY=1;
 fi;
@@ -231,9 +237,9 @@ fi;
 
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 
-# =========
+# ==============================================================
 # CPU-TWEAKS
-# ========= 
+# ==============================================================
 
 if [ -e /proc/sys/kernel/rr_interval ]; then
 	# BFS
@@ -338,9 +344,9 @@ fi;
 
 log -p i -t $FILE_NAME "*** cpu tweaks ***: enabled";
 
-# =========
+# ==============================================================
 # MEMORY-TWEAKS
-# =========
+# ==============================================================
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
@@ -367,9 +373,9 @@ echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 
-# =========
-# TWEAKS: for TCP read/write
-# =========
+# ==============================================================
+# TCP-TWEAKS
+# ==============================================================
 echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
 echo "1" > /proc/sys/net/ipv4/tcp_sack;
@@ -399,9 +405,9 @@ setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
 
 log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 
-# =========
-# TWEAKS: optimized for 3G/Edge speed
-# =========
+# ==============================================================
+# 3G/Edge - TWEAKS
+# ==============================================================
 setprop ro.ril.hsxpa 2;
 setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
@@ -409,9 +415,9 @@ setprop ro.ril.gprsclass 12;
 
 log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
 
-# =========
-# Firewall-TWEAKS
-# =========
+# ==============================================================
+# FIREWALL-TWEAKS
+# ==============================================================
 # ping/icmp protection
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
@@ -492,9 +498,9 @@ log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
 /system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 renice -10 ${PIDOFCORTEX};
 
-# =========
+# ==============================================================
 # check for temperature
-# =========
+# ==============================================================
 CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
@@ -505,9 +511,9 @@ if [ $TEMP -ge $MAX_TEMP ]; then
 fi;
 }
 
-# =========
+# ==============================================================
 # TWEAKS: if Screen-ON
-# =========
+# ==============================================================
 AWAKE_MODE()
 {
 
@@ -574,9 +580,9 @@ fi;
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
 
-# =========
+# ==============================================================
 # TWEAKS: if Screen-OFF
-# =========
+# ==============================================================
 SLEEP_MODE()
 {
 
@@ -622,9 +628,9 @@ fi;
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
 
-# =========
+# ==============================================================
 # Background process to check screen state
-# =========
+# ==============================================================
 (while [ 1 ]; do	
 	STATE=$(cat /sys/power/wait_for_fb_wake);
 	AWAKE_MODE;
