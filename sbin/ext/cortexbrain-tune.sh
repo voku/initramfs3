@@ -11,7 +11,7 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
-# read setting
+# read setting from profile
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
@@ -251,6 +251,7 @@ else
 	fi;
 fi;
 
+# set governor from profile
 echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 if [ $MORE_BATTERY == 1 ]; then
