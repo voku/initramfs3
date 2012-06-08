@@ -152,8 +152,13 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d 
 	/sbin/busybox mount -o remount,noatime,nodiratime,commit=30 $k
 done;
 
+sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
+
+sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+
+sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 /system;
 
 echo "15" > /proc/sys/fs/lease-break-time;
@@ -583,14 +588,14 @@ if [ $CHARGING -ge 1 ]; then
 
 	# CPU-Freq
 	echo "$SLEEP_CHARGING_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	MODE="CHARGING";
 
+	MODE="CHARGING";
 else
 
 	# CPU-Freq
 	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	MODE="SLEEP";
 
+	MODE="SLEEP";
 fi;
 
 # enable first core overloading
@@ -619,8 +624,7 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # =========
 # Background process to check screen state
 # =========
-(while [ 1 ]; 
-do	
+(while [ 1 ]; do	
 	STATE=$(cat /sys/power/wait_for_fb_wake);
 	AWAKE_MODE;
 	sleep 5;
@@ -710,8 +714,7 @@ done &);
 #
 # 				echo XXX > /proc/sys/vm/dirty_background_ratio;
 
-# dirty_ratio:	Contains, as a percentage of total system memory, the number of pages at which a process which is generating disk writes will 
-#				itself start writing out dirty data.
+# dirty_ratio:	Contains, as a percentage of total system memory, the number of pages at which a process which is generating disk writes will itself start writing out dirty data.
 #
 # 				echo XXX > /proc/sys/vm/dirty_ratio;
 
