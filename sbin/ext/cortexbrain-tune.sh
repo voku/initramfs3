@@ -516,8 +516,8 @@ if [ $CHARGING -ge 1 ]; then
 	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
-	#load balancing
-	echo "2" /sys/devices/system/cpu/sched_mc_power_saving
+	# load balancing for all cpu-cores
+	echo "2" /sys/devices/system/cpu/sched_mc_power_saving;
 
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -544,7 +544,7 @@ else
 	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# value from settings
-	echo "$sched_mc_power_savings" /sys/devices/system/cpu/sched_mc_power_savings
+	echo "$sched_mc_power_savings" /sys/devices/system/cpu/sched_mc_power_savings;
 
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -594,7 +594,7 @@ else
 fi;
 
 # enable first core overloading
-echo "1" /sys/devices/system/cpu/sched_mc_power_savings
+echo "1" /sys/devices/system/cpu/sched_mc_power_savings;
 
 # CPU scheduler
 if [ -e /proc/sys/kernel/rr_interval ]; then
