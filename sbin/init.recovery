@@ -1,9 +1,8 @@
 #!/sbin/busybox sh
 
-rm /init
+rm -f /init
 mv /innt /init
 cd /
 
-/sbin/busybox unmount /system
 exec /init
 
