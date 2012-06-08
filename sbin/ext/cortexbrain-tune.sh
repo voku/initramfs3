@@ -17,8 +17,8 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_CHARGING_GOVERNOR="conservative";
-SLEEP_GOVERNOR="lazy";
+SLEEP_CHARGING_GOVERNOR="smartass2";
+SLEEP_GOVERNOR="abyssplug";
 SLEEP_MAX_FREQ=200000;
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
@@ -294,7 +294,7 @@ else
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
 
 		if [ $scaling_governor == "lulzactive" ]; then
@@ -338,14 +338,14 @@ log -p i -t $FILE_NAME "*** cpu tweaks ***: enabled";
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
-echo "10" > /proc/sys/vm/dirty_ratio;
+echo "15" > /proc/sys/vm/dirty_ratio;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
 echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "25" > /proc/sys/vm/vfs_cache_pressure;
+echo "50" > /proc/sys/vm/vfs_cache_pressure;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
