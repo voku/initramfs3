@@ -17,6 +17,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
+SLEEP_CHARGING_GOVERNOR="conservative";
 SLEEP_GOVERNOR="lazy";
 SLEEP_MAX_FREQ=200000;
 PIDOFCORTEX=$$;
@@ -581,7 +582,7 @@ CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
 
 	# CPU-Freq
-	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "$SLEEP_CHARGING_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	MODE="CHARGING";
 
 else
