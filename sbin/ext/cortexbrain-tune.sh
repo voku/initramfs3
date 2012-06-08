@@ -18,7 +18,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 SLEEP_GOVERNOR="lazy";
-SLEEP_MAX_FREQ=100000;
+SLEEP_MAX_FREQ=200000;
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
@@ -55,18 +55,15 @@ kmemhelper -n mxt224_data -t char -o 77 46
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
-#renice 19 `pgrep logcat`;
+renice 19 `pgrep logcat`;
 
 # ==============================================================
 # I/O related tweaks 
 # ==============================================================
-DM=`ls -d /sys/block/dm*`;
-LOOP=`ls -d /sys/block/loop*`;
 MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
-RAM=`ls -d /sys/block/ram*`;
 
-for i in $DM $LOOP $MMC $ZRM $RAM; do
+for i in $MMC $ZRM $RAM; do
 
 	if [ -e $i/queue/rotational ]; then
 		echo "0" > $i/queue/rotational;
@@ -136,23 +133,7 @@ for i in $SDCARDREADAHEAD; do
 done;
 
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-        echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
-fi;
-
-if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ]; then
-	echo "1024" > /sys/devices/virtual/bdi/179:16/read_ahead_kb;
-fi;
-
-if [ -e /sys/devices/virtual/bdi/179:24/read_ahead_kb ]; then
-	echo "1024" > /sys/devices/virtual/bdi/179:24/read_ahead_kb;
-fi;
-
-if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]; then
-	echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
-fi;
-
-if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ]; then
-	echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
+        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
 # =========
@@ -167,12 +148,12 @@ done;
 # remount ext4 partitions with optimizations
 for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
 	sync;
-	/sbin/busybox mount -o remount,noatime,nodiratime,commit=20 $k
+	/sbin/busybox mount -o remount,noatime,nodiratime,commit=30 $k
 done;
 
-/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=180,noauto_da_alloc,delalloc /cache;
-/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,nobh,nouser_xattr,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-/sbin/busybox mount -o remount,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=20 /system;
+/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
+/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 /system;
 
 echo "15" > /proc/sys/fs/lease-break-time;
 
@@ -272,7 +253,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 	fi;
 
 	if [ $scaling_governor == "lulzactive" ]; then
@@ -311,8 +292,8 @@ else
 		if [ $scaling_governor == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "15" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		fi;
 
 		if [ $scaling_governor == "lulzactive" ]; then
@@ -363,7 +344,7 @@ echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "70" > /proc/sys/vm/vfs_cache_pressure;
+echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -511,7 +492,7 @@ CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
-	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	log -p i -t $FILE_NAME "*** TEMPERATURE over 50° ***";
 	exit;
 fi;
@@ -546,9 +527,9 @@ if [ $CHARGING -ge 1 ]; then
 		# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
 		if [ -e /proc/sys/kernel/sched_latency_ns ]; then
 			# CFS
-    		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-            echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-    		echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
+    			echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+            		echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+    			echo "800000" > /proc/sys/kernel/sched_min_granularity_ns;
 			echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
 			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 		fi;
@@ -600,7 +581,7 @@ CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
 
 	# CPU-Freq
-	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	MODE="CHARGING";
 
 else
@@ -641,11 +622,11 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 do	
 	STATE=$(cat /sys/power/wait_for_fb_wake);
 	AWAKE_MODE;
-	sleep 3;
+	sleep 5;
 	
 	STATE=$(cat /sys/power/wait_for_fb_sleep);
 	SLEEP_MODE;
-	sleep 3;
+	sleep 5;
 done &);
 
 # ==============================================================
@@ -812,3 +793,4 @@ done &);
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
+

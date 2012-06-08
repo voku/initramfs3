@@ -103,6 +103,6 @@ sleep 30
 
 (
 sleep 60
-/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
+/sbin/busybox sh /sbin/ext/partitions-tune.sh
 )&
 
