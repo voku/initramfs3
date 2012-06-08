@@ -64,7 +64,7 @@ renice 19 `pgrep logcat`;
 MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
 
-for i in $MMC $ZRM $RAM; do
+for i in $MMC $ZRM; do
 
 	if [ -e $i/queue/rotational ]; then
 		echo "0" > $i/queue/rotational;
