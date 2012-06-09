@@ -532,6 +532,10 @@ if [ $CHARGING -ge 1 ]; then
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
+    # cpu - settings for second core
+    echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
+    echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
+
 	# load balancing for all cpu-cores
 	echo "2" /sys/devices/system/cpu/sched_mc_power_saving;
 
@@ -562,6 +566,10 @@ else
 	# cpu - hotplug
 	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
+
+	# cpu - settings for second core
+	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# value from settings
 	echo "$sched_mc_power_savings" /sys/devices/system/cpu/sched_mc_power_savings;
