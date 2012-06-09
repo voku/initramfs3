@@ -6,19 +6,19 @@ busybox mount -t sysfs sysfs /sys
 tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
-  echo 0 > /proc/sys/kernel/rom_feature_set
-  mv /recovery.rc /init.rc
-  cp /res/misc/recovery-init/init.smdk4210.rc /init.smdk4210.rc
-  cp /res/misc/recovery-init/lpm.rc /lpm.rc
-  exec /sbin/init.recovery
+	echo 0 > /proc/sys/kernel/rom_feature_set
+	mv /recovery.rc /init.rc
+	cp /res/misc/recovery-init/init.smdk4210.rc /init.smdk4210.rc
+	cp /res/misc/recovery-init/lpm.rc /lpm.rc
+	exec /sbin/init.recovery
 fi
 
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
-  # low power mode
-  echo 0 > /proc/sys/kernel/rom_feature_set
-  cp lpm.rc init.rc
-  rm init.smdk4210.rc
-  exec /sbin/init.recovery
+	# low power mode
+	echo 0 > /proc/sys/kernel/rom_feature_set
+	cp lpm.rc init.rc
+	rm init.smdk4210.rc
+	exec /sbin/init.recovery
 fi
 
 SECONDROM=1
@@ -33,16 +33,16 @@ umount /preload
 umount /mnt/sdcard
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
-  /sbin/choose_rom
+	/sbin/choose_rom
 else
-  /sbin/choose_rom $SECONDROM
+	/sbin/choose_rom $SECONDROM
 fi
 
 if [ "$?" == "1" ]; then
-  mv /res/misc/cyano/init.smdk4210.rc.2 /res/misc/cyano/init.smdk4210.rc
-  mv /init.rc.2 /init.rc
-  mv /init.miui.2 /init.miui
-  mv /init.b2g.2 /init.b2g
+	mv /res/misc/cyano/init.smdk4210.rc.2 /res/misc/cyano/init.smdk4210.rc
+	mv /init.rc.2 /init.rc
+	mv /init.miui.2 /init.miui
+	mv /init.b2g.2 /init.b2g
 fi
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
@@ -52,10 +52,9 @@ rm -f /system/lib/modules/*.ko
 cp /lib/modules/*.ko /system/lib/modules/
 chmod 777 /system/lib/modules/*.ko
 
-if [ -f /system/recovery.cpio.gz ];
-then
-mount -o remount,rw /
-zcat /system/recovery.cpio.gz | cpio -idmu
+if [ -f /system/recovery.cpio.gz ]; then
+	mount -o remount,rw /
+	zcat /system/recovery.cpio.gz | cpio -idmu
 fi;
 
 AOSP=0
@@ -78,35 +77,38 @@ B2G=0
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
 
 
-if [ "$B2G" == 1 ];
-then
-echo 0 > /proc/sys/kernel/rom_feature_set
-mv /init.b2g /init.rc
-exec /sbin/init.b2g
+if [ "$B2G" == 1 ]; then
+	echo 0 > /proc/sys/kernel/rom_feature_set
+	mv /init.b2g /init.rc
+	if [ -e /system/xbin/bash ]; then
+        	exec /sbin/init.samsung
+	else
+        	exec /sbin/init.b2g
+	fi;
 fi;
 
-if [ "$AOSP" == 1 ];
-then
-echo 1 > /proc/sys/kernel/rom_feature_set
-cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
-chmod 777 /system/lib/libsqlite.so
-#/sbin/busybox umount /system
-exec /sbin/init.cm
+if [ "$AOSP" == 1 ]; then
+	echo 1 > /proc/sys/kernel/rom_feature_set
+	cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
+	chmod 777 /system/lib/libsqlite.so
+	if [ -e /system/xbin/bash ]; then
+		exec /sbin/init.cm
+	else
+		exec /sbin/init.cm-no-bash
+	fi;
 fi;
 
-if [ "$MIUI" == 1 ];
-then
-mv /init.miui /init.rc
-mv /default.prop.miui /default.prop
+if [ "$MIUI" == 1 ]; then
+	mv /init.miui /init.rc
+	mv /default.prop.miui /default.prop
 fi
 
 rm -f /init.miui
 echo 0 > /proc/sys/kernel/rom_feature_set
-#/sbin/busybox umount /system
-if [ -e /system/xbin/bash ]
-then
-exec /sbin/init.samsung
+
+if [ -e /system/xbin/bash ]; then
+	exec /sbin/init.samsung
 else
-exec /sbin/init.recovery
+	exec /sbin/init.recovery
 fi
 

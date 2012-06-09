@@ -1,6 +1,7 @@
 #!/sbin/busybox sh
 
-rm /init
+rm -f /init
 mv /innt /init
 cd /
 exec /init
+
