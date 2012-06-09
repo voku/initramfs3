@@ -27,12 +27,20 @@ on init
     mkdir /tmp
     mkdir /dbdata
     mkdir /mnt 0775 root root
+    mkdir /mnt/.lfs 0775 root root
 
+on fs
+    mount ext4 /dev/block/mmcblk0p9 /system wait ro
     mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait
 
     mkdir /data/log 0777
     mkdir /data/anr 0777
     mount ext4 /dev/block/mmcblk0p10 /data remount rw
+
+on post-fs-data
+# insmod kernel modules
+    insmod /lib/modules/j4fs.ko
+    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs ro
 
 on boot
 # CPU Frequency Governor
