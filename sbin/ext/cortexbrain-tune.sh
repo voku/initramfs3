@@ -528,6 +528,10 @@ if [ $CHARGING -ge 1 ]; then
 	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
+	# cpu - dual core
+	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
+
 	# load balancing for all cpu-cores
 	echo "2" /sys/devices/system/cpu/sched_mc_power_saving;
 
@@ -554,6 +558,10 @@ else
 	# CPU-Freq
 	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+	# cpu - hotplug
+	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 	# value from settings
 	echo "$sched_mc_power_savings" /sys/devices/system/cpu/sched_mc_power_savings;
@@ -604,6 +612,10 @@ else
 
 	MODE="SLEEP";
 fi;
+
+# cpu - single core
+echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # enable first core overloading
 echo "1" /sys/devices/system/cpu/sched_mc_power_savings;
