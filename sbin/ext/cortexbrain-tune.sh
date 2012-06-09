@@ -537,7 +537,10 @@ if [ $CHARGING -ge 1 ]; then
     echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# load balancing for all cpu-cores
-	echo "2" /sys/devices/system/cpu/sched_mc_power_saving;
+	echo "2" > /sys/devices/system/cpu/sched_mc_power_saving;
+
+	# CPU Idle State - IDLE only
+	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -572,7 +575,10 @@ else
 	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# value from settings
-	echo "$sched_mc_power_savings" /sys/devices/system/cpu/sched_mc_power_savings;
+	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
+
+	# CPU Idle State
+	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -626,7 +632,10 @@ echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # enable first core overloading
-echo "1" /sys/devices/system/cpu/sched_mc_power_savings;
+echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
+
+# CPU Idle State - AFTR+LPA
+echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 # CPU scheduler
 if [ -e /proc/sys/kernel/rr_interval ]; then
