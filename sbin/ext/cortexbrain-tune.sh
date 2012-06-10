@@ -17,9 +17,9 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_CHARGING_GOVERNOR="smartass2";
+SLEEP_CHARGING_GOVERNOR="abyssplug";
 SLEEP_GOVERNOR="abyssplug";
-SLEEP_MAX_FREQ=200000;
+SLEEP_MAX_FREQ=500000; # -> Help to reduce SODS reported by users.
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
@@ -187,7 +187,7 @@ log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
 #setprop debug.performance.tuning 1
 #setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
-setprop persist.sys.ui.hw true
+#setprop persist.sys.ui.hw true # ->reported as problem maker in some roms.
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
@@ -201,6 +201,8 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
+setprop wifi.supplicant_scan_interval 240
+setprop pm.sleep_mode 1
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
 
@@ -221,9 +223,6 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
 		echo "battery-calibration done ...";
 fi;
 
-setprop wifi.supplicant_scan_interval 240 
-setprop pm.sleep_mode 1
-
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do
 	echo "auto" > $i;
@@ -241,6 +240,7 @@ log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 # CPU-TWEAKS
 # ==============================================================
 
+DISABLED_TWEAK1 () {
 if [ -e /proc/sys/kernel/rr_interval ]; then
 	# BFS
 	echo "1" > /proc/sys/kernel/rr_interval;
@@ -256,6 +256,8 @@ else
 		echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 	fi;
 fi;
+}
+#DISABLED_TWEAK1 # -> best not to mess wth latencys, all set in kernel already.
 
 # set governor from profile
 echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -524,9 +526,9 @@ CHECK_TEMPERATURE;
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
 
-	# CPU-Freq
-	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	# CPU-Freq # -> Removed by users requet.
+#	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+#	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# cpu - dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
@@ -534,7 +536,7 @@ if [ $CHARGING -ge 1 ]; then
 
     # cpu - settings for second core
     echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
-    echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
+    echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# load balancing for all cpu-cores
 	echo "2" > /sys/devices/system/cpu/sched_mc_power_saving;
@@ -542,6 +544,7 @@ if [ $CHARGING -ge 1 ]; then
 	# CPU Idle State - IDLE only
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
+DISABLE_TWEAK2 () {
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
         # BFS
@@ -558,6 +561,8 @@ if [ $CHARGING -ge 1 ]; then
 			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 		fi;
 	fi;
+}
+#DISABLE_TWEAK2
 
 	MODE="SPEED";
 else
@@ -580,6 +585,7 @@ else
 	# CPU Idle State
 	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
+DISABLE_TWEAK3 () {
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
   		# BFS
@@ -596,6 +602,8 @@ else
 			echo "100000" > /proc/sys/kernel/sched_rt_period_us;
 		fi;
 	fi;
+}
+#DISABLE_TWEAK3
 
 	MODE="AWAKE";
 fi;
@@ -637,6 +645,7 @@ echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
 # CPU Idle State - AFTR+LPA
 echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
+DISABLE_TWEAK4 () {
 # CPU scheduler
 if [ -e /proc/sys/kernel/rr_interval ]; then
 	# BFS
@@ -653,6 +662,8 @@ else
 		echo "1000000" > /proc/sys/kernel/sched_rt_period_us;
 	fi;
 fi;
+}
+#DISABLE_TWEAK4
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
