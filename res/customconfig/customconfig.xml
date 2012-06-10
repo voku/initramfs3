@@ -11,9 +11,13 @@
              <spinnerItem name="Second core always-off" value="always-off"/> 
              <spinnerItem name="Second core always-on" value="always-on"/> 
        </spinner>
+	<!--seekBar description="This is for CPU under voltage to save power, 0=no undervolt -> 7=massive undervolt! use it in your own risk! default=3"
+                name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="7"/-->
+	<seekBar description="This is for CPU BUS-FREQ 400,267,133,100Mhz BUS, 0=MAX Power(400Mhz) -> 4=MAX-Battery Save(100Mhz), default=3(133Mhz)"
+                name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="4"/>
        <seekBar description="Maximum CPU Speed (default is 1200)"
                 name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="Mhz" min="100000" reversed="false" step="100000" max="1500000"/>
-       <seekBar description="Minimum CPU Speed (default is 100)"
+       <seekBar description="Minimum CPU Speed (default is 200)"
                 name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="Mhz" min="100000" reversed="false" step="100000" max="1500000"/>
        <seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
                 name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="35"/>
@@ -56,12 +60,13 @@
       </spinner>
       <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
              <spinnerItem name="pegasusq" value="pegasusq"/>
+	     <spinnerItem name="pegasusq" value="abyssplug"/>
              <spinnerItem name="hotplug" value="hotplug"/>
              <spinnerItem name="ondemand" value="ondemand"/>
              <spinnerItem name="conservative" value="conservative"/>
              <spinnerItem name="lulzactive" value="lulzactive"/>
              <spinnerItem name="smartassV2" value="smartassV2"/>
-             <spinnerItem name="interactive" value="interactive"/>
+             <spinnerItem name="interactive" value="lazy"/>
       </spinner>
       <spinner description="Sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
              <spinnerItem name="1500MHz" value="1"/> 

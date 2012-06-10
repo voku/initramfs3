@@ -17,19 +17,32 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_CHARGING_GOVERNOR="smartass2";
-SLEEP_GOVERNOR="abyssplug";
+SLEEP_CHARGING_GOVERNOR="hotplug";
+SLEEP_GOVERNOR="hotplug";
 SLEEP_MAX_FREQ=200000;
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
 BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
 
+TOUCHSCREENTUNE_ENABLED=0;
+IO_TWEAKS_ENABLED=1;
+KERNEL_TWEAKS_ENABLED=1;
+SYSTEM_TWEAKS_ENABLED=1;
+BATTERY_TWEAKS_ENABLED=1;
+CPU_TWEAKS_ENABLED=1;
+MEMORY_TWEAKS_ENABLED=1;
+TCP_TWEAKS_ENABLED=1;
+RIL_TWEAKS_ENABLED=1;
+FIREWALL_TWEAKS_ENABLED=1;
+BACKGROUND_PROCESS_ENABLED=0;
+
 # ==============================================================
 # Touch Screen tweaks
 # ==============================================================
 
-TOUCHSCREENTUNE () {
+TOUCHSCREENTUNE() 
+{
 # touch sensitivity settings. by GokhanMoral
 (
 # offset 59: MXT224_THRESHOLD_BATT_INIT
@@ -50,17 +63,21 @@ kmemhelper -n mxt224_data -t char -o 67 50
 kmemhelper -n mxt224_data -t char -o 77 46
 )&
 }
-#TOUCHSCREENTUNE #DISABLED
+if [ $TOUCHSCREENTUNE_ENABLED == 1 ]; then
+	TOUCHSCREENTUNE;
+fi;
 
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
 renice 19 `pidof kswapd0`;
-renice 19 `pgrep logcat`;
+renice 10 `pgrep logcat`;
 
 # ==============================================================
-# I/O related tweaks 
+# I/O-TWEAKS 
 # ==============================================================
+IO_TWEAKS()
+{
 MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
 
@@ -137,9 +154,6 @@ if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
-# ==============================================================
-# Remount all partitions
-# ==============================================================
 # remount all partitions with noatime, nodiratime
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
 	sync;
@@ -164,10 +178,16 @@ sync;
 echo "15" > /proc/sys/fs/lease-break-time;
 
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
+}
+if [ $IO_TWEAKS_ENABLED == 1 ]; then
+	IO_TWEAKS;
+fi;
 
 # ==============================================================
 # KERNEL-TWEAKS
 # ==============================================================
+KERNEL_TWEAKS()
+{
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
 #sysctl -w kernel.sem="500 512000 100 2048";
@@ -177,11 +197,16 @@ sysctl -w vm.panic_on_oom=0
 #echo "64000" > /proc/sys/kernel/msgmax;
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
+}
+if [ $KERNEL_TWEAKS_ENABLED == 1 ]; then
+	KERNEL_TWEAKS;
+fi;
 
 # ==============================================================
 # SYSTEM-TWEAKS
 # ==============================================================
-
+SYSTEM_TWEAKS()
+{
 # enable Hardware Rendering
 #setprop video.accelerate.hw 1
 #setprop debug.performance.tuning 1
@@ -201,12 +226,21 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
+setprop wifi.supplicant_scan_interval 240
+setprop pm.sleep_mode 1
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
+}
+if [ $SYSTEM_TWEAKS_ENABLED == 1 ]; then
+	SYSTEM_TWEAKS;
+fi;
+
 
 # ==============================================================
 # BATTERY-TWEAKS
 # ==============================================================
+BATTERY_TWEAKS()
+{
 if [[ "$PROFILE" == "battery" ]]; then
 	MORE_BATTERY=1;
 fi;
@@ -221,9 +255,6 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
 		echo "battery-calibration done ...";
 fi;
 
-setprop wifi.supplicant_scan_interval 240 
-setprop pm.sleep_mode 1
-
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do
 	echo "auto" > $i;
@@ -236,11 +267,16 @@ else
 fi;
 
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
+}
+if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
+	BATTERY_TWEAKS;
+fi;
 
 # ==============================================================
 # CPU-TWEAKS
 # ==============================================================
-
+CPU_TWEAKS()
+{
 if [ -e /proc/sys/kernel/rr_interval ]; then
 	# BFS
 	echo "1" > /proc/sys/kernel/rr_interval;
@@ -343,10 +379,16 @@ else
 fi;
 
 log -p i -t $FILE_NAME "*** cpu tweaks ***: enabled";
+}
+if [ $CPU_TWEAKS_ENABLED == 1 ]; then
+	CPU_TWEAKS;
+fi;
 
 # ==============================================================
 # MEMORY-TWEAKS
 # ==============================================================
+MEMORY_TWEAKS()
+{
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
@@ -372,10 +414,16 @@ echo "50" > /proc/sys/vm/vfs_cache_pressure;
 #echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
 log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
+}
+if [ $MEMORY_TWEAKS_ENABLED == 1 ]; then
+	MEMORY_TWEAKS;
+fi;
 
 # ==============================================================
 # TCP-TWEAKS
 # ==============================================================
+TCP_TWEAKS()
+{
 echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
 echo "1" > /proc/sys/net/ipv4/tcp_sack;
@@ -404,20 +452,32 @@ setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
 setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
 
 log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
+}
+if [ $TCP_TWEAKS_ENABLED == 1 ]; then
+	TCP_TWEAKS;
+fi;
 
 # ==============================================================
 # 3G/Edge - TWEAKS
 # ==============================================================
+RIL_TWEAKS()
+{
 setprop ro.ril.hsxpa 2;
 setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
 setprop ro.ril.gprsclass 12;
 
 log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
+}
+if [ $RIL_TWEAKS_ENABLED == 1 ]; then
+	RIL_TWEAKS;
+fi;
 
 # ==============================================================
 # FIREWALL-TWEAKS
 # ==============================================================
+FIREWALL_TWEAKS()
+{
 # ping/icmp protection
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
@@ -491,12 +551,10 @@ if [ -e /proc/sys/net/ipv6/conf/default/accept_source_route ]; then
 fi
 
 log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
-
-## TODO - check if prozess is already running
-#if ps | grep -v grep | grep $FILE_NAME > /dev/null; then
-
-/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
-renice -10 ${PIDOFCORTEX};
+}
+if [ $FIREWALL_TWEAKS_ENABLED == 1 ]; then
+	FIREWALL_TWEAKS;
+fi;
 
 # ==============================================================
 # check for temperature
@@ -506,10 +564,12 @@ CHECK_TEMPERATURE()
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
 	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	log -p i -t $FILE_NAME "*** TEMPERATURE over 50° ***";
 	exit;
 fi;
 }
+CHECK_TEMPERATURE;
 
 # ==============================================================
 # TWEAKS: if Screen-ON
@@ -660,15 +720,21 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 # Background process to check screen state
 # ==============================================================
-(while [ 1 ]; do	
-	STATE=$(cat /sys/power/wait_for_fb_wake);
-	AWAKE_MODE;
-	sleep 5;
+if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
+
+	/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
+	renice -10 ${PIDOFCORTEX};
+
+	(while [ 1 ]; do	
+		STATE=$(cat /sys/power/wait_for_fb_wake);
+		AWAKE_MODE;
+		sleep 5;
 	
-	STATE=$(cat /sys/power/wait_for_fb_sleep);
-	SLEEP_MODE;
-	sleep 5;
-done &);
+		STATE=$(cat /sys/power/wait_for_fb_sleep);
+		SLEEP_MODE;
+		sleep 5;
+	done &);
+fi;
 
 # ==============================================================
 # Explanations
