@@ -11,7 +11,7 @@
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 
-# read setting
+# read setting from profile
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
@@ -137,9 +137,9 @@ if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
-# =========
+# ==============================================================
 # Remount all partitions
-# =========
+# ==============================================================
 # remount all partitions with noatime, nodiratime
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
 	sync;
@@ -152,8 +152,13 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d 
 	/sbin/busybox mount -o remount,noatime,nodiratime,commit=30 $k
 done;
 
+sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
+
+sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+
+sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=0,commit=30 /system;
 
 echo "15" > /proc/sys/fs/lease-break-time;
@@ -161,7 +166,7 @@ echo "15" > /proc/sys/fs/lease-break-time;
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 
 # ==============================================================
-# TWEAKS
+# KERNEL-TWEAKS
 # ==============================================================
 echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
@@ -170,6 +175,12 @@ sysctl -w vm.panic_on_oom=0
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
 #echo "64000" > /proc/sys/kernel/msgmax;
+
+log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
+
+# ==============================================================
+# SYSTEM-TWEAKS
+# ==============================================================
 
 # enable Hardware Rendering
 #setprop video.accelerate.hw 1
@@ -193,9 +204,9 @@ setprop persist.adb.notify 0
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
 
-# =========
+# ==============================================================
 # BATTERY-TWEAKS
-# =========
+# ==============================================================
 if [[ "$PROFILE" == "battery" ]]; then
 	MORE_BATTERY=1;
 fi;
@@ -226,9 +237,9 @@ fi;
 
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 
-# =========
+# ==============================================================
 # CPU-TWEAKS
-# ========= 
+# ==============================================================
 
 if [ -e /proc/sys/kernel/rr_interval ]; then
 	# BFS
@@ -246,6 +257,7 @@ else
 	fi;
 fi;
 
+# set governor from profile
 echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 if [ $MORE_BATTERY == 1 ]; then
@@ -332,9 +344,9 @@ fi;
 
 log -p i -t $FILE_NAME "*** cpu tweaks ***: enabled";
 
-# =========
+# ==============================================================
 # MEMORY-TWEAKS
-# =========
+# ==============================================================
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
@@ -361,9 +373,9 @@ echo "50" > /proc/sys/vm/vfs_cache_pressure;
 
 log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 
-# =========
-# TWEAKS: for TCP read/write
-# =========
+# ==============================================================
+# TCP-TWEAKS
+# ==============================================================
 echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
 echo "1" > /proc/sys/net/ipv4/tcp_sack;
@@ -393,9 +405,9 @@ setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,110208;
 
 log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 
-# =========
-# TWEAKS: optimized for 3G/Edge speed
-# =========
+# ==============================================================
+# 3G/Edge - TWEAKS
+# ==============================================================
 setprop ro.ril.hsxpa 2;
 setprop ro.ril.hsupa.category 14;
 setprop ro.ril.hsdpa.category 6;
@@ -403,9 +415,9 @@ setprop ro.ril.gprsclass 12;
 
 log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
 
-# =========
-# Firewall-TWEAKS
-# =========
+# ==============================================================
+# FIREWALL-TWEAKS
+# ==============================================================
 # ping/icmp protection
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
@@ -486,9 +498,9 @@ log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
 /system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 renice -10 ${PIDOFCORTEX};
 
-# =========
+# ==============================================================
 # check for temperature
-# =========
+# ==============================================================
 CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
@@ -499,9 +511,9 @@ if [ $TEMP -ge $MAX_TEMP ]; then
 fi;
 }
 
-# =========
+# ==============================================================
 # TWEAKS: if Screen-ON
-# =========
+# ==============================================================
 AWAKE_MODE()
 {
 
@@ -516,8 +528,19 @@ if [ $CHARGING -ge 1 ]; then
 	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
+	# cpu - dual core
+	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
+
+    # cpu - settings for second core
+    echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
+    echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
+
 	# load balancing for all cpu-cores
-	echo "2" /sys/devices/system/cpu/sched_mc_power_saving;
+	echo "2" > /sys/devices/system/cpu/sched_mc_power_saving;
+
+	# CPU Idle State - IDLE only
+	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -543,8 +566,19 @@ else
 	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
+	# cpu - hotplug
+	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
+
+	# cpu - settings for second core
+	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
+
 	# value from settings
-	echo "$sched_mc_power_savings" /sys/devices/system/cpu/sched_mc_power_savings;
+	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
+
+	# CPU Idle State
+	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# CPU scheduler
 	if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -568,9 +602,9 @@ fi;
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
 
-# =========
+# ==============================================================
 # TWEAKS: if Screen-OFF
-# =========
+# ==============================================================
 SLEEP_MODE()
 {
 
@@ -583,18 +617,25 @@ if [ $CHARGING -ge 1 ]; then
 
 	# CPU-Freq
 	echo "$SLEEP_CHARGING_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	MODE="CHARGING";
 
+	MODE="CHARGING";
 else
 
 	# CPU-Freq
 	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	MODE="SLEEP";
 
+	MODE="SLEEP";
 fi;
 
+# cpu - single core
+echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+
 # enable first core overloading
-echo "1" /sys/devices/system/cpu/sched_mc_power_savings;
+echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
+
+# CPU Idle State - AFTR+LPA
+echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 # CPU scheduler
 if [ -e /proc/sys/kernel/rr_interval ]; then
@@ -616,11 +657,10 @@ fi;
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
 
-# =========
+# ==============================================================
 # Background process to check screen state
-# =========
-(while [ 1 ]; 
-do	
+# ==============================================================
+(while [ 1 ]; do	
 	STATE=$(cat /sys/power/wait_for_fb_wake);
 	AWAKE_MODE;
 	sleep 5;
@@ -710,8 +750,7 @@ done &);
 #
 # 				echo XXX > /proc/sys/vm/dirty_background_ratio;
 
-# dirty_ratio:	Contains, as a percentage of total system memory, the number of pages at which a process which is generating disk writes will 
-#				itself start writing out dirty data.
+# dirty_ratio:	Contains, as a percentage of total system memory, the number of pages at which a process which is generating disk writes will itself start writing out dirty data.
 #
 # 				echo XXX > /proc/sys/vm/dirty_ratio;
 
@@ -794,4 +833,3 @@ done &);
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
-
