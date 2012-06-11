@@ -19,7 +19,7 @@ FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 SLEEP_CHARGING_GOVERNOR="hotplug";
 SLEEP_GOVERNOR="hotplug";
-SLEEP_MAX_FREQ=200000;
+SLEEP_MAX_FREQ=100000;
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
@@ -212,7 +212,7 @@ SYSTEM_TWEAKS()
 #setprop debug.performance.tuning 1
 #setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
-setprop persist.sys.ui.hw true
+#setprop persist.sys.ui.hw true
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
@@ -246,6 +246,11 @@ if [[ "$PROFILE" == "battery" ]]; then
 fi;
 if [[ "$PROFILE" == "performance" ]]; then
 	MORE_SPEED=1;
+fi;
+
+# WIFI PM-FAST Support
+if [ -e /sys/module/bcmdhd/parameters/wifi_pm ]; then
+	echo "1" > /sys/module/bcmdhd/parameters/wifi_pm;
 fi;
 
 # battery-calibration if battery is full
@@ -592,9 +597,9 @@ if [ $CHARGING -ge 1 ]; then
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
-    # cpu - settings for second core
-    echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
-    echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
+	# cpu - settings for second core
+	echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# load balancing for all cpu-cores
 	echo "2" > /sys/devices/system/cpu/sched_mc_power_saving;
