@@ -16,12 +16,12 @@
 	<seekBar description="This is for CPU BUS-FREQ 400,267,133,100Mhz BUS, 0=MAX Power(400Mhz) -> 4=MAX-Battery Save(100Mhz), DO NOT USE 4 WHEN more than 1.2Ghz OC! default=3(133Mhz)"
                 name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="4"/>
         <seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%"
-                name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="10" reversed="false" step="5" max="70"/>
+                name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="20" reversed="false" step="5" max="50"/>
         <seekBar description="This is for CPU BUS-FREQ DOWN-FREQ-Scaling, based on CPU load! default=30%"
-                name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" unit="%" min="10" reversed="false" step="5" max="70"/>
+                name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" unit="%" min="20" reversed="false" step="5" max="50"/>
 	<seekBar description="Maximum CPU Speed (default is 1200)"
                 name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
-	<seekBar description="Minimum CPU Speed (default is 100)"
+	<seekBar description="Minimum CPU Speed (default is 200)"
                 name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 	<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
                 name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="35"/>
