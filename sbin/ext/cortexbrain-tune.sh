@@ -18,7 +18,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 SLEEP_CHARGING_GOVERNOR="hotplug";
-SLEEP_GOVERNOR="hotplug";
+SLEEP_GOVERNOR="abyssplug";
 SLEEP_MAX_FREQ=100000;
 PIDOFCORTEX=$$;
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
@@ -30,7 +30,7 @@ IO_TWEAKS_ENABLED=1;
 KERNEL_TWEAKS_ENABLED=1;
 SYSTEM_TWEAKS_ENABLED=1;
 BATTERY_TWEAKS_ENABLED=1;
-CPU_TWEAKS_ENABLED=1;
+CPU_TWEAKS_ENABLED=0;
 MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=1;
@@ -78,8 +78,10 @@ renice 10 `pgrep logcat`;
 # ==============================================================
 IO_TWEAKS()
 {
+MMC=`ls -d /sys/block/mmc*`;
 ZRM=`ls -d /sys/block/zram*`;
-for i in $MMC; do
+
+for z in $ZRM; do
 
 	if [ -e $i/queue/rotational ]; then
 		echo "0" > $i/queue/rotational;
@@ -99,7 +101,6 @@ for i in $MMC; do
 
 done;
 
-MMC=`ls -d /sys/block/mmc*`;
 for i in $MMC; do
 
 	if [ -e $i/queue/rotational ]; then
@@ -227,7 +228,7 @@ SYSTEM_TWEAKS()
 #setprop debug.performance.tuning 1
 #setprop debug.sf.hw 1
 setprop persist.sys.use_dithering 1
-#setprop persist.sys.ui.hw true
+#setprop persist.sys.ui.hw true # ->reported as problem maker in some roms.
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
@@ -256,18 +257,18 @@ fi;
 # ==============================================================
 BATTERY_TWEAKS()
 {
+#WIFI PM-FAST Support.
+if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+	echo "1" > /sys/module/dhd/parameters/wifi_pm
+fi;
+
 if [[ "$PROFILE" == "battery" ]]; then
 	MORE_BATTERY=1;
 	MORE_SPEED=0;
 fi;
 if [[ "$PROFILE" == "performance" ]]; then
-	MORE_BATTERY=0;
 	MORE_SPEED=1;
-fi;
-
-# WIFI PM-FAST Support
-if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-	echo "1" > /sys/module/dhd/parameters/wifi_pm;
+	MORE_BATTERY=0;
 fi;
 
 # battery-calibration if battery is full
@@ -297,23 +298,25 @@ fi;
 # ==============================================================
 # CPU-TWEAKS
 # ==============================================================
+
 CPU_TWEAKS()
 {
-#if [ -e /proc/sys/kernel/rr_interval ]; then
-#	# BFS
-#	echo "1" > /proc/sys/kernel/rr_interval;
-#	echo "100" > /proc/sys/kernel/iso_cpu;
-#else
-#	# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
-#	if [ -e /proc/sys/kernel/sched_latency_ns ]; then
-#		# CFS
-#		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-#		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-#		echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-#		echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-#		echo "100000" > /proc/sys/kernel/sched_rt_period_us;
-#	fi;
-#fi;
+if [ -e /proc/sys/kernel/rr_interval ]; then
+	# BFS
+	echo "1" > /proc/sys/kernel/rr_interval;
+	echo "100" > /proc/sys/kernel/iso_cpu;
+else
+	# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
+	if [ -e /proc/sys/kernel/sched_latency_ns ]; then
+		# CFS
+		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
+		echo "100000" > /proc/sys/kernel/sched_rt_period_us;
+	fi;
+fi;
+}
 
 # set governor from profile
 echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -401,7 +404,7 @@ else
 fi;
 
 log -p i -t $FILE_NAME "*** cpu tweaks ***: enabled";
-}
+
 if [ $CPU_TWEAKS_ENABLED == 1 ]; then
 	CPU_TWEAKS;
 fi;
@@ -411,7 +414,6 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-#echo "0" > /proc/sys/vm/swappiness;
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
@@ -587,7 +589,7 @@ CHECK_TEMPERATURE()
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
 	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))° ***";
 	exit;
 fi;
@@ -607,28 +609,23 @@ CHECK_TEMPERATURE;
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
 
-	# CPU-Freq
-	echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-
 	# cpu - dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
-	# cpu - settings for second core
-	echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
-
-	# load balancing - off
-	echo "0" > /sys/devices/system/cpu/sched_mc_power_saving;
+        # CPU-Freq
+        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	# CPU Idle State - IDLE only
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
-	# Bus Freq for deep sleep
-	echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-	echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+        # Bus Freq for Powered Mod
+        echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
+        echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+        echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+
+        # load balancing - off
+        echo "0" > /sys/devices/system/cpu/sched_mc_power_savings;
 
 	MODE="SPEED";
 else
@@ -645,7 +642,7 @@ else
 	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# Bus Freq for default mode
+	# Bus Freq for deep sleep
 	echo "$busfreq_asv_group" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
 	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "$busfreq_down_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
@@ -691,12 +688,12 @@ echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
-echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group
+echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
+echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 
 # enable first core overloading
-echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
+echo "2" > /sys/devices/system/cpu/sched_mc_power_savings;
 
 # CPU Idle State - AFTR+LPA
 echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
@@ -886,4 +883,3 @@ fi;
 # 				example of C program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
-

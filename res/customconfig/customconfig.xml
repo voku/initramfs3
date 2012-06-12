@@ -11,8 +11,8 @@
              <spinnerItem name="Second core always-off" value="always-off"/> 
              <spinnerItem name="Second core always-on" value="always-on"/> 
        </spinner>
-	<!--seekBar description="This is for CPU under voltage to save power, 0=no undervolt -> 7=massive undervolt! use it in your own risk! default=3"
-                name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="7"/-->
+	<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 7=massive undervolt! -100mV use it in your own risk! default=3"
+                name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="7"/>
 	<seekBar description="This is for CPU BUS-FREQ 400,267,133,100Mhz BUS, 0=MAX Power(400Mhz) -> 4=MAX-Battery Save(100Mhz), DO NOT USE 4 WHEN more than 1.2Ghz OC! default=3(133Mhz)"
                 name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="4"/>
         <seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%"
@@ -23,6 +23,10 @@
                 name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 	<seekBar description="Minimum CPU Speed (default is 200)"
                 name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
+        <seekBar description="Maximum DEEP SLEEP CPU Speed (default is 800)"
+                name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+        <seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)"
+                name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 	<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
                 name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="35"/>
 	<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)"
@@ -225,15 +229,7 @@
       <button description="Dual Mount USB Switch" name="DUAL MOUNT" action="dualmount" label="Dual Mount"/>
     </settingsPane>
     <settingsPane description="Misc Settings" name="Misc Settings">
-      <!-- button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/ -->
       <checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
-      <!-- spinner description="This will set the suspend frequency used in ondemand governor to have ondemandX behaviour. This will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps and only effective while ondemand governor is in use." name="Default Ondemand Suspend Freq." action="generic /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq">
-             <spinnerItem name="1200MHz" value="1200000"/> 
-             <spinnerItem name="1000MHz" value="1000000"/> 
-             <spinnerItem name="800MHz" value="800000"/> 
-             <spinnerItem name="500MHz" value="500000"/> 
-             <spinnerItem name="200MHz" value="200000"/> 
-      </spinner -->
       <spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
              <spinnerItem name="sio" value="sio"/> 
              <spinnerItem name="noop" value="noop"/> 
