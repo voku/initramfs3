@@ -394,7 +394,7 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-echo "0" > /proc/sys/vm/swappiness;
+#echo "0" > /proc/sys/vm/swappiness;
 echo "200" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio;
