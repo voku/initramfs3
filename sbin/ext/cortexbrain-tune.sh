@@ -640,6 +640,11 @@ else
 	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
 
+	# Bus Freq for deep sleep
+	echo "$busfreq_asv_group" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
+	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	echo "$busfreq_down_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+
 	# value from settings
 	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
 
@@ -674,7 +679,7 @@ log -p i -t $FILE_NAME "*** $MODE Mode ***";
 SLEEP_MODE()
 {
 
-# charging & screen is off 
+# check for temperature
 CHECK_TEMPERATURE;
 
 # charging & screen is off
@@ -696,6 +701,11 @@ fi;
 # cpu - single core
 echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+
+# Bus Freq for deep sleep
+echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
+echo "60" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "60" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # enable first core overloading
 echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
