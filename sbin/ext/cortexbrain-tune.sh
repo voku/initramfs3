@@ -29,6 +29,7 @@ IO_TWEAKS_ENABLED=1;
 KERNEL_TWEAKS_ENABLED=1;
 SYSTEM_TWEAKS_ENABLED=1;
 BATTERY_TWEAKS_ENABLED=1;
+GPS_TWEAKS_ENABLED=1;
 CPU_GOV_TWEAKS_ENABLED=1;
 CPU_SCHED_TWEAKS_ENABLED=0;
 MEMORY_TWEAKS_ENABLED=1;
@@ -270,6 +271,22 @@ rm -rf /preload/lost+found/* 2> /dev/null;
 rm -rf /cache/lost+found/* 2> /dev/null;
 rm -rf /data/tombstones/* 2> /dev/null;
 rm -rf /data/anr/* 2> /dev/null;
+
+# ==============================================================
+# GPS-TWEAKS
+# ==============================================================
+GPS_TWEAKS()
+{
+zone=getprop persist.sys.country;
+for i in "de" "en" "fr"; do
+	if [ "$ZONE" = "$i" ]; then
+		sed -i "s/NTP_SERVER[.a-zA-Z\=-]*/NTP_SERVER="${ZONE}".pool.ntp.org/g" /system/etc/gps.conf
+	fi;
+done;
+}
+if [ $GPS_TWEAKS_ENABLED == 1 ]; then
+	GPS_TWEAKS;
+fi;
 
 # ==============================================================
 # BATTERY-TWEAKS
