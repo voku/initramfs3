@@ -277,10 +277,10 @@ rm -rf /data/anr/* 2> /dev/null;
 # ==============================================================
 GPS_TWEAKS()
 {
-zone=getprop persist.sys.country;
+country=getprop persist.sys.country;
 for i in "de" "en" "fr"; do
-	if [ "$ZONE" = "$i" ]; then
-		sed -i "s/NTP_SERVER[.a-zA-Z\=-]*/NTP_SERVER="${ZONE}".pool.ntp.org/g" /system/etc/gps.conf
+	if [ "$country" = "$i" ]; then
+		sed -i "s/NTP_SERVER[.a-zA-Z\=-]*/NTP_SERVER="${country}".pool.ntp.org/g" /system/etc/gps.conf
 	fi;
 done;
 }
