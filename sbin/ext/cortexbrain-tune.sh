@@ -376,7 +376,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
-        if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
+	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
 		echo "40" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
@@ -428,19 +428,19 @@ else
 			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 		fi;
 
-        	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
-                	echo "10" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
-                	echo "20" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
+		if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
+			echo "10" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
+			echo "20" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 			echo "60" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
-                	echo "100000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
-        	fi;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
+		fi;
 
-                if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-                        echo "10" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-                        echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
+			echo "10" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+			echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 			echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-                        echo "100000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
-                fi;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+		fi;
 
 	fi;
 
