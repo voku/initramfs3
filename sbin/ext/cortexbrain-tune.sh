@@ -342,9 +342,9 @@ if [ $MORE_BATTERY == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -369,19 +369,18 @@ if [ $MORE_BATTERY == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
         if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
-                echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
-                echo "40" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
+		echo "40" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
-                echo "120000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
-
+		echo "120000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
@@ -395,9 +394,9 @@ else
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -422,11 +421,11 @@ else
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+			echo "40" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "40" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 		fi;
 
         	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
@@ -449,7 +448,7 @@ fi;
 log -p i -t $FILE_NAME "*** cpu gov tweaks ***: enabled";
 }
 if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
-        CPU_GOV_TWEAKS;
+	CPU_GOV_TWEAKS;
 fi;
 
 # ==============================================================
