@@ -49,3 +49,9 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox gre
         /sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
 
+# ==============================================================
+# CLEANING-TWEAKS
+# ==============================================================
+rm -rf /emmc/lost+found/* 2> /dev/null;
+rm -rf /sdcard/lost+found/* 2> /dev/null;
+

@@ -26,7 +26,7 @@
         <seekBar description="Maximum DEEP SLEEP CPU Speed (default is 800)"
                 name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
         <seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)"
-                name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+                name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 	<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
                 name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="35"/>
 	<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)"
@@ -68,7 +68,7 @@
       </spinner>
       <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
              <spinnerItem name="pegasusq" value="pegasusq"/>
-	     <spinnerItem name="pegasusq" value="abyssplug"/>
+	     <spinnerItem name="abyssplug" value="abyssplug"/>
              <spinnerItem name="hotplug" value="hotplug"/>
              <spinnerItem name="ondemand" value="ondemand"/>
              <spinnerItem name="conservative" value="conservative"/>
