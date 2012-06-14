@@ -1,9 +1,9 @@
 <settingsRoot>
   <settingsTab name="CPU">
-    <!-- settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
+    <settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
       <checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
       <checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
-    </settingsPane -->
+    </settingsPane>
     <settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." 
 		name="CPU Hotplug Settings">
        <spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
@@ -74,7 +74,6 @@
              <spinnerItem name="conservative" value="conservative"/>
              <spinnerItem name="lulzactive" value="lulzactive"/>
              <spinnerItem name="smartassV2" value="smartassV2"/>
-             <spinnerItem name="interactive" value="lazy"/>
       </spinner>
       <spinner description="Sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
              <spinnerItem name="1500MHz" value="1"/> 
@@ -95,19 +94,19 @@
              <spinnerItem name="9 (1500->100-9-Steps)" value="9"/> 
              <spinnerItem name="15 (1500->100-15-Steps)" value="15"/> 
       </spinner>
-      <spinner description="Sets the CPU undervolting value which will be apploed during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
+      <!--spinner description="Sets the CPU undervolting value which will be apploed during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
              <spinnerItem name="No Undervolting" value="0"/> 
              <spinnerItem name=" -25 mV" value="-25"/> 
              <spinnerItem name=" -50 mV" value="-50"/> 
              <spinnerItem name=" -75 mV" value="-75"/> 
              <spinnerItem name="-100 mV" value="-100"/> 
-      </spinner>
+      </spinner-->
     </settingsPane>
 
   </settingsTab>
 
   <settingsTab name="GPU">
-    <settingsPane description="GPU Frequency Settings. Normally, our device has 2 frequency steps. SiyahKernel has three steps but the third step is not enabled as default. The defaults are 160,267 and 267. Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
+    <settingsPane description="GPU Frequency Settings. Normally, our device has 2 frequency steps. This Kernel has three steps but the third step is not enabled as default. The defaults are 160,267 and 267. Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
       <spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
              <spinnerItem name="400MHz" value="400"/> 
              <spinnerItem name="267MHz" value="267"/> 
@@ -230,6 +229,21 @@
     </settingsPane>
     <settingsPane description="Misc Settings" name="Misc Settings">
       <checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
+	<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." name="ZRAM Settings" action="zramtweaks">
+             <spinnerItem name="Set ZRAM to 150MB" value="0"/>
+             <spinnerItem name="Set ZRAM to 300MB (default)" value="1"/>
+             <spinnerItem name="Set ZRAM to 600MB!" value="2"/>
+	     <spinnerItem name="Set ZRAM OFF!" value="3"/>
+       </spinner>
+	<button description="ZRAM check for active state" name="ZRAM STATS" action="zramstats" label="ZRAM STATS"/>
+	<spinner description="GPS Time Zone for faster LOCK! use your rigion to fix GPS location!" name="GPS Region" action="gpsregion">
+             <spinnerItem name="Set Asia (default)" value="0"/>
+             <spinnerItem name="Set Europe" value="1"/>
+             <spinnerItem name="Set Oceania" value="2"/>
+             <spinnerItem name="Set North America" value="3"/>
+	     <spinnerItem name="Set South America" value="4"/>
+	     <spinnerItem name="Set Africa" value="5"/>
+       </spinner>
       <spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
              <spinnerItem name="sio" value="sio"/> 
              <spinnerItem name="noop" value="noop"/> 

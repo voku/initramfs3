@@ -182,25 +182,23 @@ if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
 fi;
 
 # remount all partitions with noatime, nodiratime
+sync;
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
-	sync;
 	/sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
 
 # remount ext4 partitions with optimizations
 for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
-	sync;
 	/sbin/busybox mount -o remount,noatime,nodiratime,commit=30 $k
 done;
-
 sync;
+
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
 
-sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
 
-sync;
 /sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=1,commit=120 /system;
+sync;
 
 echo "15" > /proc/sys/fs/lease-break-time;
 

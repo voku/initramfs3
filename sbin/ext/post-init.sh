@@ -99,7 +99,7 @@ sleep 30
 )&
 
 (
-sleep 30
+sleep 60
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 )&
 

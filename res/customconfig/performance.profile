@@ -1,3 +1,5 @@
+GENTLE_FAIR_SLEEPERS=off
+ARCH_POWER=on
 GPUFREQ1=100
 GPUFREQ2=160
 GPUFREQ3=200
@@ -23,6 +25,8 @@ enable_mask=3
 sched_mc_power_savings=0
 chargecurrent=2
 logger=off
+zramtweaks=2
+gpsregion=0
 secondcore=hotplug
 scheduler=sio
 scaling_governor=ondemand

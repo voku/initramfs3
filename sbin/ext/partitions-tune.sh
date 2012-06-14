@@ -45,7 +45,6 @@ done;
 # remount all partitions with noatime, nodiratime
 # =========
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
-        sync;
         /sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
 
