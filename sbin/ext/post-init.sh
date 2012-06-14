@@ -82,9 +82,6 @@ chmod 777 /mnt/ntfs
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Early-init phase tweaks #####
-/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
-
-/sbin/busybox rm /system/etc/init.d/200dori-tweaks
 
 ##### EFS Backup #####
 (
@@ -99,6 +96,11 @@ sleep 30
 ##### init scripts #####
 (
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
+)&
+
+(
+sleep 60
+/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 )&
 
 (

@@ -45,7 +45,12 @@ done;
 # remount all partitions with noatime, nodiratime
 # =========
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
-        sync;
         /sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
+
+# ==============================================================
+# CLEANING-TWEAKS
+# ==============================================================
+rm -rf /emmc/lost+found/* 2> /dev/null;
+rm -rf /sdcard/lost+found/* 2> /dev/null;
 

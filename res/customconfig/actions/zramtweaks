@@ -1,0 +1,104 @@
+#!/sbin/busybox sh
+
+# ZRAM
+# insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)
+# Now we load the ZRAM as RAM SWAP and gain more compressed RAM.
+# ZRAM compress ratio is 50% so if set 300MB, then it will give clean 150MB More RAM,
+# This gives us 1GB RAM device or more.
+
+# Setting swappines
+echo "40" > /proc/sys/vm/swappiness;
+
+if [ "a$2" != "a" ]; then
+	zramtweaks=$2
+	echo $zramtweaks
+
+case "${zramtweaks}" in
+	0)
+	if [ -e /dev/block/zram0 ]; then
+		# For on the fly changes we need to shutdown ZRAM first.
+                swapoff /dev/block/zram0 >/dev/null 2>&1;
+                swapoff /dev/block/zram1 >/dev/null 2>&1;
+                swapoff /dev/block/zram2 >/dev/null 2>&1;
+		echo "1" > /sys/block/zram0/reset
+		echo "1" > /sys/block/zram1/reset
+		echo "1" > /sys/block/zram2/reset
+        	# Setting size of each ZRAM swap drives
+        	echo "51204000" > /sys/block/zram0/disksize;
+        	echo "51204000" > /sys/block/zram1/disksize;
+        	echo "51204000" > /sys/block/zram2/disksize;
+        	# Creating SWAPS from ZRAM drives
+        	mkswap /dev/block/zram0 >/dev/null;
+        	mkswap /dev/block/zram1 >/dev/null;
+        	mkswap /dev/block/zram2 >/dev/null;
+        	# Activating ZRAM swaps with the same priority to load balance ram swapping.
+        	swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
+        	swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
+        	swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+	fi;
+    	;;
+	1)
+        if [ -e /dev/block/zram0 ]; then
+                # For on the fly changes we need to shutdown ZRAM first.
+                swapoff /dev/block/zram0 >/dev/null 2>&1;
+                swapoff /dev/block/zram1 >/dev/null 2>&1;
+                swapoff /dev/block/zram2 >/dev/null 2>&1;
+                echo "1" > /sys/block/zram0/reset
+                echo "1" > /sys/block/zram1/reset
+                echo "1" > /sys/block/zram2/reset
+                # Setting size of each ZRAM swap drives
+                echo "102402000" > /sys/block/zram0/disksize;
+                echo "102402000" > /sys/block/zram1/disksize;
+                echo "102402000" > /sys/block/zram2/disksize;
+                # Creating SWAPS from ZRAM drives
+                mkswap /dev/block/zram0 >/dev/null;
+                mkswap /dev/block/zram1 >/dev/null;
+                mkswap /dev/block/zram2 >/dev/null;
+                # Activating ZRAM swaps with the same priority to load balance ram swapping.
+                swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
+                swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
+                swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+        fi;
+	;;
+	2)
+        if [ -e /dev/block/zram0 ]; then
+                # For on the fly changes we need to shutdown ZRAM first.
+                swapoff /dev/block/zram0 >/dev/null 2>&1;
+                swapoff /dev/block/zram1 >/dev/null 2>&1;
+                swapoff /dev/block/zram2 >/dev/null 2>&1;
+                echo "1" > /sys/block/zram0/reset
+                echo "1" > /sys/block/zram1/reset
+                echo "1" > /sys/block/zram2/reset
+                # Setting size of each ZRAM swap drives
+                echo "204804000" > /sys/block/zram0/disksize;
+                echo "204804000" > /sys/block/zram1/disksize;
+                echo "204804000" > /sys/block/zram2/disksize;
+                # Creating SWAPS from ZRAM drives
+                mkswap /dev/block/zram0 >/dev/null;
+                mkswap /dev/block/zram1 >/dev/null;
+                mkswap /dev/block/zram2 >/dev/null;
+                # Activating ZRAM swaps with the same priority to load balance ram swapping.
+                swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
+                swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
+                swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+        fi;
+	;;
+	3)
+	if [ -e /dev/block/zram0 ]; then
+		swapoff /dev/block/zram0 >/dev/null 2>&1;
+		swapoff /dev/block/zram1 >/dev/null 2>&1;
+		swapoff /dev/block/zram2 >/dev/null 2>&1;
+                echo "1" > /sys/block/zram0/reset
+                echo "1" > /sys/block/zram1/reset
+                echo "1" > /sys/block/zram2/reset
+	fi;
+	;;
+	*)
+    	zramtweaks=1
+    	;;
+esac;
+fi;
+
+echo ${zramtweaks}
+cat /proc/swaps
+
