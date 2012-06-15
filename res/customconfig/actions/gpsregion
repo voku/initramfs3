@@ -19,6 +19,7 @@ case "${gpsregion}" in
 		echo "NTP_SERVER=1.asia.pool.ntp.org" >> /system/etc/gps.conf
 		echo "NTP_SERVER=2.asia.pool.ntp.org" >> /system/etc/gps.conf
 		echo "NTP_SERVER=3.asia.pool.ntp.org" >> /system/etc/gps.conf
+		GPSZONE=Asia
 	fi;
 	;;
 	1)
@@ -33,6 +34,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=1.europe.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=2.europe.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=3.europe.pool.ntp.org" >> /system/etc/gps.conf
+		GPSZONE=Europe
 	fi;
 	;;
 	2)
@@ -47,6 +49,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=1.oceania.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=2.oceania.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=3.oceania.pool.ntp.org" >> /system/etc/gps.conf
+		GPSZONE=Oceania
         fi;
 	;;
 	3)
@@ -61,6 +64,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=1.north-america.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=2.north-america.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=3.north-america.pool.ntp.org" >> /system/etc/gps.conf
+		GPSZONE=North-America
         fi;
 	;;
 	4)
@@ -75,6 +79,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=1.south-america.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=2.south-america.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=3.south-america.pool.ntp.org" >> /system/etc/gps.conf
+		GPSZONE=South-America
         fi;
 	;;
 	5)
@@ -87,6 +92,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=3.africa.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=1.pool.ntp.org" >> /system/etc/gps.conf
                 echo "NTP_SERVER=3.pool.ntp.org" >> /system/etc/gps.conf
+		GPSZONE=Africa
         fi;
 	;;
 	*)
@@ -95,5 +101,5 @@ case "${gpsregion}" in
 esac;
 fi;
 
-echo ${gpsregion}
+echo ${GPSZONE}
 
