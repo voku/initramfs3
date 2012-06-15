@@ -366,12 +366,6 @@ service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
     disabled
     oneshot
 
-# for bluetooth pan
-service dhcpcd_bnep0 /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
-
 # bluetooth mac address
 service bdaddr /system/bin/bdaddr_read
     class main
