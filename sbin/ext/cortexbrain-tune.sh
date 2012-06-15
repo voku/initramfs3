@@ -35,7 +35,7 @@ MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
 FIREWALL_TWEAKS_ENABLED=1;
-BACKGROUND_PROCESS_ENABLED=0;
+BACKGROUND_PROCESS_ENABLED=1;
 
 # Static sets for functions, they will be changes by other functions later.
 # TODO: Add DEFAULT_BALANCE for Default profile now it's=MORE_BATTERY=1
