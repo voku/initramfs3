@@ -13,6 +13,7 @@ echo "50" > /proc/sys/vm/swappiness;
 # $2 - value=
 
 zramtweaks=$2
+echo zramtweaks
 
 case "${zramtweaks}" in
 	0)

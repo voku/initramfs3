@@ -55,8 +55,8 @@
     </settingsPane>
 	<settingsPane description="Here you can set all the settings for power save!"
                 name="CPU Idle and Power Settings">
-	<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 7=massive undervolt! -100mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!"
-                name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="7"/>
+	<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!"
+                name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
       <spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
              <spinnerItem name="No Undervolting" value="0"/>
              <spinnerItem name=" -25 mV" value="-25"/>

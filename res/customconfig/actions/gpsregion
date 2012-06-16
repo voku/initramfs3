@@ -4,6 +4,7 @@
 # $2 - value=
 
 gpsregion=$2
+echo gpsregion
 
 /sbin/busybox mount -o remount,rw /system
 
