@@ -7,11 +7,12 @@
 # This gives us 1GB RAM device or more.
 
 # Setting swappines
-echo "40" > /proc/sys/vm/swappiness;
+echo "50" > /proc/sys/vm/swappiness;
 
-if [ "a$2" != "a" ]; then
-	zramtweaks=$2
-	echo $zramtweaks
+# $1 - "zramtweaks"
+# $2 - value=
+
+zramtweaks=$2
 
 case "${zramtweaks}" in
 	0)
@@ -97,8 +98,7 @@ case "${zramtweaks}" in
     	zramtweaks=1
     	;;
 esac;
-fi;
 
-echo ${zramtweaks}
+echo "${zramtweaks}"
 cat /proc/swaps
 

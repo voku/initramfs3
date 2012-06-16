@@ -32,7 +32,7 @@ scheduler=sio
 scaling_governor=ondemand
 scaling_max_freq=1500000
 scaling_min_freq=100000
-scaling_max_suspend_freq=800000
+scaling_max_suspend_freq=600000
 scaling_min_suspend_freq=100000
 load_l1=20
 load_h0=30
@@ -54,4 +54,6 @@ led_fadeout=on
 led_on_touch=off
 cpu_undervolting=0
 smooth_level0=4
+deep_sleep_batt=abyssplug
+deep_sleep_ac=pegasusq
 

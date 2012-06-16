@@ -7,7 +7,7 @@
 
 echo "Swaps Status"
 cat /proc/swaps
-sleep 4
+sleep 3
 
 echo "ZRAM STATS"
 stats=(
