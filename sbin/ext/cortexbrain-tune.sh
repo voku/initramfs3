@@ -18,9 +18,10 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_CHARGING_GOVERNOR="hotplug";
-SLEEP_GOVERNOR="abyssplug";
+SLEEP_CHARGING_GOVERNOR=$deep_sleep_ac
+SLEEP_GOVERNOR=$deep_sleep_batt
 EXTWEAKS_GOVERNOR=$scaling_governor
+SMOOTH_LEVEL=$smooth_level0
 PIDOFCORTEX=$$;
 
 # Functions triggers.
@@ -30,7 +31,7 @@ KERNEL_TWEAKS_ENABLED=1;
 SYSTEM_TWEAKS_ENABLED=1;
 BATTERY_TWEAKS_ENABLED=1;
 CPU_GOV_TWEAKS_ENABLED=1;
-CPU_SCHED_TWEAKS_ENABLED=1;
+CPU_SCHED_TWEAKS_ENABLED=0;
 MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
@@ -645,6 +646,9 @@ AWAKE_MODE()
 # check for temperature
 CHECK_TEMPERATURE;
 
+# Restore Smooth Level
+kmemhelper -n smooth_level -o 0 -t int $SMOOTH_LEVEL
+
 # charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
@@ -746,6 +750,9 @@ echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group
 echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
 echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 
+# Smooth Level set to 800Mhz just in case.
+kmemhelper -n smooth_level -o 0 -t int 8
+
 MORE_BATTERY=1;
 MORE_SPEED=0;
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
@@ -778,6 +785,11 @@ if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 		sleep 5;
 	
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
+		. /data/.siyah/$PROFILE.profile;
+		SLEEP_CHARGING_GOVERNOR=$deep_sleep_ac
+		SLEEP_GOVERNOR=$deep_sleep_batt
+		EXTWEAKS_GOVERNOR=$scaling_governor
+		SMOOTH_LEVEL=$smooth_level0
 		SLEEP_MODE;
 		sleep 5;
 	done &);
