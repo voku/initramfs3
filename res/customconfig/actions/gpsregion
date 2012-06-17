@@ -3,8 +3,12 @@
 # $1 - "gpsregion"
 # $2 - value=
 
-gpsregion=$2
-echo gpsregion
+if [ "a$2" == "a" ]; then
+        echo $gpsregion
+else
+        gpsregion=$2
+        echo $gpsregion
+fi
 
 /sbin/busybox mount -o remount,rw /system
 
