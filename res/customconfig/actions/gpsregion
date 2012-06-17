@@ -118,7 +118,6 @@ case "${gpsregion}" in
 	gpsregion=0
 	;;
 esac;
-fi;
 
 echo ${GPSZONE}
 
