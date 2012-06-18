@@ -250,14 +250,14 @@
        </spinner>
 	<button description="ZRAM check for active state" name="ZRAM STATS" action="zramstats" label="ZRAM STATS"/>
 	<spinner description="GPS Time Zone for faster LOCK! use your rigion to fix GPS location!" name="GPS Region" action="gpsregion">
-	     <spinnerItem name="No GPS Zone changes (default)" value="0"/> 
-             <spinnerItem name="Set Asia" value="1"/> 
-             <spinnerItem name="Set Europe" value="2"/> 
-             <spinnerItem name="Set Oceania" value="3"/> 
-             <spinnerItem name="Set North America" value="4"/> 
-	     <spinnerItem name="Set South America" value="5"/> 
-	     <spinnerItem name="Set Africa" value="6"/> 
-	     <spinnerItem name="Restore original ROM gps.conf" value="7"/> 
+	     <spinnerItem name="No GPS Zone changes (default)" value="No_GPS_Zone_changes"/> 
+             <spinnerItem name="Set Asia" value="Asia"/> 
+             <spinnerItem name="Set Europe" value="Europe"/> 
+             <spinnerItem name="Set Oceania" value="Oceania"/> 
+             <spinnerItem name="Set North America" value="North-America"/> 
+	     <spinnerItem name="Set South America" value="South-America"/> 
+	     <spinnerItem name="Set Africa" value="Africa"/> 
+	     <spinnerItem name="Restore original ROM gps.conf" value="Original_ROM_GPS_Restored"/> 
        </spinner>
       <spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
              <spinnerItem name="sio" value="sio"/> 
