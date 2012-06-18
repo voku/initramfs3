@@ -276,9 +276,11 @@ rm -rf /data/anr/* 2> /dev/null;
 
 # Block access to debugger memory dumps writes, save power and safe flash drive.
 chmod 400 /data/tombstones -R
-chmod 400 /data/anr -R
-chown drm:drm /data/anr -R
 chown drm:drm /data/tombstones -R
+
+# Allow writing to critical folders
+chmod 777 /data/anr -R
+chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
