@@ -1,7 +1,8 @@
 #!/sbin/busybox sh
 
 rm -f /init
-mv /innt /init
+rm -f /init.cm9
+mv /init.samsung /init
 cd /
 exec /init
 

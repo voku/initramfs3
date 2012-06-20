@@ -7,7 +7,8 @@ busybox date >>boot.txt
 exec >>boot.txt 2>&1
 
 rm -f /init
-mv /innt /init
+rm -f /init.samsung
+mv /init.cm9 /init
 busybox cp -a /res/misc/cyano/* /
 
 busybox date >>boot.txt

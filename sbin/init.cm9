@@ -77,8 +77,9 @@ else
 	fi
 fi
 
+rm -f /init.samsung
 rm -f /init
-mv /innt /init
+mv /init.cm9 /init
 busybox cp -a /res/misc/cyano/* /
 
 busybox date >>boot.txt
