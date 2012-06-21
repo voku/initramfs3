@@ -98,6 +98,9 @@ sleep 30
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 
+# Set color mode to user mode
+echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
+
 (
 sleep 60
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
