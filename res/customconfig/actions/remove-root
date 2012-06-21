@@ -8,6 +8,7 @@ if [ -f /system/xbin/su ];then
   rm -f /system/xbin/busybox > /dev/null 2>&1
   ln -s /sbin/busybox /system/xbin/busybox > /dev/null 2>&1
   # I need to remove this as well for Garanti CepBank app
+  mv /system/xbin/which /system/xbin/waswhich-bkp
   rm -f /system/xbin/which > /dev/null 2>&1
   # 1SuperUser, superuser Superuser SuperUser whatever...
   rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1

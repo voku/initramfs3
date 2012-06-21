@@ -1,0 +1,7 @@
+#!/sbin/busybox sh
+(
+/sbin/fix_permissions
+)&
+echo Fixing permissions STARTED! please wait 3MIN max for it to finish.
+
+

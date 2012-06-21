@@ -360,12 +360,6 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2
     disabled
     oneshot
 
-# for bluetooth pan
-service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
-    class main
-    disabled
-    oneshot
-
 # bluetooth mac address
 service bdaddr /system/bin/bdaddr_read
     class main

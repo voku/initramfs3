@@ -7,6 +7,10 @@ while : ; do
 	if [ -e /data/.siyah/install-root ] ; then
 		rm /data/.siyah/install-root
 		/sbin/busybox sh /sbin/ext/install.sh
+		# Restore witch if exist
+		if [ -e /system/xbin/waswhich-bkp ]; then
+		cp /system/xbin/waswhich-bkp /system/xbin/which
+		fi
         	exit 0
 	fi
 	if [ -e /system/xbin/su ] ; then

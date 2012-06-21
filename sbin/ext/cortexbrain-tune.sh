@@ -241,7 +241,7 @@ setprop persist.sys.use_dithering 1
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 120
+setprop windowsmgr.max_events_per_sec 240
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
@@ -276,7 +276,11 @@ rm -rf /data/anr/* 2> /dev/null;
 
 # Block access to debugger memory dumps writes, save power and safe flash drive.
 chmod 400 /data/tombstones -R
-chmod 400 /data/anr -R
+chown drm:drm /data/tombstones -R
+
+# Allow writing to critical folders
+chmod 777 /data/anr -R
+chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
@@ -343,7 +347,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -356,11 +360,11 @@ if [ $MORE_BATTERY == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "smartassV2" ]; then
-		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
-		echo "500000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
-		echo "85" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-		echo "70" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
+		echo "95" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+		echo "40" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
 		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
 		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
 		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
@@ -372,29 +376,29 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
 		echo "40" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 		echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
         fi;
 else 
 	if [ $MORE_SPEED == 1 ]; then
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		fi;
 
@@ -412,7 +416,7 @@ else
 			echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
 			echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
 			echo "60" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-			echo "20" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+			echo "30" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
 			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
 			echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
 			echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
@@ -424,19 +428,19 @@ else
 			echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-			echo "40000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
-			echo "10" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
+			echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
+			echo "25" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 			echo "60" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-			echo "10" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+			echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+			echo "25" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 			echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
 		fi;
@@ -455,9 +459,9 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-echo "200" > /proc/sys/vm/dirty_expire_centisecs;
+echo "300" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "20" > /proc/sys/vm/dirty_background_ratio;
+echo "15" > /proc/sys/vm/dirty_background_ratio;
 echo "10" > /proc/sys/vm/dirty_ratio;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
@@ -776,11 +780,10 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 
-	/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
-	renice -10 ${PIDOFCORTEX};
-
 	(while [ 1 ]; do	
 		STATE=$(cat /sys/power/wait_for_fb_wake);
+		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
+		renice -10 ${PIDOFCORTEX};
 		AWAKE_MODE;
 		sleep 5;
 	

@@ -366,18 +366,6 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2
     disabled
     oneshot
 
-# for bluetooth pan
-service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
-    class main
-    disabled
-    oneshot
-
-# for bluetooth pan
-service dhcpcd_bnep0 /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
-
 # bluetooth mac address
 service bdaddr /system/bin/bdaddr_read
     class main
@@ -391,9 +379,3 @@ service TvoutService_C /system/bin/bintvoutservice
     user system
     group graphics 
 
-# bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/bugmailer.sh -v
-    class main
-    disabled
-    oneshot
-    keycodes 114 115 116

@@ -12,11 +12,11 @@ echo "50" > /proc/sys/vm/swappiness;
 # $1 - "zramtweaks"
 # $2 - value=
 
-zramtweaks=$2
-echo zramtweaks
+if [ "a$2" != "a" ]; then
+	zramtweaks=$2
 
 case "${zramtweaks}" in
-	0)
+	1)
 	if [ -e /dev/block/zram0 ]; then
 		# For on the fly changes we need to shutdown ZRAM first.
                 swapoff /dev/block/zram0 >/dev/null 2>&1;
@@ -39,7 +39,7 @@ case "${zramtweaks}" in
         	swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
 	fi;
     	;;
-	1)
+	2)
         if [ -e /dev/block/zram0 ]; then
                 # For on the fly changes we need to shutdown ZRAM first.
                 swapoff /dev/block/zram0 >/dev/null 2>&1;
@@ -62,7 +62,7 @@ case "${zramtweaks}" in
                 swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
         fi;
 	;;
-	2)
+	3)
         if [ -e /dev/block/zram0 ]; then
                 # For on the fly changes we need to shutdown ZRAM first.
                 swapoff /dev/block/zram0 >/dev/null 2>&1;
@@ -85,7 +85,7 @@ case "${zramtweaks}" in
                 swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
         fi;
 	;;
-	3)
+	4)
 	if [ -e /dev/block/zram0 ]; then
 		swapoff /dev/block/zram0 >/dev/null 2>&1;
 		swapoff /dev/block/zram1 >/dev/null 2>&1;
@@ -96,10 +96,10 @@ case "${zramtweaks}" in
 	fi;
 	;;
 	*)
-    	zramtweaks=1
+    	zramtweaks=2
     	;;
 esac;
+fi;
 
 echo "${zramtweaks}"
-cat /proc/swaps
 
