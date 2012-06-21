@@ -23,6 +23,7 @@ SLEEP_GOVERNOR=$deep_sleep_batt
 EXTWEAKS_GOVERNOR=$scaling_governor
 SMOOTH_LEVEL=$smooth_level0
 PIDOFCORTEX=$$;
+VIBRATOR_FORCE=$pwm_val
 
 # Functions triggers.
 TOUCHSCREENTUNE_ENABLED=0;
@@ -717,6 +718,9 @@ if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
 	CPU_GOV_TWEAKS;
 fi;
 
+# Setting the vibrator force in case it's has been reseted.
+echo "$pwm_val" > /sys/vibrator/pwm_val
+
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
 
@@ -772,6 +776,9 @@ echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
 # CPU Idle State - AFTR+LPA
 echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
+# Setting the vibrator force in case it's has been reseted.
+echo "$pwm_val" > /sys/vibrator/pwm_val
+
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
 
@@ -793,6 +800,7 @@ if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 		SLEEP_GOVERNOR=$deep_sleep_batt
 		EXTWEAKS_GOVERNOR=$scaling_governor
 		SMOOTH_LEVEL=$smooth_level0
+		VIBRATOR_FORCE=$pwm_val
 		SLEEP_MODE;
 		sleep 5;
 	done &);
