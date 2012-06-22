@@ -1,7 +1,5 @@
 #!/sbin/busybox sh
 
-#ThunderBolt! & TweakLite
-
 #Credits:
 # Zacharias.maladroit
 # Voku1987
@@ -18,12 +16,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-SLEEP_CHARGING_GOVERNOR=$deep_sleep_ac
-SLEEP_GOVERNOR=$deep_sleep_batt
-EXTWEAKS_GOVERNOR=$scaling_governor
-SMOOTH_LEVEL=$smooth_level0
 PIDOFCORTEX=$$;
-VIBRATOR_FORCE=$pwm_val
 
 # Functions triggers.
 TOUCHSCREENTUNE_ENABLED=0;
@@ -40,13 +33,18 @@ FIREWALL_TWEAKS_ENABLED=1;
 BACKGROUND_PROCESS_ENABLED=1;
 
 # Static sets for functions, they will be changes by other functions later.
-# TODO: Add DEFAULT_BALANCE for Default profile now it's=MORE_BATTERY=1
 if [[ "$PROFILE" == "performance" ]]; then
 	MORE_SPEED=1;
+	MORE_BATTERY=0;
+	DEFAULT_SPEED=0;
+elif [[ "$PROFILE" == "default" ]]; then
+	MORE_SPEED=0;
+	DEFAULT_SPEED=1;
 	MORE_BATTERY=0;
 else
 	MORE_BATTERY=1;
 	MORE_SPEED=0;
+	DEFAULT_SPEED=0;
 fi;
 
 # ==============================================================
@@ -194,11 +192,11 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d 
 done;
 sync;
 
-/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
+/sbin/busybox mount -o remount,rw,discard,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
 
-/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
+/sbin/busybox mount -o remount,rw,discard,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
 
-/sbin/busybox mount -o remount,rw,discard,noatime,nodiratime,inode_readahead_blks=2,barrier=1,commit=120 /system;
+/sbin/busybox mount -o remount,rw,discard,inode_readahead_blks=2,barrier=1,commit=120 /system;
 sync;
 
 echo "15" > /proc/sys/fs/lease-break-time;
@@ -351,6 +349,13 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "200000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 	fi;
 
+        if [ $SYSTEM_GOVERNOR == "hyper" ]; then
+                echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+                echo "200000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+        fi;
+
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
 		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
@@ -393,11 +398,78 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 		echo "200000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
         fi;
-else 
+
+elif [ $DEFAULT_SPEED == 1 ]; then
+
+        if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+                echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+                echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+                echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+        fi;
+
+        if [ $SYSTEM_GOVERNOR == "hyper" ]; then
+                echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+                echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+                echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+        fi;
+
+        if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+                echo "80" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+                echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+                echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+                echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+                echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+                echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+        fi;
+
+        if [ $SYSTEM_GOVERNOR == "smartassV2" ]; then
+                echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
+                echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
+                echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
+                echo "80" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
+                echo "30" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
+                echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
+                echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
+                echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
+                echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
+        fi;
+
+        if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+                echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+                echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+                echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+                echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+                echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+        fi;
+
+        if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
+                echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
+                echo "30" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
+                echo "80" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
+                echo "120000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
+        fi;
+
+        if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
+                echo "2" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+                echo "30" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+                echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+                echo "120000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+        fi;
+else
 	if [ $MORE_SPEED == 1 ]; then
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		fi;
+
+
+		if [ $SYSTEM_GOVERNOR == "hyper" ]; then
+ 			echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
@@ -567,7 +639,9 @@ if [ -e /proc/sys/net/ipv6/icmp_ignore_bogus_error_responses ]; then
 fi
 
 # syn protection
-echo "10" > /proc/sys/net/ipv4/tcp_synack_retries;
+if [ -e /proc/sys/net/ipv4/tcp_synack_retries ]; then
+	echo "10" > /proc/sys/net/ipv4/tcp_synack_retries;
+fi
 
 if [ -e /proc/sys/net/ipv6/tcp_synack_retries ]; then
 	echo "10" > /proc/sys/net/ipv6/tcp_synack_retries;
@@ -652,7 +726,7 @@ AWAKE_MODE()
 CHECK_TEMPERATURE;
 
 # Restore Smooth Level
-kmemhelper -n smooth_level -o 0 -t int $SMOOTH_LEVEL
+kmemhelper -n smooth_level -o 0 -t int $smooth_level0 
 
 # charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -663,7 +737,8 @@ if [ $CHARGING -ge 1 ]; then
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
         # CPU-Freq
-        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+        echo "hyper" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# CPU Idle State - IDLE only
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
@@ -695,11 +770,11 @@ else
 	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "$busfreq_down_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
+        # CPU Idle State
+        echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+
 	# value from settings
 	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
-
-	# CPU Idle State
-	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	MODE="AWAKE";
 fi;
@@ -707,13 +782,20 @@ fi;
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
+
 if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
 	if [[ "$PROFILE" == "performance" ]]; then
 		MORE_SPEED=1;
 		MORE_BATTERY=0;
+		DEFAULT_SPEED=0;
+	elif [[ "$PROFILE" == "default" ]]; then
+		MORE_BATTERY=0;
+		DEFAULT_SPEED=1;
+		MORE_SPEED=0;
 	else
 		MORE_BATTERY=1;
 		MORE_SPEED=0;
+		DEFAULT_SPEED=0;
 	fi;
 	CPU_GOV_TWEAKS;
 fi;
@@ -738,16 +820,19 @@ CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
 
 	# CPU-Freq
-	echo "$SLEEP_CHARGING_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "$deep_sleep_ac" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	MODE="CHARGING";
 else
 
 	# CPU-Freq
-	echo "$SLEEP_GOVERNOR" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "$deep_sleep_batt" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	MODE="SLEEP";
 fi;
+
+# Reduce CPU max Speed to 800Mhz
+echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # cpu - second core always-off
 echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
@@ -761,20 +846,21 @@ echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8
 
-MORE_BATTERY=1;
-MORE_SPEED=0;
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
 if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
+	MORE_BATTERY=1;
+	MORE_SPEED=0;
+	DEFAULT_SPEED=0;
 	CPU_GOV_TWEAKS;
 fi;
 
-# enable first core overloading
-echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
-
 # CPU Idle State - AFTR+LPA
 echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+
+# enable first core overloading
+echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
 
 # Setting the vibrator force in case it's has been reseted.
 echo "$pwm_val" > /sys/vibrator/pwm_val
@@ -787,20 +873,20 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 
-	(while [ 1 ]; do	
+	(while [ 1 ]; do
+		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
 		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 		renice -10 ${PIDOFCORTEX};
+		PROFILE=$(cat /data/.siyah/.active.profile);
+		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 5;
-	
+
+		# SLEEP state! All system to power save!
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
+		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
-		SLEEP_CHARGING_GOVERNOR=$deep_sleep_ac
-		SLEEP_GOVERNOR=$deep_sleep_batt
-		EXTWEAKS_GOVERNOR=$scaling_governor
-		SMOOTH_LEVEL=$smooth_level0
-		VIBRATOR_FORCE=$pwm_val
 		SLEEP_MODE;
 		sleep 5;
 	done &);
@@ -810,10 +896,10 @@ fi;
 # Logic Explanations
 #
 # This script will manipulate all the system / cpu / battery behavior
-# Based on chosen EXTWEAKS profile and based on SCREEN ON/OFF
+# Based on chosen EXTWEAKS profile+tweaks and based on SCREEN ON/OFF state.
 #
 # When User select battery/default profile all tuning will be toward battery save!
-# And user loose performance -20% but get more stable system and more battery left.
+# But user loose performance -20% and get more stable system and more battery left.
 #
 # When user select performance profile, tuning will be to max performance on screen ON!
 # When screen OFF all tuning switched to max power saving! as with battery profile,
