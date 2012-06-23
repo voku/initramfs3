@@ -240,7 +240,7 @@ setprop persist.sys.use_dithering 1
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 240
+setprop windowsmgr.max_events_per_sec 120
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
@@ -250,7 +250,7 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
-setprop wifi.supplicant_scan_interval 240
+setprop wifi.supplicant_scan_interval 360
 setprop pm.sleep_mode 1
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
@@ -346,14 +346,14 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 	fi;
 
         if [ $SYSTEM_GOVERNOR == "hyper" ]; then
                 echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
                 echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
                 echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-                echo "200000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+                echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
         fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -382,21 +382,21 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
 		echo "40" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 		echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 		echo "95" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
         fi;
 
 elif [ $DEFAULT_SPEED == 1 ]; then
@@ -538,7 +538,7 @@ echo "15" > /proc/sys/vm/dirty_background_ratio;
 echo "10" > /proc/sys/vm/dirty_ratio;
 echo "4" > /proc/sys/vm/min_free_order_shift;
 echo "0" > /proc/sys/vm/overcommit_memory;
-echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster;
 echo "1000" > /proc/sys/vm/overcommit_ratio;
 echo "4096" > /proc/sys/vm/min_free_kbytes
@@ -840,8 +840,8 @@ echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
 echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group
-echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
-echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
+echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
+echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8

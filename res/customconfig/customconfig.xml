@@ -1,10 +1,11 @@
 <settingsRoot>
 <settingsTab name="CPU">
 
-		<settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." 
-			name="CPU Hotplug Settings">
+		<settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." name="CPU Hotplug Settings">
 
-			<spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
+			<spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. 
+			Using second core always-off or always-on modes will make the other hotplug parameters useless." 
+				name="Hotplug Mode" action="secondcore">
 				<spinnerItem name="CPU Hotplug (default)" value="hotplug"/> 
 				<spinnerItem name="Second core always-off" value="always-off"/> 
 				<spinnerItem name="Second core always-on" value="always-on"/> 
@@ -15,7 +16,8 @@
 		<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-			<spinner description="This setting will change CPU step count (Restart required)." name="CPU Step Count" action="generic /tmp/cpustepcount">
+			<spinner description="This setting will change CPU step count (Restart required)." 
+				name="CPU Step Count" action="generic /tmp/cpustepcount">
 				<spinnerItem name="6 (1200-1000-800-500-200-100MHz)" value="6"/> 
 				<spinnerItem name="7 (1400->100-7-Steps)" value="7"/> 
 				<spinnerItem name="8 (1500->100-8-Steps)" value="8"/> 
@@ -24,19 +26,23 @@
 			</spinner>
 
 			<seekBar description="Maximum CPU Speed (default is 1200)" 
-				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
+				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" 
+					unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 			<seekBar description="Minimum CPU Speed (default is 200)" 
-				name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
+				name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" 
+					unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
-			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
+			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." 
+				name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 				<spinnerItem name="1500MHz" value="1"/> 
 				<spinnerItem name="1200MHz" value="4"/> 
 				<spinnerItem name="1000MHz" value="6"/> 
 				<spinnerItem name="800MHz" value="8"/> 
 			</spinner>
 
-			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
+			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overriden by later scripts or apps." 
+				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="hotplug" value="hotplug"/> 
@@ -48,10 +54,10 @@
 			</spinner>
 
 			<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
-				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="35"/>
+				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="60"/>
 
 			<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)" 
-				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="0" reversed="false" step="1" max="35"/>
+				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="60"/>
 
 			<seekBar description="(default is 2)" 
 				name="min_rq" action="generic /sys/module/stand_hotplug/parameters/min_rq" unit="" min="0" reversed="false" step="1" max="2"/>
@@ -63,25 +69,29 @@
 				name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="100" reversed="false" step="100" max="1000"/>
 
 			<seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
-				name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit=" kHz" min="0" reversed="false" step="100000" max="1200000"/>
+				name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit="kHz" min="0" reversed="false" step="100000" max="1200000"/>
 
 		</settingsPane>
 
 		<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
 
-		<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
+		<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." 
+			name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
 
-		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
+		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
+			name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
 
 		</settingsPane>
 
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" 
-                name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
+		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
 
-		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
+		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. 
+This value will be applied to all CPU steps before any script or app execution. 
+If you use any script or voltage control app this setting may be overriden by those." 
+			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
 			<spinnerItem name="No Undervolting" value="0"/> 
 			<spinnerItem name=" -25 mV" value="-25"/> 
 			<spinnerItem name=" -50 mV" value="-50"/> 
@@ -97,11 +107,9 @@
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
-			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
+		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ 400,267,133,100Mhz BUS, 0=MAX Power(400Mhz) -> 4=MAX-Battery Save(100Mhz), DO NOT USE 4 WHEN more than 1.2Ghz OC! default=3(133Mhz)" 
-			name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="4"/>
+		<seekBar description="This is for CPU BUS-FREQ 400,267,133,100Mhz BUS, 0=MAX Power(400Mhz) -> 4=MAX-Battery Save(100Mhz), DO NOT USE 4 WHEN more than 1.2Ghz OC! default=3(133Mhz)" name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="4"/>
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="20" reversed="false" step="5" max="50"/>
@@ -115,7 +123,8 @@
 		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)" 
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
-		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor." name="Deep-Sleep on Charger! CPU Governor" action="generic /tmp/deep_sleep_ac">
+		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor." 
+			name="Deep-Sleep on Charger! CPU Governor" action="generic /tmp/deep_sleep_ac">
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="abyssplug" value="abyssplug"/> 
 			<spinnerItem name="hotplug" value="hotplug"/> 
@@ -126,7 +135,8 @@
 			<spinnerItem name="hyper" value="hyper"/> 
 		</spinner>
 
-		<spinner description="This will set the DEEP-SLEEP (screen OFF) on Battery CPU governor." name="Deep-Sleep on Battery! CPU Governor" action="generic /tmp/deep_sleep_batt">
+		<spinner description="This will set the DEEP-SLEEP (screen OFF) on Battery CPU governor." 
+			name="Deep-Sleep on Battery! CPU Governor" action="generic /tmp/deep_sleep_batt">
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="abyssplug" value="abyssplug"/> 
 			<spinnerItem name="hotplug" value="hotplug"/> 
@@ -154,10 +164,13 @@
 	<seekBar description="Set frequency below which second core will not be turned on, regardless of thresholds." 
 		name="freq_cpu1on" action="generic /sys/module/legacy_hotplug/parameters/freq_cpu1on" unit=" kHz" min="100000" reversed="false" step="100000" max="1200000"/-->
 		</settingsPane>
+
 	</settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency Settings. Normally, our device has 2 frequency steps. This Kernel has three steps but the third step is not enabled as default. The defaults are 160,267 and 267. Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
+	<settingsPane description="GPU Frequency Settings. Normally, our device has 2 frequency steps. 
+This Kernel has three steps but the third step is not enabled as default. The defaults are 160,267 and 267. 
+Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
 
 	<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
 		<spinnerItem name="400MHz" value="400"/> 
@@ -207,7 +220,8 @@
 
 	</settingsPane>
 
-	<settingsPane description="GPU load thresholds to change between frequency steps. The third step is disabled as default by having the second to third threshold 100." name="GPU Thresholds">
+	<settingsPane description="GPU load thresholds to change between frequency steps. 
+The third step is disabled as default by having the second to third threshold 100." name="GPU Thresholds">
 
 		<seekBar description="GPU threshold to jump up from first to second step" 
 			name="GPU Threshold 1-UP" action="gpu-thresh 1UP" unit="%" min="0" reversed="false" step="5" max="100"/>
@@ -279,24 +293,26 @@
 
 	</settingsPane>
 
-        <settingsPane description="Touch screen configuration on BATT and on CHARGE, \!ALERT!/ wrong set will disable touch screen! and you will have too reset profiles in recovery! Also settings for Battery VS Charger are different! do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
+        <settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong set will disable touch screen! 
+and you will have too reset profiles in recovery! Also settings for Battery VS Charger are different! 
+do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
-                <seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)"
+                <seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)" 
                         name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="2" max="70"/>
 
-                <seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)"
+                <seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
                         name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="2" max="70"/>
 
-                <seekBar description="Touch Screen on BATTERY (Move Filter) (default=8)"
+                <seekBar description="Touch Screen on BATTERY (Move Filter) (default=8)" 
                         name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="2" max="30"/>
 
-                <seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)"
+                <seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
                         name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="2" max="70"/>
 
-                <seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)"
+                <seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
                         name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="2" max="60"/>
 
-                <seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=46)"
+                <seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=46)" 
                         name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="2" max="60"/>
 
         </settingsPane>
@@ -305,48 +321,131 @@
 
 <settingsTab name="BLN">
 
-	<settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
+	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
 
-		<checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
-
-		<spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
-			<spinnerItem name="Never timeout" value="0"/> 
-			<spinnerItem name="1 minute" value="60000"/> 
-			<spinnerItem name="3 minutes" value="180000"/> 
-			<spinnerItem name="5 minutes" value="300000"/> 
-			<spinnerItem name="10 minutes" value="600000"/> 
-			<spinnerItem name="20 minutes" value="1200000"/> 
-			<spinnerItem name="30 minutes" value="1800000"/> 
-			<spinnerItem name="60 minutes" value="3600000"/> 
-			<spinnerItem name="120 minutes" value="7200000"/> 
+		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
+			name="BLN Main Switch" action="bln_switch">
+			<spinnerItem name="BLN Inactive on Battery" value="0"/> 
+			<spinnerItem name="Active and static" value="1"/> 
+			<spinnerItem name="Active and breathing" value="2"/> 
+			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
 
-		<spinner description="This setting will set led behavior in BLN." name="BLN Effect" action="bln_effect">
-			<spinnerItem name="Steady" value="0"/> 
-			<spinnerItem name="Breathing" value="1"/> 
-			<spinnerItem name="Blinking" value="2"/> 
-		</spinner> 
+		<spinner description="Back Light Notification will work when on Charger/USB 
+if above switch is OFF or ON" 
+			name="BLN on Charger" action="bln_enabled_charging">
+			<spinnerItem name="BLN disabled even on charger" value="0"/> 
+			<spinnerItem name="BLN active on charger" value="1"/> 
+		</spinner>
 
-		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout">
-			<spinnerItem name="Disabled" value="0"/> 
-			<spinnerItem name="1.5 sec" value="1500"/> 
+		<spinner description="Notification timeout. -1: disabled" 
+			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
+			<spinnerItem name="Never timeout" value="-1"/> 
+			<spinnerItem name="5 Minutes" value="300000"/> 
+			<spinnerItem name="10 Minutes" value="600000"/> 
+			<spinnerItem name="15 Minutes" value="900000"/> 
+			<spinnerItem name="30 Minutes" value="1800000"/> 
+			<spinnerItem name="1 Hour" value="3600000"/> 
+			<spinnerItem name="2 Hours" value="7200000"/>
+			<spinnerItem name="5 Hours" value="18000000"/> 
+		</spinner>
+
+		<spinner description="This setting will set renew notification timeout yes/no." 
+			name="BLN Notification Reset" action="bln_reset_notification">
+			<spinnerItem name="Don't renew BLN timeout" value="0"/> 
+			<spinnerItem name="Renew BLN timeout" value="1"/> 
+		</spinner>
+
+		<spinner description="This setting will set BL Notification always ON, with charger, OFF/ON." 
+			name="BLN Notification on charger" action="bln_charging_notification">
+			<spinnerItem name="BLN no timeout OFF, on charger" value="0"/> 
+			<spinnerItem name="BLN no timeout ON, on charger" value="1"/> 
+		</spinner>
+
+		<spinner description="Back Light Notification OFF on low battery or ignore battery level" name="BLN Battery Check" action="bln_check_battery">
+			<spinnerItem name="BLN Ignore Battery level" value="0"/> 
+			<spinnerItem name="BLN OFF if 5% battery" value="1"/> 
+			<spinnerItem name="BLN OFF if 10% battery" value="2"/> 
+			<spinnerItem name="BLN OFF if 15% battery" value="3"/> 
+			<spinnerItem name="BLN OFF if 20% battery" value="4"/> 
+			<spinnerItem name="BLN OFF if 25% battery" value="5"/> 
+			<spinnerItem name="BLN OFF if 30% battery" value="6"/> 
+		</spinner>
+
+		<button description="Use this button to test bln. BLN will be active after you turn the screen off." 
+			name="Test BLN" action="test-bln" label="Test BLN"/>
+
+		</settingsPane>
+
+		<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
+			name="Touch Keys Lights Settings">
+
+		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
+			name="led_timeout" action="generic /sys/class/misc/backlightnotification/led_timeout">
+			<spinnerItem name="Alsways OFF" value="-2"/> 
+			<spinnerItem name="1 sec" value="1000"/> 
+			<spinnerItem name="2 sec" value="2000"/> 
 			<spinnerItem name="3 sec" value="3000"/> 
-			<spinnerItem name="6 sec" value="6000"/> 
+			<spinnerItem name="5 sec" value="5000"/> 
 			<spinnerItem name="15 sec" value="15000"/> 
 			<spinnerItem name="30 sec" value="30000"/> 
-			<spinnerItem name="60 sec" value="60000"/> 
+			<spinnerItem name="Always ON" value="-1"/> 
 		</spinner>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in ExTweaks." name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
-
-		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." name="Leds on with touch" action="generic /sys/class/misc/notification/led_on_touch" label="led-on-touch"/>
-
-		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="test-bln" label="Test BLN"/>
+		<spinner description="Led fadeout effect. If you are on a Samsung ROM, 
+		you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." 
+			name="led-fadeout" action="bln_led_fadeout">
+			<spinnerItem name="LED Fedeout OFF" value="0"/> 
+			<spinnerItem name="LED Fedeout ON" value="1"/> 
+		</spinner>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
 
-	</settingsPane>
+		</settingsPane>
+
+        <!--settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
+
+                <checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
+
+                <spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
+                        <spinnerItem name="Never timeout" value="0"/>
+                        <spinnerItem name="1 minute" value="60000"/>
+                        <spinnerItem name="3 minutes" value="180000"/>
+                        <spinnerItem name="5 minutes" value="300000"/>
+                        <spinnerItem name="10 minutes" value="600000"/>
+                        <spinnerItem name="20 minutes" value="1200000"/>
+                        <spinnerItem name="30 minutes" value="1800000"/>
+                        <spinnerItem name="60 minutes" value="3600000"/>
+                        <spinnerItem name="120 minutes" value="7200000"/>
+                </spinner>
+
+                <spinner description="This setting will set led behavior in BLN." name="BLN Effect" action="bln_effect">
+                        <spinnerItem name="Steady" value="0"/>
+                        <spinnerItem name="Breathing" value="1"/>
+                        <spinnerItem name="Blinking" value="2"/>
+                </spinner>
+
+                <spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout">
+                        <spinnerItem name="Disabled" value="0"/>
+                        <spinnerItem name="1.5 sec" value="1500"/>
+                        <spinnerItem name="3 sec" value="3000"/>
+                        <spinnerItem name="6 sec" value="6000"/>
+                        <spinnerItem name="15 sec" value="15000"/>
+                        <spinnerItem name="30 sec" value="30000"/>
+                        <spinnerItem name="60 sec" value="60000"/>
+                </spinner>
+
+                <checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in ExTweaks." name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
+
+                <checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." name="Leds on with touch" action="generic /sys/class/misc/notification/led_on_touch" label="led-on-touch"/>
+
+                <button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="test-bln" label="Test BLN"/>
+
+                <seekBar description="Controls touchpad led voltage level (default: 3000)"
+                        name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
+
+        </settingsPane-->
 
 </settingsTab>
 
@@ -358,7 +457,8 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can run Fix Permissions script by one click! please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS">
+	<settingsPane description="Here you can run Fix Permissions script by one click! 
+		please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS">
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="fix_permissions" label="FIX PERMISSIONS"/>
 
@@ -366,9 +466,11 @@
 
 	<settingsPane description="Misc Settings" name="Misc Settings">
 
-		<checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
+		<checkbox description="Enable or Disable Android Logger (needs restart)" 
+			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
-		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." name="ZRAM Settings" action="zramtweaks">
+		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
+			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
 			<spinnerItem name="Set ZRAM to 300MB (default)" value="2"/> 
 			<spinnerItem name="Set ZRAM to 600MB" value="3"/> 
@@ -388,7 +490,10 @@
 			<spinnerItem name="Restore original ROM gps.conf" value="Original_ROM_GPS_Restored"/> 
 		</spinner>
 
-		<spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+		<spinner description="This will set the default I/O scheduler. 
+	Default I/O scheduler will only be set during early stages of booting (before init.d execution), 
+	and can be overriden by later scripts or apps." 
+			name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
 			<spinnerItem name="deadline" value="deadline"/> 
@@ -402,7 +507,9 @@
 			<spinnerItem name="AC/Misc:700mA, USB:500mA(risky, may overheat if phone used)" value="3"/> 
 		</spinner>
 
-		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for those period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
+		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. 
+	Give it a few hours after you reset the gauge. It may still show you funny values for those period, 
+	then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
 	</settingsPane>
 
@@ -410,9 +517,11 @@
 
 		<button description="Removes su and Superuser.apk files from the system partition" name="Remove Root" action="remove-root" label="Remove Root"/>
 
-		<button description="Tries to reinstall root. If this fails, please check auto-install root checkbox and restart." name="Install  Root" action="install-root" label="Install Root"/>
+		<button description="Tries to reinstall root. If this fails, please check auto-install root checkbox and restart." 
+			name="Install  Root" action="install-root" label="Install Root"/>
 
-		<checkbox description="If checked, installs root on the next restart." name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
+		<checkbox description="If checked, installs root on the next restart." 
+			name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
 
 	</settingsPane>
 

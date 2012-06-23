@@ -1,0 +1,23 @@
+#!/sbin/busybox sh
+
+# $1 - "bln_led_fadeout"
+# $2 - value=
+
+if [ "a$2" != "a" ]; then
+        bln_led_fadeout=$2
+
+case "${bln_led_fadeout}" in
+	0)
+		echo "0" > /sys/class/misc/backlightnotification/led_fadeout
+	;;
+	1)
+                echo "1" > /sys/class/misc/backlightnotification/led_fadeout
+	;;
+	*)
+	bln_led_fadeout=1
+	;;
+esac;
+fi;
+
+echo ${bln_led_fadeout}
+

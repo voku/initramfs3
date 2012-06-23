@@ -82,6 +82,7 @@ chmod 777 /mnt/ntfs
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Early-init phase tweaks #####
+/sbin/ext/partitions-tune_on_init.sh
 
 ##### EFS Backup #####
 (
