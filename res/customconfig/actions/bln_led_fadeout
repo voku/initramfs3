@@ -5,6 +5,7 @@
 
 if [ "a$2" != "a" ]; then
         bln_led_fadeout=$2
+fi;
 
 case "${bln_led_fadeout}" in
 	0)
@@ -17,7 +18,6 @@ case "${bln_led_fadeout}" in
 	bln_led_fadeout=1
 	;;
 esac;
-fi;
 
 echo ${bln_led_fadeout}
 

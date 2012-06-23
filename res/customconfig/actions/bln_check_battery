@@ -5,6 +5,7 @@
 
 if [ "a$2" != "a" ]; then
         bln_check_battery=$2
+fi;
 
 case "${bln_check_battery}" in
 	0)
@@ -32,7 +33,6 @@ case "${bln_check_battery}" in
 	bln_check_battery=0
 	;;
 esac;
-fi;
 
 echo ${bln_check_battery}
 

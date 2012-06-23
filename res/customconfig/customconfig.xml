@@ -381,15 +381,15 @@ if above switch is OFF or ON"
 			name="Touch Keys Lights Settings">
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
-			name="led_timeout" action="generic /sys/class/misc/backlightnotification/led_timeout">
-			<spinnerItem name="Alsways OFF" value="-2"/> 
-			<spinnerItem name="1 sec" value="1000"/> 
-			<spinnerItem name="2 sec" value="2000"/> 
-			<spinnerItem name="3 sec" value="3000"/> 
-			<spinnerItem name="5 sec" value="5000"/> 
-			<spinnerItem name="15 sec" value="15000"/> 
-			<spinnerItem name="30 sec" value="30000"/> 
-			<spinnerItem name="Always ON" value="-1"/> 
+			name="led_timeout" action="led_timeout">
+			<spinnerItem name="Alsways OFF" value="off"/> 
+			<spinnerItem name="1 sec" value="1"/> 
+			<spinnerItem name="2 sec" value="2"/> 
+			<spinnerItem name="3 sec" value="3"/> 
+			<spinnerItem name="5 sec" value="5"/> 
+			<spinnerItem name="15 sec" value="15"/> 
+			<spinnerItem name="30 sec" value="30"/> 
+			<spinnerItem name="Always ON" value="on"/> 
 		</spinner>
 
 		<spinner description="Led fadeout effect. If you are on a Samsung ROM, 

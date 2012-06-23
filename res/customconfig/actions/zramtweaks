@@ -15,7 +15,7 @@ echo "50" > /proc/sys/vm/swappiness;
 if [ "a$2" != "a" ]; then
 	zramtweaks=$2
 
-fi
+fi;
 
 case "${zramtweaks}" in
 	1)

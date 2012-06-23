@@ -8,6 +8,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 if [ "a$2" != "a" ]; then
         bln_charging_notification=$2
+fi;
 
 case "${bln_charging_notification}" in
 	0)
@@ -20,7 +21,6 @@ case "${bln_charging_notification}" in
 	bln_charging_notification=0
 	;;
 esac;
-fi;
 
 echo ${bln_charging_notification}
 

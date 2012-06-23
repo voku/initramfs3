@@ -5,6 +5,7 @@
 
 if [ "a$2" != "a" ]; then
         bln_enabled_charging=$2
+fi;
 
 case "${bln_enabled_charging}" in
         0)
@@ -17,7 +18,6 @@ case "${bln_enabled_charging}" in
         bln_enabled_charging=0
         ;;
 esac;
-fi;
 
 echo ${bln_enabled_charging}
 

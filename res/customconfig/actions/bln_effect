@@ -1,8 +1,8 @@
 #!/sbin/busybox sh
 
-if [ "a$2" != "a" ];then
-  bln_effect=$2
-
+if [ "a$2" != "a" ]; then
+	bln_effect=$2
+fi;
   case "${bln_effect}" in
     0) 
       echo 0 > /sys/class/misc/notification/breathing
@@ -20,6 +20,5 @@ if [ "a$2" != "a" ];then
       echo 3300 3300 1000 100 > /sys/class/misc/notification/breathing_steps
       ;;
   esac;
-fi
 
 echo ${bln_effect}

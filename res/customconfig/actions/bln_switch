@@ -5,6 +5,7 @@
 
 if [ "a$2" != "a" ]; then
         bln_switch=$2
+fi;
 
 case "${bln_switch}" in
 	0)
@@ -31,7 +32,6 @@ case "${bln_switch}" in
 	bln_switch=0
 	;;
 esac;
-fi;
 
 echo ${bln_switch}
 
