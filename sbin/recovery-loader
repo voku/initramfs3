@@ -46,6 +46,8 @@ mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
 mkdir /secondrom_data
 mkdir /secondrom_system
 
+echo "75" > /sys/vibrator/pwm_val
+
 if /sbin/ext/busybox [ -f /cache/recovery/command ];
 then
 	/sbin/ext/busybox cp /res/keys-samsung /res/keys

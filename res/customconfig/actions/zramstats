@@ -1,5 +1,5 @@
 #!/sbin/busybox sh
 (
-/sbin/zram_stats
+/sbin/zram_stats_ex
 )&
 

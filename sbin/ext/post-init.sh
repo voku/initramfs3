@@ -82,6 +82,7 @@ chmod 777 /mnt/ntfs
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Early-init phase tweaks #####
+/sbin/ext/partitions-tune_on_init.sh
 
 ##### EFS Backup #####
 (
@@ -97,6 +98,9 @@ sleep 30
 (
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
+
+# Set color mode to user mode
+echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
 (
 sleep 60

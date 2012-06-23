@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
 rm -f /init
-mv /innt /init
+mv /init.cm9 /init
 cd /
 
 exec /init

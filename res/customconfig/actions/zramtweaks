@@ -15,6 +15,8 @@ echo "50" > /proc/sys/vm/swappiness;
 if [ "a$2" != "a" ]; then
 	zramtweaks=$2
 
+fi;
+
 case "${zramtweaks}" in
 	1)
 	if [ -e /dev/block/zram0 ]; then
@@ -99,7 +101,6 @@ case "${zramtweaks}" in
     	zramtweaks=2
     	;;
 esac;
-fi;
 
 echo "${zramtweaks}"
 

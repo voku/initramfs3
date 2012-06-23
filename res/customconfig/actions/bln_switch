@@ -1,0 +1,37 @@
+#!/sbin/busybox sh
+
+# $1 - "bln_switch"
+# $2 - value=
+
+if [ "a$2" != "a" ]; then
+        bln_switch=$2
+fi;
+
+case "${bln_switch}" in
+	0)
+		echo "0" > /sys/class/misc/backlightnotification/enabled
+		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
+		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
+	;;
+	1)
+                echo "1" > /sys/class/misc/backlightnotification/enabled
+                echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
+                echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
+	;;
+	2)
+		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
+                echo "1" > /sys/class/misc/backlightnotification/enabled
+                echo "1" > /sys/class/misc/backlightnotification/breathing_enabled
+	;;
+	3)
+		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
+                echo "1" > /sys/class/misc/backlightnotification/enabled
+                echo "1" > /sys/class/misc/backlightnotification/blinking_enabled
+	;;
+	*)
+	bln_switch=0
+	;;
+esac;
+
+echo ${bln_switch}
+

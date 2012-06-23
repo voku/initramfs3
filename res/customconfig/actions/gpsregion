@@ -12,6 +12,7 @@ fi;
 
 if [ "a$2" != "a" ]; then
         gpsregion=$2
+fi;
 
 case "${gpsregion}" in
 	No_GPS_Zone_changes)
@@ -94,7 +95,6 @@ case "${gpsregion}" in
 	gpsregion=No_GPS_Zone_changes
 	;;
 esac;
-fi;
 
 echo ${gpsregion}
 
