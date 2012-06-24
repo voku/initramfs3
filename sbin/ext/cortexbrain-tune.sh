@@ -378,10 +378,10 @@ if [ $MORE_BATTERY == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		echo "160000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
