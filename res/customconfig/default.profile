@@ -70,6 +70,6 @@ led_fadeout=1
 led_on_touch=off
 cpu_undervolting=0
 smooth_level0=6
-deep_sleep_batt=lazy
+deep_sleep_batt=abyssplug
 deep_sleep_ac=abyssplug
 
