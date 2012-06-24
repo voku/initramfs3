@@ -49,7 +49,6 @@
 				<spinnerItem name="ondemand" value="ondemand"/> 
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
-				<spinnerItem name="lazy" value="lazy"/>
 				<spinnerItem name="smartassV2" value="smartassV2"/>
 				<spinnerItem name="hyper" value="hyper"/> 
 			</spinner>
