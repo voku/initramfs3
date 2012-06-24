@@ -54,6 +54,7 @@ fi;
 TOUCHSCREENTUNE() 
 {
 # touch sensitivity settings. by GokhanMoral
+# Not needed any more, we have extweaks interface for it! so never enable it!
 (
 # offset 59: MXT224_THRESHOLD_BATT_INIT
 kmemhelper -n mxt224_data -t char -o 59 50
@@ -74,7 +75,7 @@ kmemhelper -n mxt224_data -t char -o 77 46
 )&
 }
 if [ $TOUCHSCREENTUNE_ENABLED == 1 ]; then
-	TOUCHSCREENTUNE;
+#	TOUCHSCREENTUNE; #DISABLED for good.
 fi;
 
 # =========
@@ -108,7 +109,6 @@ for z in $ZRM; do
 	if [ -e $i/queue/read_ahead_kb ]; then
 		echo "512" >  $i/queue/read_ahead_kb;
 	fi;
-
 done;
 
 for i in $MMC; do
@@ -240,7 +240,7 @@ setprop persist.sys.use_dithering 1
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 120
+setprop windowsmgr.max_events_per_sec 240
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
@@ -350,10 +350,10 @@ if [ $MORE_BATTERY == 1 ]; then
 	fi;
 
         if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-                echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-                echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+                echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+                echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
         fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -380,8 +380,8 @@ if [ $MORE_BATTERY == 1 ]; then
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		echo "160000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
@@ -409,10 +409,10 @@ elif [ $DEFAULT_SPEED == 1 ]; then
         fi;
 
         if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-                echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-                echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-                echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-                echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+                echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+                echo "5" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+                echo "120000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
         fi;
 
         if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -469,10 +469,10 @@ else
 
 
 		if [ $SYSTEM_GOVERNOR == "hyper" ]; then
- 			echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+ 			echo "50" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+			echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -702,31 +702,16 @@ if [ $FIREWALL_TWEAKS_ENABLED == 1 ]; then
 fi;
 
 # ==============================================================
-# check for temperature
-# ==============================================================
-CHECK_TEMPERATURE()
-{
-TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
-if [ $TEMP -ge $MAX_TEMP ]; then
-	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))° ***";
-	exit;
-fi;
-}
-CHECK_TEMPERATURE;
-
-# ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
 {
 
-# check for temperature
-CHECK_TEMPERATURE;
-
 # Restore Smooth Level
 kmemhelper -n smooth_level -o 0 -t int $smooth_level0 
+
+# Restore ASV GROUP (undervolting)
+echo "$asv_group" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
 
 # charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -783,6 +768,21 @@ if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
 
+# ==============================================================
+# check for temperature
+# ==============================================================
+
+CHECK_TEMPERATURE()
+{
+TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
+if [ $TEMP -ge $MAX_TEMP ]; then
+        echo "hotplug" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+        echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+        log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
+fi;
+}
+CHECK_TEMPERATURE;
+
 if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
 	if [[ "$PROFILE" == "performance" ]]; then
 		MORE_SPEED=1;
@@ -811,9 +811,6 @@ log -p i -t $FILE_NAME "*** $MODE Mode ***";
 # ==============================================================
 SLEEP_MODE()
 {
-
-# check for temperature
-CHECK_TEMPERATURE;
 
 # charging & screen is off
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -846,6 +843,9 @@ echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8
 
+# SET ASV GROUP (undervolting) to 3 to be safe from SOD
+echo "3" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
+
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
@@ -876,6 +876,7 @@ if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
+		PIDOFCORTEX=$$;
 		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 		renice -10 ${PIDOFCORTEX};
 		PROFILE=$(cat /data/.siyah/.active.profile);
