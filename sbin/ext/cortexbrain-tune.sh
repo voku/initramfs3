@@ -145,6 +145,23 @@ for i in $MMC; do
 		echo "1" > $i/queue/iosched/back_seek_penalty;
 	fi;
 
+	## default 4
+	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
+		echo "2" > $i/queue/iosched/max_budget_async_rq;
+	fi;
+
+	## default  HZ / 8
+	if [ -e $i/queue/iosched/timeout_async ]; then
+		echo "4" > $i/queue/iosched/timeout_async;
+	fi;
+
+	## default  HZ / 25
+	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
+		echo "10" > $i/queue/iosched/max_budget_async_rq;
+	fi;
+
+
+
 	if [ -e $i/queue/iosched/slice_idle ]; then
 		echo "0" > $i/queue/iosched/slice_idle;
 	fi;
