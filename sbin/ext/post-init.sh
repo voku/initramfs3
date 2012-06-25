@@ -104,7 +104,7 @@ sleep 45
 )&
 
 (
-60
+sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 

@@ -887,15 +887,17 @@ if [ -e /data/.siyah/bln_test ]; then
 fi;
 
 if [ -e /data/.siyah/fixperm ]; then
-	rm -r /data/.siyah/fixperm
+	rm -f /data/.siyah/fixperm
 fi;
 
 EXTWEAKSPUSH ()
 {
+	# Case if GM BLN active in kernel.
         if [ -e /sys/class/misc/notification/led ] && [ -e /data/.siyah/bln_test ]; then
                 echo 1 > /sys/class/misc/notification/led
 		rm -f /data/.siyah/bln_test
         fi;
+	# Case if Myfluxi BLN active in kernel.
         if [ -e /sys/class/misc/backlightnotification/notification_led ] && [ -e /data/.siyah/bln_test ]; then
                 echo 1 > /sys/class/misc/backlightnotification/notification_led
 		rm -f /data/.siyah/bln_test
