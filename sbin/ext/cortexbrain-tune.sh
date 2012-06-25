@@ -382,7 +382,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 		echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "160000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
