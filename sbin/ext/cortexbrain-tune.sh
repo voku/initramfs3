@@ -16,7 +16,7 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-PIDOFCORTEX=$$;
+PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
 
 # Functions triggers.
 TOUCHSCREENTUNE_ENABLED=0;
@@ -47,6 +47,16 @@ else
 	DEFAULT_SPEED=0;
 fi;
 
+
+# ==============================================================
+# Second time tweaks activation, 
+# Seen some of them not activated by extweaks for some reason.
+# ==============================================================
+
+/res/customconfig/actions/zramtweaks $zramtweaks
+/res/customconfig/actions/led_timeout $led_timeout
+
+
 # ==============================================================
 # Touch Screen tweaks
 # ==============================================================
@@ -74,9 +84,7 @@ kmemhelper -n mxt224_data -t char -o 67 50
 kmemhelper -n mxt224_data -t char -o 77 46
 )&
 }
-if [ $TOUCHSCREENTUNE_ENABLED == 1 ]; then
-#	TOUCHSCREENTUNE; #DISABLED for good.
-fi;
+#TOUCHSCREENTUNE; #DISABLED for good, but it's good info. so no delete.
 
 # =========
 # Renice - kernel thread responsible for managing the memory
@@ -849,6 +857,7 @@ echo "3" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
+
 if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
 	MORE_BATTERY=1;
 	MORE_SPEED=0;
@@ -869,6 +878,35 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
 
 # ==============================================================
+# ExTweaks Push functions.
+# ==============================================================
+
+# On Boot deletion of auto created requests for action.
+if [ -e /data/.siyah/bln_test ]; then
+	rm -f /data/.siyah/bln_test
+fi;
+
+if [ -e /data/.siyah/fixperm ]; then
+	rm -r /data/.siyah/fixperm
+fi;
+
+EXTWEAKSPUSH ()
+{
+        if [ -e /sys/class/misc/notification/led ] && [ -e /data/.siyah/bln_test ]; then
+                echo 1 > /sys/class/misc/notification/led
+		rm -f /data/.siyah/bln_test
+        fi;
+        if [ -e /sys/class/misc/backlightnotification/notification_led ] && [ -e /data/.siyah/bln_test ]; then
+                echo 1 > /sys/class/misc/backlightnotification/notification_led
+		rm -f /data/.siyah/bln_test
+        fi;
+	if [ -e /data/.siyah/fixperm ]; then
+		/sbin/fix_permissions
+		rm -f /data/.siyah/fixperm
+	fi;
+}
+
+# ==============================================================
 # Background process to check screen state
 # ==============================================================
 if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
@@ -876,7 +914,7 @@ if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
-		PIDOFCORTEX=$$;
+		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;	
 		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 		renice -10 ${PIDOFCORTEX};
 		PROFILE=$(cat /data/.siyah/.active.profile);
@@ -888,6 +926,7 @@ if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
+		EXTWEAKSPUSH;
 		SLEEP_MODE;
 		sleep 5;
 	done &);

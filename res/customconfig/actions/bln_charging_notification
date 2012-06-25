@@ -6,21 +6,22 @@
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
-if [ "a$2" != "a" ]; then
+if [ "a$2" == "a" ]; then
+	echo $bln_charging_notification
+else
         bln_charging_notification=$2
+	echo $bln_charging_notification
 fi;
 
 case "${bln_charging_notification}" in
 	0)
 		echo "$notification_timeout 1 $bln_reset_notification" > /sys/class/misc/backlightnotification/notification_timeout
-	;;
+		;;
 	1)
                 echo "$notification_timeout 0 $bln_reset_notification" > /sys/class/misc/backlightnotification/notification_timeout
-	;;
+		;;
 	*)
-	bln_charging_notification=0
-	;;
+		bln_charging_notification=0
+		;;
 esac;
-
-echo ${bln_charging_notification}
 

@@ -10,15 +10,18 @@ if [ ! -e /system/etc/gps.conf.bkp ]; then
 	cp -a /system/etc/gps.conf /system/etc/gps.conf.bkp
 fi;
 
-if [ "a$2" != "a" ]; then
+if [ "a$2" == "a" ]; then
+	echo $gpsregion
+else
         gpsregion=$2
+	echo $gpsregion
 fi;
 
 case "${gpsregion}" in
 	No_GPS_Zone_changes)
 
 	;;
-	Asia)
+Asia)
 	CHECKGPS=`cat /system/etc/gps.conf | grep NTP_SERVER=0.asia.pool.ntp.org`
 	if [ "$CHECKGPS" != "NTP_SERVER=0.asia.pool.ntp.org" ]; then
 		sed -i "s/NTP_SERVER[.a-zA-Z\=-\0-5\]*//g" /system/etc/gps.conf
@@ -30,7 +33,7 @@ case "${gpsregion}" in
 		echo "NTP_SERVER=3.asia.pool.ntp.org" >> /system/etc/gps.conf
 	fi;
 	;;
-	Europe)
+Europe)
 	CHECKGPS=`cat /system/etc/gps.conf | grep NTP_SERVER=0.europe.pool.ntp.org`
 	if [ "$CHECKGPS" != "NTP_SERVER=0.europe.pool.ntp.org" ]; then
 		sed -i "s/NTP_SERVER[.a-zA-Z\=-\0-5\]*//g" /system/etc/gps.conf
@@ -42,7 +45,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=3.europe.pool.ntp.org" >> /system/etc/gps.conf
 	fi;
 	;;
-	Oceania)
+Oceania)
         CHECKGPS=`cat /system/etc/gps.conf | grep NTP_SERVER=0.oceania.pool.ntp.org`
         if [ "$CHECKGPS" != "NTP_SERVER=0.oceania.pool.ntp.org" ]; then
                 sed -i "s/NTP_SERVER[.a-zA-Z\=-\0-5\]*//g" /system/etc/gps.conf
@@ -54,7 +57,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=3.oceania.pool.ntp.org" >> /system/etc/gps.conf
         fi;
 	;;
-	North-America)
+North-America)
         CHECKGPS=`cat /system/etc/gps.conf | grep NTP_SERVER=0.north-america.pool.ntp.org`
         if [ "$CHECKGPS" != "NTP_SERVER=0.north-america.pool.ntp.org" ]; then
                 sed -i "s/NTP_SERVER[.a-zA-Z\=-\0-5\]*//g" /system/etc/gps.conf
@@ -66,7 +69,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=3.north-america.pool.ntp.org" >> /system/etc/gps.conf
         fi;
 	;;
-	South-America)
+South-America)
         CHECKGPS=`cat /system/etc/gps.conf | grep NTP_SERVER=0.south-america.pool.ntp.org`
         if [ "$CHECKGPS" != "NTP_SERVER=0.south-america.pool.ntp.org" ]; then
                 sed -i "s/NTP_SERVER[.a-zA-Z\=-\0-5\]*//g" /system/etc/gps.conf
@@ -78,7 +81,7 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=3.south-america.pool.ntp.org" >> /system/etc/gps.conf
         fi;
 	;;
-	Africa)
+Africa)
         CHECKGPS=`cat /system/etc/gps.conf | grep NTP_SERVER=3.africa.pool.ntp.org`
         if [ "$CHECKGPS" != "NTP_SERVER=3.africa.pool.ntp.org" ]; then
                 sed -i "s/NTP_SERVER[.a-zA-Z\=-\0-5\]*//g" /system/etc/gps.conf
@@ -88,13 +91,11 @@ case "${gpsregion}" in
                 echo "NTP_SERVER=3.pool.ntp.org" >> /system/etc/gps.conf
         fi;
 	;;
-	Original_ROM_GPS_Restored)
+Original_ROM_GPS_Restored)
 		cp -a /system/etc/gps.conf.bkp /system/etc/gps.conf
 	;;
-	*)
+*)
 	gpsregion=No_GPS_Zone_changes
 	;;
 esac;
-
-echo ${gpsregion}
 
