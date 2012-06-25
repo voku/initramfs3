@@ -373,7 +373,7 @@ if above switch is OFF or ON"
 		</spinner>
 
 		<button description="Use this button to test bln. BLN will be active after you turn the screen off." 
-			name="Test BLN" action="test-bln" label="Test BLN"/>
+			name="Test BLN" action="push-actions/test-bln" label="Test BLN"/>
 
 		</settingsPane>
 
@@ -453,14 +453,14 @@ if above switch is OFF or ON"
 
 	<settingsPane description="Dual Mount-SDCARD and MMC via USB after USB disconnected Dual Mount Disabled!" name="DUAL MOUNT USB">
 
-		<button description="Dual Mount USB Switch" name="DUAL MOUNT" action="dualmount" label="Dual Mount"/>
+		<button description="Dual Mount USB Switch" name="DUAL MOUNT" action="push-actions/dualmount" label="Dual Mount"/>
 
 	</settingsPane>
 
 	<settingsPane description="Here you can run Fix Permissions script by one click! 
 		please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS">
 
-		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="fix_permissions" label="FIX PERMISSIONS"/>
+		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
 	</settingsPane>
 
@@ -477,7 +477,7 @@ if above switch is OFF or ON"
 			<spinnerItem name="Set ZRAM OFF!" value="4"/> 
 		</spinner>
 
-		<button description="ZRAM check for active state" name="ZRAM STATS" action="zramstats" label="ZRAM STATS"/>
+		<button description="ZRAM check for active state" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
 		<spinner description="GPS Time Zone for faster LOCK! use your rigion to fix GPS location!" name="GPS Region" action="gpsregion">
 			<spinnerItem name="No GPS Zone changes (default)" value="No_GPS_Zone_changes"/> 
@@ -489,6 +489,8 @@ if above switch is OFF or ON"
 			<spinnerItem name="Set Africa" value="Africa"/> 
 			<spinnerItem name="Restore original ROM gps.conf" value="Original_ROM_GPS_Restored"/> 
 		</spinner>
+
+		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
 
 		<spinner description="This will set the default I/O scheduler. 
 	Default I/O scheduler will only be set during early stages of booting (before init.d execution), 
@@ -519,7 +521,7 @@ if above switch is OFF or ON"
 		<button description="Removes su and Superuser.apk files from the system partition" name="Remove Root" action="remove-root" label="Remove Root"/>
 
 		<button description="Tries to reinstall root. If this fails, please check auto-install root checkbox and restart." 
-			name="Install  Root" action="install-root" label="Install Root"/>
+			name="Install  Root" action="push-actions/install-root" label="Install Root"/>
 
 		<checkbox description="If checked, installs root on the next restart." 
 			name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>

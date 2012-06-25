@@ -3,39 +3,40 @@
 # $1 - "led_timeout"
 # $2 - value=
 
-if [ "a$2" != "a" ]; then
+if [ "a$2" == "a" ]; then
+	echo $led_timeout
+else
         led_timeout=$2
+	echo $led_timeout
 fi;
 
 case "${led_timeout}" in
 	off)
 		echo "-2" > /sys/class/misc/backlightnotification/led_timeout
-	;;
+		;;
 	1)
                 echo "1000" > /sys/class/misc/backlightnotification/led_timeout
-	;;
+		;;
 	2)
                 echo "2000" > /sys/class/misc/backlightnotification/led_timeout
-	;;
+		;;
 	3)
                 echo "3000" > /sys/class/misc/backlightnotification/led_timeout
-	;;
+		;;
         5)
                 echo "5000" > /sys/class/misc/backlightnotification/led_timeout
-        ;;
+        	;;
         15)
                 echo "15000" > /sys/class/misc/backlightnotification/led_timeout
-        ;;
+        	;;
         30)
                 echo "30000" > /sys/class/misc/backlightnotification/led_timeout
-        ;;
+        	;;
         off)
                 echo "-1" > /sys/class/misc/backlightnotification/led_timeout
-        ;;
+        	;;
 	*)
-	led_timeout=5
-	;;
+		led_timeout=5
+		;;
 esac;
-
-echo ${led_timeout}
 

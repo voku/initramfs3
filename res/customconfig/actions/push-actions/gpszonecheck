@@ -1,0 +1,4 @@
+#!/sbin/busybox sh
+
+cat /system/etc/gps.conf
+

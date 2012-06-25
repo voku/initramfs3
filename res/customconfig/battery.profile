@@ -72,3 +72,4 @@ cpu_undervolting=0
 smooth_level0=8
 deep_sleep_batt=abyssplug
 deep_sleep_ac=abyssplug
+

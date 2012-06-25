@@ -3,36 +3,37 @@
 # $1 - "bln_check_battery"
 # $2 - value=
 
-if [ "a$2" != "a" ]; then
+if [ "a$2" == "a" ]; then
+	echo $bln_check_battery
+else
         bln_check_battery=$2
+	echo $bln_check_battery
 fi;
 
 case "${bln_check_battery}" in
 	0)
 		echo "20 0" > /sys/class/misc/backlightnotification/check_battery
-	;;
+		;;
 	1)
                 echo "5 300000" > /sys/class/misc/backlightnotification/check_battery
-	;;
+		;;
 	2)
                 echo "10 300000" > /sys/class/misc/backlightnotification/check_battery
-	;;
+		;;
 	3)
                 echo "15 300000" > /sys/class/misc/backlightnotification/check_battery
-	;;
+		;;
         4)
                 echo "20 300000" > /sys/class/misc/backlightnotification/check_battery
-        ;;
+        	;;
         5)
                 echo "25 300000" > /sys/class/misc/backlightnotification/check_battery
-        ;;
+        	;;
         6)
                 echo "30 300000" > /sys/class/misc/backlightnotification/check_battery
-        ;;
+        	;;
 	*)
-	bln_check_battery=0
-	;;
+		bln_check_battery=0
+		;;
 esac;
-
-echo ${bln_check_battery}
 

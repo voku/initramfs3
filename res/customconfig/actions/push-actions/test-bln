@@ -1,0 +1,5 @@
+#!/sbin/busybox sh
+(
+echo "bln-test" > /data/.siyah/bln_test
+)&
+echo Turn off the screen to test BLN.

@@ -3,21 +3,22 @@
 # $1 - "bln_enabled_charging"
 # $2 - value=
 
-if [ "a$2" != "a" ]; then
+if [ "a$2" == "a" ]; then
+	echo $bln_enabled_charging
+else
         bln_enabled_charging=$2
+	echo $bln_enabled_charging
 fi;
 
 case "${bln_enabled_charging}" in
         0)
                 echo "0" > /sys/class/misc/backlightnotification/enabled_charging
-        ;;
+        	;;
         1)
                 echo "1" > /sys/class/misc/backlightnotification/enabled_charging
-        ;;
+        	;;
         *)
-        bln_enabled_charging=0
-        ;;
+        	bln_enabled_charging=0
+        	;;
 esac;
-
-echo ${bln_enabled_charging}
 

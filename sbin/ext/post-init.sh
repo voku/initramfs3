@@ -25,10 +25,10 @@ echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/de
 read_defaults
 read_config
 
-//cpu undervolting
+#cpu undervolting
 echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
-//change cpu step count
+#change cpu step count
 case "${cpustepcount}" in
 	6)
     	echo 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
@@ -89,26 +89,27 @@ chmod 777 /mnt/ntfs
 # make sure that sdcard is mounted
 sleep 30
 /sbin/busybox sh /sbin/ext/efs-backup.sh
-) &
+)&
+
+# Set color mode to user mode
+echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
 # apply ExTweaks defaults
 /res/uci.sh apply
 
 ##### init scripts #####
 (
-/sbin/busybox sh /sbin/ext/run-init-scripts.sh
-)&
-
-# Set color mode to user mode
-echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
-
-(
-sleep 60
+sleep 45
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 )&
 
 (
 sleep 60
+/sbin/busybox sh /sbin/ext/run-init-scripts.sh
+)&
+
+(
+sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh
 )&
 

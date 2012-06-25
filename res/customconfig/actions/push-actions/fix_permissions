@@ -1,0 +1,6 @@
+#!/sbin/busybox sh
+(
+echo "fix me" > /data/.siyah/fixperm
+)&
+echo Fixing permissions Will start on screen OFF! please wait 3MIN!
+

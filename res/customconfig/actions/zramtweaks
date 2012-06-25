@@ -9,9 +9,11 @@
 # $1 - "zramtweaks"
 # $2 - value=
 
-if [ "a$2" != "a" ]; then
+if [ "a$2" == "a" ]; then
+	echo $zramtweaks
+else
 	zramtweaks=$2
-
+	echo $zramtweaks
 fi;
 
 case "${zramtweaks}" in
@@ -33,13 +35,13 @@ case "${zramtweaks}" in
 			mkswap /dev/block/zram1 >/dev/null;
 			mkswap /dev/block/zram2 >/dev/null;
 			# Activating ZRAM swaps with the same priority to load balance ram swapping.
-   	    	swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
-   	    	swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
-   	    	swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+			swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
+			swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
+			swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
 			# Setting swappines
 			echo "30" > /proc/sys/vm/swappiness;
 		fi;
-    	;;
+		;;
 	2)
 		if [ -e /dev/block/zram0 ]; then
 			# For on the fly changes we need to shutdown ZRAM first.
@@ -106,6 +108,4 @@ case "${zramtweaks}" in
 		zramtweaks=2
 		;;
 esac;
-
-echo "${zramtweaks}"
 

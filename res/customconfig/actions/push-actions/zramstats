@@ -1,0 +1,4 @@
+#!/sbin/busybox sh
+
+/sbin/zram_stats_ex
+
