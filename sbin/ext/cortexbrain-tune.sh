@@ -53,8 +53,8 @@ fi;
 # Seen some of them not activated by extweaks for some reason.
 # ==============================================================
 
-/res/customconfig/actions/zramtweaks $zramtweaks
-/res/customconfig/actions/led_timeout $led_timeout
+/res/customconfig/actions/zramtweaks ${zramtweaks}
+/res/customconfig/actions/led_timeout ${led_timeout}
 
 
 # ==============================================================
@@ -147,6 +147,21 @@ for i in $MMC; do
 
 	if [ -e $i/queue/iosched/back_seek_max ]; then
 		echo "1000000000" > $i/queue/iosched/back_seek_max;
+	fi;
+
+	## default 4
+	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
+		echo "2" > $i/queue/iosched/max_budget_async_rq;
+	fi;
+
+	## default  HZ / 8
+	if [ -e $i/queue/iosched/timeout_async ]; then
+		echo "4" > $i/queue/iosched/timeout_async;
+	fi;
+
+	## default  HZ / 25
+	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
+		echo "10" > $i/queue/iosched/max_budget_async_rq;
 	fi;
 
 	if [ -e $i/queue/iosched/back_seek_penalty ]; then
@@ -357,12 +372,12 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 	fi;
 
-        if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-                echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
-                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-                echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
-        fi;
+	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
+		echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
@@ -388,9 +403,9 @@ if [ $MORE_BATTERY == 1 ]; then
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "160000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
@@ -448,8 +463,8 @@ elif [ $DEFAULT_SPEED == 1 ]; then
                 echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
                 echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
                 echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-                echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-                echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+                echo "70" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+                echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
         fi;
 
         if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
@@ -465,8 +480,8 @@ elif [ $DEFAULT_SPEED == 1 ]; then
                 echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
                 echo "120000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
         fi;
-else
-	if [ $MORE_SPEED == 1 ]; then
+
+	elif [ $MORE_SPEED == 1 ]; then
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
@@ -716,10 +731,11 @@ AWAKE_MODE()
 {
 
 # Restore Smooth Level
-kmemhelper -n smooth_level -o 0 -t int $smooth_level0 
+kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
 
-# Restore ASV GROUP (undervolting)
-echo "$asv_group" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
+# Restore ASV GROUP + Simple undervolting
+echo "${asv_group}" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
+echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
 # charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -731,7 +747,7 @@ if [ $CHARGING -ge 1 ]; then
 
         # CPU-Freq
         echo "hyper" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# CPU Idle State - IDLE only
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
@@ -747,24 +763,24 @@ if [ $CHARGING -ge 1 ]; then
 	MODE="SPEED";
 else
 	# set governor
-        echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+        echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# cpu - hotplug=1 core online second on demand
 	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 	# cpu - settings for second core
-	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
+	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# Bus Freq for deep sleep
-	echo "$busfreq_asv_group" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "$busfreq_down_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+	echo "${busfreq_asv_group}" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
+	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
         # CPU Idle State
-        echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+        echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# value from settings
 	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
@@ -809,7 +825,7 @@ if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
 fi;
 
 # Setting the vibrator force in case it's has been reseted.
-echo "$pwm_val" > /sys/vibrator/pwm_val
+echo "${pwm_val}" > /sys/vibrator/pwm_val
 
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
@@ -825,13 +841,13 @@ CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
 
 	# CPU-Freq
-	echo "$deep_sleep_ac" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "${deep_sleep_ac}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	MODE="CHARGING";
 else
 
 	# CPU-Freq
-	echo "$deep_sleep_batt" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "${deep_sleep_batt}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	MODE="SLEEP";
 fi;
@@ -851,8 +867,9 @@ echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8
 
-# SET ASV GROUP (undervolting) to 3 to be safe from SOD
+# SET ASV GROUP to 3 + Simple undervolting.
 echo "3" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
+echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
@@ -872,7 +889,7 @@ echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
 
 # Setting the vibrator force in case it's has been reseted.
-echo "$pwm_val" > /sys/vibrator/pwm_val
+echo "${pwm_val}" > /sys/vibrator/pwm_val
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
