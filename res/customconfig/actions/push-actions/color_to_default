@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-case $1 in
+case $2 in
 	0)
 		echo "nothnig to do"
 		;;
