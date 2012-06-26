@@ -117,9 +117,18 @@ for z in $ZRM; do
 	if [ -e $i/queue/read_ahead_kb ]; then
 		echo "512" >  $i/queue/read_ahead_kb;
 	fi;
+
+	if [ -e $i/queue/max_sectors_kb ]; then
+		echo "512" >  $i/queue/max_sectors_kb; # default: 127
+	fi;
+
 done;
 
 for i in $MMC; do
+
+	if [ -e $i/queue/scheduler ]; then
+		echo $scheduler > $i/queue/scheduler;
+	fi;
 
 	if [ -e $i/queue/rotational ]; then
 		echo "0" > $i/queue/rotational;
@@ -134,50 +143,69 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/read_ahead_kb ]; then
-		echo "1024" >  $i/queue/read_ahead_kb;
+		echo "1024" >  $i/queue/read_ahead_kb; # default: 128
 	fi;
 
-#	if [ -e $i/queue/nr_requests ]; then
-#		echo "8192" > $i/queue/nr_requests;
-#	fi; # it's not wise to mess with NR and amount is very high. best default 128
+	if [ -e $i/queue/max_sectors_kb ]; then
+		echo "1024" >  $i/queue/max_sectors_kb; # default: 512
+	fi;
+
+	## testing: 8192
+	if [ -e $i/queue/nr_requests ]; then
+		echo "128" > $i/queue/nr_requests; # default: 128
+	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ]; then
 		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
 
+	## testing: 1000000000
 	if [ -e $i/queue/iosched/back_seek_max ]; then
-		echo "1000000000" > $i/queue/iosched/back_seek_max;
+		echo "16384" > $i/queue/iosched/back_seek_max; # default: 16384
 	fi;
 
-	## default 4
 	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
-		echo "2" > $i/queue/iosched/max_budget_async_rq;
+		echo "2" > $i/queue/iosched/max_budget_async_rq; # default: 4
 	fi;
 
-	## default  HZ / 8
 	if [ -e $i/queue/iosched/timeout_async ]; then
-		echo "4" > $i/queue/iosched/timeout_async;
+		echo "4" > $i/queue/iosched/timeout_async; # default: HZ / 8
 	fi;
 
-	## default  HZ / 25
 	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
-		echo "10" > $i/queue/iosched/max_budget_async_rq;
+		echo "10" > $i/queue/iosched/max_budget_async_rq; # default: HZ / 25
 	fi;
 
 	if [ -e $i/queue/iosched/back_seek_penalty ]; then
-		echo "1" > $i/queue/iosched/back_seek_penalty;
+		echo "1" > $i/queue/iosched/back_seek_penalty; # default: 2
+	fi;
+
+	if [ -e $i/queue/iosched/fifo_expire_sync ]; then
+		echo "800" > $i/queue/iosched/fifo_expire_sync; # default: 125
+	fi;
+
+	if [ -e $i/queue/iosched/timeout_sync ]; then
+		echo "800" > $i/queue/iosched/timeout_sync; # default: 125
+	fi;
+
+	if [ -e $i/queue/iosched/fifo_expire_async ]; then
+		echo "180" > $i/queue/iosched/fifo_expire_async; # default: 250
+	fi;
+
+	if [ -e $i/queue/iosched/timeout_async ]; then
+		echo "5" > $i/queue/iosched/timeout_async; # default: 5
 	fi;
 
 	if [ -e $i/queue/iosched/slice_idle ]; then
-		echo "0" > $i/queue/iosched/slice_idle;
+		echo "0" > $i/queue/iosched/slice_idle; # default: 8
 	fi;
 
 	if [ -e $i/queue/iosched/quantum ]; then
-		echo "8" > $i/queue/iosched/quantum;
+		echo "8" > $i/queue/iosched/quantum; # default: 4
 	fi;
 
 	if [ -e $i/queue/iosched/slice_async_rq ]; then
-		echo "4" > $i/queue/iosched/slice_async_rq;
+		echo "4" > $i/queue/iosched/slice_async_rq; # default: 2
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_batch ]; then
@@ -235,9 +263,8 @@ fi;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-#sysctl -w kernel.sem="500 512000 100 2048";
 #sysctl -w kernel.shmmax="268435456";
 #echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
 #echo "64000" > /proc/sys/kernel/msgmni;
@@ -555,17 +582,30 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-echo "300" > /proc/sys/vm/dirty_expire_centisecs;
-echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "15" > /proc/sys/vm/dirty_background_ratio;
-echo "10" > /proc/sys/vm/dirty_ratio;
-echo "4" > /proc/sys/vm/min_free_order_shift;
-echo "0" > /proc/sys/vm/overcommit_memory;
+echo "1250" > /proc/sys/vm/dirty_expire_centisecs;
+echo "1250" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
+echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
+echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
+echo "100" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
-echo "3" > /proc/sys/vm/page-cluster;
-echo "1000" > /proc/sys/vm/overcommit_ratio;
+echo "3" > /proc/sys/vm/page-cluster; # default: 3
 echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "50" > /proc/sys/vm/vfs_cache_pressure;
+echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+echo "65530" > /proc/sys/vm/max_map_count;
+echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
+
+if [ $zramtweaks == 1 ]; then
+	echo "30" > /proc/sys/vm/swappiness;
+elif [ $zramtweaks == 2 ]; then
+	echo "40" > /proc/sys/vm/swappiness;
+elif [ $zramtweaks == 3 ]; then
+	echo "40" > /proc/sys/vm/swappiness;
+elif [ $zramtweaks == 4 ]; then
+	# zram is disabled
+	echo "0" > /proc/sys/vm/swappiness;
+fi;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -744,25 +784,27 @@ if [ $CHARGING -ge 1 ]; then
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
-        # CPU-Freq
-        echo "hyper" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	# CPU-Freq
+	echo "hyper" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# CPU Idle State - IDLE only
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
-        # Bus Freq for Powered Mod
-        echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-        echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-        echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+	# Bus Freq for Powered Mod
+	echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
+	echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-        # load balancing - off
-        echo "0" > /sys/devices/system/cpu/sched_mc_power_savings;
+	# load balancing - off
+	echo "0" > /sys/devices/system/cpu/sched_mc_power_savings;
 
 	MODE="SPEED";
+
 else
+
 	# set governor
-        echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# cpu - hotplug=1 core online second on demand
@@ -778,8 +820,8 @@ else
 	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "$busfreq_down_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-        # CPU Idle State
-        echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	# CPU Idle State
+	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# value from settings
 	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
@@ -908,18 +950,18 @@ fi;
 EXTWEAKSPUSH ()
 {
 	# Case if GM BLN active in kernel.
-        if [ -e /sys/class/misc/notification/led ] && [ -e /data/.siyah/bln_test ]; then
-                echo 1 > /sys/class/misc/notification/led
-		rm -f /data/.siyah/bln_test
-        fi;
+	if [ -e /sys/class/misc/notification/led ] && [ -e /data/.siyah/bln_test ]; then
+		echo 1 > /sys/class/misc/notification/led;
+		rm -f /data/.siyah/bln_test;
+	fi;
 	# Case if Myfluxi BLN active in kernel.
-        if [ -e /sys/class/misc/backlightnotification/notification_led ] && [ -e /data/.siyah/bln_test ]; then
-                echo 1 > /sys/class/misc/backlightnotification/notification_led
-		rm -f /data/.siyah/bln_test
-        fi;
+	if [ -e /sys/class/misc/backlightnotification/notification_led ] && [ -e /data/.siyah/bln_test ]; then
+		echo 1 > /sys/class/misc/backlightnotification/notification_led;
+		rm -f /data/.siyah/bln_test;
+	fi;
 	if [ -e /data/.siyah/fixperm ]; then
-		/sbin/fix_permissions
-		rm -f /data/.siyah/fixperm
+		/sbin/fix_permissions;
+		rm -f /data/.siyah/fixperm;
 	fi;
 }
 
@@ -968,51 +1010,37 @@ fi;
 # This script tune Network and System VM settings and ROM settings tuning.
 # This script changing default MOUNT options and I/O tweaks for all flash disks and ZRAM.
 #
-# TODO: add more description.
+# TODO: add more description, explanations & default vaules ...
 #
 
 # ==============================================================
 # Explanations
 # ==============================================================
 #
-# scaling_governor: Using Frequency Scaling Governors -> cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
-#
-# 				-> http://publib.boulder.ibm.com/infocenter/lnxinfo/v3r0m0/index.jsp?topic=/liaai/cpufreq/TheOndemandGovernor.htm
-#
-# 				conservative - Increases frequency step by step, decreases instantly
-# 				ondemand - Uses the highest CPU frequency when tasks are started, decreases step by step
-# 				performance - CPU only runs at max frequency regardless of load
-# 				powersave - CPU only runs at min frequency regardless of load
-#
-# 				echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
-# swappiness: 	swappiness is a parameter which sets the kernel's balance between reclaiming pages from the page cache and swapping process memory. 
-#				The default value is 60. If you want kernel to swap out more process memory and thus cache more file contents increase the value. 
-#				Otherwise, if you would like kernel to swap less decrease it. A value of 0 means "do not swap unless out of free RAM", 
-#				a value of 100 means "swap whenever possible". 
+# oom_kill_allocating_task:	If this is set to zero, the OOM killer will scan through the entire tasklist and select a task based on heuristics to kill.
 #
-# 				echo XXX > /proc/sys/vm/swappiness;
-
-# oom_kill_allocating_task:	If this is set to zero, the OOM killer will scan through the entire tasklist and select a task based on heuristics to kill. 
 #				This normally selects a rogue memory-hogging task that frees up a large amount of memory when killed. 
 #				If this is set to non-zero, the OOM killer simply kills the task that triggered the out-of-memory condition. 
 #				This avoids the expensive tasklist scan.
 #
 # 				echo XXX > /proc/sys/vm/oom_kill_allocating_task;
 
-# dirty_expire_centisecs: This tunable is used to define when dirty data is old enough to be eligible for writeout by the pdflush daemons. 
+# dirty_expire_centisecs: This tunable is used to define when dirty data is old enough to be eligible for writeout by the pdflush daemons.
+#
 #				It is expressed in 100'ths of a second. Data which has been dirty in memory for longer than this interval will be written 
 #				out next time a pdflush daemon wakes up.
 #
 # 				echo XXX > /proc/sys/vm/dirty_expire_centisecs;
 
-# dirty_writeback_centisecs: The pdflush writeback daemons will periodically wake up and write "old" data out to disk. 
+# dirty_writeback_centisecs: The pdflush writeback daemons will periodically wake up and write "old" data out to disk.
+#
 #				This tunable expresses the interval between those wakeups, in 100'ths of a second. 
 #				Setting this to zero disables periodic writeback altogether.
 #
 # 				echo XXX > /proc/sys/vm/dirty_writeback_centisecs;
 
-# drop_caches:	Writing to this will cause the kernel to drop clean caches, dentries and inodes from memory, causing that memory to become free.
+# drop_caches:		Writing to this will cause the kernel to drop clean caches, dentries and inodes from memory, causing that memory to become free.
 #
 #				To free pagecache:
 # 				echo 1 > /proc/sys/vm/drop_caches
@@ -1023,14 +1051,16 @@ fi;
 #				To free pagecache, dentries and inodes:
 # 				echo 3 > /proc/sys/vm/drop_caches
 
-# page-cluster: page-cluster controls the number of pages which are written to swap in a single attempt. The swap I/O size.
+# page-cluster: 	page-cluster controls the number of pages which are written to swap in a single attempt. The swap I/O size.
+#
 #				It is a logarithmic value - setting it to zero means "1 page", setting it to 1 means "2 pages", setting it to 2 means "4 pages", etc.
 #				The default value is three (eight pages at a time). There may be some small benefits in tuning this to 
 #				a different value if your workload is swap-intensive. (default 3)
 #
 # 				echo XXX > /proc/sys/vm/page-cluster;
 
-# laptop_mode: 	laptop_mode is a knob that controls "laptop mode". When the knob is set, any physical disk I/O 
+# laptop_mode: 		laptop_mode is a knob that controls "laptop mode". When the knob is set, any physical disk I/O
+#
 #				(that might have caused the hard disk to spin up, see /proc/sys/vm/block_dump) causes Linux to flush all dirty blocks. 
 #				The result of this is that after a disk has spun down, it will not be spun up anymore to write dirty blocks, 
 #				because those blocks had already been written immediately after the most recent read operation. 
@@ -1039,82 +1069,34 @@ fi;
 #
 # 				echo XXX > /proc/sys/vm/laptop_mode;
 
-# rr_interval: 	rr_interval or "round robin interval". This is the maximum time two SCHED_OTHER (or SCHED_NORMAL, the common scheduling policy)
+# rr_interval:		rr_interval or "round robin interval". This is the maximum time two SCHED_OTHER (or SCHED_NORMAL, the common scheduling policy)
+#
 #				tasks of the same nice level will be running for, or looking at it the other way around, the longest duration two tasks 
 #				of the same nice level will be delayed for. When a task requests cpu time, it is given a quota (time_slice) equal to the 
 #				rr_interval and a virtual deadline, while increasing it will improve throughput, but at the cost of worsening latencies.
 #
 # 				echo XXX > /proc/sys/kernel/rr_interval;
 
-# dirty_background_ratio: 	Contains, as a percentage of total system memory, the number of pages at which the pdflush background writeback daemon will 
+# dirty_background_ratio: Contains, as a percentage of total system memory, the number of pages at which the pdflush background writeback daemon will 
 #				start writing out dirty data.
 #
 # 				echo XXX > /proc/sys/vm/dirty_background_ratio;
 
-# dirty_ratio:	Contains, as a percentage of total system memory, the number of pages at which a process which is generating disk writes will itself start writing out dirty data.
+# dirty_ratio:		Contains, as a percentage of total system memory, the number of pages at which a process which is generating disk writes will itself start writing out dirty data.
 #
 # 				echo XXX > /proc/sys/vm/dirty_ratio;
 
-# iso_cpu:		Setting this to 100 is the equivalent of giving all users SCHED_RR access and setting it to 0 removes the
-#				ability to run any pseudo-realtime tasks.
+# iso_cpu:		Setting this to 100 is the equivalent of giving all users SCHED_RR access and setting it to 0 removes the ability to run any pseudo-realtime tasks.
 #
 # 				echo XXX > /proc/sys/kernel/iso_cpu;
 
-# vfs_cache_pressure: Controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects.
-#				At the default value of vfs_cache_pressure = 100 the kernel will attempt to reclaim dentries and inodes at a "fair" rate with respect 
-#				to pagecache and swapcache reclaim. Decreasing vfs_cache_pressure causes the kernel to prefer to retain dentry and inode caches. 
-#				Increasing vfs_cache_pressure beyond 100 causes the kernel to prefer to reclaim dentries and inodes.
+# ===============
 #
-# 				echo XXX > /proc/sys/vm/vfs_cache_pressure;
-
-# min_free_kbytes: This is used to force the Linux VM to keep a minimum number of kilobytes free. The VM uses this number to compute a pages_min value 
-#				for each lowmem zone in the system. Each lowmem zone gets a number of reserved free pages based proportionally on its size.
+# Kernel-Settings
 #
-# 				echo XXX > /proc/sys/vm/min_free_kbytes;
+# ===============
 
-# sched_latency_ns: Targeted preemption latency for CPU-bound tasks.
-#
-# 				echo XXX > /proc/sys/kernel/sched_latency_ns;
-
-# sched_batch_wakeup_granularity_ns: Wake-up granularity for SCHED_BATCH.
-#
-# 				echo XXX > /proc/sys/kernel/sched_batch_wakeup_granularity_ns;
-
-# sched_wakeup_granularity_ns: 	Wake-up granularity for SCHED_OTHER.
-#
-# 				echo XXX > /proc/sys/kernel/sched_wakeup_granularity_ns;
-
-# sched_compat_yield: 		Applications depending heavily on sched_yield()'s behavior can expect varied performance because of the way CFS changes this, 
-#				so turning on the sysctls is recommended.
-#
-# 				echo XXX > /proc/sys/kernel/sched_compat_yield;
-
-# sched_child_runs_first: 	The child is scheduled next after fork; it's the default. If set to 0, then the parent is given the baton.
-#
-# 				echo XXX > /proc/sys/kernel/sched_child_runs_first;
-
-# sched_min_granularity_ns:	Minimum preemption granularity for CPU-bound tasks.
-#
-# 				echo XXX > /proc/sys/kernel/sched_min_granularity_ns;
-
-# sched_features: NO_NEW_FAIR_SLEEPERS is something that will turn the scheduler into a more classic fair scheduler ?!?
-#
-# 				echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features;
-
-# sched_stat_granularity_ns: Granularity for collecting scheduler statistics. [1/0]
-#
-# 				echo XXX  > /proc/sys/kernel/sched_stat_granularity_ns;
-
-# sched_rt_period_us: The default values for sched_rt_period_us (1000000 or 1s) and sched_rt_runtime_us (950000 or 0.95s).  
-#				This gives 0.05s to be used by SCHED_OTHER (non-RT tasks). These defaults were chosen so that a run-away realtime 
-#				tasks will not lock up the machine but leave a little time to recover it. By setting runtime to -1 you get the old behaviour back.
-
-# threads-max: Gets/sets the limit on the maximum number of running threads system-wide.
-#
-# 				echo XXX > /proc/sys/kernel/threads-max;
-
-# msgmni: 		The msgmni tunable specifies the maximum number of system-wide System V IPC message queue 
-#				identifiers (one per queue).
+# msgmni: 		The msgmni tunable specifies the maximum number of system-wide System V IPC message queue identifiers (one per queue).
 #
 # 				echo XXX > /proc/sys/kernel/msgmni;
 
@@ -1129,8 +1111,210 @@ fi;
 #
 # 				echo XXX XXX XXX XXX > /proc/sys/kernel/sem;
 
-# read_ahead_kb: Optimize for read-throughput (cache-value)
+# ===============
 #
-# 				example of C program for finding correct vaules for Linux 
+# CPU-Settings
+#
+# ===============
+
+# scaling_governor: 	Using Frequency Scaling Governors -> cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+#
+# 				-> http://publib.boulder.ibm.com/infocenter/lnxinfo/v3r0m0/index.jsp?topic=/liaai/cpufreq/TheOndemandGovernor.htm
+#
+# 				conservative - Increases frequency step by step, decreases instantly
+# 				ondemand - Uses the highest CPU frequency when tasks are started, decreases step by step
+# 				performance - CPU only runs at max frequency regardless of load
+# 				powersave - CPU only runs at min frequency regardless of load
+#
+# 				echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
+# sched_latency_ns: 	Targeted preemption latency for CPU-bound tasks.
+#
+# 				echo XXX > /proc/sys/kernel/sched_latency_ns;
+
+# sched_batch_wakeup_granularity_ns: Wake-up granularity for SCHED_BATCH.
+#
+# 				echo XXX > /proc/sys/kernel/sched_batch_wakeup_granularity_ns;
+
+# sched_wakeup_granularity_ns: Wake-up granularity for SCHED_OTHER.
+#
+# 				echo XXX > /proc/sys/kernel/sched_wakeup_granularity_ns;
+
+# sched_compat_yield: 	Applications depending heavily on sched_yield()'s behavior can expect varied performance because of the way CFS changes this, so turning on the sysctls is recommended.
+#
+# 				echo XXX > /proc/sys/kernel/sched_compat_yield;
+
+# sched_child_runs_first: The child is scheduled next after fork; it's the default. If set to 0, then the parent is given the baton.
+#
+# 				echo XXX > /proc/sys/kernel/sched_child_runs_first;
+
+# sched_min_granularity_ns: Minimum preemption granularity for CPU-bound tasks.
+#
+# 				echo XXX > /proc/sys/kernel/sched_min_granularity_ns;
+
+# sched_features: 	NO_NEW_FAIR_SLEEPERS is something that will turn the scheduler into a more classic fair scheduler ?!?
+#
+# 				echo NO_NORMALIZED_SLEEPER > /sys/kernel/debug/sched_features;
+
+# sched_stat_granularity_ns: Granularity for collecting scheduler statistics. [1/0]
+#
+# 				echo XXX  > /proc/sys/kernel/sched_stat_granularity_ns;
+
+# sched_rt_period_us: 	The default values for sched_rt_period_us (1000000 or 1s) and sched_rt_runtime_us (950000 or 0.95s).
+#
+#				This gives 0.05s to be used by SCHED_OTHER (non-RT tasks). These defaults were chosen so that a run-away realtime 
+#				tasks will not lock up the machine but leave a little time to recover it. By setting runtime to -1 you get the old behaviour back.
+
+# threads-max: 		Gets/sets the limit on the maximum number of running threads system-wide.
+#
+# 				echo XXX > /proc/sys/kernel/threads-max;
+
+# ===============
+#
+# Memory-Settings
+#
+# ===============
+
+# swappiness: 		Swappiness is a parameter which sets the kernel's balance between reclaiming pages from the page cache and swapping process memory. 
+#
+#				The default value is 60. If you want kernel to swap out more process memory and thus cache more file contents increase the value. 
+#				Otherwise, if you would like kernel to swap less decrease it. A value of 0 means "do not swap unless out of free RAM", 
+#				a value of 100 means "swap whenever possible". 
+#
+# 				echo XXX > /proc/sys/vm/swappiness;
+
+# overcommit_memory: 	Controls overcommit of system memory, possibly allowing processes to allocate (but not use) more memory than is actually available.
+#
+#				0 - Heuristic overcommit handling. 
+#					Obvious overcommits of address space are refused. Used for a typical system. 
+#					It ensures a seriously wild allocation fails while allowing overcommit to reduce swap usage. 
+#					root is allowed to allocate slighly more memory in this mode. This is the default.
+#				1 - Always overcommit. 
+#					Appropriate for some scientific applications.
+#				2 - Don't overcommit. 
+#					The total address space commit for the system is not permitted to exceed swap plus a 
+#					configurable percentage (default is 50) of physical RAM. Depending on the percentage you use, 
+#					in most situations this means a process will not be killed while attempting to use already-allocated memory but 
+#					will receive errors on memory allocation as appropriate.
+
+# overcommit_ratio: 	Percentage of physical memory size to include in overcommit calculations.
+#
+#				Memory allocation limit = swapspace + physmem * (overcommit_ratio / 100)
+#
+#				swapspace = total size of all swap areas
+#				physmem = size of physical memory in system
+
+# vfs_cache_pressure: 	Controls the tendency of the kernel to reclaim the memory which is used for caching of directory and inode objects.
+#
+#				At the default value of vfs_cache_pressure = 100 the kernel will attempt to reclaim dentries and inodes at a "fair" rate with respect 
+#				to pagecache and swapcache reclaim. Decreasing vfs_cache_pressure causes the kernel to prefer to retain dentry and inode caches. 
+#				Increasing vfs_cache_pressure beyond 100 causes the kernel to prefer to reclaim dentries and inodes.
+#
+# 				echo XXX > /proc/sys/vm/vfs_cache_pressure;
+
+# min_free_kbytes: 	This is used to force the Linux VM to keep a minimum number of kilobytes free. 
+#
+#				The VM uses this number to compute a pages_min value for each lowmem zone in the system. Each lowmem zone gets a number of reserved 
+#				free pages based proportionally on its size.
+#
+# 				echo XXX > /proc/sys/vm/min_free_kbytes;
+
+# ===============
+#
+# I/O-Settings
+#
+# ===============
+
+# read_ahead_kb: 	Optimize for read-throughput (cache-value).
+#
+# 				example of C-program for finding correct vaules for Linux 
 # 				-> http://pastebin.com/Rg6qVJQH
 #
+
+# fifo_batch:		Controls the maximum number of requests per batch.
+#
+# 				This parameter tunes the balance between per-request latency and aggregate
+#				throughput.  When low latency is the primary concern, smaller is better (where
+#				a value of 1 yields first-come first-served behaviour).  Increasing fifo_batch
+#				generally improves throughput, at the cost of latency variation.
+
+# back_seek_max: 	This parameter, given in Kbytes, sets the maximum “distance” for backward seeking.
+#
+#				By default, this parameter is set to 16 MBytes.
+#				This distance is the amount of space from the current head location to the sectors that are backward in terms of distance. 
+#				This idea comes from the Anticipatory Scheduler (AS) about anticipating the location of the next request.
+#				This parameter allows the scheduler to anticipate requests in the “backward”
+#				or opposite direction and consider the requests as being “next” if they are within this distance from the current head location.
+
+# back_seek_penalty: 	This parameter is used to compute the cost of backward seeking. 
+#
+#				If the backward distance of a request is just (1/back_seek_penalty) from a “front” request, then
+#				the seeking cost of the two requests is considered equivalent and the scheduler will not bias toward one or the other
+#				(otherwise the scheduler will bias the selection to “front direction requests). 
+#				Recall, the CFQ has the concept of elevators so it will try to seek in the current direction as much as possible to avoid the latency associated with a seek.
+#				This parameters defaults to 2 so if the distance is only 1/2 of the forward distance, CFQ will consider the backward request to be close enough
+#				to the current head location to be “close”. Therefore it will consider it as a forward request.
+
+# fifo_expire_async: 	This particular parameter is used to set the timeout of asynchronous requests.
+#
+#				Recall that CFQ maintains a fifo (first-in, first-out) list to manage timeout requests. 
+#				In addition, CFQ doesn’t check the expired requests from the fifo queue after one timeout is dispatched (i.e. there is a delay in processing the expired request).
+#				The default value for this parameter is 250 ms. A smaller value means the timeout is considered much more quickly than a larger value.
+
+# fifo_expire_sync: 	This parameter is the same as fifo_expire_async but for synchronous requests.
+#
+#				The default value for this parameter is 125 ms.
+#				If you want to favor synchronous request over asynchronous requests, then this value should be decreased relative to fifo_expire_asynchronous.
+
+# slice_sync:		Remember that when a queue is selected for execution, the queues IO requests are only executed for a certain amount of time (the time_slice) before switching to another queue.
+#
+#				This parameter is used to calculate the time slice of the synchronous queue. 
+#				The default value for this parameter is 100 ms, but this isn’t the true time slice.
+#				Rather the time slice is computed from the following: time_slice = slice_sync + (slice_sync / 5 * 4 – io_priority)).
+#				If you want the time slice for the synchronous queue to be longer (perhaps you have more synchronous operations), then increase the value of slice_sync.
+
+# slice_async: 		This parameter is the same as slice_sync but for the asynchronous queue.
+#
+#				The default is 40 ms. Notice that synchronous operations are preferred over asynchronous operations.
+
+# slice_asyn_rq: 	This parameter is used to limit the dispatching of asynchronous requests to the device request-queue in queue’s slice time. 
+#
+#				This limits the number of asynchronous requests are executed (dispatched). 
+#				The maximum number of requests that are allowed to be dispatched also depends upon the io priority. 
+#				The equations for computing the maximum number of requests is, max_nr_requests = 2 * (slice_async_rq + slice_async_rq * (7 – io_priority)). The default for slice_async_rq is 2.
+
+# slice_idle:		This parameter is the idle time for the synchronous queue only.
+#
+#				In a queue’s time slice (the amount of time operations can be dispatched), when there are no requests in the synchronous queue CFQ will not switch to another queue
+#				but will sit idle to wait for the process creating more requests. If there are no new requests submitted within the idle time, then the queue will expire.
+#				The default value for this parameter is 8 ms. This parameters can control the amount of time the schedulers waits for synchronous requests.
+#				This can be important since synchronous requests tend to block execution of the process until the operation is completed. Consequently,
+#				the IO scheduler looks for synchronous requests within the idle window of time that might come from a streaming video application or something that needs synchronous operations.
+
+# quantum:		This parameter controls the number of dispatched requests to the device queue, request-device (i.e. the number of requests that are executed or at least sent for execution). 
+#
+#				In a queue’s time slice, a request will not be dispatched if the number of requests in the device request-device exceeds this parameter. 
+#				For the asynchronous queue, dispatching the requests is also restricted by the parameter slice_async_rq. The default for this parameter is 4.
+
+# ===============
+#
+# BFQ-Settings
+#
+# ===============
+
+# timeout_sync, timeout_async: The maximum amount of disk time that can be given to a task once it has been selected for service, respectively for synchronous and asynchronous queues.
+#
+#				It allows the user to specify a maximum slice length to put an upper bound to the latencies imposed by the scheduler.
+
+# max_budget:		The maximum amount of service, measured in disk sectors, that can be provided to a queue once it is selected (of course within the limits of the above timeouts). 
+#
+#				According to what we said in the description of the algoritm, larger values increase the throughput for the single tasks and for the system,
+#				in proportion to the percentage of sequential requests issued. The price is increasing the maximum latency a request may incur in. 
+#				The default value is 0, which enables auto-tuning: BFQ tries to estimate it as the maximum number of sectors that can be served during timeout_sync.
+
+# max_budget_async_rq: In addition to the max_budget, limit, async queues are served for a maximum number of requests, after that a new queue is selected.
+
+# low_latency:	If equal to 1 (default value), interactive and soft real-time applications are privileged and experience a lower latency.
+
+
+# more Informations can be found here -> http://doc.opensuse.org/documentation/html/openSUSE/opensuse-tuning/part.tuning.kernel.html
