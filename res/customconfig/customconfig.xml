@@ -52,6 +52,7 @@
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
 				<spinnerItem name="smartassV2" value="smartassV2"/>
 				<spinnerItem name="hyper" value="hyper"/> 
+				<spinnerItem name="scary" value="scary"/> 
 			</spinner>
 
 			<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
@@ -134,6 +135,7 @@ If you use any script or voltage control app this setting may be overriden by th
 			<spinnerItem name="lulzactive" value="lulzactive"/> 
 			<spinnerItem name="smartassV2" value="smartassV2"/>
 			<spinnerItem name="hyper" value="hyper"/> 
+			<spinnerItem name="scary" value="scary"/> 
 		</spinner>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) on Battery CPU governor." 
@@ -146,6 +148,7 @@ If you use any script or voltage control app this setting may be overriden by th
 			<spinnerItem name="lulzactive" value="lulzactive"/> 
 			<spinnerItem name="smartassV2" value="smartassV2"/> 
 			<spinnerItem name="hyper" value="hyper"/> 
+			<spinnerItem name="scary" value="scary"/> 
 		</spinner>
 
 	<!--seekBar description="Sets second core kick-out threshold for screen-on state" 
