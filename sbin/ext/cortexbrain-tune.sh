@@ -372,12 +372,12 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 	fi;
 
-        if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-                echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
-                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-                echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-                echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
-        fi;
+	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
+		echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
@@ -403,9 +403,9 @@ if [ $MORE_BATTERY == 1 ]; then
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "160000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
@@ -480,8 +480,8 @@ elif [ $DEFAULT_SPEED == 1 ]; then
                 echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
                 echo "120000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
         fi;
-else
-	if [ $MORE_SPEED == 1 ]; then
+
+elif [ $MORE_SPEED == 1 ]; then
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
