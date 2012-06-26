@@ -168,10 +168,6 @@ for i in $MMC; do
 		echo "2" > $i/queue/iosched/max_budget_async_rq; # default: 4
 	fi;
 
-	if [ -e $i/queue/iosched/timeout_async ]; then
-		echo "4" > $i/queue/iosched/timeout_async; # default: HZ / 8
-	fi;
-
 	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
 		echo "10" > $i/queue/iosched/max_budget_async_rq; # default: HZ / 25
 	fi;
@@ -181,19 +177,19 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_expire_sync ]; then
-		echo "800" > $i/queue/iosched/fifo_expire_sync; # default: 125
+		echo "125" > $i/queue/iosched/fifo_expire_sync; # default: 125
 	fi;
 
 	if [ -e $i/queue/iosched/timeout_sync ]; then
-		echo "800" > $i/queue/iosched/timeout_sync; # default: 125
+		echo "125" > $i/queue/iosched/timeout_sync; # default: 125
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_expire_async ]; then
-		echo "180" > $i/queue/iosched/fifo_expire_async; # default: 250
+		echo "250" > $i/queue/iosched/fifo_expire_async; # default: 250
 	fi;
 
 	if [ -e $i/queue/iosched/timeout_async ]; then
-		echo "5" > $i/queue/iosched/timeout_async; # default: 5
+		echo "4" > $i/queue/iosched/timeout_async; # default: HZ / 8
 	fi;
 
 	if [ -e $i/queue/iosched/slice_idle ]; then
