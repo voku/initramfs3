@@ -275,6 +275,8 @@ The third step is disabled as default by having the second to third threshold 10
 
 	<settingsPane description="Settings for screen color by user manual input" name="Screen Color Menu">
 
+	<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
+
 	<seekBar description="Sets screen BLUE color scale (Default is 132)" 
 		name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" unit="BLUE" min="0" reversed="false" step="1" max="244"/>
 
