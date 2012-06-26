@@ -177,15 +177,15 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_expire_sync ]; then
-		echo "125" > $i/queue/iosched/fifo_expire_sync; # default: 125
+		echo "800" > $i/queue/iosched/fifo_expire_sync; # default: 125
 	fi;
 
 	if [ -e $i/queue/iosched/timeout_sync ]; then
-		echo "125" > $i/queue/iosched/timeout_sync; # default: 125
+		echo "800" > $i/queue/iosched/timeout_sync; # default: 125
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_expire_async ]; then
-		echo "250" > $i/queue/iosched/fifo_expire_async; # default: 250
+		echo "180" > $i/queue/iosched/fifo_expire_async; # default: 250
 	fi;
 
 	if [ -e $i/queue/iosched/timeout_async ]; then
