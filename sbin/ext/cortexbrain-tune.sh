@@ -150,7 +150,6 @@ for i in $MMC; do
 		echo "1024" >  $i/queue/max_sectors_kb; # default: 512
 	fi;
 
-	## testing: 8192
 	if [ -e $i/queue/nr_requests ]; then
 		echo "128" > $i/queue/nr_requests; # default: 128
 	fi;
@@ -159,7 +158,6 @@ for i in $MMC; do
 		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
 
-	## testing: 1000000000
 	if [ -e $i/queue/iosched/back_seek_max ]; then
 		echo "16384" > $i/queue/iosched/back_seek_max; # default: 16384
 	fi;
@@ -168,32 +166,28 @@ for i in $MMC; do
 		echo "2" > $i/queue/iosched/max_budget_async_rq; # default: 4
 	fi;
 
-	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
-		echo "10" > $i/queue/iosched/max_budget_async_rq; # default: HZ / 25
-	fi;
-
 	if [ -e $i/queue/iosched/back_seek_penalty ]; then
 		echo "1" > $i/queue/iosched/back_seek_penalty; # default: 2
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_expire_sync ]; then
-		echo "800" > $i/queue/iosched/fifo_expire_sync; # default: 125
+		echo "125" > $i/queue/iosched/fifo_expire_sync; # default: 125
 	fi;
 
 	if [ -e $i/queue/iosched/timeout_sync ]; then
-		echo "800" > $i/queue/iosched/timeout_sync; # default: 125
+		echo "4" > $i/queue/iosched/timeout_sync; # default: HZ / 8
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_expire_async ]; then
-		echo "180" > $i/queue/iosched/fifo_expire_async; # default: 250
+		echo "250" > $i/queue/iosched/fifo_expire_async; # default: 250
 	fi;
 
 	if [ -e $i/queue/iosched/timeout_async ]; then
-		echo "4" > $i/queue/iosched/timeout_async; # default: HZ / 8
+		echo "2" > $i/queue/iosched/timeout_async; # default: HZ / 25
 	fi;
 
 	if [ -e $i/queue/iosched/slice_idle ]; then
-		echo "0" > $i/queue/iosched/slice_idle; # default: 8
+		echo "2" > $i/queue/iosched/slice_idle; # default: 8
 	fi;
 
 	if [ -e $i/queue/iosched/quantum ]; then
@@ -201,7 +195,7 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/iosched/slice_async_rq ]; then
-		echo "4" > $i/queue/iosched/slice_async_rq; # default: 2
+		echo "2" > $i/queue/iosched/slice_async_rq; # default: 2
 	fi;
 
 	if [ -e $i/queue/iosched/fifo_batch ]; then
