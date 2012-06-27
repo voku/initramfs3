@@ -291,7 +291,7 @@ The third step is disabled as default by having the second to third threshold 10
 		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
 
 	<seekBar description="Vibration force level (default 75)" 
-		name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="50" reversed="false" step="25" max="100"/>
+		name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
 
 	<seekBar description="Sets Touch screen lock freq (Default is 500000)" 
 		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="0" reversed="false" step="100000" max="1000000"/>
