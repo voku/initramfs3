@@ -30,7 +30,7 @@ MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
 FIREWALL_TWEAKS_ENABLED=1;
-BACKGROUND_PROCESS_ENABLED=1;
+BACKGROUND_PROCESS_ENABLED=0;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -89,8 +89,8 @@ kmemhelper -n mxt224_data -t char -o 77 46
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
-renice 10 `pidof kswapd0`;
-renice 10 `pgrep logcat`;
+renice 19 `pidof kswapd0`;
+renice 19 `pgrep logcat`;
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -212,7 +212,7 @@ for i in $MMC; do
 
 done;
 
-SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
+SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 for i in $SDCARDREADAHEAD; do
 	echo 1024 > $i/read_ahead_kb;
 done;
@@ -240,7 +240,7 @@ sync;
 /sbin/busybox mount -o remount,rw,discard,inode_readahead_blks=2,barrier=1,commit=120 /system;
 sync;
 
-echo "15" > /proc/sys/fs/lease-break-time;
+echo "10" > /proc/sys/fs/lease-break-time;
 
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 }
@@ -799,8 +799,8 @@ else
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-        # CPU Idle State
-        echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	# CPU Idle State
+	echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# value from settings
 	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
