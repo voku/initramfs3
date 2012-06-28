@@ -585,17 +585,6 @@ echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
 
-if [ $zramtweaks == 1 ]; then
-	echo "30" > /proc/sys/vm/swappiness;
-elif [ $zramtweaks == 2 ]; then
-	echo "40" > /proc/sys/vm/swappiness;
-elif [ $zramtweaks == 3 ]; then
-	echo "60" > /proc/sys/vm/swappiness;
-elif [ $zramtweaks == 4 ]; then
-	# zram is disabled
-	echo "0" > /proc/sys/vm/swappiness;
-fi;
-
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
 #FOREGROUND_APP_MEM=8192;
