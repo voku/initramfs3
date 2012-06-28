@@ -572,7 +572,7 @@ fi;
 MEMORY_TWEAKS()
 {
 echo "300" > /proc/sys/vm/dirty_expire_centisecs;
-echo "1250" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
