@@ -31,7 +31,6 @@ TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
 FIREWALL_TWEAKS_ENABLED=1;
 BACKGROUND_PROCESS_ENABLED=1;
-BATTERY_CALIB=1;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -47,16 +46,6 @@ else
 	MORE_SPEED=0;
 	DEFAULT_SPEED=0;
 fi;
-
-
-# ==============================================================
-# Second time tweaks activation, 
-# Seen some of them not activated by extweaks for some reason.
-# ==============================================================
-
-/res/customconfig/actions/zramtweaks ${zramtweaks}
-/res/customconfig/actions/led_timeout ${led_timeout}
-
 
 # ==============================================================
 # Touch Screen tweaks
@@ -235,12 +224,8 @@ fi;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-#sysctl -w kernel.shmmax="268435456";
-#echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
-#echo "64000" > /proc/sys/kernel/msgmni;
-#echo "64000" > /proc/sys/kernel/msgmax;
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
 }
@@ -310,8 +295,6 @@ if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm
 fi;
 
-BATTERY_CALIB()
-{
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
 BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
@@ -321,7 +304,6 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
         rm -f /data/system/batterystats.bin;
 		echo "battery-calibration done ...";
 fi;
-}
 
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do
@@ -332,8 +314,6 @@ log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
-elif [$BATTERY_CALIB == 1 ]; then
-	BATTERY_CALIB;
 fi;
 
 # ==============================================================
@@ -559,12 +539,12 @@ fi;
 MEMORY_TWEAKS()
 {
 echo "1500" > /proc/sys/vm/dirty_expire_centisecs;
-echo "1250" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
-echo "100" > /proc/sys/vm/overcommit_ratio; # default: 50
+echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster; # default: 3
 echo "4096" > /proc/sys/vm/min_free_kbytes
@@ -914,6 +894,10 @@ if [ -e /data/.siyah/fixperm ]; then
 	rm -f /data/.siyah/fixperm
 fi;
 
+if [ -e /data/.siyah/fuel_gauge_reset ]; then
+	rm -f /data/.siyah/fuel_gauge_reset
+fi;
+
 EXTWEAKSPUSH ()
 {
 	# Case if GM BLN active in kernel.
@@ -929,6 +913,10 @@ EXTWEAKSPUSH ()
 	if [ -e /data/.siyah/fixperm ]; then
 		/sbin/fix_permissions;
 		rm -f /data/.siyah/fixperm;
+	fi;
+	if [ -e /data/.siyah/fuel_gauge_reset ]; then
+		echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
+		rm -f /data/.siyah/fuel_gauge_reset;
 	fi;
 }
 

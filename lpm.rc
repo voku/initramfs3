@@ -73,8 +73,8 @@ service lpmkey /system/bin/lpmkey
 service adbd /sbin/adbd
 #    disabled
 
-#service charger /charger
-#     class default
+service charger /charger
+     class default
 
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
