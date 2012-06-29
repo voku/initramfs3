@@ -23,10 +23,6 @@ for i in $DM; do
                 echo "1024" >  $i/queue/read_ahead_kb;
         fi;
 
-        if [ -e $i/queue/nr_requests ]; then
-                echo "8192" > $i/queue/nr_requests;
-        fi;
-
         if [ -e $i/queue/iosched/writes_starved ]; then
                 echo "2" > $i/queue/iosched/writes_starved;
         fi;
@@ -47,6 +43,8 @@ done;
 for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
         /sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
+
+mount -o remount,rw /system;
 
 # ==============================================================
 # CLEANING-TWEAKS
