@@ -31,6 +31,7 @@ TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
 FIREWALL_TWEAKS_ENABLED=1;
 BACKGROUND_PROCESS_ENABLED=1;
+BATTERY_CALIB=1;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -89,8 +90,8 @@ kmemhelper -n mxt224_data -t char -o 77 46
 # =========
 # Renice - kernel thread responsible for managing the memory
 # =========
-renice 10 `pidof kswapd0`;
-renice 10 `pgrep logcat`;
+renice 19 `pidof kswapd0`;
+renice 19 `pgrep logcat`;
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -212,7 +213,7 @@ for i in $MMC; do
 
 done;
 
-SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`
+SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 for i in $SDCARDREADAHEAD; do
 	echo 1024 > $i/read_ahead_kb;
 done;
@@ -220,25 +221,6 @@ done;
 if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
-
-# remount all partitions with noatime, nodiratime
-sync;
-for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
-	/sbin/busybox mount -o remount,noatime,nodiratime $k;
-done;
-
-# remount ext4 partitions with optimizations
-for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
-	/sbin/busybox mount -o remount,noatime,nodiratime,commit=30 $k
-done;
-sync;
-
-/sbin/busybox mount -o remount,rw,discard,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
-
-/sbin/busybox mount -o remount,rw,discard,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-
-/sbin/busybox mount -o remount,rw,discard,inode_readahead_blks=2,barrier=1,commit=120 /system;
-sync;
 
 echo "15" > /proc/sys/fs/lease-break-time;
 
@@ -328,6 +310,8 @@ if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm
 fi;
 
+BATTERY_CALIB()
+{
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
 BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
@@ -337,6 +321,7 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
         rm -f /data/system/batterystats.bin;
 		echo "battery-calibration done ...";
 fi;
+}
 
 for i in $(ls /sys/bus/usb/devices/*/power/level);
 do
@@ -347,6 +332,8 @@ log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
+elif [$BATTERY_CALIB == 1 ]; then
+	BATTERY_CALIB;
 fi;
 
 # ==============================================================
@@ -571,7 +558,7 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-echo "1250" > /proc/sys/vm/dirty_expire_centisecs;
+echo "1500" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1250" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
@@ -584,17 +571,6 @@ echo "4096" > /proc/sys/vm/min_free_kbytes
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
-
-if [ $zramtweaks == 1 ]; then
-	echo "30" > /proc/sys/vm/swappiness;
-elif [ $zramtweaks == 2 ]; then
-	echo "40" > /proc/sys/vm/swappiness;
-elif [ $zramtweaks == 3 ]; then
-	echo "60" > /proc/sys/vm/swappiness;
-elif [ $zramtweaks == 4 ]; then
-	# zram is disabled
-	echo "0" > /proc/sys/vm/swappiness;
-fi;
 
 # Define the memory thresholds at which the above process classes will
 # be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
@@ -810,8 +786,8 @@ else
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-        # CPU Idle State
-        echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	# CPU Idle State
+	echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# value from settings
 	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;

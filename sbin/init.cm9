@@ -12,11 +12,20 @@ busybox umount -l /dev/block/mmcblk0p10 >> /dm-log
 busybox umount -l /dev/block/mmcblk0p12 >> /dm-log
 
 # Setting pertitions to writeback first.
-/sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p10 >> /data-log #DATA
+/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p10 >> /data-log #DATA
 /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p7 >> /cache-log #CACHE
 /sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p12 >> /preload-log #SEC-ROM
 
+/sbin/tune2fs -I 256 /dev/block/mmcblk0p10
+/sbin/tune2fs -I 256 /dev/block/mmcblk0p7
+/sbin/tune2fs -I 256 /dev/block/mmcblk0p12
+/sbin/tune2fs -I 256 /dev/block/mmcblk0p9
+
 # Checking Partitions.
+/sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
+/sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
+/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
+# Second Check to fix small erorrs
 /sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
 /sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
 /sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
@@ -28,52 +37,34 @@ CHECKP12=`cat preload-log | grep /dev/block/mmcblk0p12 | cut -c 1-28`
 if [ "$CHECKP10" == "/dev/block/mmcblk0p10: clean" ]; then
 	echo "DATA OK"
 	#Tune DATA
-	/sbin/e2fsck -p /dev/block/mmcblk0p10 >> /data-log
 else
 	echo "DATA partition damaged fixing"
 	/sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
 	#Sec run just in case
 	/sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
 	/sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
-
-	CHECKP10=`cat data-log | grep /dev/block/mmcblk0p10 | cut -c 1-28`
-	if [ "$CHECKP10" == "/dev/block/mmcblk0p10: clean" ]; then
-		/sbin/e2fsck -p /dev/block/mmcblk0p10 >> /data-log
-	fi
 fi
 
 if [ "$CHECKP7" == "/dev/block/mmcblk0p7: clean" ]; then
 	echo "CACHE OK"
 	#Tune Cache
-	/sbin/e2fsck -p /dev/block/mmcblk0p7 >> /cache-log
 else
 	echo "partition damaged fixing"
 	/sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
 	#Sec run just in case
 	/sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
 	/sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
-
-	CHECKP7=`cat dm-log | grep /dev/block/mmcblk0p7 | cut -c 1-27`
-	if [ "$CHECKP7" == "/dev/block/mmcblk0p7: clean" ]; then
-		/sbin/e2fsck -p /dev/block/mmcblk0p7 >> /cache-log
-	fi
 fi
 
 if [ "$CHECKP12" == "/dev/block/mmcblk0p12: clean" ]; then
 	echo "PRELOAD OK"
 	#Tune PRELOAD-SEC-ROM
-	/sbin/e2fsck -p /dev/block/mmcblk0p12 >> /preload-log
 else
 	echo "partition damaged fixing"
 	/sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
 	#Sec run just in case
 	/sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
 	/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
-
-	CHECKP12=`cat dm-log | grep /dev/block/mmcblk0p12 | cut -c 1-28`
-	if [ "$CHECKP12" == "/dev/block/mmcblk0p12: clean" ]; then
-		/sbin/e2fsck -p /dev/block/mmcblk0p12 >> /preload-log
-	fi
 fi
 
 rm -f /init.samsung
