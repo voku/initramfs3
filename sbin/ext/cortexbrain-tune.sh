@@ -30,7 +30,7 @@ MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
 FIREWALL_TWEAKS_ENABLED=1;
-BACKGROUND_PROCESS_ENABLED=0;
+BACKGROUND_PROCESS_ENABLED=1;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -46,16 +46,6 @@ else
 	MORE_SPEED=0;
 	DEFAULT_SPEED=0;
 fi;
-
-
-# ==============================================================
-# Second time tweaks activation, 
-# Seen some of them not activated by extweaks for some reason.
-# ==============================================================
-
-/res/customconfig/actions/zramtweaks ${zramtweaks}
-/res/customconfig/actions/led_timeout ${led_timeout}
-
 
 # ==============================================================
 # Touch Screen tweaks
@@ -221,26 +211,7 @@ if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
         echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 fi;
 
-# remount all partitions with noatime, nodiratime
-sync;
-for k in $(/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3); do
-	/sbin/busybox mount -o remount,noatime,nodiratime $k;
-done;
-
-# remount ext4 partitions with optimizations
-for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d " " -f3); do
-	/sbin/busybox mount -o remount,noatime,nodiratime,commit=30 $k
-done;
-sync;
-
-/sbin/busybox mount -o remount,rw,discard,nodev,inode_readahead_blks=2,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
-
-/sbin/busybox mount -o remount,rw,discard,nodev,inode_readahead_blks=2,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-
-/sbin/busybox mount -o remount,rw,discard,inode_readahead_blks=2,barrier=1,commit=120 /system;
-sync;
-
-echo "10" > /proc/sys/fs/lease-break-time;
+echo "15" > /proc/sys/fs/lease-break-time;
 
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 }
@@ -253,12 +224,8 @@ fi;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
-#sysctl -w kernel.shmmax="268435456";
-#echo "0" > /proc/sys/kernel/hung_task_timeout_secs;
-#echo "64000" > /proc/sys/kernel/msgmni;
-#echo "64000" > /proc/sys/kernel/msgmax;
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
 }
@@ -576,8 +543,8 @@ echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
-echo "100" > /proc/sys/vm/overcommit_ratio; # default: 50
+echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster; # default: 3
 echo "4096" > /proc/sys/vm/min_free_kbytes
@@ -927,6 +894,10 @@ if [ -e /data/.siyah/fixperm ]; then
 	rm -f /data/.siyah/fixperm
 fi;
 
+if [ -e /data/.siyah/fuel_gauge_reset ]; then
+	rm -f /data/.siyah/fuel_gauge_reset
+fi;
+
 EXTWEAKSPUSH ()
 {
 	# Case if GM BLN active in kernel.
@@ -942,6 +913,10 @@ EXTWEAKSPUSH ()
 	if [ -e /data/.siyah/fixperm ]; then
 		/sbin/fix_permissions;
 		rm -f /data/.siyah/fixperm;
+	fi;
+	if [ -e /data/.siyah/fuel_gauge_reset ]; then
+		echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
+		rm -f /data/.siyah/fuel_gauge_reset;
 	fi;
 }
 

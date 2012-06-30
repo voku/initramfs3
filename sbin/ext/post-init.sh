@@ -89,7 +89,7 @@ chmod 777 /mnt/ntfs
 # make sure that sdcard is mounted
 sleep 30
 /sbin/busybox sh /sbin/ext/efs-backup.sh
-)&
+) &
 
 # Set color mode to user mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
@@ -101,15 +101,14 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 (
 sleep 45
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
-)&
+) &
 
 (
 sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
-)&
+) &
 
 (
 sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh
-)&
-
+) &
