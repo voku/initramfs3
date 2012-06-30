@@ -521,12 +521,16 @@ if above switch is OFF or ON"
 
 	</settingsPane>
 
-	<settingsPane description="Removing/Reinstalling root to support some apps which requires you not to have a rooted phone." name="Remove/Reinstall Root">
+	<settingsPane description="Remove OR Reinstall ROOT, You can have ROOTED or not ROOTED phone." name="Remove OR Reinstall Root">
 
-		<button description="Removes su and Superuser.apk files from the system partition" name="Remove Root" action="remove-root" label="Remove Root"/>
+		<spinner description="Add OR Removes SU and Superuser.apk files from the system partition by user request" 
+			name="Add OR Remove ROOT" action="add_remove_root">
+			<spinnerItem name="NO Change to ROOT" value="No_Change"/> 
+			<spinnerItem name="Remove ROOT now!" value="Removed"/> 
+			<spinnerItem name="Restore ROOT now!" value="Restored"/> 
+		</spinner>
 
-		<button description="Tries to reinstall root. If this fails, please check auto-install root checkbox and restart." 
-			name="Install  Root" action="push-actions/install-root" label="Install Root"/>
+		<button description="Root Check, Click to see if you have ROOT or Not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
 
 		<checkbox description="If checked, installs root on the next restart." 
 			name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
