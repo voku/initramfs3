@@ -72,4 +72,4 @@ cpu_undervolting=0
 smooth_level0=4
 deep_sleep_batt=scary
 deep_sleep_ac=abyssplug
-
+add_remove_root=Nothing

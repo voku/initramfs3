@@ -31,22 +31,22 @@ then
 		then
       			extract_payload
     		fi
-    			rm -f /system/bin/su
-    			rm -f /system/xbin/su
-    			mkdir /system/xbin
+    			rm -f /system/bin/su > /dev/null 2>&1
+    			rm -f /system/xbin/su > /dev/null 2>&1
+    			mkdir /system/xbin > /dev/null 2>&1
     			chmod 755 /system/xbin
     			xzcat /res/misc/payload/su.xz > /system/xbin/su
     			chown 0.0 /system/xbin/su
     			chmod 6755 /system/xbin/su
 
-    			rm -f /system/app/*uper?ser.apk
-    			rm -f /system/app/?uper?u.apk
-    			rm -f /system/app/*chainfire?supersu*.apk
-    			rm -f /data/app/*uper?ser.apk
-    			rm -f /data/app/?uper?u.apk
-    			rm -f /data/app/*chainfire?supersu*.apk
-    			rm -rf /data/dalvik-cache/*uper?ser.apk*
-    			rm -rf /data/dalvik-cache/*chainfire?supersu*.apk*
+    			rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
+    			rm -f /system/app/?uper?u.apk > /dev/null 2>&1
+    			rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1
+    			rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
+    			rm -f /data/app/?uper?u.apk > /dev/null 2>&1
+    			rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
+    			rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
+    			rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1
     			xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
     			chown 0.0 /system/app/Superuser.apk
     			chmod 644 /system/app/Superuser.apk

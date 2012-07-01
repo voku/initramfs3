@@ -1,6 +1,5 @@
 #!/sbin/busybox sh
 
-stop
 sync;
 
 # remount all partitions tweked settings.
@@ -23,4 +22,3 @@ for k in $(/sbin/busybox mount | /sbin/busybox grep ext4 | /sbin/busybox cut -d 
 done;
 
 sync;
-start

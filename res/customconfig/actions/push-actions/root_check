@@ -1,0 +1,8 @@
+#!/sbin/busybox sh
+
+if [ -f /system/xbin/su ] && [ -f /system/app/*uper?ser.apk ]; then
+	echo "You have full working ROOT Installed, enjoy"
+else
+	echo "You don't have ROOT installed, Enjoy UnROOTED Phone."
+fi;
+
