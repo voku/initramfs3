@@ -124,15 +124,23 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/read_ahead_kb ]; then
-		echo "1024" >  $i/queue/read_ahead_kb; # default: 128
+		echo "2048" >  $i/queue/read_ahead_kb; # default: 128
 	fi;
 
 	if [ -e $i/queue/max_sectors_kb ]; then
-		echo "1024" >  $i/queue/max_sectors_kb; # default: 512
+		echo "2048" >  $i/queue/max_sectors_kb; # default: 512
 	fi;
 
 	if [ -e $i/queue/nr_requests ]; then
-		echo "128" > $i/queue/nr_requests; # default: 128
+		echo "2048" > $i/queue/nr_requests; # default: 128
+	fi;
+
+	if [ -e $i/queue/iosched/read_expire ]; then
+		echo "80" > $i/queue/iosched/read_expire;
+	fi;
+	
+	if [ -e $i/queue/iosched/front_merges ]; then
+		echo "1" > $i/queue/iosched/front_merges;
 	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ]; then
@@ -140,7 +148,7 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/iosched/back_seek_max ]; then
-		echo "16384" > $i/queue/iosched/back_seek_max; # default: 16384
+		echo "1000000000" > $i/queue/iosched/back_seek_max; # default: 16384
 	fi;
 
 	if [ -e $i/queue/iosched/max_budget_async_rq ]; then
@@ -168,11 +176,11 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/iosched/slice_idle ]; then
-		echo "2" > $i/queue/iosched/slice_idle; # default: 8
+		echo "3" > $i/queue/iosched/slice_idle; # default: 8
 	fi;
 
 	if [ -e $i/queue/iosched/quantum ]; then
-		echo "8" > $i/queue/iosched/quantum; # default: 4
+		echo "16" > $i/queue/iosched/quantum; # default: 4
 	fi;
 
 	if [ -e $i/queue/iosched/slice_async_rq ]; then
@@ -319,6 +327,9 @@ fi;
 
 CPU_GOV_TWEAKS()
 {
+
+echo "0" > /proc/sys/kernel/sched_child_runs_first;
+
 SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
@@ -515,14 +526,14 @@ MEMORY_TWEAKS()
 echo "300" > /proc/sys/vm/dirty_expire_centisecs;
 echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
+echo "90" > /proc/sys/vm/dirty_ratio; # default: 40
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster; # default: 3
-echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+echo "8192" > /proc/sys/vm/min_free_kbytes # default: 3606
+echo "20" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
 
