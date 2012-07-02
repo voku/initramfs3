@@ -19,17 +19,6 @@ MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
 
 # Functions triggers.
-TOUCHSCREENTUNE_ENABLED=0;
-IO_TWEAKS_ENABLED=1;
-KERNEL_TWEAKS_ENABLED=1;
-SYSTEM_TWEAKS_ENABLED=1;
-BATTERY_TWEAKS_ENABLED=1;
-CPU_GOV_TWEAKS_ENABLED=1;
-MEMORY_TWEAKS_ENABLED=1;
-TCP_TWEAKS_ENABLED=1;
-RIL_TWEAKS_ENABLED=0;
-FIREWALL_TWEAKS_ENABLED=1;
-
 if [ "a$2" != "a" ]; then
 	cortexbrain_background_process=$2;
 fi;
@@ -217,7 +206,7 @@ echo "15" > /proc/sys/fs/lease-break-time;
 
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 }
-if [ $IO_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_io == 1 ]; then
 	IO_TWEAKS;
 fi;
 
@@ -231,7 +220,7 @@ sysctl -w vm.panic_on_oom=0
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
 }
-if [ $KERNEL_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_kernel_tweaks == 1 ]; then
 	KERNEL_TWEAKS;
 fi;
 
@@ -270,7 +259,7 @@ fi;
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
 }
-if [ $SYSTEM_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_system == 1 ]; then
 	SYSTEM_TWEAKS;
 fi;
 
@@ -320,7 +309,7 @@ done;
 
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
-if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
 
@@ -514,7 +503,7 @@ fi;
 
 log -p i -t $FILE_NAME "*** cpu gov tweaks ***: enabled";
 }
-if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_cpu == 1 ]; then
 	CPU_GOV_TWEAKS;
 fi;
 
@@ -551,7 +540,7 @@ echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
 
 log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 }
-if [ $MEMORY_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_memory == 1 ]; then
 	MEMORY_TWEAKS;
 fi;
 
@@ -589,7 +578,7 @@ setprop net.tcp.buffersize.hspa    4092,87380,563200,4096,16384,110208;
 
 log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 }
-if [ $TCP_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_tcp_tweaks == 1 ]; then
 	TCP_TWEAKS;
 fi;
 
@@ -605,7 +594,7 @@ setprop ro.ril.gprsclass 12;
 
 log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
 }
-if [ $RIL_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_ril_tweaks == 1 ]; then
 	RIL_TWEAKS;
 fi;
 
@@ -690,7 +679,7 @@ fi
 
 log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
 }
-if [ $FIREWALL_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_firewall_tweaks == 1 ]; then
 	FIREWALL_TWEAKS;
 fi;
 

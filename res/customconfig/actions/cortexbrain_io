@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+# $1 - "cortexbrain_io"
+# $2 - value=
+
+if [ "a$2" == "a" ]; then
+	echo $cortexbrain_io
+else
+	cortexbrain_io=$2
+	echo $cortexbrain_io
+fi;
+
+if [ "a$cortexbrain_io" == "a" ]; then
+	cortexbrain_io=1
+fi;
+

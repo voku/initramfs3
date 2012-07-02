@@ -13,18 +13,18 @@ fi;
 PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
 
 case "${cortexbrain_background_process}" in
+	0)
+		if [ "a$PIDOFCORTEX" != "a" ]; then
+			kill ${PIDOFCORTEX};
+		fi;
+		;;
 	1)
 		if [ "a$PIDOFCORTEX" == "a" ]; then
 			/sbin/ext/cortexbrain-tune.sh $cortexbrain_background_process;
 		fi;
 		;;
-	2)
-		if [ "a$PIDOFCORTEX" != "a" ]; then
-			kill ${PIDOFCORTEX};	
-		fi;
-		;;
 	*)
-		cortexbrain_background_process=2
+		cortexbrain_background_process=0
 		;;
 esac;
 

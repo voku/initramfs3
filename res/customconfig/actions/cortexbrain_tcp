@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+# $1 - "cortexbrain_tcp"
+# $2 - value=
+
+if [ "a$2" == "a" ]; then
+	echo $cortexbrain_tcp
+else
+	cortexbrain_tcp=$2
+	echo $cortexbrain_tcp
+fi;
+
+if [ "a$cortexbrain_tcp" == "a" ]; then
+	cortexbrain_tcp=1
+fi;
+
