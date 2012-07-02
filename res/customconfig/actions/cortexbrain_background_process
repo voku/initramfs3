@@ -24,7 +24,7 @@ case "${cortexbrain_background_process}" in
 		fi;
 		;;
 	*)
-		cortexbrain_background_process=0
+		cortexbrain_background_process=1
 		;;
 esac;
 
