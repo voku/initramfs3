@@ -223,7 +223,7 @@ fi;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 sysctl -w vm.panic_on_oom=0
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
