@@ -95,11 +95,13 @@ sleep 30
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
 # apply ExTweaks defaults
-/res/uci.sh apply
+if [ ! -e /recovery-started ]; then
+	/res/uci.sh apply
+fi;
 
 ##### init scripts #####
 (
-sleep 45
+sleep 40
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
 ) &
 

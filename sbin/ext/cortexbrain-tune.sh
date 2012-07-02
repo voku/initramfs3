@@ -25,7 +25,6 @@ KERNEL_TWEAKS_ENABLED=1;
 SYSTEM_TWEAKS_ENABLED=1;
 BATTERY_TWEAKS_ENABLED=1;
 CPU_GOV_TWEAKS_ENABLED=1;
-CPU_SCHED_TWEAKS_ENABLED=0;
 MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
@@ -328,29 +327,6 @@ fi;
 # ==============================================================
 # CPU-TWEAKS
 # ==============================================================
-
-CPU_SCHED_TWEAKS()
-{
-if [ -e /proc/sys/kernel/rr_interval ]; then
-	# BFS
-	echo "1" > /proc/sys/kernel/rr_interval;
-	echo "100" > /proc/sys/kernel/iso_cpu;
-else
-	# For this to work you need CONFIG_SCHED_DEBUG=y set in kernel settings.
-	if [ -e /proc/sys/kernel/sched_latency_ns ]; then
-		# CFS
-		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-		echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
-		echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
-		echo "100000" > /proc/sys/kernel/sched_rt_period_us;
-	fi;
-fi;
-log -p i -t $FILE_NAME "*** cpu sched tweaks ***: enabled";
-}
-if [ $CPU_SCHED_TWEAKS_ENABLED == 1 ]; then
-        CPU_SCHED_TWEAKS;
-fi;
 
 CPU_GOV_TWEAKS()
 {
@@ -727,10 +703,6 @@ AWAKE_MODE()
 # Restore Smooth Level
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
 
-# Restore ASV GROUP + Simple undervolting
-echo "${asv_group}" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
-echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
-
 # charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 if [ $CHARGING -ge 1 ]; then
@@ -863,10 +835,6 @@ echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8
 
-# SET ASV GROUP to 3 + Simple undervolting.
-echo "3" > /sys/devices/system/cpu/cpu0/cpufreq/asv_group
-echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
-
 if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
@@ -894,7 +862,7 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ExTweaks Push functions.
 # ==============================================================
 
-# On Boot deletion of auto created requests for action.
+# On Boot, delete auto created requests for action by extweaks start.
 if [ -e /data/.siyah/bln_test ]; then
 	rm -f /data/.siyah/bln_test
 fi;
@@ -902,7 +870,7 @@ fi;
 if [ -e /data/.siyah/fixperm ]; then
 	rm -f /data/.siyah/fixperm
 fi;
-
+# In case user made reset Fuel Gauge Reset request.
 if [ -e /data/.siyah/fuel_gauge_reset ]; then
 	rm -f /data/.siyah/fuel_gauge_reset
 fi;
