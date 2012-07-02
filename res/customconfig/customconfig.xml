@@ -481,6 +481,12 @@ if above switch is OFF or ON"
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
+		<spinner description="Enable or Disable the background-process from 'cortexbrain-tune.sh'. If you disable it the cpu-governor did not change automatically for deep-sleep." 
+			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
+			<spinnerItem name="Enable" value="1"/> 
+			<spinnerItem name="Disable (default)" value="2"/> 
+		</spinner>
+
 		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
 			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 

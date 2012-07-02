@@ -29,7 +29,10 @@ MEMORY_TWEAKS_ENABLED=1;
 TCP_TWEAKS_ENABLED=1;
 RIL_TWEAKS_ENABLED=0;
 FIREWALL_TWEAKS_ENABLED=1;
-BACKGROUND_PROCESS_ENABLED=1;
+
+if [ "a$2" != "a" ]; then
+	cortexbrain_background_process=$2;
+fi;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -898,7 +901,7 @@ EXTWEAKSPUSH ()
 # ==============================================================
 # Background process to check screen state
 # ==============================================================
-if [ $BACKGROUND_PROCESS_ENABLED == 1 ]; then
+if [ $cortexbrain_background_process == 1 ]; then
 
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!

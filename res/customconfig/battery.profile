@@ -74,4 +74,4 @@ smooth_level0=8
 deep_sleep_batt=scary
 deep_sleep_ac=abyssplug
 add_remove_root=Nothing
-
+cortexbrain_background_process=2
