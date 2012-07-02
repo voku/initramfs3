@@ -46,6 +46,7 @@ scaling_min_suspend_freq=200000
 load_l1=20
 load_h0=30
 load_rq=20
+cfs_tweaks=0
 min_rq=2
 freq_min=800000
 install_root=on

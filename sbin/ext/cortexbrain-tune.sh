@@ -260,6 +260,12 @@ setprop persist.adb.notify 0
 setprop wifi.supplicant_scan_interval 360
 setprop pm.sleep_mode 1
 
+setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
+
+if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
+	setprop dalvik.vm.heapsize 72m;
+fi;
+
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
 }
 if [ $SYSTEM_TWEAKS_ENABLED == 1 ]; then
