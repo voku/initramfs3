@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+# $1 - "cortexbrain_ril"
+# $2 - value=
+
+if [ "a$2" == "a" ]; then
+	echo $cortexbrain_ril
+else
+	cortexbrain_ril=$2
+	echo $cortexbrain_ril
+fi;
+
+if [ "a$cortexbrain_ril" == "a" ]; then
+	cortexbrain_ril=1
+fi;
+

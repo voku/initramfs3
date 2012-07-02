@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+# $1 - "cortexbrain_firewall"
+# $2 - value=
+
+if [ "a$2" == "a" ]; then
+	echo $cortexbrain_firewall
+else
+	cortexbrain_firewall=$2
+	echo $cortexbrain_firewall
+fi;
+
+if [ "a$cortexbrain_firewall" == "a" ]; then
+	cortexbrain_firewall=1
+fi;
+
