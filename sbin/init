@@ -97,7 +97,7 @@ if [ "$JELLY" == 1 ]; then
 	patch -p1 < /res/misc/jelly.patch
 else
 	if [ "$B2G" == 1 ]; then
-		patch -p1 < /res/misc/b2g.patch
+		patch -p1 < /res/misc/b2g.patch -t
 		if [ ! -e /system/xbin/bash ]; then
 			mv /sbin/init.b2g /sbin/init.samsung
 		fi;
@@ -121,7 +121,7 @@ else
 fi;
 
 if [ "$MIUI" == 1 ]; then
-	patch -p1 < /res/misc/miui.patch
+	patch -p1 < /res/misc/miui.patch -t
 fi;
 
 if [ "$SECONDROM" == "1" ]; then
