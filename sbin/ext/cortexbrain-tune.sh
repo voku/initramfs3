@@ -135,14 +135,6 @@ for i in $MMC; do
 		echo "128" > $i/queue/nr_requests; # default: 128
 	fi;
 
-	if [ -e $i/queue/iosched/read_expire ]; then
-		echo "80" > $i/queue/iosched/read_expire;
-	fi;
-	
-	if [ -e $i/queue/iosched/front_merges ]; then
-		echo "1" > $i/queue/iosched/front_merges;
-	fi;
-
 	if [ -e $i/queue/iosched/writes_starved ]; then
 		echo "2" > $i/queue/iosched/writes_starved;
 	fi;
@@ -262,7 +254,7 @@ setprop pm.sleep_mode 1
 setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
 
 if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
-	setprop dalvik.vm.heapsize 72m;
+	setprop dalvik.vm.heapsize 72m
 fi;
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
@@ -327,9 +319,6 @@ fi;
 
 CPU_GOV_TWEAKS()
 {
-
-echo "0" > /proc/sys/kernel/sched_child_runs_first;
-
 SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
@@ -532,7 +521,7 @@ echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster; # default: 3
-echo "4096" > /proc/sys/vm/min_free_kbytes # default: 3606
+echo "4096" > /proc/sys/vm/min_free_kbytes
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
@@ -870,7 +859,7 @@ fi;
 if [ -e /data/.siyah/fixperm ]; then
 	rm -f /data/.siyah/fixperm
 fi;
-# In case user made reset Fuel Gauge Reset request.
+
 if [ -e /data/.siyah/fuel_gauge_reset ]; then
 	rm -f /data/.siyah/fuel_gauge_reset
 fi;
@@ -891,6 +880,7 @@ EXTWEAKSPUSH ()
 		/sbin/fix_permissions;
 		rm -f /data/.siyah/fixperm;
 	fi;
+	# In case user made reset Fuel Gauge Reset request.
 	if [ -e /data/.siyah/fuel_gauge_reset ]; then
 		echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
 		rm -f /data/.siyah/fuel_gauge_reset;

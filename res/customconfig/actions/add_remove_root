@@ -20,7 +20,10 @@ case "${add_remove_root}" in
 		rm -f /system/bin/su > /dev/null 2>&1
 		rm -f /system/xbin/su > /dev/null 2>&1
 		# some roms have a busybox with su applet
+		mv /system/xbin/busybox /system/xbin/boxman > /dev/null 2>&1
+		mv /system/bin/busybox /system/bin/boxman > /dev/null 2>&1
 		rm -f /system/xbin/busybox > /dev/null 2>&1
+		rm -f /system/bin/busybox > /dev/null 2>&1
 		ln -s /sbin/busybox /system/xbin/busybox > /dev/null 2>&1
 		# I need to remove this as well for Garanti CepBank app
 		mv /system/xbin/which /system/xbin/waswhich-bkp > /dev/null 2>&1
@@ -42,6 +45,9 @@ case "${add_remove_root}" in
                 if [ -e /system/xbin/waswhich-bkp ]; then
                 	cp /system/xbin/waswhich-bkp /system/xbin/which
                 fi;
+		rm -f /system/xbin/busybox > /dev/null 2>&1
+		mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1
+		mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1
 	fi;
 		;;
 	*)

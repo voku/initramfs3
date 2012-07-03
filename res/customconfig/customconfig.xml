@@ -481,66 +481,6 @@ if above switch is OFF or ON"
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
-		<spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor did not change automatically for deep-sleep." 
-			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
-			<spinnerItem name="Enable" value="1"/> 
-			<spinnerItem name="Disable (default)" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'Firewall-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="Firewall-Tweaks" action="cortexbrain_firewall">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'RIL-Tweaks' from' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="RIL-Tweaks" action="cortexbrain_ril">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'TCP-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="TCP-Tweaks" action="cortexbrain_tcp">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'CPU-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="CPU-Tweaks" action="cortexbrain_cpu">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'Memory-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="Memory-Tweaks" action="cortexbrain_memory">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'Battery-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-			name="Battery-Tweaks" action="cortexbrain_battery">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'System-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="System-Tweaks" action="cortexbrain_system">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'Kernel-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="Kernel-Tweaks" action="cortexbrain_kernel">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
-		<spinner description="Enable or Disable the 'I/O-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)" 
-			name="I/O-Tweaks" action="cortexbrain_io">
-			<spinnerItem name="Enable (default)" value="1"/> 
-			<spinnerItem name="Disable" value="0"/> 
-		</spinner>
-
 		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
 			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
@@ -601,6 +541,74 @@ if above switch is OFF or ON"
 
 		<checkbox description="If checked, installs root on the next restart." 
 			name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
+
+	</settingsPane>
+
+</settingsTab>
+
+<settingsTab name="CortexBrain">
+
+	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
+
+                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. also you cant test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamicly changed, use it in your own will. (default is ON)"
+                        name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
+                        <spinnerItem name="Enable" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'Firewall-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="Firewall-Tweaks" action="cortexbrain_firewall">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'RIL-Tweaks' from' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="RIL-Tweaks" action="cortexbrain_ril">
+                        <spinnerItem name="Enable" value="1"/> 
+                        <spinnerItem name="Disable (default)" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'TCP-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="TCP-Tweaks" action="cortexbrain_tcp">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'CPU-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="CPU-Tweaks" action="cortexbrain_cpu">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'Memory-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="Memory-Tweaks" action="cortexbrain_memory">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'Battery-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="Battery-Tweaks" action="cortexbrain_battery">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'System-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="System-Tweaks" action="cortexbrain_system">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'Kernel-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="Kernel-Tweaks" action="cortexbrain_kernel">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
+
+                <spinner description="Enable or Disable the 'I/O-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="I/O-Tweaks" action="cortexbrain_io">
+                        <spinnerItem name="Enable (default)" value="1"/> 
+                        <spinnerItem name="Disable" value="0"/> 
+                </spinner>
 
 	</settingsPane>
 
