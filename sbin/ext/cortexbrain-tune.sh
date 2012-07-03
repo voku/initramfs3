@@ -696,7 +696,7 @@ if [ $CHARGING -ge 1 ]; then
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 	# CPU-Freq
-	echo "hyper" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# CPU Idle State - IDLE only
@@ -753,7 +753,7 @@ CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
-        echo "hotplug" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
         echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
         log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
 fi;
@@ -808,6 +808,9 @@ fi;
 # Reduce CPU speed
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# Reduce deepsleep CPU speed
+echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 
 # cpu - second core always-off
 echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
