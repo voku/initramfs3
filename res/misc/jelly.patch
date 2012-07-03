@@ -1,6 +1,17 @@
-diff -ruN init.samsung/init.rc init.jelly/init.rc
---- init.samsung/init.rc	2012-05-21 15:21:24.821842888 +0300
-+++ init.jelly/init.rc	2012-07-01 01:00:50.000000000 +0300
+From 2439222a4a8de67e4b93a236cd4da9456afd054b Mon Sep 17 00:00:00 2001
+From: Dorimanx <yuri@bynet.co.il>
+Date: Tue, 3 Jul 2012 22:07:09 +0300
+Subject: [PATCH] jelly.patch
+
+---
+ init.rc   |  129 ++++++++++++++++++++++++++++++++++++++++++++++---------------
+ init.rc.2 |  129 ++++++++++++++++++++++++++++++++++++++++++++++---------------
+ 2 files changed, 196 insertions(+), 62 deletions(-)
+
+diff --git a/init.rc b/init.rc
+index cb8aaef..00f9ddd 100755
+--- a/init.rc
++++ b/init.rc
 @@ -1,4 +1,17 @@
 +# Copyright (C) 2012 The Android Open Source Project
 +#
@@ -19,17 +30,17 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
      start ueventd
  
  # create mountpoints
-@@ -22,7 +35,7 @@
+@@ -22,7 +35,7 @@ loglevel 3
      export ANDROID_DATA /data
      export ASEC_MOUNTPOINT /mnt/asec
      export LOOP_MOUNTPOINT /mnt/obb
 -    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 +    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
  
- # Disable CFQ slice idle delay
-     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
-@@ -76,25 +89,37 @@
-     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
+ # Backward compatibility
+     symlink /system/etc /etc
+@@ -71,25 +84,37 @@ loglevel 3
+     write /proc/cpu/alignment 4
      write /proc/sys/kernel/sched_compat_yield 1
      write /proc/sys/kernel/sched_child_runs_first 0
 +    write /proc/sys/kernel/randomize_va_space 2
@@ -47,9 +58,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
 -    chmod 0777 /dev/cpuctl/tasks
 +    chmod 0660 /dev/cpuctl/tasks
      write /dev/cpuctl/cpu.shares 1024
-+    write /dev/cpuctl/cpu.rt_runtime_us 950000
-+    write /dev/cpuctl/cpu.rt_period_us 1000000
- 
+-
 -    mkdir /dev/cpuctl/fg_boost
 -    chown system system /dev/cpuctl/fg_boost/tasks
 -    chmod 0777 /dev/cpuctl/fg_boost/tasks
@@ -58,6 +67,9 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
 -    mkdir /dev/cpuctl/bg_non_interactive
 -    chown system system /dev/cpuctl/bg_non_interactive/tasks
 -    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
++    write /dev/cpuctl/cpu.rt_runtime_us 950000
++    write /dev/cpuctl/cpu.rt_period_us 1000000
++
 +    mkdir /dev/cpuctl/apps
 +    chown system system /dev/cpuctl/apps/tasks
 +    chmod 0666 /dev/cpuctl/apps/tasks
@@ -76,7 +88,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
  # Allow everybody to read the xt_qtaguid resource tracking misc dev.
  # This is needed by any process that uses socket tagging.
-@@ -160,11 +185,7 @@
+@@ -159,11 +184,7 @@ on post-fs
      chmod 0220 /proc/sysrq-trigger
  
      # create the lost+found directories, so as to enforce our permissions
@@ -89,7 +101,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
  on post-fs-data
      # We chown/chmod /data again so because mount is run as root + defaults
-@@ -217,17 +238,25 @@
+@@ -216,17 +237,25 @@ on post-fs-data
      mkdir /data/misc/wifi 0770 wifi wifi
      chmod 0770 /data/misc/wifi
      chmod 0660 /data/misc/wifi/wpa_supplicant.conf
@@ -116,7 +128,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
      # create the lost+found directories, so as to enforce our permissions
      mkdir /data/lost+found 0770
-@@ -237,7 +266,7 @@
+@@ -236,7 +265,7 @@ on post-fs-data
      chmod 0770 /data/lost+found
  
      # create directory for DRM plug-ins
@@ -125,7 +137,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
  	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
  
-@@ -381,11 +410,12 @@
+@@ -380,11 +409,12 @@ on boot
  
      write /proc/sys/vm/overcommit_memory 1
      write /proc/sys/vm/min_free_order_shift 4
@@ -135,13 +147,13 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
 +    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
      write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
  
--    # Set init its forked children's oom_adj.
+-# Set init its forked children's oom_adj.
 -    write /proc/1/oom_adj -16
 -
-     # Tweak background writeout
+ # Tweak background writeout
      write /proc/sys/vm/dirty_expire_centisecs 200
      write /proc/sys/vm/dirty_background_ratio  5
-@@ -431,12 +461,33 @@
+@@ -461,12 +491,33 @@ on property:service.adb.tcp.port=-1
      chown radio system /sys/android_power/acquire_full_wake_lock
      chown radio system /sys/android_power/acquire_partial_wake_lock
      chown radio system /sys/android_power/release_wake_lock
@@ -176,7 +188,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
      chown system system /sys/class/timed_output/vibrator/enable
      chown system system /sys/class/leds/keyboard-backlight/brightness
-@@ -557,11 +608,11 @@
+@@ -587,11 +638,11 @@ on property:service.adb.tcp.port=-1
  
  # Define TCP buffer sizes for various networks
  #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
@@ -191,7 +203,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
      setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
      setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
  
-@@ -677,6 +728,7 @@
+@@ -696,6 +747,7 @@ service console /system/bin/sh
      class core
      console
      disabled
@@ -199,7 +211,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
      group log
  
  on property:ro.debuggable=1
-@@ -710,6 +762,8 @@
+@@ -729,6 +781,8 @@ service servicemanager /system/bin/servicemanager
      critical
      onrestart restart zygote
      onrestart restart media
@@ -208,7 +220,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
  service vold /system/bin/vold
      class core
-@@ -721,6 +775,7 @@
+@@ -740,6 +794,7 @@ service netd /system/bin/netd
      class main
      socket netd stream 0660 root system
      socket dnsproxyd stream 0660 root inet
@@ -216,7 +228,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
  service debuggerd /system/bin/debuggerd
      class main
-@@ -750,7 +805,7 @@
+@@ -769,7 +824,7 @@ service surfaceflinger /system/bin/surfaceflinger
  
  service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
      class main
@@ -225,7 +237,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
      onrestart write /sys/android_power/request_state wake
      onrestart write /sys/power/state on
      onrestart restart media
-@@ -759,12 +814,12 @@
+@@ -778,12 +833,12 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
  service drm /system/bin/drmserver
      class main
      user drm
@@ -240,7 +252,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
      ioprio rt 4
  
  service samsungani /sbin/bootanimation.sh
-@@ -840,14 +895,14 @@
+@@ -859,14 +914,14 @@ service mtpd /system/bin/mtpd
      class main
      socket mtpd stream 600 system system
      user vpn
@@ -257,7 +269,7 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
      socket keystore stream 666
  
  service dumpstate /system/bin/dumpstate -s
-@@ -855,6 +910,18 @@
+@@ -874,6 +929,18 @@ service dumpstate /system/bin/dumpstate -s
      socket dumpstate stream 0660 shell log
      disabled
      oneshot
@@ -276,9 +288,10 @@ diff -ruN init.samsung/init.rc init.jelly/init.rc
  
  #for WiFi MFG(TestMode)
  service mfgloader /system/bin/mfgloader
-diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
---- init.samsung/init.rc.2	2012-05-21 15:35:42.000000000 +0300
-+++ init.jelly/init.rc.2	2012-07-01 01:01:03.000000000 +0300
+diff --git a/init.rc.2 b/init.rc.2
+index 6e1db8a..97bd246 100755
+--- a/init.rc.2
++++ b/init.rc.2
 @@ -1,4 +1,17 @@
 +# Copyright (C) 2012 The Android Open Source Project
 +#
@@ -297,17 +310,17 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
      start ueventd
  
  # create mountpoints
-@@ -22,7 +35,7 @@
+@@ -22,7 +35,7 @@ loglevel 3
      export ANDROID_DATA /data
      export ASEC_MOUNTPOINT /mnt/asec
      export LOOP_MOUNTPOINT /mnt/obb
 -    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 +    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
  
- # Disable CFQ slice idle delay
-     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
-@@ -76,25 +89,37 @@
-     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
+ # Backward compatibility
+     symlink /system/etc /etc
+@@ -71,25 +84,37 @@ loglevel 3
+     write /proc/cpu/alignment 4
      write /proc/sys/kernel/sched_compat_yield 1
      write /proc/sys/kernel/sched_child_runs_first 0
 +    write /proc/sys/kernel/randomize_va_space 2
@@ -325,9 +338,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
 -    chmod 0777 /dev/cpuctl/tasks
 +    chmod 0660 /dev/cpuctl/tasks
      write /dev/cpuctl/cpu.shares 1024
-+    write /dev/cpuctl/cpu.rt_runtime_us 950000
-+    write /dev/cpuctl/cpu.rt_period_us 1000000
- 
+-
 -    mkdir /dev/cpuctl/fg_boost
 -    chown system system /dev/cpuctl/fg_boost/tasks
 -    chmod 0777 /dev/cpuctl/fg_boost/tasks
@@ -336,6 +347,9 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
 -    mkdir /dev/cpuctl/bg_non_interactive
 -    chown system system /dev/cpuctl/bg_non_interactive/tasks
 -    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
++    write /dev/cpuctl/cpu.rt_runtime_us 950000
++    write /dev/cpuctl/cpu.rt_period_us 1000000
++
 +    mkdir /dev/cpuctl/apps
 +    chown system system /dev/cpuctl/apps/tasks
 +    chmod 0666 /dev/cpuctl/apps/tasks
@@ -354,7 +368,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
  # Allow everybody to read the xt_qtaguid resource tracking misc dev.
  # This is needed by any process that uses socket tagging.
-@@ -162,11 +187,7 @@
+@@ -157,11 +182,7 @@ on post-fs
      chmod 0220 /proc/sysrq-trigger
  
      # create the lost+found directories, so as to enforce our permissions
@@ -367,7 +381,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
  on post-fs-data
      # We chown/chmod /data again so because mount is run as root + defaults
-@@ -219,17 +240,25 @@
+@@ -214,17 +235,25 @@ on post-fs-data
      mkdir /data/misc/wifi 0770 wifi wifi
      chmod 0770 /data/misc/wifi
      chmod 0660 /data/misc/wifi/wpa_supplicant.conf
@@ -394,7 +408,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
      # create the lost+found directories, so as to enforce our permissions
      mkdir /data/lost+found 0770
-@@ -239,7 +268,7 @@
+@@ -234,7 +263,7 @@ on post-fs-data
      chmod 0770 /data/lost+found
  
      # create directory for DRM plug-ins
@@ -403,7 +417,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
  	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
  
-@@ -383,11 +412,12 @@
+@@ -378,11 +407,12 @@ on boot
  
      write /proc/sys/vm/overcommit_memory 1
      write /proc/sys/vm/min_free_order_shift 4
@@ -413,13 +427,13 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
 +    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
      write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
  
--    # Set init its forked children's oom_adj.
+-# Set init its forked children's oom_adj.
 -    write /proc/1/oom_adj -16
 -
-     # Tweak background writeout
+ # Tweak background writeout
      write /proc/sys/vm/dirty_expire_centisecs 200
      write /proc/sys/vm/dirty_background_ratio  5
-@@ -433,12 +463,33 @@
+@@ -459,12 +489,33 @@ on property:service.adb.tcp.port=-1
      chown radio system /sys/android_power/acquire_full_wake_lock
      chown radio system /sys/android_power/acquire_partial_wake_lock
      chown radio system /sys/android_power/release_wake_lock
@@ -454,7 +468,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
      chown system system /sys/class/timed_output/vibrator/enable
      chown system system /sys/class/leds/keyboard-backlight/brightness
-@@ -559,11 +610,11 @@
+@@ -585,11 +636,11 @@ on property:service.adb.tcp.port=-1
  
  # Define TCP buffer sizes for various networks
  #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
@@ -469,7 +483,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
      setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
      setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
  
-@@ -679,6 +730,7 @@
+@@ -694,6 +745,7 @@ service console /system/bin/sh
      class core
      console
      disabled
@@ -477,7 +491,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
      group log
  
  on property:ro.debuggable=1
-@@ -712,6 +764,8 @@
+@@ -727,6 +779,8 @@ service servicemanager /system/bin/servicemanager
      critical
      onrestart restart zygote
      onrestart restart media
@@ -486,7 +500,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
  service vold /system/bin/vold
      class core
-@@ -723,6 +777,7 @@
+@@ -738,6 +792,7 @@ service netd /system/bin/netd
      class main
      socket netd stream 0660 root system
      socket dnsproxyd stream 0660 root inet
@@ -494,7 +508,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  
  service debuggerd /system/bin/debuggerd
      class main
-@@ -752,7 +807,7 @@
+@@ -767,7 +822,7 @@ service surfaceflinger /system/bin/surfaceflinger
  
  service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
      class main
@@ -503,7 +517,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
      onrestart write /sys/android_power/request_state wake
      onrestart write /sys/power/state on
      onrestart restart media
-@@ -761,12 +816,12 @@
+@@ -776,12 +831,12 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
  service drm /system/bin/drmserver
      class main
      user drm
@@ -518,7 +532,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
      ioprio rt 4
  
  service samsungani /sbin/bootanimation.sh
-@@ -842,14 +897,14 @@
+@@ -857,14 +912,14 @@ service mtpd /system/bin/mtpd
      class main
      socket mtpd stream 600 system system
      user vpn
@@ -535,7 +549,7 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
      socket keystore stream 666
  
  service dumpstate /system/bin/dumpstate -s
-@@ -857,6 +912,18 @@
+@@ -872,6 +927,18 @@ service dumpstate /system/bin/dumpstate -s
      socket dumpstate stream 0660 shell log
      disabled
      oneshot
@@ -555,8 +569,8 @@ diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
  #for WiFi MFG(TestMode)
  service mfgloader /system/bin/mfgloader
 diff -ruN init.samsung/init.trace.rc init.jelly/init.trace.rc
---- init.samsung/init.trace.rc	1970-01-01 02:00:00.000000000 +0200
-+++ init.jelly/init.trace.rc	2012-06-28 01:38:42.000000000 +0300
+--- init.samsung/init.trace.rc  1970-01-01 02:00:00.000000000 +0200
++++ init.jelly/init.trace.rc    2012-06-28 01:38:42.000000000 +0300
 @@ -0,0 +1,31 @@
 +## Permissions to allow system-wide tracing to the kernel trace buffer.
 +##
@@ -589,3 +603,6 @@ diff -ruN init.samsung/init.trace.rc init.jelly/init.trace.rc
 +# Allow only the shell group to read and truncate the kernel trace.
 +    chown root shell /sys/kernel/debug/tracing/trace
 +    chmod 0660 /sys/kernel/debug/tracing/trace
+-- 
+1.7.4.1
+
