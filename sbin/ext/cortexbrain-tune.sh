@@ -251,8 +251,6 @@ setprop persist.adb.notify 0
 setprop wifi.supplicant_scan_interval 360
 setprop pm.sleep_mode 1
 
-setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
-
 if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
 	setprop dalvik.vm.heapsize 72m
 fi;
@@ -328,6 +326,8 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
+		echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
@@ -335,6 +335,8 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+                echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
+		echo "20" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -344,18 +346,6 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
-	fi;
-
-	if [ $SYSTEM_GOVERNOR == "smartassV2" ]; then
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
-		echo "95" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-		echo "40" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
-		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
-		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -380,20 +370,31 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "160000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
 	fi;
 
+	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+		echo "50" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
+		echo "50" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
+		echo "95" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold
+		echo "1" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential
+	fi;
+
 elif [ $DEFAULT_SPEED == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
+		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
 		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
  		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
+		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -405,38 +406,33 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
-	if [ $SYSTEM_GOVERNOR == "smartassV2" ]; then
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
-		echo "80" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-		echo "30" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
-		echo "48000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us
-		echo "49000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us
-	fi;
-
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-		echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
 		echo "30" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
 		echo "80" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/hotplug/sampling_rate;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 		echo "2" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 		echo "30" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 		echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-		echo "120000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+		echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
+		echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
+		echo "70" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold
+		echo "1" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential
 	fi;
 
 elif [ $MORE_SPEED == 1 ]; then
@@ -446,6 +442,8 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
+		echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 
@@ -454,6 +452,8 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
+		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
@@ -465,20 +465,8 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
-	if [ $SYSTEM_GOVERNOR == "smartassV2" ]; then
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/awake_ideal_freq;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_ideal_freq;
-		echo "800000" > /sys/devices/system/cpu/cpufreq/smartass/sleep_wakeup_freq
-		echo "60" > /sys/devices/system/cpu/cpufreq/smartass/max_cpu_load;
-		echo "30" > /sys/devices/system/cpu/cpufreq/smartass/min_cpu_load;
-		echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_up_step;
-		echo "0" > /sys/devices/system/cpu/cpufreq/smartass/ramp_down_step;
-		echo "24000" > /sys/devices/system/cpu/cpufreq/smartass/up_rate_us;
-		echo "99000" > /sys/devices/system/cpu/cpufreq/smartass/down_rate_us;
-	fi;
-
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
@@ -497,6 +485,13 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "25" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 		echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 		echo "100000" > /sys/devices/system/cpu/cpufreq/abyssplug/sampling_rate;
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+		echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
+		echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
+		echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold
+		echo "1" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential
 	fi;
 
 fi;
@@ -521,7 +516,7 @@ echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "3" > /proc/sys/vm/page-cluster; # default: 3
-echo "4096" > /proc/sys/vm/min_free_kbytes
+echo "8192" > /proc/sys/vm/min_free_kbytes
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
@@ -810,7 +805,7 @@ else
 fi;
 
 # Reduce CPU max Speed to 800Mhz
-echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # cpu - second core always-off
 echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
@@ -818,8 +813,8 @@ echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
 echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group
-echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
-echo "45" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
+echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
+echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8
