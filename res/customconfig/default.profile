@@ -53,6 +53,7 @@ install_root=on
 mov_hysti=1
 pwm_val=75
 tsp_touch_freq=500000
+negative_tweak=1
 user_gamma_adjust=0
 blnww=on
 cpustepcount=15
