@@ -305,12 +305,12 @@ The third step is disabled as default by having the second to third threshold 10
 
 	</settingsPane>
 
-		<!--spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
+		<spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
 			name="Negative Screen Mod tuning." action="generic_mod1 homekey_trg_cnt int">
 			<spinnerItem name="Set 4 Clicks (default)" value="3"/> 
 			<spinnerItem name="Set 6 Clicks" value="5"/> 
 			<spinnerItem name="Disable Mod!" value="19"/> 
-		</spinner-->
+		</spinner>
 
         <settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong set will disable touch screen! 
 and you will have too reset profiles in recovery! Also settings for Battery VS Charger are different! 
