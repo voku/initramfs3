@@ -341,11 +341,11 @@ if [ $MORE_BATTERY == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
-		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
-		echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
 		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
-		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		echo "10" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -398,12 +398,12 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-		echo "80" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
-		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
-		echo "2" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "50" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
 		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
-		echo "6" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		echo "10" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -457,12 +457,12 @@ elif [ $MORE_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
-		echo "4" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
-		echo "1" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "30" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
 		echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
 		echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
-		echo "5" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+		echo "10" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
