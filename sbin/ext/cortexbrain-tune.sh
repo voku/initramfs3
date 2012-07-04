@@ -325,7 +325,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "160000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "150000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
 		echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
@@ -334,7 +334,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+		echo "150000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "20" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
@@ -380,19 +380,19 @@ if [ $MORE_BATTERY == 1 ]; then
 elif [ $DEFAULT_SPEED == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo "800000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
 		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
- 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+		echo "70" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+ 		echo "2" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+		echo "80000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
@@ -439,19 +439,19 @@ elif [ $MORE_SPEED == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+		echo "500000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
 		echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+		echo "2" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "100000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
+		echo "50000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
@@ -685,6 +685,11 @@ AWAKE_MODE()
 {
 
 # Awake booster!
+# Kill the wakeup bug!
+echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+echo "1200000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
+echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
+
 MAX_CPU_SPEED=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`
 if [ $MAX_CPU_SPEED -gt 1200000 ]; then
 	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -694,10 +699,6 @@ else
 	echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
 	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
 fi;
-# Kill the wakeup bug!
-echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
-echo "1200000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
-echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
 sleep 5
 
 # charging & screen is on
