@@ -24,6 +24,9 @@ loglevel 3
     export LOOP_MOUNTPOINT /mnt/obb
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 
+# Disable CFQ slice idle delay
+    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
@@ -44,7 +47,7 @@ loglevel 3
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
     mkdir /config 0500 root root
-	mkdir /preload 0771 system system
+    mkdir /preload 0771 system system
 
     # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -101,7 +104,7 @@ loglevel 3
 on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /res/dev/system /system noatime wait ro
+    mount ext4 /res/dev/system /system noatime wait rw
 
     # verify filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
@@ -126,10 +129,13 @@ on fs
 
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /res/dev/data
-    
+
+    # verfiy filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+
 on post-fs
     exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc 
 
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -157,7 +163,7 @@ on post-fs
     chmod 0220 /proc/sysrq-trigger
 
     # create the lost+found directories, so as to enforce our permissions
-    mkdir /cache/lost+found 0770
+    mkdir /cache/lost+found 0770 root root
 
     # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
@@ -175,7 +181,7 @@ on post-fs-data
     # Do this before we mount cache so eventually we can use cache for
     # storing dumps on platforms which do not have a dedicated dump partition.
 
-    mkdir /data/dontpanic
+    mkdir /data/dontpanic 0750 root log
     chown root log /data/dontpanic
     chmod 0750 /data/dontpanic
 
@@ -210,6 +216,7 @@ on post-fs-data
     mkdir /data/misc/systemkeys 0700 system system
     mkdir /data/misc/vpn/profiles 0770 system system
     mkdir /data/misc/radio 0775 radio system
+
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
@@ -227,7 +234,7 @@ on post-fs-data
     chmod 0771 /data/dalvik-cache
 
     # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770
+    mkdir /data/lost+found 0770 root root
 
     # double check the perms, in case lost+found already exists, and set owner
     chown root root /data/lost+found
@@ -333,6 +340,20 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
+    # Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
+
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
@@ -358,18 +379,6 @@ on boot
     setprop ro.HIDDEN_APP_MEM 16384
     setprop ro.EMPTY_APP_MEM 20480
 
-    # Old values for phones.  Should probably be adjusted up for the next
-    # phone version.
-    #setprop ro.FOREGROUND_APP_MEM 2048
-    #setprop ro.VISIBLE_APP_MEM 3072
-    #setprop ro.PERCEPTIBLE_APP_MEM 4096
-    #setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    #setprop ro.SECONDARY_SERVER_MEM 6144
-    #setprop ro.BACKUP_APP_MEM 6144
-    #setprop ro.HOME_APP_MEM 6144
-    #setprop ro.HIDDEN_APP_MEM 7168
-    #setprop ro.EMPTY_APP_MEM 8192
-
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have combined some of
 # the classes into the same memory level; the associated processes of higher
@@ -380,55 +389,24 @@ on boot
     write /proc/sys/vm/min_free_order_shift 4
     write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
 
-# Set init its forked children's oom_adj.
+    # Set init its forked children's oom_adj.
     write /proc/1/oom_adj -16
 
-# Tweak background writeout
+    # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
+    write /proc/sys/vm/dirty_background_ratio  10
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
     chown system system /data/pxtmpdir
     chmod 0775 /data/pxtmpdir
 
-# permission for HDMI audio path
+    # permission for HDMI audio path
     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
 # Permissions for gpio_keys.
     chown system radio /sys/class/sec/sec_key/wakeup_keys 
     write /sys/class/sec/sec_key/wakeup_keys  102,116
-
-# Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
-    setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.lge.proximity.delay 15
-
-#Video Quality
-    setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
-
-#Disable Google OTA Update checkin
-    setprop ro.config.nocheckin 1
-
-# adb over network
-on property:service.adb.tcp.port=5555
-    stop adbd
-    start adbd
-
-on property:service.adb.tcp.port=-1
-    stop adbd
-    start adbd
-
-# allow system to modify cpufreq control files
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # Add permission for ATM. 2010.03.20
     chown system radio /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_read_soc
@@ -494,6 +472,14 @@ on property:service.adb.tcp.port=-1
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
+
+    # allow system to modify cpufreq control files
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # Permissions for input devices
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
@@ -609,7 +595,6 @@ on property:service.adb.tcp.port=-1
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
-
     class_start core
     class_start main
 
@@ -767,11 +752,20 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 666
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
+
+# adb over network
+on property:service.adb.tcp.port=5555
+    stop adbd
+    start adbd
+
+on property:service.adb.tcp.port=-1
+    stop adbd
+    start adbd
 
 service drm /system/bin/drmserver
     class main
@@ -806,7 +800,7 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
+service bluetoothd /system/bin/bluetoothd -n
     class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
@@ -849,7 +843,7 @@ service racoon /system/bin/racoon
     class main
     socket racoon stream 600 system system
     # racoon will setuid to vpn after getting necessary resources.
-    group net_admin
+    group vpn net_admin inet
     disabled
     oneshot
 
@@ -857,7 +851,7 @@ service mtpd /system/bin/mtpd
     class main
     socket mtpd stream 600 system system
     user vpn
-    group vpn net_admin net_raw
+    group vpn net_admin inet net_raw
     disabled
     oneshot
 
@@ -918,3 +912,4 @@ service postinit /sbin/ext/post-init.sh
     class core
     user root
     oneshot
+
