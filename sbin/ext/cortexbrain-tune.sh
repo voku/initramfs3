@@ -694,6 +694,10 @@ else
 	echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
 	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
 fi;
+# Kill the wakeup bug!
+echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+echo "1200000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
+echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
 sleep 5
 
 # charging & screen is on
@@ -749,6 +753,8 @@ else
 
 	MODE="AWAKE";
 fi;
+
+echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 
 # Restore Smooth Level
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
