@@ -8,7 +8,7 @@ Subject: [PATCH] jelly.patch
  init.rc.2 |  129 ++++++++++++++++++++++++++++++++++++++++++++++---------------
  2 files changed, 196 insertions(+), 62 deletions(-)
 
-diff --git a/init.rc b/init.rc
+diff -ruN a/init.rc b/init.rc
 index cb8aaef..00f9ddd 100755
 --- a/init.rc
 +++ b/init.rc
@@ -288,7 +288,7 @@ index cb8aaef..00f9ddd 100755
  
  #for WiFi MFG(TestMode)
  service mfgloader /system/bin/mfgloader
-diff --git a/init.rc.2 b/init.rc.2
+diff -ruN a/init.rc.2 b/init.rc.2
 index 6e1db8a..97bd246 100755
 --- a/init.rc.2
 +++ b/init.rc.2

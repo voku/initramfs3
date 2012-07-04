@@ -9,7 +9,7 @@ Subject: [PATCH] patch
  lpm.rc    |   59 ++++++++++++++++++++++++++---------------------------------
  3 files changed, 95 insertions(+), 43 deletions(-)
 
-diff --git a/init.rc b/init.rc
+diff -ruN a/init.rc b/init.rc
 index fd393ee..32c1aa1 100755
 --- a/init.rc
 +++ b/init.rc
@@ -110,7 +110,7 @@ index fd393ee..32c1aa1 100755
  service postinit /sbin/ext/post-init.sh
      class core
      user root
-diff --git a/init.rc.2 b/init.rc.2
+diff -ruN a/init.rc.2 b/init.rc.2
 index 60f7aba..10462bd 100755
 --- a/init.rc.2
 +++ b/init.rc.2
@@ -209,7 +209,7 @@ index 60f7aba..10462bd 100755
  service postinit /sbin/ext/post-init.sh
      class core
      user root
-diff --git a/lpm.rc b/lpm.rc
+diff -ruN a/lpm.rc b/lpm.rc
 index 42f2d01..e937596 100755
 --- a/lpm.rc
 +++ b/lpm.rc
