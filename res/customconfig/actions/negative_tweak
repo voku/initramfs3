@@ -11,13 +11,13 @@ fi;
 
 case "${negative_tweak}" in
         1)
-		kmemhelper -n homekey_trg_cnt -t int 3 > /dev/null 2>&1
+		kmemhelper -n homekey_trg_cnt -t int 4 > /dev/null 2>&1
 		;;
 	2)
-		kmemhelper -n homekey_trg_cnt -t int 5 > /dev/null 2>&1
+		kmemhelper -n homekey_trg_cnt -t int 6 > /dev/null 2>&1
 		;;
 	3)
-		kmemhelper -n homekey_trg_cnt -t int 19 > /dev/null 2>&1
+		kmemhelper -n homekey_trg_cnt -t int 0 > /dev/null 2>&1
 		;;
 	*)
 		negative_tweak=1
