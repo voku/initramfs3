@@ -27,6 +27,10 @@ SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload
 mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
+
+# Set / rw
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
+
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
@@ -41,10 +45,9 @@ else
 fi
 
 if [ "$?" == "1" ]; then
-	mv /res/misc/cyano/init.smdk4210.rc.2 /res/misc/cyano/init.smdk4210.rc
-	mv /init.rc.2 /init.rc
-	mv /init.miui.2 /init.miui
-	mv /init.b2g.2 /init.b2g
+	SECONDROM=1
+else
+	SECONDROM=0
 fi
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
@@ -52,10 +55,10 @@ fi
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /system/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
 if [ "$CHECKHOSTS" != " www.link" ]; then
-cp -a /res/misc/hosts /system/etc/
-chmod 644 /system/etc/hosts
+	cp -a /res/misc/hosts /system/etc/
+	chmod 644 /system/etc/hosts
 else
-echo "User has AD custom HOSTS file"
+	echo "User has AD custom HOSTS file"
 fi
 
 # copy new Kernel modules to /system/lib/modules
@@ -71,6 +74,7 @@ fi;
 AOSP=0
 MIUI=0
 B2G=0
+JELLY=0
 
 [ -d /system/b2g ] && B2G=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
@@ -86,18 +90,23 @@ B2G=0
 [ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ] && MIUI=1
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
+[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
 
 if [ -e /recovery-started ]; then
 	rm -f /recovery-started
 fi;
 
-if [ "$B2G" == 1 ]; then
-	echo 0 > /proc/sys/kernel/rom_feature_set
-	mv /init.b2g /init.rc
-	if [ -e /system/xbin/bash ]; then
-        	exec /sbin/init.samsung
-	else
-        	exec /sbin/init.b2g
+# One more time set / rw just for good sleep.
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
+
+if [ "$JELLY" == 1 ]; then
+	patch -p1 < /res/misc/jelly.patch
+else
+	if [ "$B2G" == 1 ]; then
+		patch -p1 < /res/misc/b2g.patch
+		if [ ! -e /system/xbin/bash ]; then
+			mv /sbin/init.b2g /sbin/init.samsung
+		fi;
 	fi;
 fi;
 
@@ -105,24 +114,30 @@ if [ "$AOSP" == 1 ]; then
 	echo 1 > /proc/sys/kernel/rom_feature_set
 	cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
 	chmod 777 /system/lib/libsqlite.so
+	rm /init.rc.2
+	patch -p1 < /res/misc/cm9.patch
+
 	if [ -e /system/xbin/bash ]; then
-		exec /sbin/init.cm9
+		mv /sbin/init.cm9 /sbin/init.samsung
 	else
-		exec /sbin/init.cm9-no-bash
+		mv /sbin/init.cm9-no-bash /sbin/init.samsung
 	fi;
+else
+	echo 0 > /proc/sys/kernel/rom_feature_set
 fi;
 
 if [ "$MIUI" == 1 ]; then
-	mv /init.miui /init.rc
-	mv /default.prop.miui /default.prop
-fi
+	patch -p1 < /res/misc/miui.patch
+fi;
 
-rm -f /init.miui
-echo 0 > /proc/sys/kernel/rom_feature_set
-
+if [ "$SECONDROM" == "1" ]; then
+	mv /init.smdk4210.rc.2 /init.smdk4210.rc
+	mv /init.rc.2 /init.rc
+fi;
+	
 if [ -e /system/xbin/bash ]; then
 	exec /sbin/init.samsung
 else
 	exec /sbin/init.recovery
-fi
+fi;
 

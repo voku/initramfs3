@@ -67,14 +67,9 @@ else
 	/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
 fi
 
-rm -f /init.samsung
 rm -f /init
-rm -f /init.b2*
-rm -f /init.miu*
 rm -f /update*
-rm -f /default.prop.miui
 mv /init.cm9 /init
-busybox cp -a /res/misc/cyano/* /
 
 busybox date >>boot.txt
 busybox rm -rf /res/misc/cyano /dev/*
