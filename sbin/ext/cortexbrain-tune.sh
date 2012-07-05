@@ -11,17 +11,17 @@
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded!
 
 # read setting from profile
+
+# Dynamic triger do not delete!
+cortexbrain_background_process=0
+
+# Get values from profile.
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
-
-
-
-# Dynamic triger do not delete!
-cortexbrain_background_process=0
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then

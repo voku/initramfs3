@@ -15,7 +15,6 @@ case "${cortexbrain_background_process}" in
 		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
 		kill ${PIDOFCORTEX} > /dev/null 2>&1;
 		/sbin/busybox mount -t rootfs -o remount,rw rootfs
-		sed -i "s/cortexbrain_background_process=[0-1]*/cortexbrain_background_process=0/g" /sbin/ext/cortexbrain-tune.sh
 		echo "cortex down" > /data/.siyah/cortex-run
 		;;
 	1)
