@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+# $1 - "cortexbrain_kernel_tweaks"
+# $2 - value=
+
+if [ "a$2" == "a" ]; then
+	echo $cortexbrain_kernel_tweaks
+else
+	cortexbrain_kernel_tweaks=$2
+	echo $cortexbrain_kernel_tweaks
+fi;
+
+if [ "a$cortexbrain_kernel_tweaks" == "a" ]; then
+	cortexbrain_kernel_tweaks=1
+fi;
+

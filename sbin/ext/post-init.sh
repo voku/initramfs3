@@ -94,6 +94,10 @@ sleep 30
 # Set color mode to user mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
+if [ -e /data/.siyah/cortex-run ]; then
+	rm -f /data/.siyah/cortex-run
+fi;
+
 # apply ExTweaks defaults
 if [ ! -e /recovery-started ]; then
 	/res/uci.sh apply
@@ -103,6 +107,7 @@ fi;
 (
 sleep 40
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
+echo "cortex-ok" > /data/.siyah/cortex-run
 ) &
 
 (
@@ -113,5 +118,6 @@ sleep 60
 (
 sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh
+exit
 ) &
 

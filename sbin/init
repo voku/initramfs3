@@ -5,6 +5,9 @@ busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
 tar xvf /res/misc/dev.tar
 
+# Set / rw
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
+
 if grep -q bootmode=2 /proc/cmdline ; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
 	echo "recovery mode" > /recovery-started
@@ -12,24 +15,12 @@ if grep -q bootmode=2 /proc/cmdline ; then
 	cp /res/misc/recovery-init/init.smdk4210.rc /init.smdk4210.rc
 	cp /res/misc/recovery-init/lpm.rc /lpm.rc
 	exec /sbin/init.recovery
-fi
-
-if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
-	# low power mode
-	echo 0 > /proc/sys/kernel/rom_feature_set
-	echo "recovery mode" > /recovery-started
-	cp lpm.rc init.rc
-	rm init.smdk4210.rc
-	exec /sbin/init.recovery
-fi
+fi;
 
 SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload
 mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
-
-# Set / rw
-/sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
@@ -42,13 +33,13 @@ if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
 	/sbin/choose_rom
 else
 	/sbin/choose_rom $SECONDROM
-fi
+fi;
 
 if [ "$?" == "1" ]; then
 	SECONDROM=1
 else
 	SECONDROM=0
-fi
+fi;
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
 
@@ -59,7 +50,7 @@ if [ "$CHECKHOSTS" != " www.link" ]; then
 	chmod 644 /system/etc/hosts
 else
 	echo "User has AD custom HOSTS file"
-fi
+fi;
 
 # copy new Kernel modules to /system/lib/modules
 rm -f /system/lib/modules/*.ko
@@ -93,19 +84,43 @@ JELLY=0
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
 
+if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
+        # low power mode
+        echo 0 > /proc/sys/kernel/rom_feature_set
+        echo "recovery mode" > /recovery-started
+
+	if [ "$B2G" == 1 ]; then
+		cp -a /sammy-rom/lpm.rc /
+	else
+		cp lpm.rc init.rc
+	fi;
+        rm init.smdk4210.rc
+        exec /sbin/init.recovery
+fi;
+
+# Delete the triger if normal boot.
 if [ -e /recovery-started ]; then
-	rm -f /recovery-started
+        rm -f /recovery-started
 fi;
 
 # One more time set / rw just for good sleep.
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 if [ "$B2G" == 1 ]; then
-	patch -p1 < /res/misc/b2g.patch
+	cp -a /sammy-rom/* /
+	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ]; then
 		mv /sbin/init.b2g /sbin/init.samsung
 	fi;
+
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		mv /init.rc.2 /init.rc
+	fi;
+
+	# Start ROM!
+	exec /sbin/init.samsung	
 fi;
 
 if [ "$AOSP" == 1 ]; then
@@ -120,31 +135,62 @@ if [ "$AOSP" == 1 ]; then
 	else
 		mv /sbin/init.cm9-no-bash /sbin/init.samsung
 	fi;
-else
-	echo 0 > /proc/sys/kernel/rom_feature_set
+
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		mv /init.rc.2 /init.rc
+	fi;
+
+	# Start ROM!
+	exec /sbin/init.samsung
 fi;
 
 if [ "$MIUI" == 1 ]; then
 	patch -p1 < /res/misc/miui.patch
+	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ]; then
 		mv /sbin/init.b2g /sbin/init.samsung
 	fi;
+
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		mv /init.rc.2 /init.rc
+	fi;
+
+	# Start ROM!
+	exec /sbin/init.samsung
 fi;
 
 if [ "$JELLY" == 1 ]; then
         patch -p1 < /res/misc/jelly.patch
+	echo 0 > /proc/sys/kernel/rom_feature_set
 
         if [ ! -e /system/xbin/bash ]; then
                 mv /sbin/init.b2g /sbin/init.samsung
         fi;
+
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		mv /init.rc.2 /init.rc
+	fi;
+
+	# Start ROM!
+	exec /sbin/init.samsung
 fi;
+
+# If not detected ROM installed then:
+echo 0 > /proc/sys/kernel/rom_feature_set
 
 if [ "$SECONDROM" == "1" ]; then
 	mv /init.smdk4210.rc.2 /init.smdk4210.rc
 	mv /init.rc.2 /init.rc
 fi;
 	
+if [ ! -e /system/xbin/bash ]; then
+	mv /sbin/init.b2g /sbin/init.samsung
+fi;
+
 # Start ROM
 exec /sbin/init.samsung
 
