@@ -334,11 +334,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-<<<<<<< .merge_file_EfGZK7
-		echo "160000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
-=======
 		echo "150000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
->>>>>>> .merge_file_oXJuL6
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "20" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
@@ -831,12 +827,9 @@ fi;
 # Reduce CPU speed
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-<<<<<<< .merge_file_EfGZK7
-=======
 # Reduce deepsleep CPU speed
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
->>>>>>> .merge_file_oXJuL6
 
 # cpu - second core always-off
 echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
