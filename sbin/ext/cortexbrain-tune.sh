@@ -287,7 +287,7 @@ BATTERY_TWEAKS()
 {
 #WIFI PM-FAST Support.
 if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-	echo "1" > /sys/module/dhd/parameters/wifi_pm
+	echo "1" > /sys/module/dhd/parameters/wifi_pm;
 fi;
 
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
@@ -658,20 +658,18 @@ AWAKE_MODE()
 {
 
 # Awake booster!
-# Kill the wakeup bug!
-echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+# Kill the wakeup bug! boost the CPU to MAX allowed.
+echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
+echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
+
+# Now boost the screen lock freq to Max Allowed
+echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 echo "1200000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
 echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
 
-MAX_CPU_SPEED=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`
-if [ $MAX_CPU_SPEED -gt 1200000 ]; then
-	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-else
-	echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
-	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
-fi;
 sleep 5
 
 # charging & screen is on
@@ -681,10 +679,6 @@ if [ $CHARGING -ge 1 ]; then
 	# cpu - Always dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
-
-	# CPU-Freq
-	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# CPU Idle State - IDLE only
 	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
@@ -701,14 +695,22 @@ if [ $CHARGING -ge 1 ]; then
 
 else
 
-	# set governor & CPU speed
-	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	# set cpu
+	if [ "$secondcore" == "hotplug" ]; then
+		echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	else
+		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	fi;
 
-	# cpu - hotplug=1 core online second on demand
-	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+	if [ "$secondcore" == "always-off" ]; then
+		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+		echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+	fi;
+
+	if [ "$secondcore" == "always-on" ]; then
+		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+		echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
+	fi;
 
 	# cpu - settings for second core
 	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
@@ -727,6 +729,11 @@ else
 
 	MODE="AWAKE";
 fi;
+
+# set governor & CPU speed
+echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 
@@ -770,7 +777,7 @@ if [ $cortexbrain_cpu == 1 ]; then
 fi;
 
 # Setting the vibrator force in case it's has been reseted.
-echo "${pwm_val}" > /sys/vibrator/pwm_val
+echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
@@ -809,12 +816,12 @@ echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
-echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group
-echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold
-echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
+echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
+echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # Smooth Level set to 800Mhz just in case.
-kmemhelper -n smooth_level -o 0 -t int 8
+kmemhelper -n smooth_level -o 0 -t int 8;
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
@@ -834,7 +841,7 @@ echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
 
 # Setting the vibrator force in case it's has been reseted.
-echo "${pwm_val}" > /sys/vibrator/pwm_val
+echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
@@ -893,7 +900,7 @@ if [ $cortexbrain_background_process == 1 ]; then
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 5;
+		sleep 3;
 
 		# SLEEP state! All system to power save!
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
@@ -901,7 +908,7 @@ if [ $cortexbrain_background_process == 1 ]; then
 		. /data/.siyah/$PROFILE.profile;
 		EXTWEAKSPUSH;
 		SLEEP_MODE;
-		sleep 5;
+		sleep 3;
 	done &);
 fi;
 
