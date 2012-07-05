@@ -1,6 +1,17 @@
 #!/sbin/busybox sh
-(
-echo "fix me" > /data/.siyah/fixperm
-)&
-echo Fixing permissions Will start on screen OFF! please wait 3MIN!
+
+echo "Fixing permissions Will start on screen OFF! please wait 3MIN!";
+
+EXTWEAKSPUSH ()
+{
+    if [ -e /data/.siyah/fixperm ]; then
+        /sbin/fix_permissions;
+        rm -f /data/.siyah/fixperm;
+    fi;
+}
+
+echo "fix me" > /data/.siyah/fixperm;
+# waiting for screen-off, then ...
+STATE=$(cat /sys/power/wait_for_fb_sleep);
+EXTWEAKSPUSH;
 
