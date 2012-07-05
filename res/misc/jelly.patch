@@ -1,4 +1,3 @@
-<<<<<<< .merge_file_49M7Ig
 From 2439222a4a8de67e4b93a236cd4da9456afd054b Mon Sep 17 00:00:00 2001
 From: Dorimanx <yuri@bynet.co.il>
 Date: Tue, 3 Jul 2012 22:07:09 +0300
@@ -11,22 +10,6 @@ Subject: [PATCH] jelly.patch
 
 diff -ruN a/init.rc b/init.rc
 index cb8aaef..00f9ddd 100755
-=======
-From 8ec50c2cb609beba03f9e223d68f38549f7e0ab2 Mon Sep 17 00:00:00 2001
-From: Dorimanx <yuri@bynet.co.il>
-Date: Thu, 5 Jul 2012 03:42:33 +0300
-Subject: [PATCH] Jelly-Patch
-
----
- init.rc       |  123 +++++++++++++++++++++++++++++++++++++++++++++------------
- init.rc.2     |  123 +++++++++++++++++++++++++++++++++++++++++++++------------
- init.trace.rc |   31 ++++++++++++++
- 3 files changed, 225 insertions(+), 52 deletions(-)
- create mode 100644 init.trace.rc
-
-diff -ruN a/init.rc b/init.rc
-index 0242e52..b804e6a 100755
->>>>>>> .merge_file_K2RxTe
 --- a/init.rc
 +++ b/init.rc
 @@ -1,4 +1,17 @@
@@ -105,7 +88,6 @@ index 0242e52..b804e6a 100755
  
  # Allow everybody to read the xt_qtaguid resource tracking misc dev.
  # This is needed by any process that uses socket tagging.
-<<<<<<< .merge_file_49M7Ig
 @@ -159,11 +184,7 @@ on post-fs
      chmod 0220 /proc/sysrq-trigger
  
@@ -120,9 +102,6 @@ index 0242e52..b804e6a 100755
  on post-fs-data
      # We chown/chmod /data again so because mount is run as root + defaults
 @@ -216,17 +237,25 @@ on post-fs-data
-=======
-@@ -212,17 +237,25 @@ on post-fs-data
->>>>>>> .merge_file_K2RxTe
      mkdir /data/misc/wifi 0770 wifi wifi
      chmod 0770 /data/misc/wifi
      chmod 0660 /data/misc/wifi/wpa_supplicant.conf
@@ -148,13 +127,8 @@ index 0242e52..b804e6a 100755
 +    chmod 0771 /data/resource-cache
  
      # create the lost+found directories, so as to enforce our permissions
-<<<<<<< .merge_file_49M7Ig
      mkdir /data/lost+found 0770
 @@ -236,7 +265,7 @@ on post-fs-data
-=======
-     mkdir /data/lost+found 0770 root root
-@@ -232,7 +265,7 @@ on post-fs-data
->>>>>>> .merge_file_K2RxTe
      chmod 0770 /data/lost+found
  
      # create directory for DRM plug-ins
@@ -163,11 +137,7 @@ index 0242e52..b804e6a 100755
  
  	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
  
-<<<<<<< .merge_file_49M7Ig
 @@ -380,11 +409,12 @@ on boot
-=======
-@@ -378,12 +411,13 @@ on boot
->>>>>>> .merge_file_K2RxTe
  
      write /proc/sys/vm/overcommit_memory 1
      write /proc/sys/vm/min_free_order_shift 4
@@ -177,7 +147,6 @@ index 0242e52..b804e6a 100755
 +    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
      write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
  
-<<<<<<< .merge_file_49M7Ig
 -# Set init its forked children's oom_adj.
 -    write /proc/1/oom_adj -16
 -
@@ -185,26 +154,6 @@ index 0242e52..b804e6a 100755
      write /proc/sys/vm/dirty_expire_centisecs 200
      write /proc/sys/vm/dirty_background_ratio  5
 @@ -461,12 +491,33 @@ on property:service.adb.tcp.port=-1
-=======
--    # Set init its forked children's oom_adj.
--    write /proc/1/oom_adj -16
--
--    # Tweak background writeout
-+# Tweak background writeout
-     write /proc/sys/vm/dirty_expire_centisecs 200
-     write /proc/sys/vm/dirty_background_ratio  10
- 
-@@ -392,7 +426,7 @@ on boot
-     chown system system /data/pxtmpdir
-     chmod 0775 /data/pxtmpdir
- 
--    # permission for HDMI audio path
-+# permission for HDMI audio path
-     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
- 
- # Permissions for gpio_keys.
-@@ -428,12 +462,33 @@ on boot
->>>>>>> .merge_file_K2RxTe
      chown radio system /sys/android_power/acquire_full_wake_lock
      chown radio system /sys/android_power/acquire_partial_wake_lock
      chown radio system /sys/android_power/release_wake_lock
@@ -239,11 +188,7 @@ index 0242e52..b804e6a 100755
  
      chown system system /sys/class/timed_output/vibrator/enable
      chown system system /sys/class/leds/keyboard-backlight/brightness
-<<<<<<< .merge_file_49M7Ig
 @@ -587,11 +638,11 @@ on property:service.adb.tcp.port=-1
-=======
-@@ -562,11 +617,11 @@ on boot
->>>>>>> .merge_file_K2RxTe
  
  # Define TCP buffer sizes for various networks
  #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
@@ -258,11 +203,7 @@ index 0242e52..b804e6a 100755
      setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
      setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
  
-<<<<<<< .merge_file_49M7Ig
 @@ -696,6 +747,7 @@ service console /system/bin/sh
-=======
-@@ -670,6 +725,7 @@ service console /system/bin/sh
->>>>>>> .merge_file_K2RxTe
      class core
      console
      disabled
@@ -270,11 +211,7 @@ index 0242e52..b804e6a 100755
      group log
  
  on property:ro.debuggable=1
-<<<<<<< .merge_file_49M7Ig
 @@ -729,6 +781,8 @@ service servicemanager /system/bin/servicemanager
-=======
-@@ -703,6 +759,8 @@ service servicemanager /system/bin/servicemanager
->>>>>>> .merge_file_K2RxTe
      critical
      onrestart restart zygote
      onrestart restart media
@@ -283,11 +220,7 @@ index 0242e52..b804e6a 100755
  
  service vold /system/bin/vold
      class core
-<<<<<<< .merge_file_49M7Ig
 @@ -740,6 +794,7 @@ service netd /system/bin/netd
-=======
-@@ -714,6 +772,7 @@ service netd /system/bin/netd
->>>>>>> .merge_file_K2RxTe
      class main
      socket netd stream 0660 root system
      socket dnsproxyd stream 0660 root inet
@@ -295,7 +228,6 @@ index 0242e52..b804e6a 100755
  
  service debuggerd /system/bin/debuggerd
      class main
-<<<<<<< .merge_file_49M7Ig
 @@ -769,7 +824,7 @@ service surfaceflinger /system/bin/surfaceflinger
  
  service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
@@ -306,9 +238,6 @@ index 0242e52..b804e6a 100755
      onrestart write /sys/power/state on
      onrestart restart media
 @@ -778,12 +833,12 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
-=======
-@@ -761,12 +820,12 @@ on property:service.adb.tcp.port=-1
->>>>>>> .merge_file_K2RxTe
  service drm /system/bin/drmserver
      class main
      user drm
@@ -323,7 +252,6 @@ index 0242e52..b804e6a 100755
      ioprio rt 4
  
  service samsungani /sbin/bootanimation.sh
-<<<<<<< .merge_file_49M7Ig
 @@ -859,14 +914,14 @@ service mtpd /system/bin/mtpd
      class main
      socket mtpd stream 600 system system
@@ -333,9 +261,6 @@ index 0242e52..b804e6a 100755
      disabled
      oneshot
  
-=======
-@@ -849,7 +908,7 @@ service mtpd /system/bin/mtpd
->>>>>>> .merge_file_K2RxTe
  service keystore /system/bin/keystore /data/misc/keystore
      class main
      user keystore
@@ -344,11 +269,7 @@ index 0242e52..b804e6a 100755
      socket keystore stream 666
  
  service dumpstate /system/bin/dumpstate -s
-<<<<<<< .merge_file_49M7Ig
 @@ -874,6 +929,18 @@ service dumpstate /system/bin/dumpstate -s
-=======
-@@ -857,6 +916,18 @@ service dumpstate /system/bin/dumpstate -s
->>>>>>> .merge_file_K2RxTe
      socket dumpstate stream 0660 shell log
      disabled
      oneshot
@@ -368,11 +289,7 @@ index 0242e52..b804e6a 100755
  #for WiFi MFG(TestMode)
  service mfgloader /system/bin/mfgloader
 diff -ruN a/init.rc.2 b/init.rc.2
-<<<<<<< .merge_file_49M7Ig
 index 6e1db8a..97bd246 100755
-=======
-index 3f2c063..3b18e48 100755
->>>>>>> .merge_file_K2RxTe
 --- a/init.rc.2
 +++ b/init.rc.2
 @@ -1,4 +1,17 @@
@@ -400,15 +317,9 @@ index 3f2c063..3b18e48 100755
 -    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 +    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
  
-<<<<<<< .merge_file_49M7Ig
  # Backward compatibility
      symlink /system/etc /etc
 @@ -71,25 +84,37 @@ loglevel 3
-=======
- # Disable CFQ slice idle delay
-     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
-@@ -74,25 +87,37 @@ loglevel 3
->>>>>>> .merge_file_K2RxTe
      write /proc/cpu/alignment 4
      write /proc/sys/kernel/sched_compat_yield 1
      write /proc/sys/kernel/sched_child_runs_first 0
@@ -457,7 +368,6 @@ index 3f2c063..3b18e48 100755
  
  # Allow everybody to read the xt_qtaguid resource tracking misc dev.
  # This is needed by any process that uses socket tagging.
-<<<<<<< .merge_file_49M7Ig
 @@ -157,11 +182,7 @@ on post-fs
      chmod 0220 /proc/sysrq-trigger
  
@@ -472,9 +382,6 @@ index 3f2c063..3b18e48 100755
  on post-fs-data
      # We chown/chmod /data again so because mount is run as root + defaults
 @@ -214,17 +235,25 @@ on post-fs-data
-=======
-@@ -221,17 +246,25 @@ on post-fs-data
->>>>>>> .merge_file_K2RxTe
      mkdir /data/misc/wifi 0770 wifi wifi
      chmod 0770 /data/misc/wifi
      chmod 0660 /data/misc/wifi/wpa_supplicant.conf
@@ -500,13 +407,8 @@ index 3f2c063..3b18e48 100755
 +    chmod 0771 /data/resource-cache
  
      # create the lost+found directories, so as to enforce our permissions
-<<<<<<< .merge_file_49M7Ig
      mkdir /data/lost+found 0770
 @@ -234,7 +263,7 @@ on post-fs-data
-=======
-     mkdir /data/lost+found 0770 root root
-@@ -241,7 +274,7 @@ on post-fs-data
->>>>>>> .merge_file_K2RxTe
      chmod 0770 /data/lost+found
  
      # create directory for DRM plug-ins
@@ -515,11 +417,7 @@ index 3f2c063..3b18e48 100755
  
  	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
  
-<<<<<<< .merge_file_49M7Ig
 @@ -378,11 +407,12 @@ on boot
-=======
-@@ -387,12 +420,13 @@ on boot
->>>>>>> .merge_file_K2RxTe
  
      write /proc/sys/vm/overcommit_memory 1
      write /proc/sys/vm/min_free_order_shift 4
@@ -529,7 +427,6 @@ index 3f2c063..3b18e48 100755
 +    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
      write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
  
-<<<<<<< .merge_file_49M7Ig
 -# Set init its forked children's oom_adj.
 -    write /proc/1/oom_adj -16
 -
@@ -537,26 +434,6 @@ index 3f2c063..3b18e48 100755
      write /proc/sys/vm/dirty_expire_centisecs 200
      write /proc/sys/vm/dirty_background_ratio  5
 @@ -459,12 +489,33 @@ on property:service.adb.tcp.port=-1
-=======
--    # Set init its forked children's oom_adj.
--    write /proc/1/oom_adj -16
--
--    # Tweak background writeout
-+# Tweak background writeout
-     write /proc/sys/vm/dirty_expire_centisecs 200
-     write /proc/sys/vm/dirty_background_ratio  10
- 
-@@ -401,7 +435,7 @@ on boot
-     chown system system /data/pxtmpdir
-     chmod 0775 /data/pxtmpdir
- 
--    # permission for HDMI audio path
-+# permission for HDMI audio path
-     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
- 
- # Permissions for gpio_keys.
-@@ -437,12 +471,33 @@ on boot
->>>>>>> .merge_file_K2RxTe
      chown radio system /sys/android_power/acquire_full_wake_lock
      chown radio system /sys/android_power/acquire_partial_wake_lock
      chown radio system /sys/android_power/release_wake_lock
@@ -591,11 +468,7 @@ index 3f2c063..3b18e48 100755
  
      chown system system /sys/class/timed_output/vibrator/enable
      chown system system /sys/class/leds/keyboard-backlight/brightness
-<<<<<<< .merge_file_49M7Ig
 @@ -585,11 +636,11 @@ on property:service.adb.tcp.port=-1
-=======
-@@ -571,11 +626,11 @@ on boot
->>>>>>> .merge_file_K2RxTe
  
  # Define TCP buffer sizes for various networks
  #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
@@ -610,11 +483,7 @@ index 3f2c063..3b18e48 100755
      setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
      setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
  
-<<<<<<< .merge_file_49M7Ig
 @@ -694,6 +745,7 @@ service console /system/bin/sh
-=======
-@@ -679,6 +734,7 @@ service console /system/bin/sh
->>>>>>> .merge_file_K2RxTe
      class core
      console
      disabled
@@ -622,11 +491,7 @@ index 3f2c063..3b18e48 100755
      group log
  
  on property:ro.debuggable=1
-<<<<<<< .merge_file_49M7Ig
 @@ -727,6 +779,8 @@ service servicemanager /system/bin/servicemanager
-=======
-@@ -712,6 +768,8 @@ service servicemanager /system/bin/servicemanager
->>>>>>> .merge_file_K2RxTe
      critical
      onrestart restart zygote
      onrestart restart media
@@ -635,11 +500,7 @@ index 3f2c063..3b18e48 100755
  
  service vold /system/bin/vold
      class core
-<<<<<<< .merge_file_49M7Ig
 @@ -738,6 +792,7 @@ service netd /system/bin/netd
-=======
-@@ -723,6 +781,7 @@ service netd /system/bin/netd
->>>>>>> .merge_file_K2RxTe
      class main
      socket netd stream 0660 root system
      socket dnsproxyd stream 0660 root inet
@@ -647,7 +508,6 @@ index 3f2c063..3b18e48 100755
  
  service debuggerd /system/bin/debuggerd
      class main
-<<<<<<< .merge_file_49M7Ig
 @@ -767,7 +822,7 @@ service surfaceflinger /system/bin/surfaceflinger
  
  service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
@@ -658,9 +518,6 @@ index 3f2c063..3b18e48 100755
      onrestart write /sys/power/state on
      onrestart restart media
 @@ -776,12 +831,12 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
-=======
-@@ -770,12 +829,12 @@ on property:service.adb.tcp.port=-1
->>>>>>> .merge_file_K2RxTe
  service drm /system/bin/drmserver
      class main
      user drm
@@ -675,7 +532,6 @@ index 3f2c063..3b18e48 100755
      ioprio rt 4
  
  service samsungani /sbin/bootanimation.sh
-<<<<<<< .merge_file_49M7Ig
 @@ -857,14 +912,14 @@ service mtpd /system/bin/mtpd
      class main
      socket mtpd stream 600 system system
@@ -685,9 +541,6 @@ index 3f2c063..3b18e48 100755
      disabled
      oneshot
  
-=======
-@@ -858,7 +917,7 @@ service mtpd /system/bin/mtpd
->>>>>>> .merge_file_K2RxTe
  service keystore /system/bin/keystore /data/misc/keystore
      class main
      user keystore
@@ -696,11 +549,7 @@ index 3f2c063..3b18e48 100755
      socket keystore stream 666
  
  service dumpstate /system/bin/dumpstate -s
-<<<<<<< .merge_file_49M7Ig
 @@ -872,6 +927,18 @@ service dumpstate /system/bin/dumpstate -s
-=======
-@@ -866,6 +925,18 @@ service dumpstate /system/bin/dumpstate -s
->>>>>>> .merge_file_K2RxTe
      socket dumpstate stream 0660 shell log
      disabled
      oneshot
@@ -719,17 +568,9 @@ index 3f2c063..3b18e48 100755
  
  #for WiFi MFG(TestMode)
  service mfgloader /system/bin/mfgloader
-<<<<<<< .merge_file_49M7Ig
 diff -ruN init.samsung/init.trace.rc init.jelly/init.trace.rc
 --- init.samsung/init.trace.rc  1970-01-01 02:00:00.000000000 +0200
 +++ init.jelly/init.trace.rc    2012-06-28 01:38:42.000000000 +0300
-=======
-diff -ruN a/init.trace.rc b/init.trace.rc
-new file mode 100755
-index 0000000..1d114f5
---- /dev/null
-+++ b/init.trace.rc
->>>>>>> .merge_file_K2RxTe
 @@ -0,0 +1,31 @@
 +## Permissions to allow system-wide tracing to the kernel trace buffer.
 +##

@@ -331,23 +331,6 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
-<<<<<<< .merge_file_NMrsrH
-=======
-    # Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
-    setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.lge.proximity.delay 15
-
-    #Video Quality
-    setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
-
-    #Disable Google OTA Update checkin
-    setprop ro.config.nocheckin 1
-
->>>>>>> .merge_file_seqRYG
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
@@ -782,11 +765,7 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-<<<<<<< .merge_file_NMrsrH
     socket zygote stream 666
-=======
-    socket zygote stream 660 root system
->>>>>>> .merge_file_seqRYG
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
@@ -868,11 +847,7 @@ service racoon /system/bin/racoon
     class main
     socket racoon stream 600 system system
     # racoon will setuid to vpn after getting necessary resources.
-<<<<<<< .merge_file_NMrsrH
     group net_admin
-=======
-    group vpn net_admin inet
->>>>>>> .merge_file_seqRYG
     disabled
     oneshot
 
@@ -933,9 +908,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     user shell
     group log
     oneshot
-
-on property:sys.boot_completed=1
-    stop samsungani
 
 service postinit /sbin/ext/post-init.sh
     class core
