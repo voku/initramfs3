@@ -301,11 +301,7 @@ The third step is disabled as default by having the second to third threshold 10
 		name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
 
 	<seekBar description="Sets Touch screen lock freq, this freq will be set till screen is unlocked by default ROM screen lock. this is the slow wakeup BUG! Always set it to your max freq (Default is 1000000mHz)" 
-<<<<<<< .merge_file_8XlSLG
-		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
-=======
-		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="500000" reversed="false" step="100000" max="1500000"/>
->>>>>>> .merge_file_EfcG5D
+		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="0" reversed="false" step="800000" max="1500000"/>
 
 	<spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
 		name="Negative Screen Mod tuning." action="negative_tweak">
