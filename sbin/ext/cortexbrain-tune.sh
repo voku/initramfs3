@@ -18,10 +18,10 @@ FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
 
-# Functions triggers.
-if [ "a$2" != "a" ]; then
-	cortexbrain_background_process=$2;
-fi;
+
+
+# Dynamic triger do not delete!
+cortexbrain_background_process=0
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -573,7 +573,7 @@ setprop net.tcp.buffersize.hspa    4092,87380,563200,4096,16384,110208;
 
 log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 }
-if [ $cortexbrain_tcp_tweaks == 1 ]; then
+if [ $cortexbrain_tcp == 1 ]; then
 	TCP_TWEAKS;
 fi;
 
@@ -589,7 +589,7 @@ setprop ro.ril.gprsclass 12;
 
 log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
 }
-if [ $cortexbrain_ril_tweaks == 1 ]; then
+if [ $cortexbrain_ril == 1 ]; then
 	RIL_TWEAKS;
 fi;
 
@@ -674,7 +674,7 @@ fi
 
 log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
 }
-if [ $cortexbrain_firewall_tweaks == 1 ]; then
+if [ $cortexbrain_firewall == 1 ]; then
 	FIREWALL_TWEAKS;
 fi;
 
@@ -760,7 +760,7 @@ echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_
 # Restore Smooth Level
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
 
-if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
 
@@ -779,7 +779,7 @@ fi;
 }
 CHECK_TEMPERATURE;
 
-if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_cpu == 1 ]; then
 	if [[ "$PROFILE" == "performance" ]]; then
 		MORE_SPEED=1;
 		MORE_BATTERY=0;
@@ -843,11 +843,11 @@ echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8
 
-if [ $BATTERY_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
 
-if [ $CPU_GOV_TWEAKS_ENABLED == 1 ]; then
+if [ $cortexbrain_cpu == 1 ]; then
 	MORE_BATTERY=1;
 	MORE_SPEED=0;
 	DEFAULT_SPEED=0;

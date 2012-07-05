@@ -606,7 +606,7 @@ if above switch is OFF or ON"
                 </spinner>
 
                 <spinner description="Enable or Disable the 'Kernel-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="Kernel-Tweaks" action="cortexbrain_kernel">
+                        name="Kernel-Tweaks" action="cortexbrain_kernel_tweaks">
                         <spinnerItem name="Enable (default)" value="1"/> 
                         <spinnerItem name="Disable" value="0"/> 
                 </spinner>

@@ -10,17 +10,20 @@ else
 	echo $cortexbrain_background_process
 fi;
 
-PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
-
 case "${cortexbrain_background_process}" in
 	0)
-		if [ "a$PIDOFCORTEX" != "a" ]; then
-			kill ${PIDOFCORTEX};
-		fi;
+		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
+		kill ${PIDOFCORTEX} > /dev/null 2>&1;
+		/sbin/busybox mount -t rootfs -o remount,rw rootfs
+		sed -i "s/cortexbrain_background_process=[0-1]*/cortexbrain_background_process=0/g" /sbin/ext/cortexbrain-tune.sh
+		echo "cortex down" > /data/.siyah/cortex-run
 		;;
 	1)
-		if [ "a$PIDOFCORTEX" == "a" ]; then
-			/sbin/ext/cortexbrain-tune.sh $cortexbrain_background_process;
+		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
+		/sbin/busybox mount -t rootfs -o remount,rw rootfs
+		sed -i "s/cortexbrain_background_process=[0-1]*/cortexbrain_background_process=1/g" /sbin/ext/cortexbrain-tune.sh
+		if [ "a$PIDOFCORTEX" == "a" ] && [ -e /data/.siyah/cortex-run ]; then
+			/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh > /dev/null 2>&1;
 		fi;
 		;;
 	*)
