@@ -4,22 +4,16 @@ echo "The fuel gauge chip, will be reset on screen OFF one time only.";
 
 EXTWEAKSPUSH ()
 {
-    # In case user made reset Fuel Gauge Reset request.
-    if [ -e /data/.siyah/fuel_gauge_reset ]; then
-        echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc;
-        rm -f /data/.siyah/fuel_gauge_reset;
-    fi;
+	# waiting for screen-off, then ...
+	STATE=$(cat /sys/power/wait_for_fb_sleep);
+
+	if [ ! -f /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc ]; then
+		echo "The device file is not found. Fuel gauge chip cannot be reset."
+		exit;
+	else
+		# In case user made reset Fuel Gauge Reset request.
+		echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc;
+	fi;
 }
-
-echo "bln-test" > /data/.siyah/bln_test;
-if [ ! -f /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc ]; then
-    echo "The device file is not found. Fuel gauge chip cannot be reset."
-	exit;
-else
-    echo "fuel gauge reset" > /data/.siyah/fuel_gauge_reset
-fi;
-
-# waiting for screen-off, then ...
-STATE=$(cat /sys/power/wait_for_fb_sleep);
-EXTWEAKSPUSH;
+nohup EXTWEAKSPUSH &
 
