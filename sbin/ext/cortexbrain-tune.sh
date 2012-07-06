@@ -847,46 +847,6 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
 
 # ==============================================================
-# ExTweaks Push functions.
-# ==============================================================
-
-# On Boot, delete auto created requests for action by extweaks start.
-if [ -e /data/.siyah/bln_test ]; then
-	rm -f /data/.siyah/bln_test
-fi;
-
-if [ -e /data/.siyah/fixperm ]; then
-	rm -f /data/.siyah/fixperm
-fi;
-
-if [ -e /data/.siyah/fuel_gauge_reset ]; then
-	rm -f /data/.siyah/fuel_gauge_reset
-fi;
-
-EXTWEAKSPUSH ()
-{
-	# Case if GM BLN active in kernel.
-	if [ -e /sys/class/misc/notification/led ] && [ -e /data/.siyah/bln_test ]; then
-		echo 1 > /sys/class/misc/notification/led;
-		rm -f /data/.siyah/bln_test;
-	fi;
-	# Case if Myfluxi BLN active in kernel.
-	if [ -e /sys/class/misc/backlightnotification/notification_led ] && [ -e /data/.siyah/bln_test ]; then
-		echo 1 > /sys/class/misc/backlightnotification/notification_led;
-		rm -f /data/.siyah/bln_test;
-	fi;
-	if [ -e /data/.siyah/fixperm ]; then
-		/sbin/fix_permissions;
-		rm -f /data/.siyah/fixperm;
-	fi;
-	# In case user made reset Fuel Gauge Reset request.
-	if [ -e /data/.siyah/fuel_gauge_reset ]; then
-		echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
-		rm -f /data/.siyah/fuel_gauge_reset;
-	fi;
-}
-
-# ==============================================================
 # Background process to check screen state
 # ==============================================================
 if [ $cortexbrain_background_process == 1 ]; then
@@ -906,7 +866,6 @@ if [ $cortexbrain_background_process == 1 ]; then
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
-		EXTWEAKSPUSH;
 		SLEEP_MODE;
 		sleep 3;
 	done &);

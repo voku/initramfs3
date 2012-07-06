@@ -1,0 +1,22 @@
+#!/sbin/busybox sh
+export PATH="/res/customconfig/actions/push-actions:${PATH}";
+
+case $1 in
+	1)
+		echo "The fuel gauge chip, will be reset on screen OFF one time only.";
+
+		# waiting for screen-off, then ...
+		STATE=$(cat /sys/power/wait_for_fb_sleep);
+
+		if [ ! -f /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc ]; then
+			echo "The device file is not found. Fuel gauge chip cannot be reset."
+			exit;
+		else
+			# In case user made reset Fuel Gauge Reset request.
+			echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc;
+		fi;
+        ;;
+	*)
+		echo "need input, 1=true"
+		;;
+esac;
