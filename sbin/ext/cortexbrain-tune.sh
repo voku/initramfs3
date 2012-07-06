@@ -321,6 +321,8 @@ SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
 
+	echo "100000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
