@@ -679,23 +679,6 @@ if [ $cortexbrain_firewall == 1 ]; then
 fi;
 
 # ==============================================================
-# ExTweaks Push functions.
-# ==============================================================
-
-# On Boot, delete auto created requests for action by extweaks start.
-if [ -e /data/.siyah/bln_test ]; then
-	rm -f /data/.siyah/bln_test;
-fi;
-
-if [ -e /data/.siyah/fixperm ]; then
-	rm -f /data/.siyah/fixperm;
-fi;
-
-if [ -e /data/.siyah/fuel_gauge_reset ]; then
-	rm -f /data/.siyah/fuel_gauge_reset;
-fi;
-
-# ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
