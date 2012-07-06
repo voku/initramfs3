@@ -3,5 +3,5 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 echo "Fixing permissions Will start on screen OFF! please wait 3MIN!";
 
-nohup fix_permissions_run > /dev/null 2>&1 &
+nohup fix_permissions_run 1 > /dev/null 2>&1 &
 

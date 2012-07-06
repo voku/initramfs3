@@ -1,7 +1,14 @@
 #!/sbin/busybox sh
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
-# waiting for screen-off, then ...
-STATE=$(cat /sys/power/wait_for_fb_sleep);
+case $1 in
+    1)
+		# waiting for screen-off, then ...
+		STATE=$(cat /sys/power/wait_for_fb_sleep);
 
-/sbin/fix_permissions;
+		/sbin/fix_permissions;
+        ;;
+    *)
+        echo "need input, 1=true"
+        ;;
+esac;

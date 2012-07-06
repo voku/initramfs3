@@ -3,5 +3,5 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 echo "The fuel gauge chip, will be reset on screen OFF one time only.";
 
-nohup reset-fuelgauge_run > /dev/null 2>&1 &
+nohup reset-fuelgauge_run 1 > /dev/null 2>&1 &
 
