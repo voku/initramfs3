@@ -856,14 +856,8 @@ if [ $cortexbrain_background_process == 1 ]; then
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
-		if [ "a${PROFILE_MD5}" != "a`md5sum /data/.siyah/.active.profile`" ]; then
-			PROFILE=$(cat /data/.siyah/.active.profile);
-		fi;
-		PROFILE_MD5=$(md5sum /data/.siyah/.active.profile | awk '{print $1}');
-		if [ "a${PROFILE_DATA_MD5}" != "a`md5sum /data/.siyah/$PROFILE.profile`" ]; then
-			. /data/.siyah/$PROFILE.profile;
-		fi;
-		PROFILE_DATA_MD5=$(md5sum /data/.siyah/$PROFILE.profile | awk '{print $1}');
+		PROFILE=$(cat /data/.siyah/.active.profile);
+		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 3;
 
