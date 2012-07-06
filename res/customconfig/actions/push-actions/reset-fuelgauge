@@ -1,7 +1,4 @@
 #!/sbin/busybox sh
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
-echo "The fuel gauge chip, will be reset on screen OFF one time only.";
-
-nohup reset-fuelgauge_run $2 > /dev/null 2>&1 &
-
+reset-fuelgauge_run $2 &

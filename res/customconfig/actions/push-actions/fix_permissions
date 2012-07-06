@@ -1,7 +1,4 @@
 #!/sbin/busybox sh
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
-echo "Fixing permissions Will start on screen OFF! please wait 3MIN!";
-
-nohup fix_permissions_run $2 > /dev/null 2>&1 &
-
+fix_permissions_run $2 &
