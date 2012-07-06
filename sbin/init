@@ -106,8 +106,25 @@ fi;
 # One more time set / rw just for good sleep.
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
+if [ "$JELLY" == 1 ]; then
+        cp -a /JellyB-rom/* /
+        echo 0 > /proc/sys/kernel/rom_feature_set
+
+        if [ ! -e /system/xbin/bash ]; then
+                mv /sbin/init.b2g /sbin/init.samsung
+        fi;
+
+        if [ "$SECONDROM" == "1" ]; then
+                mv /init.smdk4210.rc.2 /init.smdk4210.rc
+                mv /init.rc.2 /init.rc
+        fi;
+
+        # Start ROM!
+        exec /sbin/init.samsung
+fi;
+
 if [ "$B2G" == 1 ]; then
-	cp -a /sammy-rom/* /
+	cp -a /B2G-rom/* /
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ]; then
@@ -152,23 +169,6 @@ if [ "$MIUI" == 1 ]; then
 	if [ ! -e /system/xbin/bash ]; then
 		mv /sbin/init.b2g /sbin/init.samsung
 	fi;
-
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc
-		mv /init.rc.2 /init.rc
-	fi;
-
-	# Start ROM!
-	exec /sbin/init.samsung
-fi;
-
-if [ "$JELLY" == 1 ]; then
-        patch -p1 < /res/misc/jelly.patch
-	echo 0 > /proc/sys/kernel/rom_feature_set
-
-        if [ ! -e /system/xbin/bash ]; then
-                mv /sbin/init.b2g /sbin/init.samsung
-        fi;
 
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc
