@@ -90,7 +90,7 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
         echo "recovery mode" > /recovery-started
 
 	if [ "$B2G" == 1 ]; then
-		cp -a /sammy-rom/lpm.rc /
+		cp -a /B2G-rom/lpm.rc /
 	else
 		cp lpm.rc init.rc
 	fi;
