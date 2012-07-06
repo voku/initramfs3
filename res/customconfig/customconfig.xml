@@ -392,7 +392,7 @@ if above switch is OFF or ON"
 		</spinner>
 
 		<button description="Use this button to test bln. BLN will be active after you turn the screen off." 
-			name="Test BLN" action="push-actions/test-bln" label="Test BLN"/>
+			name="Test BLN" action="push-actions/test-bln 1" label="Test BLN"/>
 
 		</settingsPane>
 
@@ -479,7 +479,7 @@ if above switch is OFF or ON"
 	<settingsPane description="Here you can run Fix Permissions script by one click! 
 		please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS">
 
-		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
+		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions 1" label="FIX PERMISSIONS"/>
 
 	</settingsPane>
 
@@ -531,7 +531,7 @@ if above switch is OFF or ON"
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. 
 	Give it a few hours after you reset the gauge. It may still show you funny values for those period, 
-	then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
+	then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge 1" label="Reset Fuel-Gauge Chip"/>
 
 	</settingsPane>
 

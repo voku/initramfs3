@@ -3,5 +3,5 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 echo "Turn off the screen to test BLN.";
 
-nohup test-bln_run 1 > /dev/null 2>&1 &
+nohup test-bln_run $2 > /dev/null 2>&1 &
 
