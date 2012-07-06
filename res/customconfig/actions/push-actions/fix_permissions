@@ -1,13 +1,7 @@
 #!/sbin/busybox sh
+export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 echo "Fixing permissions Will start on screen OFF! please wait 3MIN!";
 
-EXTWEAKSPUSH ()
-{
-	# waiting for screen-off, then ...
-	STATE=$(cat /sys/power/wait_for_fb_sleep);
-
-	/sbin/fix_permissions;
-}
-nohup EXTWEAKSPUSH &
+nohup fix_permissions_run > /dev/null 2>&1 &
 
