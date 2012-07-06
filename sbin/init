@@ -90,7 +90,7 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
         echo "recovery mode" > /recovery-started
 
 	if [ "$B2G" == 1 ]; then
-		cp -a /B2G-rom/lpm.rc /
+		cp -a /res/misc/B2G-rom/lpm.rc /
 	else
 		cp lpm.rc init.rc
 	fi;
@@ -107,7 +107,7 @@ fi;
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 if [ "$JELLY" == 1 ]; then
-        cp -a /JellyB-rom/* /
+        cp -a /res/misc/JellyB-rom/* /
         echo 0 > /proc/sys/kernel/rom_feature_set
 
         if [ ! -e /system/xbin/bash ]; then
@@ -124,7 +124,7 @@ if [ "$JELLY" == 1 ]; then
 fi;
 
 if [ "$B2G" == 1 ]; then
-	cp -a /B2G-rom/* /
+	cp -a /res/misc/B2G-rom/* /
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ]; then

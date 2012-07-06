@@ -1,9 +1,9 @@
 #!/sbin/busybox sh
 # Logging
 #/sbin/busybox cp /data/user.log /data/user.log.bak
-#/sbin/busybox rm /data/user.log
-#exec >>/data/user.log
-#exec 2>&1
+/sbin/busybox rm /data/user.log
+exec >>/data/user.log
+exec 2>&1
 
 mkdir /data/.siyah
 chmod 777 /data/.siyah
@@ -70,8 +70,6 @@ mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
 chmod 777 /mnt/ntfs
 
-#/sbin/busybox sh /sbin/ext/busybox.sh
-
 /sbin/busybox sh /sbin/ext/properties.sh
 
 /sbin/busybox sh /sbin/ext/install.sh
@@ -98,10 +96,21 @@ if [ -e /data/.siyah/cortex-run ]; then
 	rm -f /data/.siyah/cortex-run
 fi;
 
+# Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
+/sbin/busybox mount -o remount,rw rootfs
+/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
+
 # apply ExTweaks defaults
 if [ ! -e /recovery-started ]; then
 	/res/uci.sh apply
 fi;
+
+(
+sleep 30
+# Restore all the PUSH Button Actions back to there location.
+/sbin/busybox mount -o remount,rw rootfs
+/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
+) &
 
 ##### init scripts #####
 (
