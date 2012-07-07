@@ -5,14 +5,14 @@ export PATH=/sbin
 busybox cd /
 busybox date >>boot.txt
 exec >>boot.txt 2>&1
+busybox rm init
 
-rm -f /init
-rm -f /init.samsung
+rm /init
 mv /init.cm9 /init
-busybox cp -a /res/misc/cyano/* /
+#busybox cp -a /res/misc/cyano/* /
 
 busybox date >>boot.txt
-busybox rm -rf /res/misc/cyano /dev/*
+busybox rm -fr /res/misc/cyano /dev/*
 export PATH="${_PATH}"
 exec /init
 

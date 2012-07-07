@@ -124,6 +124,9 @@ sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 ) &
 
+# Change USB mode MTP or Mass Storage
+/res/customconfig/actions/usb-mode ${usb_mode}
+
 (
 sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh

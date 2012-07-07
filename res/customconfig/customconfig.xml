@@ -523,6 +523,13 @@ if above switch is OFF or ON"
 			<spinnerItem name="cfq" value="cfq"/> 
 		</spinner>
 
+		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or mtp" 
+			name="USB Mass Storage Mode" action="usb-mode">
+			<spinnerItem name="Default" value="default"/>
+			<spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/>
+			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
+		</spinner>
+
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
 			<spinnerItem name="AC:700mA, Misc:600mA, USB:500mA" value="2"/> 
