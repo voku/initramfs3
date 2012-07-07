@@ -7,10 +7,11 @@ busybox rm init
 
 rm -f /init
 rm -f /init.samsung
-rm -f /init.cm9
+rm -f /init.jb
 rm -f /update*
-mv /init.jb /init
+mv /init.cm9 /init
 
 export PATH="${_PATH}"
 cd /
 exec /init
+

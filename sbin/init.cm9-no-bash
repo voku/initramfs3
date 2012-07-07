@@ -14,4 +14,3 @@ mv /init.cm9 /init
 export PATH="${_PATH}"
 cd /
 exec /init
-
