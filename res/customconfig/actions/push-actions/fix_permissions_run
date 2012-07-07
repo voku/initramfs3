@@ -3,10 +3,7 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 case $1 in
 	1)
-		echo "Fixing permissions Will start on screen OFF! please wait 3MIN!";
-
-		# waiting for screen-off, then ...
-		STATE=$(cat /sys/power/wait_for_fb_sleep);
+		echo "Fixing permissions started! please wait 3MIN!";
 
 		/sbin/fix_permissions;
         ;;
