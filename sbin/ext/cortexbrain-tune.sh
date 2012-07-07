@@ -893,7 +893,6 @@ if  [ $cortexbrain_background_process == 1 ] && [ $PIDOFCORTEX_COUNT == 0 ]; the
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
-		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;	
 		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
 		renice -10 ${PIDOFCORTEX};
 		PROFILE=$(cat /data/.siyah/.active.profile);
