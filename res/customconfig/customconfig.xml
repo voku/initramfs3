@@ -570,11 +570,11 @@ if above switch is OFF or ON"
                         <spinnerItem name="Disable" value="0"/> 
                 </spinner>
 
-				<spinner description="Enable or Disable the 'Auto-Brightness'-function from Cortexbrain-Script. [depends on 'cortexbrain_background_process']" 
-						name="Auto-Brightness" action="cortexbrain_auto_tweak_brightness">
-						<spinnerItem name="Enable" value="1"/>
-						<spinnerItem name="Disable" value="0"/>
-				</spinner>
+		<spinner description="Enable or Disable the 'Auto-Brightness'-function from Cortexbrain-Script. [depends on 'cortexbrain_background_process']" 
+			name="Auto-Brightness" action="cortexbrain_auto_tweak_brightness">
+			<spinnerItem name="Enable" value="1"/>
+			<spinnerItem name="Disable" value="0"/>
+		</spinner>
 
                 <spinner description="Enable or Disable the 'Firewall-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
                         name="Firewall-Tweaks" action="cortexbrain_firewall">
