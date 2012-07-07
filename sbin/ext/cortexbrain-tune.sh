@@ -12,12 +12,14 @@
 
 # read setting from profile
 
-# Dynamic triger do not delete!
-cortexbrain_background_process=0
-
 # Get values from profile.
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
+
+# overwrite settings if needed ...
+if [ "a$1" != "a" ]; then
+		cortexbrain_background_process=$1;
+fi;
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
