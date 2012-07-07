@@ -911,7 +911,7 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 # Background process to check screen state
 # ==============================================================
-if [ $cortexbrain_background_process == 1 ]; then
+if  [[ $cortexbrain_background_process == 1 ] && [ "a$PIDOFCORTEX" == "a" ]]; then
 
 	# the process is not considered for OOM-killing
 	/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
