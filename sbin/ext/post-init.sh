@@ -89,10 +89,6 @@ sleep 30
 # Set color mode to user mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
-if [ -e /data/.siyah/cortex-run ]; then
-	rm -f /data/.siyah/cortex-run
-fi;
-
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox chmod 755 /res/customconfig/actions/push-actions/*
@@ -100,11 +96,9 @@ fi;
 
 (
 # apply ExTweaks defaults
-if [ ! -e /recovery-started ]; then
 	# in case we forgot to set permissions, fix them.
 	/sbin/busybox chmod 755 /res/customconfig/actions/*
 	/res/uci.sh apply
-fi;
 ) &
 
 (
@@ -118,7 +112,6 @@ sleep 38
 (
 sleep 40
 /sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
-echo "cortex-ok" > /data/.siyah/cortex-run
 ) &
 
 (
