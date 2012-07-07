@@ -61,10 +61,29 @@ else
 	echo "User has AD custom HOSTS file"
 fi;
 
-# copy new Kernel modules to /system/lib/modules
+# copy new hosts-file only if user dont have custome ADBLOCKER file.
+CHECKHOSTS=`cat /preload/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
+if [ "$CHECKHOSTS" != " www.link" ]; then
+        cp -a /res/misc/hosts /preload/etc/
+        chmod 644 /preload/etc/hosts
+else
+        echo "User has AD custom HOSTS file"
+fi;
+
+# copy new Kernel modules to /system/lib/modules and to second rom system if exist.
 rm -f /system/lib/modules/*.ko
 cp /lib/modules/*.ko /system/lib/modules/
 chmod 777 /system/lib/modules/*.ko
+
+if [ -e /preload/lib/ ]; then
+	if [ ! -e /preload/lib/modules ]; then
+		mkdir /preload/lib/modules
+		chmod 755 /preload/lib/modules
+	fi;
+	rm -f /preload/lib/modules/*.ko
+	cp /lib/modules/*.ko /preload/lib/modules/
+	chmod 777 /preload/lib/modules/*.ko
+fi;
 
 if [ -f /system/recovery.cpio.gz ]; then
 	mount -o remount,rw /
