@@ -744,7 +744,6 @@ else
 			if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
 				echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 			fi;
-		fi;
 	fi;
 
 	MODE="AWAKE";
