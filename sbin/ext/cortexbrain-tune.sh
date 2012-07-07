@@ -787,8 +787,11 @@ else
 		if [ "$AUTO_BRIGHTNESS" != "1" ]; then
 			LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 			MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
+			OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
 			NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
-			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+			if [ "$NEW_BRIGHTNESS" < "$NEW_BRIGHTNESS" ]; then
+				echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+			fi;
 		fi;
 	fi;
 
