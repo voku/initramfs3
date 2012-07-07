@@ -23,6 +23,18 @@ FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
 
+# default settings
+dirty_expire_centisecs_default=300;
+dirty_writeback_centisecs_default=1500;
+dirty_background_ratio_default=15;
+dirty_ratio_default=10;
+
+# battery settings
+dirty_expire_centisecs_battery=20000;
+dirty_writeback_centisecs_battery=20000;
+dirty_background_ratio_battery=4;
+dirty_ratio_battery=4;
+
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
 	MORE_SPEED=1;
@@ -305,6 +317,9 @@ do
 	echo "auto" > $i;
 done;
 
+# TODO: need testing
+echo "1" > /sys/class/lcd/panel/power_reduce;
+
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
 if [ $cortexbrain_battery == 1 ]; then
@@ -480,31 +495,26 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-echo "300" > /proc/sys/vm/dirty_expire_centisecs;
-echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
+if [ "$MORE_BATTERY" == "1" ]; then
+	echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
+	echo "$dirty_background_ratio_battery" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "$dirty_ratio_battery" > /proc/sys/vm/dirty_ratio; # default: 20
+else
+	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
+	echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
+fi;
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
-echo "3" > /proc/sys/vm/page-cluster; # default: 3
+echo "5" > /proc/sys/vm/page-cluster; # default: 3
 echo "8192" > /proc/sys/vm/min_free_kbytes
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
-
-# Define the memory thresholds at which the above process classes will
-# be killed. These numbers are in pages (4k) -> (1 MB * 1024) / 4 = 256
-#FOREGROUND_APP_MEM=8192;
-#VISIBLE_APP_MEM=10240;
-#SECONDARY_SERVER_MEM=12288;
-#BACKUP_APP_MEM=12288;
-#HOME_APP_MEM=12288;
-#HIDDEN_APP_MEM=14336;
-#CONTENT_PROVIDER_MEM=16384;
-#EMPTY_APP_MEM=20480;
-#echo "$FOREGROUND_APP_MEM,$VISIBLE_APP_MEM,$SECONDARY_SERVER_MEM,$HIDDEN_APP_MEM,$CONTENT_PROVIDER_MEM,$EMPTY_APP_MEM" > /sys/module/lowmemorykiller/parameters/minfree;
 
 log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 }
@@ -673,8 +683,8 @@ echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/
 sleep 5
 
 # charging & screen is on
-CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-if [ $CHARGING -ge 1 ]; then
+CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
+if [ $CHARGING -ge 0 ]; then
 
 	# cpu - Always dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
@@ -696,18 +706,18 @@ if [ $CHARGING -ge 1 ]; then
 else
 
 	# set cpu
-	if [ "$secondcore" == "hotplug" ]; then
+	if [ "${secondcore}" == "hotplug" ]; then
 		echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	else
 		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	fi;
 
-	if [ "$secondcore" == "always-off" ]; then
+	if [ "${secondcore}" == "always-off" ]; then
 		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 		echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 	fi;
 
-	if [ "$secondcore" == "always-on" ]; then
+	if [ "${secondcore}" == "always-on" ]; then
 		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 		echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
 	fi;
@@ -725,7 +735,19 @@ else
 	echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# value from settings
-	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
+	echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_savings;
+
+	# auto set brightness
+	if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
+			LEVEL=$(cat /sys/class/power_supply/battery/capacity);
+			MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
+			OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
+			NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
+			if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
+				echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+			fi;
+		fi;
+	fi;
 
 	MODE="AWAKE";
 fi;
@@ -740,6 +762,14 @@ echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_
 # Restore Smooth Level
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
 
+# set default settings
+if [ "$MORE_BATTERY" == "0" ]; then
+echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
+echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 20
+fi;
+
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
@@ -752,9 +782,9 @@ CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
-        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-        echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-        log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
+	echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
 fi;
 }
 CHECK_TEMPERATURE;
@@ -822,6 +852,14 @@ echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8;
+
+# set settings for battery -> don't wake up "pdflush daemon"
+if [ "$MORE_BATTERY" == "1" ]; then
+echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
+echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 20
+fi;
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;

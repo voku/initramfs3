@@ -76,6 +76,7 @@ deep_sleep_batt=abyssplug
 deep_sleep_ac=abyssplug
 add_remove_root=Nothing
 cortexbrain_background_process=1
+cortexbrain_auto_tweak_brightness=1
 cortexbrain_io=1
 cortexbrain_kernel_tweaks=1
 cortexbrain_system=1
