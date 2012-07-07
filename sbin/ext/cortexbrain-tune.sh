@@ -684,7 +684,7 @@ sleep 5
 
 # charging & screen is on
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
-if [ $CHARGING -ge 0 ]; then
+if [ $CHARGING -ge 1 ]; then
 
 	# cpu - Always dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
