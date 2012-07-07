@@ -827,11 +827,11 @@ CHECK_TEMPERATURE()
 {
 TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
-        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-        echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "0" > /sys/class/backlight/panel/brightness;
-        log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
-		exit;
+	echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "0" > /sys/class/backlight/panel/brightness;
+	log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
+	exit;
 fi;
 }
 CHECK_TEMPERATURE;
