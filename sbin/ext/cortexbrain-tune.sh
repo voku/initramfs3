@@ -784,15 +784,12 @@ else
 
 	# auto set brightness
 	if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
-		AUTO_BRIGHTNESS=$(cat /sys/class/backlight/panel/auto_brightness);
-		if [ "$AUTO_BRIGHTNESS" != "1" ]; then
-			LEVEL=$(cat /sys/class/power_supply/battery/capacity);
-			MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
-			OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
-			NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
-			if [ "$NEW_BRIGHTNESS" < "$NEW_BRIGHTNESS" ]; then
-				echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
-			fi;
+		LEVEL=$(cat /sys/class/power_supply/battery/capacity);
+		MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
+		OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
+		NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
+		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then
+			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
 	fi;
 
@@ -814,10 +811,12 @@ fi;
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
 
 # set default settings
-echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
-echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 40
+if [ "$MORE_BATTERY" == "0" ]; then
+	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
+	echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 40
+fi;
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
@@ -888,10 +887,12 @@ echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 kmemhelper -n smooth_level -o 0 -t int 8;
 
 # set settings for battery -> don't wake up "pdflush daemon"
-echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
-echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 40
+if [ "$MORE_BATTERY" == "0" ]; then
+	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
+	echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 40
+fi;
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
