@@ -21,7 +21,8 @@ PROFILE=$(cat /data/.siyah/.active.profile);
 
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
-PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
+PIDOFCORTEX=$$;
+PIDOFCORTEX_COUNT=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh" |  wc -l`;
 
 # default settings
 dirty_expire_centisecs_default=300;
@@ -887,7 +888,7 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 # Background process to check screen state
 # ==============================================================
-if [ $cortexbrain_background_process == 1 ]; then
+if  [ $cortexbrain_background_process == 1 ] && [ $PIDOFCORTEX_COUNT == 0 ]; then
 
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
