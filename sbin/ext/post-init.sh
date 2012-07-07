@@ -97,13 +97,15 @@ fi;
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
+(
 # apply ExTweaks defaults
 if [ ! -e /recovery-started ]; then
 	/res/uci.sh apply
 fi;
+) &
 
 (
-sleep 30
+sleep 38
 # Restore all the PUSH Button Actions back to there location.
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
