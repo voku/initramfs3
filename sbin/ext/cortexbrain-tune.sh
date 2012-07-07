@@ -12,16 +12,30 @@
 
 # read setting from profile
 
-# Dynamic triger do not delete!
-cortexbrain_background_process=0
-
 # Get values from profile.
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
+# overwrite settings if needed ...
+if [ "a$1" != "a" ]; then
+	cortexbrain_background_process=$1;
+fi;
+
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;
+
+# default settings
+dirty_expire_centisecs_default=300;
+dirty_writeback_centisecs_default=1500;
+dirty_background_ratio_default=15;
+dirty_ratio_default=10;
+
+# battery settings
+dirty_expire_centisecs_battery=0;
+dirty_writeback_centisecs_battery=0;
+dirty_background_ratio_battery=60;
+dirty_ratio_battery=95;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -305,6 +319,9 @@ do
 	echo "auto" > $i;
 done;
 
+# TODO: need testing
+echo "1" > /sys/class/lcd/panel/power_reduce;
+
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
 if [ $cortexbrain_battery == 1 ]; then
@@ -321,7 +338,7 @@ SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
 
-	echo "$scaling_min_freq" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+	echo "${scaling_min_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
@@ -339,6 +356,16 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "150000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "20" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+	fi;
+
+ 	
+	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+		echo "90" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+		echo "10" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -388,6 +415,15 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 		echo "80000" > /sys/devices/system/cpu/cpufreq/hyper/sampling_rate;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+		echo "50" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "50000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+		echo "40000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+		echo "10" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -440,6 +476,15 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
+	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+		echo "30" > /sys/devices/system/cpu/cpufreq/lulzactive/inc_cpu_load;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_up_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/lulzactive/pump_down_step;
+		echo "10000" > /sys/devices/system/cpu/cpufreq/lulzactive/up_sample_time;
+		echo "70000" > /sys/devices/system/cpu/cpufreq/lulzactive/down_sample_time;
+		echo "10" > /sys/devices/system/cpu/cpufreq/lulzactive/screen_off_min_step;
+	fi;
+
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
@@ -482,15 +527,22 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-echo "300" > /proc/sys/vm/dirty_expire_centisecs;
-echo "1500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "10" > /proc/sys/vm/dirty_ratio; # default: 40
+if [ "$MORE_BATTERY" == "1" ]; then
+	echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
+	echo "$dirty_background_ratio_battery" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "$dirty_ratio_battery" > /proc/sys/vm/dirty_ratio; # default: 40
+else
+	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
+	echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 40
+fi;
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
-echo "3" > /proc/sys/vm/page-cluster; # default: 3
+echo "5" > /proc/sys/vm/page-cluster; # default: 3
 echo "8192" > /proc/sys/vm/min_free_kbytes
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
@@ -675,8 +727,8 @@ echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/
 sleep 5
 
 # charging & screen is on
-CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-if [ $CHARGING -ge 1 ]; then
+CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
+if [ $CHARGING -gt 0 ]; then
 
 	# cpu - Always dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
@@ -727,7 +779,18 @@ else
 	echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# value from settings
-	echo "$sched_mc_power_savings" > /sys/devices/system/cpu/sched_mc_power_savings;
+	echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_savings;
+
+	# auto set brightness
+	if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
+		AUTO_BRIGHTNESS=$(cat /sys/class/backlight/panel/auto_brightness);
+		if [ "$AUTO_BRIGHTNESS" != "1" ]; then
+			LEVEL=$(cat /sys/class/power_supply/battery/capacity);
+			MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
+			NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
+			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+		fi;
+	fi;
 
 	MODE="AWAKE";
 fi;
@@ -737,10 +800,20 @@ echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_govern
 echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
-echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+if [ "$MORE_BATTERY" == "1" ]; then
+	echo "${scaling_min_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+else
+	echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+fi;
 
 # Restore Smooth Level
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
+
+# set default settings
+echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
+echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 40
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
@@ -756,27 +829,12 @@ TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
 if [ $TEMP -ge $MAX_TEMP ]; then
         echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
         echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "0" > /sys/class/backlight/panel/brightness;
         log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
+		exit;
 fi;
 }
 CHECK_TEMPERATURE;
-
-if [ $cortexbrain_cpu == 1 ]; then
-	if [[ "$PROFILE" == "performance" ]]; then
-		MORE_SPEED=1;
-		MORE_BATTERY=0;
-		DEFAULT_SPEED=0;
-	elif [[ "$PROFILE" == "default" ]]; then
-		MORE_BATTERY=0;
-		DEFAULT_SPEED=1;
-		MORE_SPEED=0;
-	else
-		MORE_BATTERY=1;
-		MORE_SPEED=0;
-		DEFAULT_SPEED=0;
-	fi;
-	CPU_GOV_TWEAKS;
-fi;
 
 # Setting the vibrator force in case it's has been reseted.
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
@@ -825,15 +883,14 @@ echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 # Smooth Level set to 800Mhz just in case.
 kmemhelper -n smooth_level -o 0 -t int 8;
 
+# set settings for battery -> don't wake up "pdflush daemon"
+echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
+echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 40
+
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
-fi;
-
-if [ $cortexbrain_cpu == 1 ]; then
-	MORE_BATTERY=1;
-	MORE_SPEED=0;
-	DEFAULT_SPEED=0;
-	CPU_GOV_TWEAKS;
 fi;
 
 # CPU Idle State - AFTR+LPA
@@ -853,21 +910,19 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 if [ $cortexbrain_background_process == 1 ]; then
 
+	# the process is not considered for OOM-killing
+	/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
+	renice -10 ${PIDOFCORTEX};
+
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
-		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;	
-		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
-		renice -10 ${PIDOFCORTEX};
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 3;
 
 		# SLEEP state! All system to power save!
-		STATE=$(cat /sys/power/wait_for_fb_sleep);
-		PROFILE=$(cat /data/.siyah/.active.profile);
-		. /data/.siyah/$PROFILE.profile;
 		SLEEP_MODE;
 		sleep 3;
 	done &);
