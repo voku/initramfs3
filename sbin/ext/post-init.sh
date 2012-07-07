@@ -95,11 +95,14 @@ fi;
 
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 /sbin/busybox mount -o remount,rw rootfs
+/sbin/busybox chmod 755 /res/customconfig/actions/push-actions/*
 /sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
 (
 # apply ExTweaks defaults
 if [ ! -e /recovery-started ]; then
+	# in case we forgot to set permissions, fix them.
+	/sbin/busybox chmod 755 /res/customconfig/actions/*
 	/res/uci.sh apply
 fi;
 ) &
