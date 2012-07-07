@@ -66,9 +66,11 @@ fi
 
 rm -f /init
 rm -f /init.cm9
+rm -f /init.jb
+rm -f /update*
 mv /init.samsung /init
-cd /
 
 busybox date >>boot.txt
+cd /
 exec /init
 

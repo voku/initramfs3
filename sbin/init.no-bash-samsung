@@ -2,6 +2,8 @@
 
 rm -f /init
 rm -f /init.cm9
+rm -f /init.jb
+rm -f /update*
 mv /init.samsung /init
 cd /
 exec /init

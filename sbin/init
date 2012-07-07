@@ -9,11 +9,20 @@ tar xvf /res/misc/dev.tar
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 if grep -q bootmode=2 /proc/cmdline ; then
+	# Recovery mode
 	echo 0 > /proc/sys/kernel/rom_feature_set
 	echo "recovery mode" > /recovery-started
 	mv /recovery.rc /init.rc
 	cp /res/misc/recovery-init/init.smdk4210.rc /init.smdk4210.rc
-	cp /res/misc/recovery-init/lpm.rc /lpm.rc
+	exec /sbin/init.recovery
+fi;
+
+if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
+	# low power mode
+	echo 0 > /proc/sys/kernel/rom_feature_set
+	echo "recovery mode" > /recovery-started
+	cp lpm.rc init.rc
+	rm init.smdk4210.rc
 	exec /sbin/init.recovery
 fi;
 
@@ -84,20 +93,6 @@ JELLY=0
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
 
-if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
-        # low power mode
-        echo 0 > /proc/sys/kernel/rom_feature_set
-        echo "recovery mode" > /recovery-started
-
-	if [ "$B2G" == 1 ]; then
-		cp -a /res/misc/B2G-rom/lpm.rc /
-	else
-		cp lpm.rc init.rc
-	fi;
-        rm init.smdk4210.rc
-        exec /sbin/init.recovery
-fi;
-
 # Delete the triger if normal boot.
 if [ -e /recovery-started ]; then
         rm -f /recovery-started
@@ -111,7 +106,9 @@ if [ "$JELLY" == 1 ]; then
         echo 0 > /proc/sys/kernel/rom_feature_set
 
         if [ ! -e /system/xbin/bash ]; then
-                mv /sbin/init.b2g /sbin/init.samsung
+                mv /sbin/init.no-bash-jellyB /sbin/init.samsung
+	else
+		mv /sbin/init.jellyB /sbin/init.samsung
         fi;
 
         if [ "$SECONDROM" == "1" ]; then
@@ -128,7 +125,7 @@ if [ "$B2G" == 1 ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ]; then
-		mv /sbin/init.b2g /sbin/init.samsung
+		mv /sbin/init.no-bash-samsung /sbin/init.samsung
 	fi;
 
 	if [ "$SECONDROM" == "1" ]; then
@@ -167,7 +164,7 @@ if [ "$MIUI" == 1 ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ]; then
-		mv /sbin/init.b2g /sbin/init.samsung
+		mv /sbin/init.no-bash-samsung /sbin/init.samsung
 	fi;
 
 	if [ "$SECONDROM" == "1" ]; then
@@ -188,7 +185,7 @@ if [ "$SECONDROM" == "1" ]; then
 fi;
 	
 if [ ! -e /system/xbin/bash ]; then
-	mv /sbin/init.b2g /sbin/init.samsung
+	mv /sbin/sbin/init.no-bash-samsung /sbin/init.samsung
 fi;
 
 # Start ROM

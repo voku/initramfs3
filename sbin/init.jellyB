@@ -1,8 +1,5 @@
 #!/system/xbin/bash
-export _PATH="$PATH"
-export PATH=/sbin
 
-busybox cd /
 busybox date >>boot.txt
 exec >>boot.txt 2>&1
 
@@ -25,7 +22,7 @@ busybox umount -l /dev/block/mmcblk0p12 >> /dm-log
 /sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
 /sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
 /sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
-# Second Check to fix small erorrs
+# Second run to fix small errors
 /sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
 /sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
 /sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
@@ -35,46 +32,45 @@ CHECKP7=`cat cache-log | grep /dev/block/mmcblk0p7 | cut -c 1-27`
 CHECKP12=`cat preload-log | grep /dev/block/mmcblk0p12 | cut -c 1-28`
 
 if [ "$CHECKP10" == "/dev/block/mmcblk0p10: clean" ]; then
-	echo "DATA OK"
-	#Tune DATA
+        echo "DATA OK"
+        #Tune DATA
 else
-	echo "DATA partition damaged fixing"
-	/sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
-	#Sec run just in case
-	/sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
-	/sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
+        echo "DATA partition damaged fixing"
+        /sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
+        #Sec run just in case
+        /sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
 fi
 
 if [ "$CHECKP7" == "/dev/block/mmcblk0p7: clean" ]; then
-	echo "CACHE OK"
-	#Tune Cache
+        echo "CACHE OK"
+        #Tune Cache
 else
-	echo "partition damaged fixing"
-	/sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
-	#Sec run just in case
-	/sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
-	/sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
+        echo "partition damaged fixing"
+        /sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
+        #Sec run just in case
+        /sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
 fi
 
 if [ "$CHECKP12" == "/dev/block/mmcblk0p12: clean" ]; then
-	echo "PRELOAD OK"
-	#Tune PRELOAD-SEC-ROM
+        echo "PRELOAD OK"
+        #Tune PRELOAD-SEC-ROM
 else
-	echo "partition damaged fixing"
-	/sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
-	#Sec run just in case
-	/sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
-	/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
+        echo "partition damaged fixing"
+        /sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
+        #Sec run just in case
+        /sbin/e2fsck -y /dev/block/mmcblk0p12 >> /dm-log
+        /sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
 fi
 
 rm -f /init
+rm -f /init.cm9
 rm -f /init.samsung
-rm -f /init.jb
 rm -f /update*
-mv /init.cm9 /init
+mv /init.jb /init
 
 busybox date >>boot.txt
-export PATH="${_PATH}"
 cd /
 exec /init
 

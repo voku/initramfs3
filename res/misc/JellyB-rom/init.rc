@@ -184,16 +184,11 @@ on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
-    mkdir /data/system
-    chown system system /data/system
-    chmod 0771 /data/system
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
     # storing dumps on platforms which do not have a dedicated dump partition.
     mkdir /data/dontpanic 0750 root log
-    chown root log /data/dontpanic
-    chmod 0750 /data/dontpanic
 
     # Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
@@ -259,7 +254,7 @@ on post-fs-data
     chmod 0770 /data/lost+found
 
     # create directory for DRM plug-ins
-    mkdir /data/drm 0774 drm drm
+    mkdir /data/drm 0770 drm drm
 
 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
 
@@ -357,20 +352,6 @@ on boot
 
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
-
-    # Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
-    setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.lge.proximity.delay 15
-
-    #Video Quality
-    setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
-
-    #Disable Google OTA Update checkin
-    setprop ro.config.nocheckin 1
 
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
@@ -961,6 +942,13 @@ service dvfs /system/bin/sh /system/bin/dvfs.sh
     class main
     user root
     oneshot
+    
+# 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
+service bugreport /system/bin/bugmailer.sh -v
+	class main
+	disabled
+	oneshot
+	keycodes 114 115 116
 
 service post-init /sbin/post-init.sh
     class core
