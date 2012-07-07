@@ -914,19 +914,20 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 if  [ $cortexbrain_background_process == 1 ] && [ $PIDOFCORTEX_COUNT == 0 ]; then
 
-	# the process is not considered for OOM-killing
-	/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
-	renice -10 ${PIDOFCORTEX};
-
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
+		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
+		renice -10 ${PIDOFCORTEX};
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 3;
 
 		# SLEEP state! All system to power save!
+		STATE=$(cat /sys/power/wait_for_fb_sleep);
+		PROFILE=$(cat /data/.siyah/.active.profile);
+		. /data/.siyah/$PROFILE.profile;
 		SLEEP_MODE;
 		sleep 3;
 	done &);
