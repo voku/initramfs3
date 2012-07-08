@@ -16,15 +16,9 @@
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
-# overwrite settings if needed ...
-if [ "a$1" != "a" ]; then
-	cortexbrain_background_process=$1;
-fi;
-
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=$$;
-PIDOFCORTEX_COUNT=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh" |  wc -l`;
 
 # default settings
 dirty_expire_centisecs_default=300;
@@ -883,25 +877,30 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 # Background process to check screen state
 # ==============================================================
-if  [ $cortexbrain_background_process == 1 ] && [ $PIDOFCORTEX_COUNT == 0 ]; then
+
+# Dynamic Value do not change/delete
+cortexbrain_background_process=1
+
+if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrain-tune.sh" |  wc -l` \< 3 ]; then
 
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
-		PIDOFCORTEX=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`;	
-		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
-		renice -10 ${PIDOFCORTEX};
+		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
+		for i in $PIDOFCORTEX; do
+			renice -10 $i;	
+			echo "-17" > /proc/$i/oom_adj;
+		done
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 3;
+		sleep 10;
 
 		# SLEEP state! All system to power save!
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		SLEEP_MODE;
-		sleep 3;
 	done &);
 fi;
 

@@ -96,9 +96,9 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
 (
 # apply ExTweaks defaults
-	# in case we forgot to set permissions, fix them.
-	/sbin/busybox chmod 755 /res/customconfig/actions/*
-	/res/uci.sh apply
+# in case we forgot to set permissions, fix them.
+/sbin/busybox chmod 755 /res/customconfig/actions/*
+/res/uci.sh apply
 ) &
 
 (
@@ -109,11 +109,6 @@ sleep 38
 ) &
 
 ##### init scripts #####
-(
-sleep 40
-/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh
-) &
-
 (
 sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
