@@ -84,7 +84,7 @@ chmod 777 /mnt/ntfs
 # make sure that sdcard is mounted
 sleep 30
 /sbin/busybox sh /sbin/ext/efs-backup.sh
-) &
+)&
 
 # Set color mode to user mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
@@ -94,25 +94,24 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 /sbin/busybox chmod 755 /res/customconfig/actions/push-actions/*
 /sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
-(
+
 # apply ExTweaks defaults
 # in case we forgot to set permissions, fix them.
 /sbin/busybox chmod 755 /res/customconfig/actions/*
 /res/uci.sh apply
-) &
 
 (
-sleep 38
+sleep 30
 # Restore all the PUSH Button Actions back to there location.
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
-) &
+)&
 
 ##### init scripts #####
 (
 sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
-) &
+)&
 
 # Change USB mode MTP or Mass Storage
 /res/customconfig/actions/usb-mode ${usb_mode}
@@ -121,5 +120,5 @@ sleep 60
 sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh
 exit
-) &
+)&
 

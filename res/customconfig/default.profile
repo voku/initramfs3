@@ -87,4 +87,6 @@ cortexbrain_tcp=1
 cortexbrain_ril=0
 cortexbrain_firewall=0
 usb_mode=default
+default_stats=off
+mdnie_shortcut_enabled=on
 

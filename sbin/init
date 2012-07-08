@@ -100,7 +100,7 @@ JELLY=0
 
 [ -d /system/b2g ] && B2G=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
-[ "`/sbin/busybox grep -i Slim /system/build.prop`" ] && SLIM=1
+[ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1
 [ "`/sbin/busybox grep -i aosp /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i hydrog /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i DragonICS /system/build.prop`" ] && AOSP=1
@@ -117,21 +117,22 @@ JELLY=0
 # One more time set / rw just for good sleep.
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
-#
-if [ "$SLIM" == 1 ]; then
-	echo 1 > /proc/sys/kernel/rom_feature_set
-	cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
-	chmod 777 /system/lib/libsqlite.so
-	rm /init.rc.2
-	patch -p1 < /res/misc/cm9.patch
-	mv /sbin/init.no-bash-cm9 /sbin/init.samsung
 
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc
-	fi;
+if [ "$B2G" == 1 ]; then
+        echo 0 > /proc/sys/kernel/rom_feature_set
+	patch -p1 < res/misc/b2g.patch
 
-	# Start ROM!
-	exec /sbin/init.samsung
+        if [ ! -e /system/xbin/bash ]; then
+                mv /sbin/init.no-bash-samsung /sbin/init.samsung
+        fi;
+
+        if [ "$SECONDROM" == "1" ]; then
+                mv /init.smdk4210.rc.2 /init.smdk4210.rc
+                mv /init.rc.2 /init.rc
+        fi;
+
+        # Start ROM!
+        exec /sbin/init.samsung
 fi;
 
 if [ "$JELLY" == 1 ]; then
@@ -153,21 +154,20 @@ if [ "$JELLY" == 1 ]; then
         exec /sbin/init.samsung
 fi;
 
-if [ "$B2G" == 1 ]; then
-	cp -a /res/misc/B2G-rom/* /
-	echo 0 > /proc/sys/kernel/rom_feature_set
+if [ "$SLIM" == 1 ]; then
+        echo 1 > /proc/sys/kernel/rom_feature_set
+        cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
+        chmod 777 /system/lib/libsqlite.so
+        rm /init.rc.2
+        patch -p1 < /res/misc/cm9.patch
+        mv /sbin/init.no-bash-cm9 /sbin/init.samsung
 
-	if [ ! -e /system/xbin/bash ]; then
-		mv /sbin/init.no-bash-samsung /sbin/init.samsung
-	fi;
+        if [ "$SECONDROM" == "1" ]; then
+                mv /init.smdk4210.rc.2 /init.smdk4210.rc
+        fi;
 
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc
-		mv /init.rc.2 /init.rc
-	fi;
-
-	# Start ROM!
-	exec /sbin/init.samsung	
+        # Start ROM!
+        exec /sbin/init.samsung
 fi;
 
 if [ "$AOSP" == 1 ]; then
@@ -217,7 +217,7 @@ if [ "$SECONDROM" == "1" ]; then
 fi;
 	
 if [ ! -e /system/xbin/bash ]; then
-	mv /sbin/sbin/init.no-bash-samsung /sbin/init.samsung
+	mv /sbin/init.no-bash-samsung /sbin/init.samsung
 fi;
 
 # Start ROM
