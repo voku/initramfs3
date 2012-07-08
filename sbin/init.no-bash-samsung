@@ -1,6 +1,4 @@
 #!/sbin/busybox sh
-export _PATH="$PATH"
-export PATH=/sbin
 
 busybox cd /
 busybox rm init
@@ -10,6 +8,6 @@ rm -f /init.cm9
 rm -f /init.jb
 rm -f /update*
 mv /init.samsung /init
-export PATH="${_PATH}"
 cd /
 exec /init
+

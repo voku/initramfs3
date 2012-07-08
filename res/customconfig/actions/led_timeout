@@ -32,7 +32,7 @@ case "${led_timeout}" in
         30)
                 echo "30000" > /sys/class/misc/backlightnotification/led_timeout
         	;;
-        off)
+        on)
                 echo "-1" > /sys/class/misc/backlightnotification/led_timeout
         	;;
 	*)

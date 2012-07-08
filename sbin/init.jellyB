@@ -1,6 +1,4 @@
 #!/system/xbin/bash
-export _PATH="$PATH"
-export PATH=/sbin
 
 busybox cd /
 busybox date >>boot.txt
@@ -53,6 +51,6 @@ rm -f /update*
 mv /init.jb /init
 
 busybox date >>boot.txt
-export PATH="${_PATH}"
 cd /
 exec /init
+
