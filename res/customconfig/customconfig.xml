@@ -107,13 +107,13 @@ If you use any script or voltage control app this setting may be overriden by th
 			<spinnerItem name="-100 mV" value="-100"/> 
 		</spinner>
 
-		<spinner description="Sets the CPU Idle Mode. AFTR+LPA is the default and best for the battery life but if you have problems try Idle+LPA." 
+		<!-- <spinner description="Sets the CPU Idle Mode. AFTR+LPA is the default and best for the battery life but if you have problems try Idle+LPA." 
 			name="CPU Idle Mode" action="generic /sys/module/cpuidle_exynos4/parameters/enable_mask">
 			<spinnerItem name="AFTR + LPA (default)" value="3"/> 
 			<spinnerItem name="Idle + LPA" value="2"/> 
 			<spinnerItem name="AFTR only" value="1"/> 
 			<spinnerItem name="Idle only" value="0"/> 
-		</spinner>
+		</spinner> -->
 
 		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
