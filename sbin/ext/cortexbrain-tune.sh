@@ -16,15 +16,9 @@
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
-# overwrite settings if needed ...
-if [ "a$1" != "a" ]; then
-		cortexbrain_background_process=$1;
-fi;
-
 FILE_NAME=$0
 MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=$$;
-PIDOFCORTEX_COUNT=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh" |  wc -l`;
 
 # default settings
 dirty_expire_centisecs_default=300;
@@ -32,11 +26,13 @@ dirty_writeback_centisecs_default=1500;
 dirty_background_ratio_default=15;
 dirty_ratio_default=10;
 
-# battery settings
+# Battery settings
+# This will force long wait till dirty pages write to disk
 dirty_expire_centisecs_battery=20000;
 dirty_writeback_centisecs_battery=20000;
-dirty_background_ratio_battery=4;
-dirty_ratio_battery=4;
+# This is make lots of cache in RAM and less writes/reads for I/O but it's has side effects for normal work, so set only for screen off!
+dirty_background_ratio_battery=60;
+dirty_ratio_battery=95;
 
 # Static sets for functions, they will be changes by other functions later.
 if [[ "$PROFILE" == "performance" ]]; then
@@ -320,9 +316,6 @@ do
 	echo "auto" > $i;
 done;
 
-# TODO: need testing
-echo "1" > /sys/class/lcd/panel/power_reduce;
-
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
 if [ $cortexbrain_battery == 1 ]; then
@@ -498,17 +491,16 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-if [ "$MORE_BATTERY" == "1" ]; then
-	echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
-	echo "$dirty_background_ratio_battery" > /proc/sys/vm/dirty_background_ratio; # default: 10
-	echo "$dirty_ratio_battery" > /proc/sys/vm/dirty_ratio; # default: 20
-else
+if [ $MORE_BATTERY == 0 ]; then
 	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-	echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
-	echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
+else
+	# set settings for battery -> don't wake up "pdflush daemon"
+	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 fi;
+echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
@@ -749,7 +741,6 @@ else
 			if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
 				echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 			fi;
-		fi;
 	fi;
 
 	MODE="AWAKE";
@@ -766,12 +757,10 @@ echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_
 kmemhelper -n smooth_level -o 0 -t int ${smooth_level0}
 
 # set default settings
-if [ "$MORE_BATTERY" == "0" ]; then
 echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 20
-fi;
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
@@ -857,12 +846,10 @@ echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 kmemhelper -n smooth_level -o 0 -t int 8;
 
 # set settings for battery -> don't wake up "pdflush daemon"
-if [ "$MORE_BATTERY" == "1" ]; then
 echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 20
-fi;
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
@@ -890,24 +877,30 @@ log -p i -t $FILE_NAME "*** $MODE mode ***";
 # ==============================================================
 # Background process to check screen state
 # ==============================================================
-if  [ $cortexbrain_background_process == 1 ] && [ $PIDOFCORTEX_COUNT == 0 ]; then
+
+# Dynamic Value do not change/delete
+cortexbrain_background_process=1
+
+if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrain-tune.sh" |  wc -l` \< 3 ]; then
 
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		STATE=$(cat /sys/power/wait_for_fb_wake);
-		/system/xbin/echo "-17" > /proc/${PIDOFCORTEX}/oom_adj;
-		renice -10 ${PIDOFCORTEX};
+		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
+		for i in $PIDOFCORTEX; do
+			renice -10 $i;	
+			echo "-17" > /proc/$i/oom_adj;
+		done
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 3;
+		sleep 10;
 
 		# SLEEP state! All system to power save!
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		SLEEP_MODE;
-		sleep 3;
 	done &);
 fi;
 
