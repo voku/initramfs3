@@ -1,5 +1,6 @@
 GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
+<<<<<<< .merge_file_cW2LKw
 GPUFREQ1=40
 GPUFREQ2=100
 GPUFREQ3=200
@@ -10,8 +11,20 @@ GPUTHRESHOLD1UP=70
 GPUTHRESHOLD2DOWN=50
 GPUTHRESHOLD2UP=80
 GPUTHRESHOLD3DOWN=60
+=======
+GPUFREQ1=100
+GPUFREQ2=200
+GPUFREQ3=267
+GPUVOLT1=950
+GPUVOLT2=1000
+GPUVOLT3=1050
+GPUTHRESHOLD1UP=40
+GPUTHRESHOLD2DOWN=20
+GPUTHRESHOLD2UP=60
+GPUTHRESHOLD3DOWN=40
+>>>>>>> .merge_file_fl4mss
 GPUSTAYCOUNT1=0
-GPUSTAYCOUNT2=0
+GPUSTAYCOUNT2=1
 GPUSTAYCOUNT3=1
 min_bl=40
 min_gamma=1
@@ -25,7 +38,7 @@ TOUCHSCREEN3=14
 TOUCHSCREEN4=53
 TOUCHSCREEN5=38
 TOUCHSCREEN6=46
-rate=500
+rate=400
 asv_group=3
 busfreq_asv_group=4
 busfreq_up_threshold=30
@@ -39,16 +52,27 @@ gpsregion=No_GPS_Zone_changes
 secondcore=hotplug
 scheduler=sio
 scaling_governor=conservative
+<<<<<<< .merge_file_cW2LKw
 scaling_max_freq=800000
 scaling_min_freq=200000
 scaling_max_suspend_freq=200000
 scaling_min_suspend_freq=200000
+=======
+scaling_max_freq=1000000
+scaling_min_freq=200000
+scaling_max_suspend_freq=800000
+scaling_min_suspend_freq=700000
+>>>>>>> .merge_file_fl4mss
 load_l1=30
 load_h0=70
 load_rq=20
 cfs_tweaks=0
 min_rq=2
+<<<<<<< .merge_file_cW2LKw
 freq_min=800000
+=======
+freq_min=600000
+>>>>>>> .merge_file_fl4mss
 install_root=on
 mov_hysti=1
 pwm_val=50
@@ -72,8 +96,8 @@ led_fadeout=1
 led_on_touch=off
 cpu_undervolting=0
 smooth_level0=8
-deep_sleep_batt=abyssplug
-deep_sleep_ac=abyssplug
+deep_sleep_batt=conservative
+deep_sleep_ac=conservative
 add_remove_root=Nothing
 cortexbrain_background_process=0
 cortexbrain_auto_tweak_brightness=0

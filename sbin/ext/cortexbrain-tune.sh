@@ -12,7 +12,7 @@
 
 # read setting from profile
 
-# Get values from profile.
+# Get values from profile. since we dont have the recovery source code i cant change the .siyah dir, so just leave it there for history.
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
@@ -79,7 +79,7 @@ kmemhelper -n mxt224_data -t char -o 77 46
 #TOUCHSCREENTUNE; #DISABLED for good, but it's good info. so no delete.
 
 # =========
-# Renice - kernel thread responsible for managing the memory
+# Renice - kernel thread responsible for managing the swap memory and logs
 # =========
 renice 19 `pidof kswapd0`;
 renice 19 `pgrep logcat`;
@@ -204,14 +204,14 @@ for i in $MMC; do
 
 done;
 
+if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
+        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+fi;
+
 SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 for i in $SDCARDREADAHEAD; do
 	echo 1024 > $i/read_ahead_kb;
 done;
-
-if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
-fi;
 
 echo "15" > /proc/sys/fs/lease-break-time;
 
@@ -336,17 +336,17 @@ if [ $MORE_BATTERY == 1 ]; then
 echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "85" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
 		echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "80" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+		echo "85" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
+		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
 		echo "20" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
@@ -354,8 +354,8 @@ echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "85" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
@@ -379,22 +379,22 @@ echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate
 
 elif [ $DEFAULT_SPEED == 1 ]; then
 
-echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
+		echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
- 		echo "2" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+		echo "70" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+ 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+		echo "30" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -425,22 +425,22 @@ echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 elif [ $MORE_SPEED == 1 ]; then
 
-echo "50000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "2" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
-		echo "2" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
+		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -482,14 +482,8 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-if [ $MORE_BATTERY == 0 ]; then
-	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-else
-	# set settings for battery -> don't wake up "pdflush daemon"
-	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
-fi;
+echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
+echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
@@ -647,6 +641,9 @@ if [ $cortexbrain_firewall == 1 ]; then
 	FIREWALL_TWEAKS;
 fi;
 
+# load the MAX_CPU_ALLOWED on boot.
+MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
@@ -655,21 +652,15 @@ AWAKE_MODE()
 
 # Awake booster!
 # Kill the wakeup bug! boost the CPU to MAX allowed.
-
-echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
-echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq > /dev/null 2>&1;
-# set performance gov after max freq is set, or it's will load on 1.Ghz
-echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # Now boost the screen lock freq to Max Allowed
-echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-echo "1200000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
-echo "1500000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq > /dev/null 2>&1;
+echo "${MAX_CPU_ALLOWED}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 
-sleep 5
+# Set performance gov after max freq is set, or it's will load on 1.Ghz
+echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-# charging & screen is on
+# Charging & screen is on? or no charging
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
 if [ $CHARGING -ge 1 ]; then
 
@@ -713,7 +704,7 @@ else
 	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# Bus Freq for deep sleep
+	# Bus Freq for awake state
 	echo "${busfreq_asv_group}" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
@@ -738,18 +729,29 @@ else
 	MODE="AWAKE";
 fi;
 
-# set governor & CPU speed
-echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# Restore scheduler to normal
+echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler
+echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler
 
-echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
-
-# set default settings
+# Set default settings
 echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 15
 echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
+
+# Setting the vibrator force in case it's has been reseted.
+echo "${pwm_val}" > /sys/vibrator/pwm_val;
+
+# Wait here and let all apps to load to RAM and give user fast wakeup with full speed!
+sleep 10
+
+# Set governor & CPU speed
+echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+# Set lock screen freq to max scalling freq. 
+echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
@@ -788,9 +790,6 @@ if [ $cortexbrain_cpu == 1 ]; then
 	CPU_GOV_TWEAKS;
 fi;
 
-# Setting the vibrator force in case it's has been reseted.
-echo "${pwm_val}" > /sys/vibrator/pwm_val;
-
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
 
@@ -823,14 +822,21 @@ echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scalin
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 
+# Load the MAX_CPU_ALLOWED for wakeup just in case user changed allowed freq steps!
+MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
+
+# Set disk I/O sched to noop simple and battery saving.
+echo "noop" > /sys/block/mmcblk0/queue/scheduler
+echo "noop" > /sys/block/mmcblk1/queue/scheduler
+
 # cpu - second core always-off
 echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
 echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+echo "35" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # set settings for battery -> don't wake up "pdflush daemon"
 echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
@@ -851,12 +857,6 @@ fi;
 
 # CPU Idle State - AFTR+LPA
 echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
-
-# enable first core overloading
-echo "1" > /sys/devices/system/cpu/sched_mc_power_savings;
-
-# Setting the vibrator force in case it's has been reseted.
-echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
