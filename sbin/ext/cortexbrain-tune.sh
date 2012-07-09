@@ -379,14 +379,14 @@ echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate
 
 elif [ $DEFAULT_SPEED == 1 ]; then
 
-echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
+		echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
@@ -394,7 +394,7 @@ echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
  		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+		echo "30" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -425,22 +425,22 @@ echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 elif [ $MORE_SPEED == 1 ]; then
 
-echo "50000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "100" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "100" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
