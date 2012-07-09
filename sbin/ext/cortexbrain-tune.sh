@@ -354,8 +354,8 @@ echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "85" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
