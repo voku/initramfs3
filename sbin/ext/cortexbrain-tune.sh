@@ -12,7 +12,7 @@
 
 # read setting from profile
 
-# Get values from profile.
+# Get values from profile. since we dont have the recovery source code i cant change the .siyah dir, so just leave it there for history.
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/$PROFILE.profile;
 
@@ -79,7 +79,7 @@ kmemhelper -n mxt224_data -t char -o 77 46
 #TOUCHSCREENTUNE; #DISABLED for good, but it's good info. so no delete.
 
 # =========
-# Renice - kernel thread responsible for managing the memory
+# Renice - kernel thread responsible for managing the swap memory and logs
 # =========
 renice 19 `pidof kswapd0`;
 renice 19 `pgrep logcat`;
@@ -204,14 +204,14 @@ for i in $MMC; do
 
 done;
 
+if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
+        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+fi;
+
 SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 for i in $SDCARDREADAHEAD; do
 	echo 1024 > $i/read_ahead_kb;
 done;
-
-if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-        echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
-fi;
 
 echo "15" > /proc/sys/fs/lease-break-time;
 
@@ -482,14 +482,8 @@ fi;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-if [ $MORE_BATTERY == 0 ]; then
-	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-else
-	# set settings for battery -> don't wake up "pdflush daemon"
-	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
-fi;
+echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
+echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
 echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
@@ -658,15 +652,15 @@ AWAKE_MODE()
 
 # Awake booster!
 # Kill the wakeup bug! boost the CPU to MAX allowed.
-
 echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-# set performance gov after max freq is set, or it's will load on 1.Ghz
-echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 # Now boost the screen lock freq to Max Allowed
 echo "${MAX_CPU_ALLOWED}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 
-# charging & screen is on
+# Set performance gov after max freq is set, or it's will load on 1.Ghz
+echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+# Charging & screen is on? or no charging
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
 if [ $CHARGING -ge 1 ]; then
 
@@ -710,7 +704,7 @@ else
 	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# Bus Freq for deep sleep
+	# Bus Freq for awake state
 	echo "${busfreq_asv_group}" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
@@ -735,6 +729,7 @@ else
 	MODE="AWAKE";
 fi;
 
+# Restore scheduler to normal
 echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler
 echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler
 
