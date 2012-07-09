@@ -647,6 +647,9 @@ if [ $cortexbrain_firewall == 1 ]; then
 	FIREWALL_TWEAKS;
 fi;
 
+# load the MAX_CPU_ALLOWED on boot.
+MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
@@ -655,8 +658,6 @@ AWAKE_MODE()
 
 # Awake booster!
 # Kill the wakeup bug! boost the CPU to MAX allowed.
-
-MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 
 echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 # set performance gov after max freq is set, or it's will load on 1.Ghz
@@ -825,6 +826,9 @@ echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scalin
 # Reduce deepsleep CPU speed
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+
+# Load the MAX_CPU_ALLOWED for wakeup just in case user changed allowed freq steps!
+MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 
 # Set disk I/O sched to noop simple and battery saving.
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
