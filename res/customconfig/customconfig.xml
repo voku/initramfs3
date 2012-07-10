@@ -366,20 +366,16 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
 
+	<checkbox description="BackLightNotification Switch" name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+
 		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
-			name="BLN Main Switch" action="bln_switch">
-			<spinnerItem name="BLN Inactive on Battery" value="0"/> 
+			name="BLN MODE Switch" action="bln_switch">
 			<spinnerItem name="Active and static" value="1"/> 
 			<spinnerItem name="Active and breathing" value="2"/> 
 			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
 
-		<spinner description="Back Light Notification will work when on Charger/USB 
-if above switch is OFF or ON" 
-			name="BLN on Charger" action="bln_enabled_charging">
-			<spinnerItem name="BLN disabled even on charger" value="0"/> 
-			<spinnerItem name="BLN active on charger" value="1"/> 
-		</spinner>
+		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging"/>
 
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
@@ -423,8 +419,8 @@ if above switch is OFF or ON"
 		<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
 			name="Touch Keys Lights Settings">
 
-		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
-			name="Leds on with touch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
+		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod." 
+			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
 			name="led_timeout" action="led_timeout">
@@ -438,12 +434,7 @@ if above switch is OFF or ON"
 			<spinnerItem name="Always ON" value="on"/> 
 		</spinner>
 
-		<spinner description="Led fadeout effect. If you are on a Samsung ROM, 
-		you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." 
-			name="led-fadeout" action="bln_led_fadeout">
-			<spinnerItem name="LED Fadeout OFF" value="0"/> 
-			<spinnerItem name="LED Fadeout ON" value="1"/> 
-		</spinner>
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>

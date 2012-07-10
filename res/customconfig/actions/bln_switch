@@ -11,11 +11,6 @@ else
 fi;
 
 case "${bln_switch}" in
-	0)
-		echo "0" > /sys/class/misc/backlightnotification/enabled
-		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
-		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
-		;;
 	1)
 		echo "1" > /sys/class/misc/backlightnotification/enabled
 		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
@@ -32,7 +27,7 @@ case "${bln_switch}" in
 		echo "1" > /sys/class/misc/backlightnotification/blinking_enabled
 		;;
 	*)
-		bln_switch=0
+		bln_switch=2
 		;;
 esac;
 
