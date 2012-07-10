@@ -90,3 +90,6 @@ usb_mode=default
 default_stats=off
 mdnie_shortcut_enabled=on
 soundgasm_hp=3
+tsp_flash_timeout=off
+awake_booster=1
+awake_booster_delay=10
