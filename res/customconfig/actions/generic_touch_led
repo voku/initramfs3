@@ -20,9 +20,8 @@ else
 				echo 0 > $2
 			;;
 			on)
-				PROFILE=$(cat /data/.siyah/.active.profile);
-				. /data/.siyah/$PROFILE.profile;
-				echo "$led_timeout" > $2
+				LED_TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
+				echo "$LED_TIMEOUT_SET" > $2
 			;;
 		esac;
 	fi;

@@ -42,7 +42,7 @@
 			</spinner>
 
 			<spinner description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below" 
-				name="WakeUp Bosster" action="awake_booster">
+				name="WakeUp Booster" action="awake_booster">
 				<spinnerItem name="Enabled" value="1"/> 
 				<spinnerItem name="Disabled" value="0"/> 
 			</spinner>
