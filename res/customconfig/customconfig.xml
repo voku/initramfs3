@@ -1,5 +1,4 @@
 <settingsRoot>
-<<<<<<< HEAD
 <settingsTab name="CPU">
 
 		<settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." name="CPU Hotplug Settings">
