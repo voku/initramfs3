@@ -1,0 +1,17 @@
+#!/sbin/busybox sh
+
+echo "Turn off the screen to test BLN.";
+
+# waiting for screen-off, then ...
+STATE=$(cat /sys/power/wait_for_fb_sleep);
+
+# Case if GM BLN active in kernel.
+if [ -e /sys/class/misc/notification/led ]; then
+	echo "1" > /sys/class/misc/notification/led;
+fi;
+
+# Case if Myfluxi BLN active in kernel.
+if [ -e /sys/class/misc/backlightnotification/notification_led ]; then
+	echo "1" > /sys/class/misc/backlightnotification/notification_led;
+fi;
+

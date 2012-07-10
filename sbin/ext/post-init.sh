@@ -123,7 +123,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 /res/uci.sh apply
 
 (
-sleep 30
+sleep 40
 # Restore all the PUSH Button Actions back to there location.
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/

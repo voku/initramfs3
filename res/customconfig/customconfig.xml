@@ -416,7 +416,7 @@ if above switch is OFF or ON"
 		</spinner>
 
 		<button description="Use this button to test bln. BLN will be active after you turn the screen off." 
-			name="Test BLN" action="push-actions/test-bln 1" label="Test BLN"/>
+			name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 		</settingsPane>
 
