@@ -1,7 +1,6 @@
 #!/sbin/busybox sh
 
-echo "Turn off the screen to test BLN.";
-
+(
 # waiting for screen-off, then ...
 STATE=$(cat /sys/power/wait_for_fb_sleep);
 
@@ -14,4 +13,7 @@ fi;
 if [ -e /sys/class/misc/backlightnotification/notification_led ]; then
 	echo "1" > /sys/class/misc/backlightnotification/notification_led;
 fi;
+)&
+
+echo "Turn off the screen to test BLN.";
 
