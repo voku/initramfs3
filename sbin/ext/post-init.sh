@@ -84,6 +84,9 @@ fi
 #Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
 
+#apply last soundgasm level on boot
+/res/uci.sh soundgasm_hp $soundgasm_hp
+
 # for ntfs automounting
 mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
