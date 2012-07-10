@@ -543,7 +543,7 @@ if above switch is OFF or ON"
 			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
 		</spinner>
 
-		<checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) deleted wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
+		<checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
 
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
