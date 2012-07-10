@@ -375,7 +375,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
 
-		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging"/>
+		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" label="BLN Enabled on charging"/>
 
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
@@ -434,7 +434,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Always ON" value="on"/> 
 		</spinner>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout"/>
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
