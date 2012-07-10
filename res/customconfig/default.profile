@@ -89,4 +89,7 @@ cortexbrain_firewall=0
 usb_mode=default
 default_stats=off
 mdnie_shortcut_enabled=on
-
+soundgasm_hp=0
+tsp_flash_timeout=off
+awake_booster=1
+awake_booster_delay=5
