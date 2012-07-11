@@ -24,9 +24,9 @@ busfreq_asv_group=3
 busfreq_up_threshold=25
 busfreq_down_threshold=35
 scaling_max_suspend_freq=800000
-scaling_min_suspend_freq=500000
-deep_sleep_batt=pegasusq
+scaling_min_suspend_freq=800000
 deep_sleep_ac=pegasusq
+deep_sleep_batt=pegasusq
 #GPU
 GPUFREQ1=100
 GPUFREQ2=200
