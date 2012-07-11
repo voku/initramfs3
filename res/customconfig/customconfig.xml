@@ -41,6 +41,18 @@
 				<spinnerItem name="800MHz" value="8"/> 
 			</spinner>
 
+			<spinner description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below" 
+				name="WakeUp Booster" action="awake_booster">
+				<spinnerItem name="Enabled" value="1"/> 
+				<spinnerItem name="Disabled" value="0"/> 
+			</spinner>
+
+			<spinner description="Wakeup booster delay on max speed and peformance gov, depend on cortex background process" name="WakeUp Bosster Delay" action="awake_booster_delay">
+				<spinnerItem name="3Sec" value="3"/> 
+				<spinnerItem name="5Seec" value="5"/>
+				<spinnerItem name="10Sec" value="10"/> 
+			</spinner>
+
 			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overriden by later scripts or apps." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 				<spinnerItem name="hyper" value="hyper"/> 
@@ -339,24 +351,31 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 </settingsTab>
 
+<settingsTab name="Audio">
+
+	<settingsPane description="Headphone Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
+
+	<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
+                name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+
+	</settingsPane>
+
+</settingsTab>
+
 <settingsTab name="BLN">
 
 	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
 
+	<checkbox description="BackLightNotification Switch" name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+
 		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
-			name="BLN Main Switch" action="bln_switch">
-			<spinnerItem name="BLN Inactive on Battery" value="0"/> 
+			name="BLN MODE Switch" action="bln_switch">
 			<spinnerItem name="Active and static" value="1"/> 
 			<spinnerItem name="Active and breathing" value="2"/> 
 			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
 
-		<spinner description="Back Light Notification will work when on Charger/USB 
-if above switch is OFF or ON" 
-			name="BLN on Charger" action="bln_enabled_charging">
-			<spinnerItem name="BLN disabled even on charger" value="0"/> 
-			<spinnerItem name="BLN active on charger" value="1"/> 
-		</spinner>
+		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" label="BLN Enabled on charging"/>
 
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
@@ -393,12 +412,15 @@ if above switch is OFF or ON"
 		</spinner>
 
 		<button description="Use this button to test bln. BLN will be active after you turn the screen off." 
-			name="Test BLN" action="push-actions/test-bln 1" label="Test BLN"/>
+			name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 		</settingsPane>
 
 		<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
 			name="Touch Keys Lights Settings">
+
+		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod." 
+			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
 			name="led_timeout" action="led_timeout">
@@ -412,12 +434,7 @@ if above switch is OFF or ON"
 			<spinnerItem name="Always ON" value="on"/> 
 		</spinner>
 
-		<spinner description="Led fadeout effect. If you are on a Samsung ROM, 
-		you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." 
-			name="led-fadeout" action="bln_led_fadeout">
-			<spinnerItem name="LED Fadeout OFF" value="0"/> 
-			<spinnerItem name="LED Fadeout ON" value="1"/> 
-		</spinner>
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
@@ -531,7 +548,7 @@ if above switch is OFF or ON"
 			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
 		</spinner>
 
-		<checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) deleted wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
+		<checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
 
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 

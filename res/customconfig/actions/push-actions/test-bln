@@ -1,4 +1,0 @@
-#!/sbin/busybox sh
-export PATH="/res/customconfig/actions/push-actions:${PATH}";
-
-test-bln_run $2 &

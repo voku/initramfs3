@@ -7,12 +7,31 @@ exec 2>&1
 
 mkdir /data/.siyah
 chmod 777 /data/.siyah
-ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
-if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
-then
-	rm -f /data/.siyah/*.profile
-	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
-fi
+
+#ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
+#if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
+#	rm -f /data/.siyah/*.profile
+#	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
+#fi
+
+# Reset profile in case i messed with it.
+md5battery=`md5sum /res/customconfig/battery.profile | awk '{print $1}'`
+if [ "a${md5battery}" != "a`cat /data/.siyah/.md5battery`" ]; then
+	rm -f /data/.siyah/battery.profile
+	echo ${md5battery} > /data/.siyah/.md5battery
+fi;
+
+md5default=`md5sum /res/customconfig/default.profile | awk '{print $1}'`
+if [ "a${md5default}" != "a`cat /data/.siyah/.md5default`" ]; then
+        rm -f /data/.siyah/default.profile
+        echo ${md5default} > /data/.siyah/.md5default
+fi;
+
+md5performance=`md5sum /res/customconfig/performance.profile | awk '{print $1}'`
+if [ "a${md5performance}" != "a`cat /data/.siyah/.md5performance`" ]; then
+        rm -f /data/.siyah/performance.profile
+        echo ${md5performance} > /data/.siyah/.md5performance
+fi;
 
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
@@ -65,6 +84,9 @@ fi
 #Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
 
+#apply last soundgasm level on boot
+/res/uci.sh soundgasm_hp $soundgasm_hp
+
 # for ntfs automounting
 mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
@@ -101,7 +123,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 /res/uci.sh apply
 
 (
-sleep 30
+sleep 40
 # Restore all the PUSH Button Actions back to there location.
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
