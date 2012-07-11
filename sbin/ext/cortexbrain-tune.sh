@@ -660,11 +660,8 @@ echo "${MAX_CPU_ALLOWED}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_f
 
 # Set performance gov after max freq is set, or it's will load on 1.Ghz
 echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-<<<<<<< .merge_file_BpXJ8K
-=======
 
 fi;
->>>>>>> .merge_file_xGSm9H
 
 # Charging & screen is on? or no charging
 CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
@@ -749,13 +746,9 @@ echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 # Wait here and let all apps to load to RAM and give user fast wakeup with full speed!
-<<<<<<< .merge_file_BpXJ8K
-sleep 10
-=======
 if [ $awake_booster == 1 ]; then
 	sleep ${awake_booster_delay};
 fi;
->>>>>>> .merge_file_xGSm9H
 
 # Set governor & CPU speed
 echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
