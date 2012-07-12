@@ -26,7 +26,7 @@ busfreq_down_threshold=30
 scaling_max_suspend_freq=800000
 scaling_min_suspend_freq=800000
 deep_sleep_ac=pegasusq
-deep_sleep_batt=scary
+deep_sleep_batt=pegasusq
 #GPU
 GPUFREQ1=100
 GPUFREQ2=200
