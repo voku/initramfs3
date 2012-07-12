@@ -33,6 +33,8 @@ if [ "a${md5performance}" != "a`cat /data/.siyah/.md5performance`" ]; then
         echo ${md5performance} > /data/.siyah/.md5performance
 fi;
 
+cp -a /res/customconfig/.config.tmp /data/.siyah/
+
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
 [ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
@@ -116,17 +118,27 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 /sbin/busybox chmod 755 /res/customconfig/actions/push-actions/*
 /sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
-
+(
 # apply ExTweaks defaults
 # in case we forgot to set permissions, fix them.
 /sbin/busybox chmod 755 /res/customconfig/actions/*
+echo "booting" > /data/.siyah/booting
 /res/uci.sh apply
+echo "uci done" > /data/.siyah/uci_loaded
+)&
 
 (
-sleep 40
-# Restore all the PUSH Button Actions back to there location.
-/sbin/busybox mount -o remount,rw rootfs
-/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
+while : ; do
+	if [ -e /data/.siyah/uci_loaded ] ; then
+		# Restore all the PUSH Button Actions back to there location.
+		/sbin/busybox mount -o remount,rw rootfs
+		/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
+		rm -f /data/.siyah/uci_loaded
+		rm -f /data/.siyah/booting
+		exit 0
+	fi;
+	sleep 5
+done
 )&
 
 ##### init scripts #####

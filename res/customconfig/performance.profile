@@ -1,4 +1,3 @@
-#CPU
 secondcore=hotplug
 cpustepcount=15
 scaling_max_freq=1500000
@@ -27,7 +26,6 @@ scaling_max_suspend_freq=800000
 scaling_min_suspend_freq=800000
 deep_sleep_ac=pegasusq
 deep_sleep_batt=pegasusq
-#GPU
 GPUFREQ1=100
 GPUFREQ2=200
 GPUFREQ3=267
@@ -41,7 +39,6 @@ GPUTHRESHOLD3DOWN=40
 GPUSTAYCOUNT1=0
 GPUSTAYCOUNT2=1
 GPUSTAYCOUNT3=1
-#SCREEN
 mov_hysti=1
 min_bl=40
 min_gamma=1
@@ -60,9 +57,7 @@ TOUCHSCREEN3=14
 TOUCHSCREEN4=53
 TOUCHSCREEN5=38
 TOUCHSCREEN6=46
-#AUDIO
 soundgasm_hp=3
-#BLN
 enabled=on
 bln_switch=2
 enabled_charging=on
@@ -74,7 +69,6 @@ tsp_flash_timeout=on
 led_timeout=5
 led_fadeout=on
 touchkey_brightness=3000
-#MISC
 logger=off
 zramtweaks=3
 gpsregion=No_GPS_Zone_changes
@@ -84,7 +78,6 @@ default_stats=off
 chargecurrent=2
 add_remove_root=Nothing
 install_root=on
-#CORTEXBRAIN
 cortexbrain_background_process=1
 cortexbrain_auto_tweak_brightness=0
 cortexbrain_firewall=0
@@ -96,3 +89,4 @@ cortexbrain_battery=1
 cortexbrain_system=1
 cortexbrain_kernel_tweaks=1
 cortexbrain_io=1
+
