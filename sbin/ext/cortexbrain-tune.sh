@@ -249,7 +249,7 @@ setprop persist.sys.use_dithering 1
 
 # render UI with GPU
 setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 240
+setprop windowsmgr.max_events_per_sec 120
 setprop profiler.force_disable_err_rpt 1
 setprop profiler.force_disable_ulog 1
 
@@ -260,7 +260,7 @@ setprop mot.proximity.delay 15
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
 setprop wifi.supplicant_scan_interval 360
-setprop pm.sleep_mode 1
+#setprop pm.sleep_mode 1
 
 if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
 	setprop dalvik.vm.heapsize 72m
