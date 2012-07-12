@@ -739,7 +739,7 @@ echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 # Wait here and let all apps to load to RAM and give user fast wakeup with full speed!
-if [ $awake_booster == 1 ]; then
+if [ $awake_booster == 1 ] && [ ! -e /data/.siyah/booting ]; then
 	sleep ${awake_booster_delay};
 fi;
 

@@ -120,6 +120,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 # apply ExTweaks defaults
 # in case we forgot to set permissions, fix them.
 /sbin/busybox chmod 755 /res/customconfig/actions/*
+echo "booting" > /data/.siyah/booting
 /res/uci.sh apply
 echo "uci done" > /data/.siyah/uci_loaded
 )&
@@ -131,6 +132,7 @@ while : ; do
 		/sbin/busybox mount -o remount,rw rootfs
 		/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
 		rm -f /data/.siyah/uci_loaded
+		rm -f /data/.siyah/booting
 		exit 0
 	fi;
 	sleep 5
