@@ -260,7 +260,7 @@ setprop mot.proximity.delay 15
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
 setprop wifi.supplicant_scan_interval 360
-#setprop pm.sleep_mode 1
+setprop pm.sleep_mode 1
 
 if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
 	setprop dalvik.vm.heapsize 72m
@@ -484,7 +484,7 @@ echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "5" > /proc/sys/vm/page-cluster; # default: 3
-echo "8192" > /proc/sys/vm/min_free_kbytes
+echo "4096" > /proc/sys/vm/min_free_kbytes
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
