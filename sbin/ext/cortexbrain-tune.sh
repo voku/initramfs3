@@ -332,9 +332,6 @@ SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
 
-# Set global sampling rate
-echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
-
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "85" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
@@ -379,8 +376,6 @@ echo "120000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate
 
 elif [ $DEFAULT_SPEED == 1 ]; then
 
-echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
-
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
@@ -424,8 +419,6 @@ echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate
 	fi;
 
 elif [ $MORE_SPEED == 1 ]; then
-
-echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 
 	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
@@ -820,10 +813,10 @@ else
 	MODE="SLEEP";
 fi;
 
-# Reduce CPU speed
-echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-# Reduce deepsleep CPU speed
+# Reduce CPU speed on IDLE mode
+echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 
@@ -834,13 +827,13 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
-# cpu - second core always-off
-echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+# cpu - second core off but hot plugged, to prevent SOD
+echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
 echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-echo "35" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # set settings for battery -> don't wake up "pdflush daemon"
