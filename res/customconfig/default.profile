@@ -88,7 +88,6 @@ install_root=on
 cortexbrain_background_process=1
 cortexbrain_auto_tweak_brightness=0
 cortexbrain_firewall=0
-<<<<<<< HEAD
 cortexbrain_ril=0
 cortexbrain_tcp=1
 cortexbrain_cpu=1
@@ -97,12 +96,3 @@ cortexbrain_battery=1
 cortexbrain_system=1
 cortexbrain_kernel_tweaks=1
 cortexbrain_io=1
-=======
-usb_mode=default
-default_stats=off
-mdnie_shortcut_enabled=on
-soundgasm_hp=0
-tsp_flash_timeout=off
-awake_booster=1
-awake_booster_delay=5
->>>>>>> 9467b5f60038c39fa2b4887147f64cbf4686b0fb
