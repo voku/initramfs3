@@ -749,7 +749,7 @@ echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_fr
 echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # Set lock screen freq to max scalling freq. 
-echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 
 if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;

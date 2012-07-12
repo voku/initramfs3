@@ -312,8 +312,8 @@ The third step is disabled as default by having the second to third threshold 10
 	<seekBar description="Vibration force level (default 75)" 
 		name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
 
-	<seekBar description="Sets Touch screen lock freq, this freq will be set till screen is unlocked by default ROM screen lock. this is the slow wakeup BUG! Always set it to your max freq (Default is 1000000mHz)" 
-		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="500000" reversed="false" step="100000" max="1500000"/>
+	<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! if you are using luzactive gov set this to max CPU you like to use! or it's will be stuck on this limit! default is 500000mHz)" 
+		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="200000" reversed="false" step="100000" max="1500000"/>
 
 	<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
 
