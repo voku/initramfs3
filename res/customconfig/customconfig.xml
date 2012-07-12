@@ -42,7 +42,11 @@
 			</spinner>
 
 			<spinner description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below" 
+<<<<<<< HEAD
 				name="WakeUp Booster" action="awake_booster">
+=======
+				name="WakeUp Bosster" action="awake_booster">
+>>>>>>> 9467b5f60038c39fa2b4887147f64cbf4686b0fb
 				<spinnerItem name="Enabled" value="1"/> 
 				<spinnerItem name="Disabled" value="0"/> 
 			</spinner>
@@ -419,8 +423,13 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
 			name="Touch Keys Lights Settings">
 
+<<<<<<< HEAD
 		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod." 
 			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
+=======
+		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
+			name="Leds on with touch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
+>>>>>>> 9467b5f60038c39fa2b4887147f64cbf4686b0fb
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
 			name="led_timeout" action="led_timeout">
