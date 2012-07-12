@@ -33,6 +33,8 @@ if [ "a${md5performance}" != "a`cat /data/.siyah/.md5performance`" ]; then
         echo ${md5performance} > /data/.siyah/.md5performance
 fi;
 
+cp -a /res/customconfig/.config.tmp /data/.siyah/
+
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
 [ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
