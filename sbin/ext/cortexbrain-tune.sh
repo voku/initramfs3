@@ -827,13 +827,13 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
-# cpu - second core always-off
-echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+# cpu - second core off but hot plugged, to prevent SOD
+echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
 echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-echo "35" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # set settings for battery -> don't wake up "pdflush daemon"
