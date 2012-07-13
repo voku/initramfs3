@@ -801,8 +801,8 @@ fi;
 echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 # Reduce deepsleep CPU speed, SUSPEND mode
-echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+#echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 
 # Load the MAX_CPU_ALLOWED for wakeup just in case user changed allowed freq steps!
 MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
