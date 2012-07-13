@@ -106,7 +106,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<!--seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/-->
+		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
 
 		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. 
 This value will be applied to all CPU steps before any script or app execution. 
@@ -137,11 +137,11 @@ If you use any script or voltage control app this setting may be overriden by th
 		<seekBar description="This is for CPU BUS-FREQ DOWN-FREQ-Scaling, based on CPU load! default=30%" 
 			name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" unit="%" min="23" reversed="false" step="1" max="50"/>
 
-		<!--seekBar description="Maximum DEEP SLEEP CPU Speed (default is 700)" 
+		<seekBar description="Maximum DEEP SLEEP CPU Speed (default is 700)" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)" 
-			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/-->
+			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor." 
 			name="Deep-Sleep on Charger! CPU Governor" action="generic /tmp/deep_sleep_ac">
