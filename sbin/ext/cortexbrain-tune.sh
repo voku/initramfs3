@@ -755,22 +755,6 @@ if [ $cortexbrain_battery == 1 ]; then
 	BATTERY_TWEAKS;
 fi;
 
-# ==============================================================
-# check for temperature
-# ==============================================================
-
-CHECK_TEMPERATURE()
-{
-TEMP=`cat /sys/class/power_supply/battery/batt_temp`;
-if [ $TEMP -ge $MAX_TEMP ]; then
-	if [ `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq` -ge 1000000 ]; then
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	fi;
-	log -p i -t $FILE_NAME "*** TEMPERATURE over $(( ${MAX_TEMP} / 10 ))C***";
-fi;
-}
-CHECK_TEMPERATURE;
-
 if [ $cortexbrain_cpu == 1 ]; then
 	if [[ "$PROFILE" == "performance" ]]; then
 		MORE_SPEED=1;
