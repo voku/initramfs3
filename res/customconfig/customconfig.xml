@@ -129,7 +129,7 @@ If you use any script or voltage control app this setting may be overriden by th
 
 		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ 400,267,133,100Mhz BUS, 0=MAX Power(400Mhz) -> 4=MAX-Battery Save(100Mhz), DO NOT USE 4 WHEN more than 1.2Ghz OC! default=3(133Mhz)" name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="4"/>
+		<seekBar description="This is for CPU BUS-FREQ 400,267,133 Mhz, 0=MAX Power(400Mhz) -> 3=MAX-Battery Save(133Mhz), default=3(133Mhz)" name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="3"/>
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="23" reversed="false" step="1" max="50"/>
