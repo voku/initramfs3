@@ -3,9 +3,7 @@
 
 		<settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." name="CPU Hotplug Settings">
 
-			<spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. 
-			Using second core always-off or always-on modes will make the other hotplug parameters useless." 
-				name="Hotplug Mode" action="secondcore">
+				<spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
 				<spinnerItem name="CPU Hotplug (default)" value="hotplug"/> 
 				<spinnerItem name="Second core always-off" value="always-off"/> 
 				<spinnerItem name="Second core always-on" value="always-on"/> 
@@ -82,7 +80,8 @@
 				name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="100" reversed="false" step="100" max="1000"/>
 
 			<seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
-				name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit="kHz" min="0" reversed="false" step="100000" max="1200000"/>
+				name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" 
+				unit="kHz" min="0" reversed="false" step="100000" max="1200000"/>
 
 		</settingsPane>
 
@@ -106,7 +105,8 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
+		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" 
+			name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
 
 		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. 
 This value will be applied to all CPU steps before any script or app execution. 
@@ -127,21 +127,28 @@ If you use any script or voltage control app this setting may be overriden by th
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
+		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
+			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ 400,267,133 Mhz, 0=MAX Power(400Mhz) -> 3=MAX-Battery Save(133Mhz), default=3(133Mhz)" name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" unit="Step" min="0" reversed="false" step="1" max="3"/>
+		<seekBar description="This is for CPU BUS-FREQ 400,267,133 Mhz, 0=MAX Power(400Mhz) -> 3=MAX-Battery Save(133Mhz), default=3(133Mhz)" 
+			name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" 
+			unit="Step" min="0" reversed="false" step="1" max="3"/>
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%" 
-			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="23" reversed="false" step="1" max="50"/>
+			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
+			unit="%" min="23" reversed="false" step="1" max="50"/>
 
 		<seekBar description="This is for CPU BUS-FREQ DOWN-FREQ-Scaling, based on CPU load! default=30%" 
-			name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" unit="%" min="23" reversed="false" step="1" max="50"/>
+			name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" 
+			unit="%" min="23" reversed="false" step="1" max="50"/>
 
 		<seekBar description="Maximum DEEP SLEEP CPU Speed (default is 700)" 
-			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
+			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)" 
-			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
+			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor." 
 			name="Deep-Sleep on Charger! CPU Governor" action="generic /tmp/deep_sleep_ac">
@@ -279,7 +286,8 @@ The third step is disabled as default by having the second to third threshold 10
 	<settingsPane description="Brightness Curve settings which modify auto-brightness behavior." name="Brightness Curve">
 
 	<seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
-		name="TouchMove Sensitivity" action="generic /sys/devices/platform/s3c2440-i2c.3/i2c-3/3-004a/mov_hysti" unit=" pixel" min="0" reversed="false" step="1" max="20"/>
+		name="TouchMove Sensitivity" action="generic /sys/devices/platform/s3c2440-i2c.3/i2c-3/3-004a/mov_hysti" 
+		unit=" pixel" min="0" reversed="false" step="1" max="20"/>
 
 	<seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions (default 30)" 
 		name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
@@ -297,25 +305,30 @@ The third step is disabled as default by having the second to third threshold 10
 	<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
 	<seekBar description="Sets screen BLUE color scale (Default is 132)" 
-		name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" unit="BLUE" min="0" reversed="false" step="1" max="244"/>
+		name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
+		unit="BLUE" min="0" reversed="false" step="1" max="244"/>
 
 	<seekBar description="Sets screen RED color scale (Default is 122)" 
-		name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" unit="RED" min="0" reversed="false" step="1" max="244"/>
+		name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
+		unit="RED" min="0" reversed="false" step="1" max="244"/>
 
 	</settingsPane>
 
 	<settingsPane description="Other Settings" name="Other Settings">
 
 	<seekBar description="User adjustable gamma shift." 
-		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
+		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" 
+		unit="" min="-50" reversed="false" step="5" max="50"/>
 
 	<seekBar description="Vibration force level (default 75)" 
 		name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
 
 	<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! if you are using luzactive gov set this to max CPU you like to use! or it's will be stuck on this limit! default is 500000mHz)" 
-		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="200000" reversed="false" step="100000" max="1500000"/>
+		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
+		unit="mHz" min="200000" reversed="false" step="100000" max="1500000"/>
 
-	<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
+	<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" 
+		name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
 
 	<spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
 		name="Negative Screen Mod tuning." action="negative_tweak">
@@ -375,7 +388,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
 
-		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" label="BLN Enabled on charging"/>
+		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" 
+			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" label="BLN Enabled on charging"/>
 
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
@@ -437,7 +451,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
-			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
+			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
+			unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
 
 		</settingsPane>
 
@@ -548,7 +563,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
 		</spinner>
 
-		<checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
+		<checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) wakelock statistics." 
+			name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
 
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
