@@ -16,14 +16,14 @@
 		<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-			<spinner description="This setting will change CPU step count (Restart required)." 
+			<!--spinner description="This setting will change CPU step count (Restart required)." 
 				name="CPU Step Count" action="generic /tmp/cpustepcount">
 				<spinnerItem name="6 (1200-1000-800-500-200-100MHz)" value="6"/> 
 				<spinnerItem name="7 (1400->100-7-Steps)" value="7"/> 
 				<spinnerItem name="8 (1500->100-8-Steps)" value="8"/> 
 				<spinnerItem name="9 (1500->100-9-Steps)" value="9"/> 
 				<spinnerItem name="15 (1500->100-15-Steps)" value="15"/> 
-			</spinner>
+			</spinner-->
 
 			<seekBar description="Maximum CPU Speed (default is 1200)" 
 				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" 
