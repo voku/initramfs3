@@ -54,7 +54,7 @@
 			<spinnerItem name="scary" value="scary"/> 
 		</spinner>
 
-		<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
+		<!-- seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
 			name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="70"/>
 
 		<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)" 
@@ -70,7 +70,7 @@
 			name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit="jiffies" min="100" reversed="false" step="100" max="1000"/>
 
 		<seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
-			name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit="kHz" min="0" reversed="false" step="100000" max="1200000"/>
+			name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit="kHz" min="0" reversed="false" step="100000" max="1200000"/ -->
 
 		<!--seekBar description="Sets second core kick-out threshold for screen-on state" 
 			name="loadl" action="generic /sys/module/legacy_hotplug/parameters/loadl" unit="%" min="0" reversed="false" step="5" max="100"/>
