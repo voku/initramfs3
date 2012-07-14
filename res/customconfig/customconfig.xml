@@ -49,7 +49,7 @@
 
 			<spinner description="Wakeup booster delay on max speed and peformance gov, depend on cortex background process" name="WakeUp Bosster Delay" action="awake_booster_delay">
 				<spinnerItem name="3Sec" value="3"/> 
-				<spinnerItem name="5Seec" value="5"/>
+				<spinnerItem name="5Sec" value="5"/>
 				<spinnerItem name="10Sec" value="10"/> 
 			</spinner>
 
