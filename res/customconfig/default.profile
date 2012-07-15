@@ -73,6 +73,7 @@ logger=off
 zramtweaks=2
 gpsregion=No_GPS_Zone_changes
 scheduler=sio
+fsync_enabled=on
 usb_mode=default
 default_stats=off
 chargecurrent=2
