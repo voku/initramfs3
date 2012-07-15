@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-)
+(
 if [ ! -f /system/xbin/su ]; then
 	mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 	/sbin/busybox sh /sbin/ext/install.sh > /dev/null 2>&1
@@ -18,5 +18,10 @@ if [ ! -f /system/xbin/su ]; then
 fi;
 )&
 
-sleep 3
-echo "ROOT INSTALLED! Have Fun!"
+sleep 4
+if [ -f /system/xbin/su ]; then
+	echo "ROOT INSTALLED! Have Fun!"
+esle
+	echo "ROOT NOT INSTALLED! Try again"
+fi;
+

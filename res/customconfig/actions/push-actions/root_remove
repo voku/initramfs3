@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-)
+(
 if [ -f /system/xbin/su ]; then
 		mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 		rm -f /system/bin/su > /dev/null 2>&1
@@ -33,5 +33,9 @@ fi;
 )&
 
 sleep 3
-echo "ROOT REMOVED! STOCK SYSTEM!"
+if [ ! -f /system/xbin/su ]; then
+	echo "ROOT REMOVED! STOCK SYSTEM!"
+else
+	echo "ROOT NOT REMOVED! Try again"
+fi;
 
