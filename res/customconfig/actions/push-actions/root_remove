@@ -1,0 +1,37 @@
+#!/sbin/busybox sh
+
+)
+if [ -f /system/xbin/su ]; then
+		mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+		rm -f /system/bin/su > /dev/null 2>&1
+		rm -f /system/xbin/su > /dev/null 2>&1
+		# some roms have a busybox with su applet
+		if [ -e /system/xbin/busybox ]; then
+			mv /system/xbin/busybox /system/xbin/boxman > /dev/null 2>&1
+			rm -f /system/xbin/busybox > /dev/null 2>&1
+		fi
+
+		if [ -e /system/bin/busybox ]; then
+			mv /system/bin/busybox /system/bin/boxman > /dev/null 2>&1
+			rm -f /system/bin/busybox > /dev/null 2>&1
+		fi
+
+		ln -s /sbin/busybox /system/xbin/busybox > /dev/null 2>&1
+
+		# I need to remove this as well for Garanti CepBank app
+		if [ -e /system/xbin/which ]; then
+			mv /system/xbin/which /system/xbin/waswhich-bkp > /dev/null 2>&1
+			rm -f /system/xbin/which > /dev/null 2>&1
+		fi
+
+		# 1SuperUser, superuser Superuser SuperUser whatever...
+		rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
+		rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
+		rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
+		mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+fi;
+)&
+
+sleep 3
+echo "ROOT REMOVED! STOCK SYSTEM!"
+
