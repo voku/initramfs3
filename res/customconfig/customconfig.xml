@@ -108,9 +108,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" 
 			name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
 
-		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. 
-This value will be applied to all CPU steps before any script or app execution. 
-If you use any script or voltage control app this setting may be overriden by those." 
+		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
 			<spinnerItem name="No Undervolting" value="0"/> 
 			<spinnerItem name=" -25 mV" value="-25"/> 
@@ -150,7 +148,7 @@ If you use any script or voltage control app this setting may be overriden by th
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
-		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor." 
+		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep on Charger! CPU Governor" action="generic /tmp/deep_sleep_ac">
 			<spinnerItem name="scary" value="scary"/>
 			<spinnerItem name="conservative" value="conservative"/>
@@ -163,7 +161,7 @@ If you use any script or voltage control app this setting may be overriden by th
 			<spinnerItem name="hyper" value="hyper"/>
 		</spinner>
 
-		<spinner description="This will set the DEEP-SLEEP (screen OFF) on Battery CPU governor." 
+		<spinner description="This will set the DEEP-SLEEP (screen OFF) on Battery CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep on Battery! CPU Governor" action="generic /tmp/deep_sleep_batt">
 			<spinnerItem name="scary" value="scary"/> 
 			<spinnerItem name="conservative" value="conservative"/> 
