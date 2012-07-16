@@ -12,18 +12,15 @@ fi;
 
 case "${bln_switch}" in
 	1)
-		echo "1" > /sys/class/misc/backlightnotification/enabled
 		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
 		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
 		;;
 	2)
 		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
-		echo "1" > /sys/class/misc/backlightnotification/enabled
 		echo "1" > /sys/class/misc/backlightnotification/breathing_enabled
 		;;
 	3)
 		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
-		echo "1" > /sys/class/misc/backlightnotification/enabled
 		echo "1" > /sys/class/misc/backlightnotification/blinking_enabled
 		;;
 	*)
