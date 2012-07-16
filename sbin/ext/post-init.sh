@@ -49,6 +49,13 @@ read_config
 #cpu undervolting
 echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
+# Fsync function.
+if [ ${fsync_enabled} == on ]; then
+	echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
+else
+	echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
+fi;
+
 #change cpu step count
 #case "${cpustepcount}" in
 #	6)
