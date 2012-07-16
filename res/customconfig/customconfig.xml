@@ -58,6 +58,7 @@
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="hotplug" value="hotplug"/> 
+				<spinnerItem name="intellidemand" value="intellidemand"/> 
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
 				<spinnerItem name="smartassV2" value="smartassV2"/> 
 				<spinnerItem name="conservative" value="conservative"/> 
@@ -150,6 +151,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) and connected to CHARGER! CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep on Charger! CPU Governor" action="generic /tmp/deep_sleep_ac">
+			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="scary" value="scary"/>
 			<spinnerItem name="conservative" value="conservative"/>
 			<spinnerItem name="pegasusq" value="pegasusq"/>
@@ -163,6 +165,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) on Battery CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep on Battery! CPU Governor" action="generic /tmp/deep_sleep_batt">
+			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="scary" value="scary"/> 
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
@@ -600,11 +603,14 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. also you cant test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamicly changed, use it in your own will. (default is ON)"
+                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. also you cant test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamicly changed, use it in your own will. if you disabled, and want to enable it back, wait 40sec before enable, then push the CHECK if service online."
                         name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
                         <spinnerItem name="Enable" value="1"/> 
                         <spinnerItem name="Disable" value="0"/> 
                 </spinner>
+
+		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not"
+			name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
 		<spinner description="Enable or Disable the 'Auto-Brightness'-function from Cortexbrain-Script. [depends on 'cortexbrain_background_process']" 
 			name="Auto-Brightness" action="cortexbrain_auto_tweak_brightness">
