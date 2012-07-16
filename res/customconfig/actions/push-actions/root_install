@@ -21,7 +21,7 @@ fi;
 sleep 4
 if [ -f /system/xbin/su ]; then
 	echo "ROOT INSTALLED! Have Fun!"
-esle
+else
 	echo "ROOT NOT INSTALLED! Try again"
 fi;
 
