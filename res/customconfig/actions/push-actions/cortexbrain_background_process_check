@@ -1,7 +1,6 @@
 #!/sbin/busybox sh
 
 (
-sleep 1
 CORTEX_CHECK=-1
 CORTEX_CHECK=`pgrep -f "/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh"`
 if [ "1$CORTEX_CHECK" \> 10 ]; then
