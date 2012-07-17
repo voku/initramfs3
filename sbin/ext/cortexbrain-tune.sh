@@ -650,12 +650,12 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 AWAKE_MODE()
 {
 
-if [ $awake_booster == 1 ]; then
+if [ $awake_booster == 1 ] && [ ! -e /data/.siyah/booting ]; then
 # Awake booster!
 # Kill the wakeup bug! boost the CPU to MAX allowed on the same GOV + rise voltage +25mV till delay is done.
 echo "+25" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
-echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 # Now boost the screen lock freq to 1Ghz, lets keep it safe freq
 echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
@@ -818,7 +818,7 @@ echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
 # cpu - second core off
-echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
