@@ -296,6 +296,14 @@ chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
+# Turn off debugging for certain modules
+echo "0" > /sys/module/wakelock/parameters/debug_mask;
+echo "0" > /sys/module/userwakelock/parameters/debug_mask;
+echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
+echo "0" > /sys/module/alarm/parameters/debug_mask;
+echo "0" > /sys/module/alarm_dev/parameters/debug_mask;
+echo "0" > /sys/module/binder/parameters/debug_mask;
+
 #WIFI PM-FAST Support.
 if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm;
