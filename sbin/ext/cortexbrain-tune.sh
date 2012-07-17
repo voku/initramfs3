@@ -273,6 +273,13 @@ if [ $cortexbrain_system == 1 ]; then
 fi;
 
 # ==============================================================
+# EXTWEAKS FIXING
+# ==============================================================
+
+#apply last led_timeout set on boot to fix the timeout reset.
+/res/uci.sh led_timeout $led_timeout
+
+# ==============================================================
 # CLEANING-TWEAKS
 # ==============================================================
 rm -rf /data/lost+found/* 2> /dev/null;
@@ -645,14 +652,13 @@ AWAKE_MODE()
 
 if [ $awake_booster == 1 ]; then
 # Awake booster!
-# Kill the wakeup bug! boost the CPU to MAX allowed.
+# Kill the wakeup bug! boost the CPU to MAX allowed on the same GOV + rise voltage +25mV till delay is done.
+echo "+25" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
+echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
-# Now boost the screen lock freq to Max Allowed
-echo "${MAX_CPU_ALLOWED}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-
-# Set performance gov after max freq is set, or it's will load on 1.Ghz
-echo "performance" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+# Now boost the screen lock freq to 1Ghz, lets keep it safe freq
+echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 
 fi;
 
@@ -663,9 +669,6 @@ if [ $CHARGING -ge 1 ]; then
 	# cpu - Always dual core
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
-
-	# CPU Idle State - IDLE only
-	echo "0" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 	# Bus Freq for Powered Mod
 	echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
@@ -705,9 +708,6 @@ else
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-	# CPU Idle State
-	echo "${enable_mask}" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
-
 	# value from settings
 	echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_savings;
 
@@ -741,6 +741,7 @@ echo "${pwm_val}" > /sys/vibrator/pwm_val;
 # Wait here and let all apps to load to RAM and give user fast wakeup with full speed!
 if [ $awake_booster == 1 ] && [ ! -e /data/.siyah/booting ]; then
 	sleep ${awake_booster_delay};
+	echo "-25" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 fi;
 
 # Set governor & CPU speed
@@ -797,9 +798,14 @@ else
 	MODE="SLEEP";
 fi;
 
-# Reduce CPU speed on IDLE mode
-echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# Reduce CPU speed on IDLE mode, with anti smart user :)
+if [ $scaling_min_freq \> 500000 ]; then
+	echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+else
+	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+fi;
+
 # Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
@@ -811,8 +817,8 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
-# cpu - second core off but hot plugged, to prevent SOD
-echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+# cpu - second core off
+echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
@@ -836,9 +842,6 @@ if [ $cortexbrain_cpu == 1 ]; then
 	DEFAULT_SPEED=0;
 	CPU_GOV_TWEAKS;
 fi;
-
-# CPU Idle State - AFTR+LPA
-echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
