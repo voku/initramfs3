@@ -303,10 +303,13 @@ chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
-#WIFI PM-FAST Support.
+# WIFI PM-FAST Support.
 if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm;
 fi;
+
+# disable ksm
+echo "2" > /sys/kernel/mm/ksm/run;
 
 LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
@@ -715,6 +718,9 @@ echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_fr
 
 if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
+else
+	# start ksm again
+	echo "1" > /sys/kernel/mm/ksm/run;
 fi;
 
 if [ $cortexbrain_cpu == on ]; then
@@ -772,6 +778,9 @@ echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 15
 echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
+
+# disable ksm 
+echo "2" >/sys/kernel/mm/ksm/run;
 
 if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
