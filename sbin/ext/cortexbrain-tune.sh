@@ -217,7 +217,7 @@ echo "15" > /proc/sys/fs/lease-break-time;
 
 log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 }
-if [ $cortexbrain_io == 1 ]; then
+if [ $cortexbrain_io == on ]; then
 	IO_TWEAKS;
 fi;
 
@@ -231,7 +231,7 @@ sysctl -w vm.panic_on_oom=0
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
 }
-if [ $cortexbrain_kernel_tweaks == 1 ]; then
+if [ $cortexbrain_kernel_tweaks == on ]; then
 	KERNEL_TWEAKS;
 fi;
 
@@ -268,7 +268,7 @@ fi;
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
 }
-if [ $cortexbrain_system == 1 ]; then
+if [ $cortexbrain_system == on ]; then
 	SYSTEM_TWEAKS;
 fi;
 
@@ -303,14 +303,6 @@ chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
-# Turn off debugging for certain modules
-echo "0" > /sys/module/wakelock/parameters/debug_mask;
-echo "0" > /sys/module/userwakelock/parameters/debug_mask;
-echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
-echo "0" > /sys/module/alarm/parameters/debug_mask;
-echo "0" > /sys/module/alarm_dev/parameters/debug_mask;
-echo "0" > /sys/module/binder/parameters/debug_mask;
-
 #WIFI PM-FAST Support.
 if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm;
@@ -333,7 +325,7 @@ done;
 
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
 }
-if [ $cortexbrain_battery == 1 ]; then
+if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
 fi;
 
@@ -481,7 +473,7 @@ fi;
 
 log -p i -t $FILE_NAME "*** cpu gov tweaks ***: enabled";
 }
-if [ $cortexbrain_cpu == 1 ]; then
+if [ $cortexbrain_cpu == on ]; then
 	CPU_GOV_TWEAKS;
 fi;
 
@@ -506,7 +498,7 @@ echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
 
 log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 }
-if [ $cortexbrain_memory == 1 ]; then
+if [ $cortexbrain_memory == on ]; then
 	MEMORY_TWEAKS;
 fi;
 
@@ -544,24 +536,8 @@ setprop net.tcp.buffersize.hspa    4092,87380,563200,4096,16384,110208;
 
 log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 }
-if [ $cortexbrain_tcp == 1 ]; then
+if [ $cortexbrain_tcp == on ]; then
 	TCP_TWEAKS;
-fi;
-
-# ==============================================================
-# 3G/Edge - TWEAKS
-# ==============================================================
-RIL_TWEAKS()
-{
-setprop ro.ril.hsxpa 2;
-setprop ro.ril.hsupa.category 14;
-setprop ro.ril.hsdpa.category 6;
-setprop ro.ril.gprsclass 12;
-
-log -p i -t $FILE_NAME "*** 3G/Edge tweaks ***: enabled";
-}
-if [ $cortexbrain_ril == 1 ]; then
-	RIL_TWEAKS;
 fi;
 
 # ==============================================================
@@ -645,7 +621,7 @@ fi
 
 log -p i -t $FILE_NAME "*** firewall-tweaks ***: enabled";
 }
-if [ $cortexbrain_firewall == 1 ]; then
+if [ $cortexbrain_firewall == on ]; then
 	FIREWALL_TWEAKS;
 fi;
 
@@ -658,79 +634,57 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 AWAKE_MODE()
 {
 
-if [ $awake_booster == 1 ] && [ ! -e /data/.siyah/booting ]; then
-# Awake booster!
-# Kill the wakeup bug! boost the CPU to MAX allowed on the same GOV + rise voltage +25mV till delay is done.
-echo "+25" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
-echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-
-# Now boost the screen lock freq to 1Ghz, lets keep it safe freq
-echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-
+if [ $awake_booster == on ] && [ ! -e /data/.siyah/booting ]; then
+	# Awake booster!
+	# Kill the wakeup bug! boost the CPU to MAX allowed on the same GOV + rise voltage +25mV till delay is done.
+	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+	if [ $SYSTEM_GOVERNOR == intellidemand ]; then
+		echo "intellidemand gov not allowed to use wakeup booster"
+	else
+		echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		# Now boost the screen lock freq to 1Ghz, lets keep it safe freq
+		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+	fi;
 fi;
 
-# Charging & screen is on? or no charging
-CHARGING=`cat /sys/class/power_supply/battery/charging_source`; # [0=battery 1=USB 2=AC];
-if [ $CHARGING -ge 1 ]; then
+# set cpu
+if [ "${secondcore}" == "hotplug" ]; then
+	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+else
+	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+fi;
 
-	# cpu - Always dual core
+if [ "${secondcore}" == "always-off" ]; then
+	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
+	echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+fi;
+
+if [ "${secondcore}" == "always-on" ]; then
 	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
+fi;
 
-	# Bus Freq for Powered Mod
-	echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-	echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+# cpu - settings for second core
+echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# load balancing - off
-	echo "0" > /sys/devices/system/cpu/sched_mc_power_savings;
+# Bus Freq for awake state
+echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-	MODE="SPEED";
+# value from settings
+echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_savings;
 
-else
-
-	# set cpu
-	if [ "${secondcore}" == "hotplug" ]; then
-		echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	else
-		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	fi;
-
-	if [ "${secondcore}" == "always-off" ]; then
-		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-		echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
-	fi;
-
-	if [ "${secondcore}" == "always-on" ]; then
-		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-		echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
-	fi;
-
-	# cpu - settings for second core
-	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
-
-	# Bus Freq for awake state
-	echo "${busfreq_asv_group}" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
-
-	# value from settings
-	echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_savings;
-
-	# auto set brightness
-	if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
-			LEVEL=$(cat /sys/class/power_supply/battery/capacity);
-			MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
-			OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
-			NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
-			if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
-				echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
-			fi;
-	fi;
-
-	MODE="AWAKE";
+# auto set brightness
+if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
+	LEVEL=$(cat /sys/class/power_supply/battery/capacity);
+	MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
+	OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
+	NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
+		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
+			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+		fi;
 fi;
 
 # Restore scheduler to normal
@@ -747,9 +701,8 @@ echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 # Wait here and let all apps to load to RAM and give user fast wakeup with full speed!
-if [ $awake_booster == 1 ] && [ ! -e /data/.siyah/booting ]; then
+if [ $awake_booster == on ] && [ ! -e /data/.siyah/booting ]; then
 	sleep ${awake_booster_delay};
-	echo "-25" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 fi;
 
 # Set governor & CPU speed
@@ -760,11 +713,11 @@ echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_fr
 # Set lock screen freq to max scalling freq. 
 echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 
-if [ $cortexbrain_battery == 1 ]; then
+if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
 fi;
 
-if [ $cortexbrain_cpu == 1 ]; then
+if [ $cortexbrain_cpu == on ]; then
 	if [[ "$PROFILE" == "performance" ]]; then
 		MORE_SPEED=1;
 		MORE_BATTERY=0;
@@ -781,6 +734,8 @@ if [ $cortexbrain_cpu == 1 ]; then
 	CPU_GOV_TWEAKS;
 fi;
 
+MODE="AWAKE";
+
 log -p i -t $FILE_NAME "*** $MODE Mode ***";
 }
 
@@ -790,29 +745,8 @@ log -p i -t $FILE_NAME "*** $MODE Mode ***";
 SLEEP_MODE()
 {
 
-# charging & screen is off
-CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-if [ $CHARGING -ge 1 ]; then
-
-	# CPU-Freq
-	echo "${deep_sleep_ac}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-
-	MODE="CHARGING";
-else
-
-	# CPU-Freq
-	echo "${deep_sleep_batt}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-
-	MODE="SLEEP";
-fi;
-
-# Reduce CPU speed on IDLE mode, with anti smart user :)
-if [ $scaling_min_freq \> 500000 ]; then
-	echo "200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-else
-	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-fi;
+# CPU-Freq
+echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 # Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
@@ -830,8 +764,7 @@ echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
-echo "3" > /sys/devices/system/cpu/cpufreq/busfreq_asv_group;
-echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # set settings for battery -> don't wake up "pdflush daemon"
@@ -840,16 +773,18 @@ echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centi
 echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 15
 echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 
-if [ $cortexbrain_battery == 1 ]; then
+if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
 fi;
 
-if [ $cortexbrain_cpu == 1 ]; then
+if [ $cortexbrain_cpu == on ]; then
 	MORE_BATTERY=1;
 	MORE_SPEED=0;
 	DEFAULT_SPEED=0;
 	CPU_GOV_TWEAKS;
 fi;
+
+MODE="SLEEP";
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
 }
