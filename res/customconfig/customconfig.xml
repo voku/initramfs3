@@ -91,7 +91,7 @@
 		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
 			name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
 
-		<checkbox description="Lock CPU to 200Mhz when music play with screen OFF, so we can save as much power we can, CPU is not in deepsleep, so no danger."
+		<checkbox description="Lock CPU to 200MHz when music play with screen OFF, so we can save as much power we can, CPU is not in deepsleep, so no danger."
 			name="CPU SOUND LOCK" action="generic01 /sys/devices/virtual/sound/sound_mc1n2/freq_lock" label="CPU SOUND LOCK"/>
 
 		<!--spinner description="Changes CFS granularity and latency settings. Using anything other than stock may decrease benchmark scores,
@@ -129,7 +129,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ 400,267,133 Mhz, 0=MAX Power(400Mhz) -> 3=MAX-Battery Save(133Mhz), default=3(133Mhz)" 
+		<seekBar description="This is for CPU BUS-FREQ 400,267,133 MHz, 0=MAX Power(400MHz) -> 3=MAX-Battery Save(133MHz), default=3(133MHz)" 
 			name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" 
 			unit="Step" min="0" reversed="false" step="1" max="3"/>
 
@@ -222,6 +222,9 @@ Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
 	</spinner>
 
 	</settingsPane>
+
+	<checkbox description="Lock GPU Freq to 267MHz on screen wakeup or leave it as set for 1st level"
+			name="GPU WAKEUP FREQ" action="generic01 /sys/module/mali/parameters/mali_resume_freq_enabled" label="GPU WAKEUP FREQ"/>	
 
 	<settingsPane description="GPU Voltage Levels: The defaults are 950,1050 and 1050." name="GPU Voltage Levels">
 

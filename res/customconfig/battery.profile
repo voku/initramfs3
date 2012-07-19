@@ -29,6 +29,7 @@ deep_sleep=scary
 GPUFREQ1=100
 GPUFREQ2=200
 GPUFREQ3=267
+mali_resume_freq_enabled=off
 GPUVOLT1=950
 GPUVOLT2=1000
 GPUVOLT3=1050
