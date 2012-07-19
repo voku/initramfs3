@@ -764,7 +764,7 @@ echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
-echo "40" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # set settings for battery -> don't wake up "pdflush daemon"
