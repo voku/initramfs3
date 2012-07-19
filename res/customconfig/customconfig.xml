@@ -91,12 +91,15 @@
 		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
 			name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
 
-		<spinner description="Changes CFS granularity and latency settings. Using anything other than stock may decrease benchmark scores,
+		<checkbox description="Lock CPU to 200Mhz when music play with screen OFF, so we can save as much power we can, CPU is not in deepsleep, so no danger."
+			name="CPU SOUND LOCK" action="generic01 /sys/devices/virtual/sound/sound_mc1n2/freq_lock" label="CPU SOUND LOCK"/>
+
+		<!--spinner description="Changes CFS granularity and latency settings. Using anything other than stock may decrease benchmark scores,
 but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 			<spinnerItem name="Samsung defaults" value="0"/> 
 			<spinnerItem name="Linux kernel defaults" value="1"/> 
 			<spinnerItem name="Dori Power" value="2"/> 
-		</spinner>
+		</spinner-->
 
 		</settingsPane>
 

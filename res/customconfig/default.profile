@@ -14,6 +14,7 @@ rate=200
 freq_min=700000
 GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
+freq_lock=on
 cfs_tweaks=1
 asv_group=3
 cpu_undervolting=0
