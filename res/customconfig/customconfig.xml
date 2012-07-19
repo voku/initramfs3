@@ -221,10 +221,10 @@ Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
 		<spinnerItem name="40MHz" value="40"/> 
 	</spinner>
 
-	</settingsPane>
+        <checkbox description="Lock GPU Freq to 267MHz on screen wakeup or leave it as set for 1st level"
+                        name="GPU WAKEUP FREQ" action="generic01 /sys/module/mali/parameters/mali_resume_freq_enabled" label="GPU WAKEUP FREQ"/>
 
-	<checkbox description="Lock GPU Freq to 267MHz on screen wakeup or leave it as set for 1st level"
-			name="GPU WAKEUP FREQ" action="generic01 /sys/module/mali/parameters/mali_resume_freq_enabled" label="GPU WAKEUP FREQ"/>	
+	</settingsPane>
 
 	<settingsPane description="GPU Voltage Levels: The defaults are 950,1050 and 1050." name="GPU Voltage Levels">
 
