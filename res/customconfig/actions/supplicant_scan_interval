@@ -3,12 +3,10 @@
 # $1 - "supplicant_scan_interval"
 # $2 - value=
 
-setprop wifi.supplicant_scan_interval $supplicant_scan_interval
-
 if [ "a$2" == "a" ]; then
 	echo $supplicant_scan_interval
 else
-        led_timeout=$2
+        supplicant_scan_interval=$2
 	echo $supplicant_scan_interval
 fi;
 
