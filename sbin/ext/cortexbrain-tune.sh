@@ -303,7 +303,7 @@ chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
-# WIFI PM-FAST Support.
+#WIFI PM-FAST Support.
 if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm;
 fi;
@@ -347,12 +347,12 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
-	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "85" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "20" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
+		echo "95" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
+		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
+		echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -391,12 +391,12 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 		echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
-	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "70" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
- 		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "30" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
+		echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+ 		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
+		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
+		echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -435,12 +435,12 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
-	if [ $SYSTEM_GOVERNOR == "hyper" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/hyper/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/hyper/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/hyper/down_differential;
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/hyper/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/hyper/freq_step
+	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
+		echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
+		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
+		echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
