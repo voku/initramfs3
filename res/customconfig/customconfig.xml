@@ -465,6 +465,15 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Misc Settings" name="Misc Settings">
 
+		<spinner description="WIFI supplicant scan interval, here you can set the time in sec for WIFI to look for access points when ON, Higher the range, less battery used by WIFI! but if you want WIFI to be off on screen OFF, and you set it in ROM settings!, then set it 60sec, if cortex process ON then no problem, will be set by auto and set your setting on screen ON to 360sec and off to 60sec!"
+			name="WIFI supplicant scan interval" action="supplicant_scan_interval">
+			<spinnerItem name="Set WIFI SCAN 60Sec" value="60"/> 
+			<spinnerItem name="Set WIFI SCAN 120Sec" value="120"/> 
+			<spinnerItem name="Set WIFI SCAN 180Sec" value="180"/> 
+			<spinnerItem name="Set WIFI SCAN 240Sec" value="240"/> 
+			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
+		</spinner>
+
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 

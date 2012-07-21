@@ -259,7 +259,6 @@ setprop mot.proximity.delay 15
 # more Tweaks
 setprop dalvik.vm.execution-mode int:jit
 setprop persist.adb.notify 0
-setprop wifi.supplicant_scan_interval 360
 setprop pm.sleep_mode 1
 
 if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
@@ -691,6 +690,9 @@ fi;
 echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler
 echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler
 
+# Set wifi.supplicant_scan_interval
+setprop wifi.supplicant_scan_interval $supplicant_scan_interval
+
 # Set default settings
 echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
@@ -758,6 +760,9 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 # Set disk I/O sched to noop simple and battery saving.
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
+
+# Set wifi.supplicant_scan_interval
+setprop wifi.supplicant_scan_interval 60
 
 # cpu - second core off
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
