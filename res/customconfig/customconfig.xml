@@ -48,7 +48,7 @@
 				<spinnerItem name="10Sec" value="10"/> 
 			</spinner>
 
-			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overriden by later scripts or apps." 
+			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 				<spinnerItem name="HYPER" value="HYPER"/> 
 				<!--spinnerItem name="ondemand" value="ondemand"/--> 
@@ -109,7 +109,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" 
 			name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
 
-		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." 
+		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
 			<spinnerItem name="No Undervolting" value="0"/> 
 			<spinnerItem name=" -25 mV" value="-25"/> 
@@ -126,7 +126,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
+		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
 		<seekBar description="This is for CPU BUS-FREQ 400,267,133 MHz, 0=MAX Power(400MHz) -> 3=MAX-Battery Save(133MHz), default=3(133MHz)" 
@@ -275,7 +275,7 @@ The third step is disabled as default by having the second to third threshold 10
 
 	<settingsPane description="Brightness Curve settings which modify auto-brightness behavior." name="Brightness Curve">
 
-	<seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
+	<seekBar description="Sets touch screen move sensitivity (vitalij value)." 
 		name="TouchMove Sensitivity" action="generic /sys/devices/platform/s3c2440-i2c.3/i2c-3/3-004a/mov_hysti" 
 		unit=" pixel" min="0" reversed="false" step="1" max="20"/>
 
@@ -428,7 +428,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
 			name="led_timeout" action="led_timeout">
-			<spinnerItem name="Alsways OFF" value="off"/> 
+			<spinnerItem name="Always OFF" value="off"/> 
 			<spinnerItem name="1 sec" value="1"/> 
 			<spinnerItem name="2 sec" value="2"/> 
 			<spinnerItem name="3 sec" value="3"/> 
@@ -438,7 +438,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Always ON" value="on"/> 
 		</spinner>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touch keys leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
@@ -487,7 +487,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="ZRAM check for active state" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<spinner description="GPS Time Zone for faster LOCK! use your rigion to fix GPS location!" name="GPS Region" action="gpsregion">
+		<spinner description="GPS Time Zone for faster LOCK! Use your region to fix GPS location!" name="GPS Region" action="gpsregion">
 			<spinnerItem name="No GPS Zone changes (default)" value="No_GPS_Zone_changes"/> 
 			<spinnerItem name="Set Asia" value="Asia"/> 
 			<spinnerItem name="Set Europe" value="Europe"/> 
@@ -502,7 +502,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<spinner description="This will set the default I/O scheduler. 
 	Default I/O scheduler will only be set during early stages of booting (before init.d execution), 
-	and can be overriden by later scripts or apps." 
+	and can be overridden by later scripts or apps." 
 			name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
@@ -531,8 +531,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		</spinner>
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. 
-	Give it a few hours after you reset the gauge. It may still show you funny values for those period, 
-	then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge 1" label="Reset Fuel-Gauge Chip"/>
+	Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." 
+			name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge 1" label="Reset Fuel-Gauge Chip"/>
 
 	</settingsPane>
 
@@ -557,7 +557,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. also you cant test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamicly changed, use it in your own will. if you disabled, and want to enable it back, wait 40sec before enable, then push the CHECK if service online."
+                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. Also you can't test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamically changed, use it in your own will. if you disabled, and want to enable it back, wait 40sec before enable, then push the CHECK if service online."
                         name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
                         <spinnerItem name="Enable" value="1"/> 
                         <spinnerItem name="Disable" value="0"/> 
