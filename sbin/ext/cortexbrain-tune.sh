@@ -810,18 +810,18 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		STATE=$(cat /sys/power/wait_for_fb_wake);
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
-			renice -10 $i;	
 			echo "-17" > /proc/$i/oom_adj;
 		done
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 10;
+		sleep 30;
 
 		# SLEEP state! All system to power save!
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
+		sleep 20
 		SLEEP_MODE;
 	done &);
 fi;
