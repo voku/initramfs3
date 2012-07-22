@@ -8,30 +8,30 @@ exec 2>&1
 mkdir /data/.siyah
 chmod 777 /data/.siyah
 
-#ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
-#if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
-#	rm -f /data/.siyah/*.profile
-#	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
-#fi
+ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
+if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
+	rm -f /data/.siyah/*.profile
+	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
+fi
 
 # Reset profile in case i messed with it.
-md5battery=`md5sum /res/customconfig/battery.profile | awk '{print $1}'`
-if [ "a${md5battery}" != "a`cat /data/.siyah/.md5battery`" ]; then
-	rm -f /data/.siyah/battery.profile
-	echo ${md5battery} > /data/.siyah/.md5battery
-fi;
+#md5battery=`md5sum /res/customconfig/battery.profile | awk '{print $1}'`
+#if [ "a${md5battery}" != "a`cat /data/.siyah/.md5battery`" ]; then
+#	rm -f /data/.siyah/battery.profile
+#	echo ${md5battery} > /data/.siyah/.md5battery
+#fi;
 
-md5default=`md5sum /res/customconfig/default.profile | awk '{print $1}'`
-if [ "a${md5default}" != "a`cat /data/.siyah/.md5default`" ]; then
-        rm -f /data/.siyah/default.profile
-        echo ${md5default} > /data/.siyah/.md5default
-fi;
+#md5default=`md5sum /res/customconfig/default.profile | awk '{print $1}'`
+#if [ "a${md5default}" != "a`cat /data/.siyah/.md5default`" ]; then
+#        rm -f /data/.siyah/default.profile
+#        echo ${md5default} > /data/.siyah/.md5default
+#fi;
 
-md5performance=`md5sum /res/customconfig/performance.profile | awk '{print $1}'`
-if [ "a${md5performance}" != "a`cat /data/.siyah/.md5performance`" ]; then
-        rm -f /data/.siyah/performance.profile
-        echo ${md5performance} > /data/.siyah/.md5performance
-fi;
+#md5performance=`md5sum /res/customconfig/performance.profile | awk '{print $1}'`
+#if [ "a${md5performance}" != "a`cat /data/.siyah/.md5performance`" ]; then
+#        rm -f /data/.siyah/performance.profile
+#        echo ${md5performance} > /data/.siyah/.md5performance
+#fi;
 
 cp -a /res/customconfig/.config.tmp /data/.siyah/
 
