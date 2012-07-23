@@ -141,13 +141,13 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 			name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" 
 			unit="%" min="23" reversed="false" step="1" max="50"/>
 
-		<seekBar description="Maximum DEEP SLEEP CPU Speed (default is 700)" 
+		<seekBar description="Maximum DEEP SLEEP CPU Speed (only 500 or 600 default is 600)" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			unit="kHz" min="500000" reversed="false" step="100000" max="600000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)" 
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			unit="kHz" min="100000" reversed="false" step="100000" max="600000"/>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
