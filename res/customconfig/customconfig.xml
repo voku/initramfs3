@@ -39,14 +39,14 @@
 				<spinnerItem name="800MHz" value="8"/> 
 			</spinner>
 
-			<checkbox description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below, note! intellidemand gov not allowed to use wakeup booster" 
+			<!--checkbox description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below, note! intellidemand gov not allowed to use wakeup booster" 
 				name="WakeUp Booster" action="generic_cortex /tmp/awake_booster" label="WakeUp Booster"/>
 
 			<spinner description="Wakeup booster delay on max speed and peformance gov, depend on cortex background process" name="WakeUp Booster Delay" action="awake_booster_delay">
 				<spinnerItem name="3Sec" value="3"/> 
 				<spinnerItem name="5Sec" value="5"/>
 				<spinnerItem name="10Sec" value="10"/> 
-			</spinner>
+			</spinner-->
 
 			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
@@ -54,12 +54,12 @@
 				<!--spinnerItem name="ondemand" value="ondemand"/--> 
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
-				<spinnerItem name="intellidemand" value="intellidemand"/> 
+				<!--spinnerItem name="intellidemand" value="intellidemand"/--> 
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
-				<spinnerItem name="wheatley" value="wheatley"/> 
+				<!--spinnerItem name="wheatley" value="wheatley"/--> 
 				<spinnerItem name="smartassV2" value="smartassV2"/> 
 				<spinnerItem name="conservative" value="conservative"/> 
-				<spinnerItem name="scary" value="scary"/> 
+				<!--spinnerItem name="scary" value="scary"/--> 
 			</spinner>
 
 			<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
@@ -141,23 +141,23 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 			name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" 
 			unit="%" min="23" reversed="false" step="1" max="50"/>
 
-		<seekBar description="Maximum DEEP SLEEP CPU Speed (default is 700)" 
+		<seekBar description="Maximum DEEP SLEEP CPU Speed (only 500 or 600 default is 600)" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			unit="kHz" min="500000" reversed="false" step="100000" max="600000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)" 
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			unit="kHz" min="100000" reversed="false" step="100000" max="600000"/>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
-			<spinnerItem name="scary" value="scary"/>
-			<spinnerItem name="intellidemand" value="intellidemand"/> 
+			<!--spinnerItem name="scary" value="scary"/-->
+			<!--spinnerItem name="intellidemand" value="intellidemand"/--> 
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="abyssplug" value="abyssplug"/> 
 			<spinnerItem name="smartassV2" value="smartassV2"/> 
-			<spinnerItem name="wheatley" value="wheatley"/> 
+			<!--spinnerItem name="wheatley" value="wheatley"/--> 
 			<spinnerItem name="lulzactive" value="lulzactive"/> 
 			<!--spinnerItem name="ondemand" value="ondemand"/--> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
@@ -557,11 +557,11 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. Also you can't test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamically changed, use it in your own will. if you disabled, and want to enable it back, wait 40sec before enable, then push the CHECK if service online."
+                <!--spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. Also you can't test BLN and fix permissions, battery will not get statistics reset when 100%, CPU tweaks will not be dynamically changed, use it in your own will. if you disabled, and want to enable it back, wait 40sec before enable, then push the CHECK if service online."
                         name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
                         <spinnerItem name="Enable" value="1"/> 
                         <spinnerItem name="Disable" value="0"/> 
-                </spinner>
+                </spinner-->
 
 		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not"
 			name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
@@ -575,8 +575,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
                 <checkbox description="Enable or Disable the 'TCP-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
                         name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'CPU-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
+                <!--checkbox description="Enable or Disable the 'CPU-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
+                        name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/-->
 
                 <checkbox description="Enable or Disable the 'Memory-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
                         name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>

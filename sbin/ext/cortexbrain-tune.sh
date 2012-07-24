@@ -633,6 +633,26 @@ MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
 AWAKE_MODE()
 {
 
+# Set CPu GOV and tweaks.
+echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+if [ $cortexbrain_cpu == on ]; then
+        if [[ "$PROFILE" == "performance" ]]; then
+                MORE_SPEED=1;
+                MORE_BATTERY=0;
+                DEFAULT_SPEED=0;
+        elif [[ "$PROFILE" == "default" ]]; then
+                MORE_BATTERY=0;
+                DEFAULT_SPEED=1;
+                MORE_SPEED=0;
+        else
+                MORE_BATTERY=1;
+                MORE_SPEED=0;
+                DEFAULT_SPEED=0;
+        fi;
+        CPU_GOV_TWEAKS;
+fi;
+
 if [ $awake_booster == on ] && [ ! -e /data/.siyah/booting ]; then
 	# Awake booster!
 	# Kill the wakeup bug! boost the CPU to MAX allowed on the same GOV + rise voltage +25mV till delay is done.
@@ -707,8 +727,7 @@ if [ $awake_booster == on ] && [ ! -e /data/.siyah/booting ]; then
 	sleep ${awake_booster_delay};
 fi;
 
-# Set governor & CPU speed
-echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+# Set CPU speed
 echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
@@ -717,23 +736,6 @@ echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_fr
 
 if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
-fi;
-
-if [ $cortexbrain_cpu == on ]; then
-	if [[ "$PROFILE" == "performance" ]]; then
-		MORE_SPEED=1;
-		MORE_BATTERY=0;
-		DEFAULT_SPEED=0;
-	elif [[ "$PROFILE" == "default" ]]; then
-		MORE_BATTERY=0;
-		DEFAULT_SPEED=1;
-		MORE_SPEED=0;
-	else
-		MORE_BATTERY=1;
-		MORE_SPEED=0;
-		DEFAULT_SPEED=0;
-	fi;
-	CPU_GOV_TWEAKS;
 fi;
 
 MODE="AWAKE";
@@ -749,6 +751,13 @@ SLEEP_MODE()
 
 # CPU-Freq
 echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+if [ $cortexbrain_cpu == on ]; then
+        MORE_BATTERY=1;
+        MORE_SPEED=0;
+        DEFAULT_SPEED=0;
+        CPU_GOV_TWEAKS;
+fi;
 
 # Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
@@ -782,13 +791,6 @@ if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
 fi;
 
-if [ $cortexbrain_cpu == on ]; then
-	MORE_BATTERY=1;
-	MORE_SPEED=0;
-	DEFAULT_SPEED=0;
-	CPU_GOV_TWEAKS;
-fi;
-
 MODE="SLEEP";
 
 log -p i -t $FILE_NAME "*** $MODE mode ***";
@@ -808,18 +810,18 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		STATE=$(cat /sys/power/wait_for_fb_wake);
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
-			renice -10 $i;	
 			echo "-17" > /proc/$i/oom_adj;
 		done
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 10;
+		sleep 30;
 
 		# SLEEP state! All system to power save!
 		STATE=$(cat /sys/power/wait_for_fb_sleep);
 		PROFILE=$(cat /data/.siyah/.active.profile);
 		. /data/.siyah/$PROFILE.profile;
+		sleep 20
 		SLEEP_MODE;
 	done &);
 fi;
