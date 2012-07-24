@@ -329,6 +329,15 @@ if [ $cortexbrain_battery == on ]; then
 fi;
 
 # ==============================================================
+# CPU-LUZACTIVE FIX
+# ==============================================================
+
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+	echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+fi;
+
+# ==============================================================
 # CPU-TWEAKS
 # ==============================================================
 
@@ -390,6 +399,10 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 		echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
+	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+		echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+	fi;
+
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
  		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
@@ -432,6 +445,10 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
 		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+		echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
@@ -732,7 +749,12 @@ echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_fr
 echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # Set lock screen freq to max scalling freq. 
-echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+        echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+else
+	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+fi;
 
 if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
@@ -774,7 +796,7 @@ echo "noop" > /sys/block/mmcblk1/queue/scheduler
 setprop wifi.supplicant_scan_interval 60
 
 # cpu - second core off
-echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Bus Freq for deep sleep
