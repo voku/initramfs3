@@ -22,20 +22,27 @@ case "${config_backup_restore}" in
 		file1=/data/.siyah/$PROFILE.profile;
 		file2=/data/.siyah/$PROFILE.profile_backup;
 
-		i=1;
-		while read line1; do
-			line2=$(sed -n "$i p" $file2);
-			line2_1=$(echo $line2 | cut -f 1 -d '=');
-			line2_2=$(echo $line2 | cut -f 2 -d '=');
-			line1_1=$(echo $line1 | cut -f 1 -d '=');
-			line1_2=$(echo $line1 | cut -f 2 -d '=');
-			if [ "a${line1_2}" != "a${line2_2}" ]; then
-				if [ "${line2_2}" != "" ]; then
-					sed -i "s/$line1_1\=$line1_2/$line2_1\=$line2_2/g" $file1;
-				fi;
-			fi;
-			i=$(($i+1));
-		done<$file1
+		while read line2; do
+				while read line1; do
+						line2_1=$(echo $line2 | cut -f 1 -d '=');
+						line2_2=$(echo $line2 | cut -f 2 -d '=');
+						line1_1=$(echo $line1 | cut -f 1 -d '=');
+						line1_2=$(echo $line1 | cut -f 2 -d '=');
+
+						if [ "a${line1_1}" != "a${line2_1}" ]; then
+								# nothing to do
+								wait 0;
+						else
+								if [ "a${line1_2}" != "a${line2_2}" ]; then
+										echo $line1_2 " - " $line2_2;
+										if [ "${line2_2}" != "" ]; then
+												sed -i "s/$line1_1\=$line1_2/$line2_1\=$line2_2/g" $file1;
+										fi;
+								fi;
+						fi;
+
+				done<$file1
+		done<$file2
 		;;
 	*)
 		echo "need input, 1=backup; 2=restore";
