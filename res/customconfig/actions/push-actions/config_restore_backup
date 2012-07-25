@@ -10,41 +10,46 @@ fi;
 
 case "${config_backup_restore}" in
 	1)
-		echo "Backup config file ...";
-		PROFILE=$(cat /data/.siyah/.active.profile);
+	echo "Backup config file ...";
+	PROFILE=$(cat /data/.siyah/.active.profile);
 
-		cp /data/.siyah/$PROFILE.profile /data/.siyah/$PROFILE.profile_backup;
-		;;
+	cp /data/.siyah/$PROFILE.profile /data/.siyah/$PROFILE.profile_backup;
+	;;
 	2)
-		echo "Restoring config file ...";
-		PROFILE=$(cat /data/.siyah/.active.profile);
+	echo "Restoring config file ...";
+	PROFILE=$(cat /data/.siyah/.active.profile);
 
-		file1=/data/.siyah/$PROFILE.profile;
-		file2=/data/.siyah/$PROFILE.profile_backup;
+	file1=/data/.siyah/$PROFILE.profile;
+	file2=/data/.siyah/$PROFILE.profile_backup;
 
-		while read line2; do
-				while read line1; do
-						line2_1=$(echo $line2 | cut -f 1 -d '=');
-						line2_2=$(echo $line2 | cut -f 2 -d '=');
-						line1_1=$(echo $line1 | cut -f 1 -d '=');
-						line1_2=$(echo $line1 | cut -f 2 -d '=');
+	while read line2; do
+		line2_1=$(echo $line2 | cut -f 1 -d '=');
+		line2_2=$(echo $line2 | cut -f 2 -d '=');
 
-						if [ "a${line1_1}" != "a${line2_1}" ]; then
-								# nothing to do
-								wait 0;
-						else
-								if [ "a${line1_2}" != "a${line2_2}" ]; then
-										echo $line1_2 " - " $line2_2;
-										if [ "${line2_2}" != "" ]; then
-												sed -i "s/$line1_1\=$line1_2/$line2_1\=$line2_2/g" $file1;
-										fi;
-								fi;
-						fi;
+		while read line1; do
+			line1_1=$(echo $line1 | cut -f 1 -d '=');
+			line1_2=$(echo $line1 | cut -f 2 -d '=');
 
-				done<$file1
-		done<$file2
-		;;
+			if [ "a${line1_1}" != "a${line2_1}" ]; then
+				# nothing to do -> continue the loop
+				continue;
+			else
+				if [ "a${line1_2}" != "a${line2_2}" ]; then
+					echo $line1_2 " - " $line2_2;
+					if [ "${line2_2}" != "" ]; then
+						sed -i "s/$line1_1\=$line1_2/$line2_1\=$line2_2/g" $file1;
+					fi;
+				else
+					# nothing to do -> break the loop
+					break;
+				fi;
+			fi;
+
+		done<$file1
+
+	done<$file2
+	;;
 	*)
-		echo "need input, 1=backup; 2=restore";
-		;;
+	echo "need input, 1=backup; 2=restore";
+	;;
 esac;
