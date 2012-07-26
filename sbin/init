@@ -117,12 +117,32 @@ JELLY=0
 # One more time set / rw just for good sleep.
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
+#############################
+# Partition global tuning!
+#############################
+
+#Setting journal_data_writeback to DATA CACHE and PAYLOAD-SEC-ROM.
+busybox umount -l /data > /dm-log
+busybox umount -l /cache >> /dm-log
+/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
+/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
+# Setting pertitions to writeback/ordered first.
+/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
+/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log #CACHE
+/sbin/tune2fs -I 256 /res/dev/data >> /dm-log
+/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
+/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
+# Checking Partitions X2! needed for clean flag.
+/sbin/e2fsck -p /res/dev/data
+/sbin/e2fsck -p /res/dev/data > /data-log
+/sbin/e2fsck -p /res/dev/cache
+/sbin/e2fsck -p /res/dev/cache > /cache-log
 
 if [ "$B2G" == 1 ]; then
         echo 0 > /proc/sys/kernel/rom_feature_set
 	patch -p1 < res/misc/b2g.patch
 
-        if [ ! -e /system/xbin/bash ]; then
+        if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
                 mv /sbin/init.no-bash-samsung /sbin/init.samsung
         fi;
 
@@ -139,7 +159,7 @@ if [ "$JELLY" == 1 ]; then
         cp -a /res/misc/JellyB-rom/* /
         echo 0 > /proc/sys/kernel/rom_feature_set
 
-        if [ ! -e /system/xbin/bash ]; then
+        if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
                 mv /sbin/init.no-bash-jellyB /sbin/init.samsung
 	else
 		mv /sbin/init.jellyB /sbin/init.samsung
@@ -177,7 +197,7 @@ if [ "$AOSP" == 1 ]; then
 	rm /init.rc.2
 	patch -p1 < /res/misc/cm9.patch
 
-	if [ -e /system/xbin/bash ]; then
+	if [ -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 		mv /sbin/init.cm9 /sbin/init.samsung
 	else
 		mv /sbin/init.no-bash-cm9 /sbin/init.samsung
@@ -195,7 +215,7 @@ if [ "$MIUI" == 1 ]; then
 	patch -p1 < /res/misc/miui.patch
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
-	if [ ! -e /system/xbin/bash ]; then
+	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 		mv /sbin/init.no-bash-samsung /sbin/init.samsung
 	fi;
 
@@ -216,7 +236,7 @@ if [ "$SECONDROM" == "1" ]; then
 	mv /init.rc.2 /init.rc
 fi;
 	
-if [ ! -e /system/xbin/bash ]; then
+if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 	mv /sbin/init.no-bash-samsung /sbin/init.samsung
 fi;
 

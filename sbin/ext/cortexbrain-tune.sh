@@ -147,7 +147,7 @@ for i in $MMC; do
 	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ]; then
-		echo "2" > $i/queue/iosched/writes_starved;
+		echo "1" > $i/queue/iosched/writes_starved;
 	fi;
 
 	if [ -e $i/queue/iosched/back_seek_max ]; then
@@ -307,9 +307,9 @@ if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm;
 fi;
 
-LEVEL=$(cat /sys/class/power_supply/battery/capacity);
-CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
-BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
+LEVEL=`$(cat /sys/class/power_supply/battery/capacity)`;
+CURR_ADC=`$(cat /sys/class/power_supply/battery/batt_current_adc)`;
+BATTFULL=`$(cat /sys/class/power_supply/battery/batt_full_check)`;
 # battery-calibration if battery is full
 echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
 if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
@@ -317,7 +317,7 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
 		echo "battery-calibration done ...";
 fi;
 
-for i in $(ls /sys/bus/usb/devices/*/power/level);
+for i in `$(ls /sys/bus/usb/devices/*/power/level)`;
 do
 	echo "auto" > $i;
 done;
@@ -714,10 +714,10 @@ echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_saving
 
 # auto set brightness
 if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
-	LEVEL=$(cat /sys/class/power_supply/battery/capacity);
-	MAX_BRIGHTNESS=$(cat /sys/class/backlight/panel/max_brightness);
-	OLD_BRIGHTNESS=$(cat /sys/class/backlight/panel/brightness);
-	NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
+	LEVEL=`$(cat /sys/class/power_supply/battery/capacity)`;
+	MAX_BRIGHTNESS=`$(cat /sys/class/backlight/panel/max_brightness)`;
+	OLD_BRIGHTNESS=`$(cat /sys/class/backlight/panel/brightness)`;
+	NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS*LEVEL/100 ))`;
 		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
@@ -829,19 +829,19 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
-		STATE=$(cat /sys/power/wait_for_fb_wake);
+		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
 			echo "-17" > /proc/$i/oom_adj;
 		done
-		PROFILE=$(cat /data/.siyah/.active.profile);
+		PROFILE=`$(cat /data/.siyah/.active.profile)`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 30;
 
 		# SLEEP state! All system to power save!
-		STATE=$(cat /sys/power/wait_for_fb_sleep);
-		PROFILE=$(cat /data/.siyah/.active.profile);
+		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
+		PROFILE=`$(cat /data/.siyah/.active.profile)`;
 		. /data/.siyah/$PROFILE.profile;
 		sleep 20
 		SLEEP_MODE;

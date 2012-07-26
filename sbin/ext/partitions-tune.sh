@@ -24,7 +24,7 @@ for i in $DM; do
         fi;
 
         if [ -e $i/queue/iosched/writes_starved ]; then
-                echo "2" > $i/queue/iosched/writes_starved;
+                echo "1" > $i/queue/iosched/writes_starved;
         fi;
 
         if [ -e $i/queue/iosched/fifo_batch ]; then

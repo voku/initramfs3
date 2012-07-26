@@ -3,25 +3,6 @@
 busybox date >>boot.txt
 exec >>boot.txt 2>&1
 
-#Setting journal_data_writeback to DATA CACHE and PAYLOAD-SEC-ROM.
-busybox umount -l /dev/block/mmcblk0p7 > /dm-log
-busybox umount -l /dev/block/mmcblk0p10 >> /dm-log
-
-# Setting pertitions to writeback first.
-/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p10 >> /data-log #DATA
-/sbin/tune2fs -o journal_data_writeback /dev/block/mmcblk0p7 >> /cache-log #CACHE
-
-/sbin/tune2fs -I 256 /dev/block/mmcblk0p10
-/sbin/tune2fs -I 256 /dev/block/mmcblk0p7
-/sbin/tune2fs -I 256 /dev/block/mmcblk0p9
-
-# Checking Partitions.
-/sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
-/sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
-# Second run to fix small errors
-/sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
-/sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
-
 CHECKP10=`cat data-log | grep /dev/block/mmcblk0p10 | cut -c 1-28`
 CHECKP7=`cat cache-log | grep /dev/block/mmcblk0p7 | cut -c 1-27`
 

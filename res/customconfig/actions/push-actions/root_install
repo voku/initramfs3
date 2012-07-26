@@ -4,10 +4,11 @@
 if [ ! -f /system/xbin/su ]; then
 	mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 	/sbin/busybox sh /sbin/ext/install.sh > /dev/null 2>&1
-
+	mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 		# Restore witch if exist
 		if [ -e /system/xbin/waswhich-bkp ]; then
-			cp /system/xbin/waswhich-bkp /system/xbin/which
+			rm -f /system/xbin/which > /dev/null 2>&1
+			cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1
 		fi;
 
 		if [ -e /system/xbin/boxman ]; then

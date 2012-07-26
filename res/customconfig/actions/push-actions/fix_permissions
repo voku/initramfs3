@@ -1,4 +1,7 @@
 #!/sbin/busybox sh
-export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
-fix_permissions_run $2 &
+(
+/sbin/fix_permissions;
+)&
+echo "Fixing permissions started! please leave the phone alone for 3min, no need to reboot.!";
+
