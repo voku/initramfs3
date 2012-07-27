@@ -26,7 +26,7 @@ case "${config_backup_restore}" in
                 line1_1=$(echo $line1 | cut -f 1 -d '=');
                 line1_2=$(echo $line1 | cut -f 2 -d '=');
 
-                line2=$(grep $line1_1 $file2)
+                line2=$(grep "^$line1_1\=" $file2)
                 line2_1=$(echo $line2 | cut -f 1 -d '=');
                 line2_2=$(echo $line2 | cut -f 2 -d '=');
 
