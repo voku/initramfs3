@@ -84,11 +84,11 @@ install_root=on
 cortexbrain_background_process=0
 cortexbrain_auto_tweak_brightness=off
 cortexbrain_firewall=off
-cortexbrain_tcp=on
+cortexbrain_tcp=off
 cortexbrain_cpu=off
-cortexbrain_memory=on
-cortexbrain_battery=on
-cortexbrain_system=on
-cortexbrain_kernel_tweaks=on
-cortexbrain_io=on
+cortexbrain_memory=off
+cortexbrain_battery=off
+cortexbrain_system=off
+cortexbrain_kernel_tweaks=off
+cortexbrain_io=off
 
