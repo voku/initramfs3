@@ -9,6 +9,7 @@ rm -f /init
 rm -f /init.samsung
 rm -f /init.jb
 rm -f /update*
+rm -f init.cm10
 mv /init.cm9 /init
 
 export PATH="${_PATH}"

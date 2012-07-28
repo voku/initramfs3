@@ -4,11 +4,12 @@ busybox cd /
 busybox rm init
 
 rm -f /init
+rm -f /init.samsung
 rm -f /init.cm9
-rm -f /init.jb
 rm -f /update*
-rm -f init.cm10
-mv /init.samsung /init
+rm -f init.jb
+mv /init.cm10 /init
+
 cd /
 exec /init
 

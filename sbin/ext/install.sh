@@ -53,24 +53,6 @@ then
   	fi
 fi;
 
-echo "Checking if cwmanager is installed"
-if [ ! -f /system/.siyah/cwmmanager3-installed ];
-then
-  	if [ "$payload_extracted" == "0" ];
-	then
-    		extract_payload
-  	fi
-  		rm /system/app/CWMManager.apk
-  		rm /data/dalvik-cache/*CWMManager.apk*
-  		rm /data/app/eu.chainfire.cfroot.cwmmanager*.apk
-  		xzcat /res/misc/payload/CWMManager.apk.xz > /system/app/CWMManager.apk
-  		chown 0.0 /system/app/CWMManager.apk
-  		chmod 644 /system/app/CWMManager.apk
-  		mkdir /system/.siyah
-  		chmod 755 /system/.siyah
-  		echo 1 > /system/.siyah/cwmmanager3-installed
-fi
-
 romtype=`cat /proc/sys/kernel/rom_feature_set`
 lightsmd5sum=`/sbin/busybox md5sum /system/lib/hw/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
 blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
@@ -83,6 +65,28 @@ blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybo
     		/sbin/busybox chown 0.0 /system/lib/hw/lights.exynos4.so
     		/sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
   	fi
+
+# New GM EXTWEAKS, Still not fully ready, lets wait for great app.
+GMTWEAKS () {
+echo "Checking if STweaks is installed"
+if [ ! -f /system/.siyah/stweaks-installed ];
+then
+	#  if [ "$payload_extracted" == "0" ];then
+	#    extract_payload
+	#  fi
+	rm /system/app/STweaks.apk
+	rm /data/app/com.gokhanmoral.STweaks*.apk
+	rm /data/dalvik-cache/*STweaks.apk*
+
+	cat /res/STweaks.apk > /system/app/STweaks.apk
+	chown 0.0 /system/app/STweaks.apk
+	chmod 644 /system/app/STweaks.apk
+	mkdir /system/.siyah
+	chmod 755 /system/.siyah
+	echo 1 > /system/.siyah/stweaks-installed
+fi
+}
+#GMTWEAKS # Disabled for now.
 
 if [ ! -s /system/xbin/ntfs-3g ];
 then

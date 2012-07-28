@@ -1,9 +1,10 @@
 #!/sbin/busybox sh
 
 if [ -f /data/local/bootanimation.bin ]; then
-  /data/local/bootanimation.bin
+	/data/local/bootanimation.bin
 elif [ -f /data/local/bootanimation.zip ] || [ -f /system/media/bootanimation.zip ]; then
-  /sbin/bootanimation
+	/sbin/bootanimation
 else
-  /system/bin/samsungani
+	/system/bin/samsungani
 fi;
+

@@ -112,6 +112,7 @@ JELLY=0
 [ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ] && MIUI=1
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
+[ -f /system/framework/miui-framework.jar ] && MIUI=1
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
 
 # One more time set / rw just for good sleep.
@@ -121,6 +122,7 @@ JELLY=0
 # Partition global tuning!
 #############################
 
+PARTITION_TUNING () {
 #Unmounting DATA, CACHE, and PAYLOAD-SEC-ROM.
 busybox umount -l /data > /dm-log
 busybox umount -l /cache >> /dm-log
@@ -142,14 +144,14 @@ busybox umount -l /preload >> /dm-log
 /sbin/e2fsck -p /res/dev/data > /data-log
 /sbin/e2fsck -p /res/dev/cache
 /sbin/e2fsck -p /res/dev/cache > /cache-log
-
+}
 #############################
 # END Partition global tuning!
 #############################
 
 if [ "$B2G" == 1 ]; then
         echo 0 > /proc/sys/kernel/rom_feature_set
-	patch -p1 < res/misc/b2g.patch
+	cp -a /res/misc/B2G-ROM/* /	
 
         if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
                 mv /sbin/init.no-bash-samsung /sbin/init.samsung
@@ -165,18 +167,33 @@ if [ "$B2G" == 1 ]; then
 fi;
 
 if [ "$JELLY" == 1 ]; then
-        cp -a /res/misc/JellyB-rom/* /
-        echo 0 > /proc/sys/kernel/rom_feature_set
+	if [ -e /system/etc/CHANGELOG-CM ]; then
+		cp -a /res/misc/JellyB-CM10/* /
+        	echo 1 > /proc/sys/kernel/rom_feature_set
+		rm /init.rc.2
 
-        if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-                mv /sbin/init.no-bash-jellyB /sbin/init.samsung
+#		if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
+			mv /sbin/init.no-bash-jellyB-cm10 /sbin/init.samsung
+#		else
+#			mv /sbin/init.jellyB.cm10 /sbin/init.samsung
+#		fi;
+
 	else
-		mv /sbin/init.jellyB /sbin/init.samsung
-        fi;
+        	cp -a /res/misc/JellyB-ROM/* /
+        	echo 0 > /proc/sys/kernel/rom_feature_set
+
+        	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
+                	mv /sbin/init.no-bash-jellyB /sbin/init.samsung
+		else
+			mv /sbin/init.jellyB /sbin/init.samsung
+        	fi;
+	fi;
 
         if [ "$SECONDROM" == "1" ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
-                mv /init.rc.2 /init.rc
+		if [ -e /init.rc.2 ]; then
+                	mv /init.rc.2 /init.rc
+		fi;
         fi;
 
         # Start ROM!
@@ -184,27 +201,30 @@ if [ "$JELLY" == 1 ]; then
 fi;
 
 if [ "$SLIM" == 1 ]; then
+	cp -a /res/misc/CM-ROM/* /
         echo 1 > /proc/sys/kernel/rom_feature_set
-        cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
+        cp -a /res/misc/libsqlite.so /system/lib/
         chmod 777 /system/lib/libsqlite.so
         rm /init.rc.2
-        patch -p1 < /res/misc/cm9.patch
+        
         mv /sbin/init.no-bash-cm9 /sbin/init.samsung
 
         if [ "$SECONDROM" == "1" ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
         fi;
 
+	PARTITION_TUNING
         # Start ROM!
         exec /sbin/init.samsung
 fi;
 
 if [ "$AOSP" == 1 ]; then
+	cp -a /res/misc/CM-ROM/* /
 	echo 1 > /proc/sys/kernel/rom_feature_set
-	cp -a /res/misc/cyano/sql/libsqlite.so /system/lib/
+	cp -a /res/misc/libsqlite.so /system/lib/
 	chmod 777 /system/lib/libsqlite.so
 	rm /init.rc.2
-	patch -p1 < /res/misc/cm9.patch
+	PARTITION_TUNING
 
 	if [ -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 		mv /sbin/init.cm9 /sbin/init.samsung
@@ -221,7 +241,7 @@ if [ "$AOSP" == 1 ]; then
 fi;
 
 if [ "$MIUI" == 1 ]; then
-	patch -p1 < /res/misc/miui.patch
+	cp -a /res/misc/Miui-ROM/* /
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
@@ -237,7 +257,7 @@ if [ "$MIUI" == 1 ]; then
 	exec /sbin/init.samsung
 fi;
 
-# If not detected ROM installed then:
+# If not detected ROM / SAMMY ROM installed, then:
 echo 0 > /proc/sys/kernel/rom_feature_set
 
 if [ "$SECONDROM" == "1" ]; then

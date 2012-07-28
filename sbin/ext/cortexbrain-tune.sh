@@ -846,6 +846,8 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		sleep 20
 		SLEEP_MODE;
 	done &);
+else
+	echo "Cortex background process already running"
 fi;
 
 # ==============================================================

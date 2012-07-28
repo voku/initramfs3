@@ -594,4 +594,19 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 </settingsTab>
 
+<settingsTab name="BACKUP/RESTORE">
+
+	<settingsPane description="Here you can Backup / Restore your EXTWEAKS settings after installing new kernel, when you restore EXTWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till EXTWEAKS restart with new settings! restore will take 2MIN, you can lightly use your phone." 
+			name="Extweaks Settings Backup / Restore.">
+
+	<button description="Backup Extweaks User Settings!"
+			name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
+
+	<button description="Restore Extweaks User Settings!"
+			name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
+
+	</settingsPane>
+
+</settingsTab>
+
 </settingsRoot>
