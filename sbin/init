@@ -144,6 +144,8 @@ busybox umount -l /preload >> /dm-log
 /sbin/e2fsck -p /res/dev/data > /data-log
 /sbin/e2fsck -p /res/dev/cache
 /sbin/e2fsck -p /res/dev/cache > /cache-log
+/sbin/e2fsck -p /dev/block/mmcblk0p12
+/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
 }
 #############################
 # END Partition global tuning!
@@ -163,6 +165,7 @@ if [ "$B2G" == 1 ]; then
         fi;
 
         # Start ROM!
+	PARTITION_TUNING
         exec /sbin/init.samsung
 fi;
 
@@ -170,13 +173,13 @@ if [ "$JELLY" == 1 ]; then
 	if [ -e /system/etc/CHANGELOG-CM ]; then
 		cp -a /res/misc/JellyB-CM10/* /
         	echo 1 > /proc/sys/kernel/rom_feature_set
-		rm /init.rc.2
+		rm -f /init.rc.2
 
-#		if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
+		if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 			mv /sbin/init.no-bash-jellyB-cm10 /sbin/init.samsung
-#		else
-#			mv /sbin/init.jellyB.cm10 /sbin/init.samsung
-#		fi;
+		else
+			mv /sbin/init.jellyB.cm10 /sbin/init.samsung
+		fi;
 
 	else
         	cp -a /res/misc/JellyB-ROM/* /
@@ -190,13 +193,17 @@ if [ "$JELLY" == 1 ]; then
 	fi;
 
         if [ "$SECONDROM" == "1" ]; then
-                mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		if [ -e /init.smdk4210.rc.2 ]; then
+                	mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		fi;
+
 		if [ -e /init.rc.2 ]; then
                 	mv /init.rc.2 /init.rc
 		fi;
         fi;
 
         # Start ROM!
+	PARTITION_TUNING
         exec /sbin/init.samsung
 fi;
 
@@ -213,8 +220,8 @@ if [ "$SLIM" == 1 ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
         fi;
 
-	PARTITION_TUNING
         # Start ROM!
+	PARTITION_TUNING
         exec /sbin/init.samsung
 fi;
 
@@ -224,7 +231,6 @@ if [ "$AOSP" == 1 ]; then
 	cp -a /res/misc/libsqlite.so /system/lib/
 	chmod 777 /system/lib/libsqlite.so
 	rm /init.rc.2
-	PARTITION_TUNING
 
 	if [ -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 		mv /sbin/init.cm9 /sbin/init.samsung
@@ -237,6 +243,7 @@ if [ "$AOSP" == 1 ]; then
 	fi;
 
 	# Start ROM!
+	PARTITION_TUNING
 	exec /sbin/init.samsung
 fi;
 
@@ -254,6 +261,7 @@ if [ "$MIUI" == 1 ]; then
 	fi;
 
 	# Start ROM!
+	PARTITION_TUNING
 	exec /sbin/init.samsung
 fi;
 
@@ -270,5 +278,6 @@ if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 fi;
 
 # Start ROM
+PARTITION_TUNING
 exec /sbin/init.samsung
 
