@@ -1,0 +1,88 @@
+#!/sbin/busybox sh
+export PATH="/res/customconfig/actions/push-actions:${PATH}";
+
+if [ "a$2" == "a" ]; then
+	echo $config_backup_restore;
+else
+	config_backup_restore=$2;
+	echo $config_backup_restore;
+fi;
+
+case "${config_backup_restore}" in
+	1)
+	echo "Backup config file ...";
+	PROFILE=$(cat /data/.siyah/.active.profile);
+	cp /data/.siyah/$PROFILE.profile /data/.siyah/$PROFILE.profile_backup;
+	echo "Backup Done!";
+	;;
+	2)
+	if [ `pgrep -f push-actions/config_backup_restore |  wc -l` \< 3 ]; then
+		echo "Restoring config file ...";
+		echo "Wait 90Sec till full restore, app will restart with new settings.";
+		(
+		PROFILE=$(cat /data/.siyah/.active.profile);
+
+		file1=/data/.siyah/$PROFILE.profile;
+		file2=/data/.siyah/$PROFILE.profile_backup;
+
+		while read line1; do
+			line1_1=$(echo $line1 | cut -f 1 -d '=');
+			line1_2=$(echo $line1 | cut -f 2 -d '=');
+
+			line2=$(grep "^$line1_1\=" $file2)
+			line2_1=$(echo $line2 | cut -f 1 -d '=');
+			line2_2=$(echo $line2 | cut -f 2 -d '=');
+
+			if [ "a${line1_1}" != "a${line2_1}" ]; then
+				# nothing to do -> continue the loop
+				continue;
+			else
+				if [ "a${line1_2}" != "a${line2_2}" ]; then
+					echo $line1_2 " - " $line2_2;
+
+				if [ "${line2_2}" != "" ]; then
+					sed -i "s/$line1_1\=$line1_2/$line2_1\=$line2_2/g" $file1;
+				fi;
+					continue;
+				else
+					# nothing to do -> continue the loop
+					continue;
+				fi;
+			fi;
+		done<$file1
+		# hiding all push action scripts from uci.sh
+		/sbin/busybox mount -o remount,rw rootfs
+		/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
+
+		# apply New ExTweaks settings
+		/res/uci.sh apply
+		# add trigger for push actions restore function.
+		echo "uci done" > /data/.siyah/uci_loaded
+		)&
+
+		(
+		while [ ! -e /data/.siyah/uci_loaded ]; do
+			sleep 10
+			echo "Still waiting till all DONE!"
+		done;
+		# Restore all the PUSH Button Actions back to there location.
+		/sbin/busybox mount -o remount,rw rootfs
+		/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
+		/sbin/busybox rm -f /data/.siyah/uci_loaded
+
+		# Wait for all full sync.
+		sleep 30
+		# Killing extweaks, if was open it's will restart!
+		EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
+		kill $EXTWEAKSAPP
+		)&
+	else
+		# Anti smart user protection! multi run of this script will bring HELL! :)
+		echo "you are running RESTORE already! please wait!"
+	fi;
+	;;
+	*)
+	echo "need input, 1=backup; 2=restore";
+	;;
+esac;
+

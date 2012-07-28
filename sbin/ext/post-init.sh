@@ -33,8 +33,6 @@ fi
 #        echo ${md5performance} > /data/.siyah/.md5performance
 #fi;
 
-cp -a /res/customconfig/.config.tmp /data/.siyah/
-
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
 [ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
@@ -93,6 +91,9 @@ fi
 #Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
 
+#enable kmem interface for everyone by GM.
+echo 0 > /proc/sys/kernel/kptr_restrict
+
 #apply last soundgasm level on boot
 /res/uci.sh soundgasm_hp $soundgasm_hp
 
@@ -112,8 +113,6 @@ chmod 777 /mnt/ntfs
 
 ##### EFS Backup #####
 (
-# make sure that sdcard is mounted
-sleep 30
 /sbin/busybox sh /sbin/ext/efs-backup.sh
 )&
 
@@ -122,7 +121,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 /sbin/busybox mount -o remount,rw rootfs
-/sbin/busybox chmod 755 /res/customconfig/actions/push-actions/*
+/sbin/busybox chmod 755 /res/customconfig/actions/ -R
 /sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
 (
@@ -135,17 +134,16 @@ echo "uci done" > /data/.siyah/uci_loaded
 )&
 
 (
-while : ; do
-	if [ -e /data/.siyah/uci_loaded ] ; then
-		# Restore all the PUSH Button Actions back to there location.
-		/sbin/busybox mount -o remount,rw rootfs
-		/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
-		rm -f /data/.siyah/uci_loaded
-		rm -f /data/.siyah/booting
-		exit 0
-	fi;
+while [ ! -e /data/.siyah/uci_loaded ]
+do
 	sleep 5
+	echo "waiting till UCI finish his work!"
 done
+# Restore all the PUSH Button Actions back to there location.
+/sbin/busybox mount -o remount,rw rootfs
+/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
+/sbin/busybox rm -f /data/.siyah/uci_loaded
+/sbin/busybox rm -f /data/.siyah/booting
 )&
 
 ##### init scripts #####
@@ -160,6 +158,5 @@ sleep 60
 (
 sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh
-exit
 )&
 

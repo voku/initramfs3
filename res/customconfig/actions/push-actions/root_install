@@ -2,18 +2,22 @@
 
 (
 if [ ! -f /system/xbin/su ]; then
-	mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+	/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 	/sbin/busybox sh /sbin/ext/install.sh > /dev/null 2>&1
-
+	/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 		# Restore witch if exist
 		if [ -e /system/xbin/waswhich-bkp ]; then
-			cp /system/xbin/waswhich-bkp /system/xbin/which
+			/sbin/busybox rm -f /system/xbin/which > /dev/null 2>&1
+			/sbin/busybox cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1
+			/sbin/busybox chmod 755 /system/xbin/which > /dev/null 2>&1
 		fi;
 
 		if [ -e /system/xbin/boxman ]; then
-			rm -f /system/xbin/busybox > /dev/null 2>&1
-			mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1
-			mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1
+			/sbin/busybox rm -f /system/xbin/busybox > /dev/null 2>&1
+			/sbin/busybox mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1
+			/sbin/busybox chmod 755 /system/xbin/busybox > /dev/null 2>&1
+			/sbin/busybox mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1
+			/sbin/busybox chmod 755 /system/bin/busybox > /dev/null 2>&1
 		fi;
 fi;
 )&

@@ -3,6 +3,11 @@
 # IMPORTANT: Do not create world writable files or directories.
 # This is a common source of Android security bugs.
 #
+
+import /init.${ro.hardware}.rc
+import /init.usb.rc
+import /init.trace.rc
+
 on early-init
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
@@ -31,7 +36,7 @@ loglevel 3
     export ANDROID_DATA /data
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
+    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
 
 # Backward compatibility
     symlink /system/etc /etc
@@ -110,13 +115,8 @@ on fs
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait rw
 
-    # verify filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
-    # make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
-
     exec sfsck /res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
     mkdir /efs
     #mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
@@ -139,7 +139,7 @@ on fs
 
 on post-fs
     exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc 
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -230,10 +230,12 @@ on post-fs-data
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
+    mkdir /data/app-asec 0700 root root
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
+    mkdir /data/radio 0770 radio radio
     mkdir /cache/download 0777 system cache
 
     # create dalvik-cache and double-check the perms, so as to enforce our permissions
@@ -266,7 +268,7 @@ on post-fs-data
 	mkdir /data/system/databases 0771 system system
 	copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
 	chown system system /data/system/databases/drmdatabase.db
-	chmod 0774 /data/system/databases/drmdatabase.db	
+	chmod 0774 /data/system/databases/drmdatabase.db
 
 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
 	
@@ -388,7 +390,7 @@ on boot
     setprop ro.HEAVY_WEIGHT_APP_ADJ 3
     setprop ro.SECONDARY_SERVER_ADJ 4
     setprop ro.BACKUP_APP_ADJ 5
-    setprop ro.HOME_APP_ADJ 6
+    setprop ro.HOME_APP_ADJ 1
     setprop ro.HIDDEN_APP_MIN_ADJ 7
     setprop ro.EMPTY_APP_ADJ 15
 
@@ -723,6 +725,7 @@ service console /system/bin/sh
     class core
     console
     disabled
+    user shell
     group log
 
 on property:ro.debuggable=1
@@ -756,6 +759,8 @@ service servicemanager /system/bin/servicemanager
     critical
     onrestart restart zygote
     onrestart restart media
+    onrestart restart surfaceflinger
+    onrestart restart drm
 
 service vold /system/bin/vold
     class core
@@ -767,6 +772,7 @@ service netd /system/bin/netd
     class main
     socket netd stream 0660 root system
     socket dnsproxyd stream 0660 root inet
+    socket mdns stream 0660 root system
 
 service debuggerd /system/bin/debuggerd
     class main
@@ -814,7 +820,7 @@ on property:service.adb.tcp.port=-1
 service drm /system/bin/drmserver
     class main
     user drm
-    group system inet sdcard_rw media_rw radio
+    group drm system inet drmrpc sdcard_r
 
 service media /system/bin/mediaserver
     class main
@@ -822,7 +828,7 @@ service media /system/bin/mediaserver
     group system audio camera inet net_bt net_bt_admin
     ioprio rt 4
 
-service samsungani /sbin/bootanimation.sh
+service bootanim /system/bin/bootanimation
     class main
     user graphics
     group graphics
@@ -902,7 +908,7 @@ service mtpd /system/bin/mtpd
 service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
-    group keystore
+    group keystore drmrpc
     socket keystore stream 666
 
 service dumpstate /system/bin/dumpstate -s
@@ -949,8 +955,28 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     group log
     oneshot
 
-on property:sys.boot_completed=1
-    stop samsungani
+# DVFS - limit cpufreq during booting sequence
+service dvfs /system/bin/sh /system/bin/dvfs.sh
+    class main
+    user root
+    oneshot
+
+service post-init /sbin/post-init.sh
+    class core
+    user root
+    oneshot
+
+service sshd /system/bin/start-ssh
+    class main
+    disabled
+
+service mdnsd /system/bin/mdnsd
+    class main
+    user mdnsr
+    group inet net_raw
+    socket mdnsd stream 0660 mdnsr inet
+    disabled
+    oneshot
 
 service postinit /sbin/ext/post-init.sh
     class core
