@@ -39,14 +39,14 @@
 				<spinnerItem name="800MHz" value="8"/> 
 			</spinner>
 
-			<checkbox description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below, note! intellidemand gov not allowed to use wakeup booster" 
+			<!--checkbox description="Wakeup booster main switch, depend on cortex background process!, it's will boost the phone wakeup when screen will be turn ON for time that set below, note! intellidemand gov not allowed to use wakeup booster" 
 				name="WakeUp Booster" action="generic_cortex /tmp/awake_booster" label="WakeUp Booster"/>
 
 			<spinner description="Wakeup booster delay on max speed and peformance gov, depend on cortex background process" name="WakeUp Booster Delay" action="awake_booster_delay">
 				<spinnerItem name="3Sec" value="3"/> 
 				<spinnerItem name="5Sec" value="5"/>
 				<spinnerItem name="10Sec" value="10"/> 
-			</spinner>
+			</spinner-->
 
 			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
@@ -477,15 +477,10 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
-	<settingsPane description="Enable or Disable the BootMenu" name="Boot Menu">
-
 		<spinner description="This setting enables/disables the BootMenu and logo NOTE: You will not be able to boot the second rom while BootMenu is disabled" name="Enable Bootmenu" action="bootmenu_enabled"> 
 			<spinnerItem name="BootMenu Enabled" value="1"/> 
-			<spinnerItem name="BootMenu Disabled" value="0"/>
+			<spinnerItem name="BootMenu Disabled" value="0"/> 
 		</spinner>
-
-	</settingsPane>
-
 
 		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
 			name="ZRAM Settings" action="zramtweaks">

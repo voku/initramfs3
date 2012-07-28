@@ -13,15 +13,14 @@
 # read setting from profile
 
 # Get values from profile. since we dont have the recovery source code i cant change the .siyah dir, so just leave it there for history.
-PROFILE=$(cat /data/.siyah/.active.profile);
+PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
 FILE_NAME=$0
-MAX_TEMP=500; # -> 50° Celsius
 PIDOFCORTEX=$$;
 
 # default settings
-dirty_expire_centisecs_default=300;
+dirty_expire_centisecs_default=1500;
 dirty_writeback_centisecs_default=1500;
 dirty_background_ratio_default=15;
 dirty_ratio_default=10;
@@ -34,7 +33,7 @@ dirty_writeback_centisecs_battery=20000;
 dirty_background_ratio_battery=60;
 dirty_ratio_battery=95;
 
-# Static sets for functions, they will be changes by other functions later.
+# static sets for functions, they will be changes by other functions later
 if [[ "$PROFILE" == "performance" ]]; then
 	MORE_SPEED=1;
 	MORE_BATTERY=0;
@@ -55,8 +54,9 @@ fi;
 
 TOUCHSCREENTUNE() 
 {
-# touch sensitivity settings. by GokhanMoral
-# Not needed any more, we have extweaks interface for it! so never enable it!
+# touch sensitivity settings. - by GokhanMoral
+# not needed any more, we have extweaks interface for it! 
+# -> so never enable it!
 (
 # offset 59: MXT224_THRESHOLD_BATT_INIT
 kmemhelper -n mxt224_data -t char -o 59 50
@@ -227,7 +227,7 @@ fi;
 KERNEL_TWEAKS()
 {
 echo "1" > /proc/sys/vm/oom_kill_allocating_task;
-sysctl -w vm.panic_on_oom=0
+sysctl -w vm.panic_on_oom=0;
 
 log -p i -t $FILE_NAME "*** kernel tweaks ***: enabled";
 }
@@ -241,25 +241,25 @@ fi;
 SYSTEM_TWEAKS()
 {
 # enable Hardware Rendering
-#setprop video.accelerate.hw 1
-#setprop debug.performance.tuning 1
-#setprop debug.sf.hw 1
-setprop persist.sys.use_dithering 1
-#setprop persist.sys.ui.hw true # ->reported as problem maker in some roms.
+#setprop video.accelerate.hw 1;
+#setprop debug.performance.tuning 1;
+#setprop debug.sf.hw 1;
+setprop persist.sys.use_dithering 1;
+#setprop persist.sys.ui.hw true; # ->reported as problem maker in some roms.
 
 # render UI with GPU
-setprop hwui.render_dirty_regions false
-setprop windowsmgr.max_events_per_sec 120
-setprop profiler.force_disable_err_rpt 1
-setprop profiler.force_disable_ulog 1
+setprop hwui.render_dirty_regions false;
+setprop windowsmgr.max_events_per_sec 120;
+setprop profiler.force_disable_err_rpt 1;
+setprop profiler.force_disable_ulog 1;
 
 # Proximity tweak
-setprop mot.proximity.delay 15
+setprop mot.proximity.delay 15;
 
 # more Tweaks
-setprop dalvik.vm.execution-mode int:jit
-setprop persist.adb.notify 0
-setprop pm.sleep_mode 1
+setprop dalvik.vm.execution-mode int:jit;
+setprop persist.adb.notify 0;
+setprop pm.sleep_mode 1;
 
 if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
 	setprop dalvik.vm.heapsize 72m
@@ -275,8 +275,8 @@ fi;
 # EXTWEAKS FIXING
 # ==============================================================
 
-#apply last led_timeout set on boot to fix the timeout reset.
-/res/uci.sh led_timeout $led_timeout
+# apply last led_timeout set on boot to fix the timeout reset.
+/res/uci.sh led_timeout $led_timeout;
 
 # ==============================================================
 # CLEANING-TWEAKS
@@ -292,34 +292,49 @@ rm -rf /data/anr/* 2> /dev/null;
 # BATTERY-TWEAKS
 # ==============================================================
 
-# Block access to debugger memory dumps writes, save power and safe flash drive.
+# block access to debugger memory dumps writes, 
+# save power and safe flash drive
 chmod 400 /data/tombstones -R
 chown drm:drm /data/tombstones -R
 
-# Allow writing to critical folders
+# allow writing to critical folders
 chmod 777 /data/anr -R
 chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
-#WIFI PM-FAST Support.
+# WIFI PM-FAST support
 if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 	echo "1" > /sys/module/dhd/parameters/wifi_pm;
 fi;
 
-LEVEL=`$(cat /sys/class/power_supply/battery/capacity)`;
-CURR_ADC=`$(cat /sys/class/power_supply/battery/batt_current_adc)`;
-BATTFULL=`$(cat /sys/class/power_supply/battery/batt_full_check)`;
 # battery-calibration if battery is full
+LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
+BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
 echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
 if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
         rm -f /data/system/batterystats.bin;
 		echo "battery-calibration done ...";
 fi;
 
-for i in `$(ls /sys/bus/usb/devices/*/power/level)`;
-do
+# USB power support
+for i in `ls /sys/bus/usb/devices/*/power/level`; do
+	chmod 777 $i
 	echo "auto" > $i;
+done;
+for i in `ls /sys/bus/usb/devices/*/power/autosuspend`; do
+	chmod 777 $i
+	echo "1" > $i;
+done;
+
+# BUS power support -> need testing
+buslist="spi i2c sdio";
+for bus in $buslist; do
+	for i in `ls /sys/bus/$bus/devices/*/power/control`; do
+		chmod 777 $i
+		echo "auto" > $i;
+	done;
 done;
 
 log -p i -t $FILE_NAME "*** battery tweaks ***: enabled";
@@ -508,7 +523,6 @@ echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 echo "5" > /proc/sys/vm/page-cluster; # default: 3
 echo "4096" > /proc/sys/vm/min_free_kbytes
-echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
 
@@ -641,65 +655,14 @@ if [ $cortexbrain_firewall == on ]; then
 	FIREWALL_TWEAKS;
 fi;
 
-# load the MAX_CPU_ALLOWED on boot.
-MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
-
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
 {
 
-# Set CPu GOV and tweaks.
+# set CPU-Governor
 echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-
-if [ $cortexbrain_cpu == on ]; then
-        if [[ "$PROFILE" == "performance" ]]; then
-                MORE_SPEED=1;
-                MORE_BATTERY=0;
-                DEFAULT_SPEED=0;
-        elif [[ "$PROFILE" == "default" ]]; then
-                MORE_BATTERY=0;
-                DEFAULT_SPEED=1;
-                MORE_SPEED=0;
-        else
-                MORE_BATTERY=1;
-                MORE_SPEED=0;
-                DEFAULT_SPEED=0;
-        fi;
-        CPU_GOV_TWEAKS;
-fi;
-
-if [ $awake_booster == on ] && [ ! -e /data/.siyah/booting ]; then
-	# Awake booster!
-	# Kill the wakeup bug! boost the CPU to MAX allowed on the same GOV + rise voltage +25mV till delay is done.
-	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-	if [ $SYSTEM_GOVERNOR == intellidemand ]; then
-		echo "intellidemand gov not allowed to use wakeup booster"
-	else
-		echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "${MAX_CPU_ALLOWED}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		# Now boost the screen lock freq to 1Ghz, lets keep it safe freq
-		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-	fi;
-fi;
-
-# set cpu
-if [ "${secondcore}" == "hotplug" ]; then
-	echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
-else
-	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-fi;
-
-if [ "${secondcore}" == "always-off" ]; then
-	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
-fi;
-
-if [ "${secondcore}" == "always-on" ]; then
-	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
-fi;
 
 # cpu - settings for second core
 echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
@@ -709,41 +672,44 @@ echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
-# value from settings
-echo "${sched_mc_power_savings}" > /sys/devices/system/cpu/sched_mc_power_savings;
-
-# auto set brightness
-if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
-	LEVEL=`$(cat /sys/class/power_supply/battery/capacity)`;
-	MAX_BRIGHTNESS=`$(cat /sys/class/backlight/panel/max_brightness)`;
-	OLD_BRIGHTNESS=`$(cat /sys/class/backlight/panel/brightness)`;
-	NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS*LEVEL/100 ))`;
-		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
-			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
-		fi;
-fi;
-
-# Restore scheduler to normal
+# set I/O-Scheduler
 echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler
 echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler
 
-# Set wifi.supplicant_scan_interval
-setprop wifi.supplicant_scan_interval $supplicant_scan_interval
+# set wifi.supplicant_scan_interval
+setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 
-# Set default settings
+# set default values
 echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 15
 echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 
-# Setting the vibrator force in case it's has been reseted.
+# fs settings 
+echo "25" > /proc/sys/vm/vfs_cache_pressure;
+
+if [ "a${swappiness_default}" != "a" ]; then
+	echo "${swappiness_default}" > /proc/sys/vm/swappiness;
+fi;
+# save value
+swappiness_default=`cat /proc/sys/vm/swappiness`;
+
+# enable WIFI if screen is on
+# modprobe dhd 2>/dev/null;
+
+# set the vibrator - force in case it's has been reseted
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
-# Wait here and let all apps to load to RAM and give user fast wakeup with full speed!
-if [ $awake_booster == on ] && [ ! -e /data/.siyah/booting ]; then
-	sleep ${awake_booster_delay};
+# auto set brightness
+if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
+	LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+	MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
+	OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
+	NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS*LEVEL/100 ))`;
+		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
+			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+		fi;
 fi;
-
 # Set CPU speed
 echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
@@ -771,33 +737,22 @@ log -p i -t $FILE_NAME "*** $MODE Mode ***";
 SLEEP_MODE()
 {
 
-# CPU-Freq
+# set CPU-Governor
 echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-if [ $cortexbrain_cpu == on ]; then
-        MORE_BATTERY=1;
-        MORE_SPEED=0;
-        DEFAULT_SPEED=0;
-        CPU_GOV_TWEAKS;
-fi;
 
 # Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-
-# Load the MAX_CPU_ALLOWED for wakeup just in case user changed allowed freq steps!
-MAX_CPU_ALLOWED=`cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq`
+echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # Set disk I/O sched to noop simple and battery saving.
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
-# Set wifi.supplicant_scan_interval
-setprop wifi.supplicant_scan_interval 60
-
-# cpu - second core off
-echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+# set wifi.supplicant_scan_interval
+setprop wifi.supplicant_scan_interval 180;
 
 # Bus Freq for deep sleep
 echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -808,6 +763,15 @@ echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 15
 echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
+
+# set battery value
+echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+
+# disable swap 
+echo "0" > /proc/sys/vm/swappiness;
+
+# disable WIFI if screen is off
+# modprobe -r dhd 2>/dev/null;
 
 if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
@@ -834,16 +798,16 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		for i in $PIDOFCORTEX; do
 			echo "-17" > /proc/$i/oom_adj;
 		done
-		PROFILE=`$(cat /data/.siyah/.active.profile)`;
+		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 30;
+		sleep 3;
 
 		# SLEEP state! All system to power save!
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
-		PROFILE=`$(cat /data/.siyah/.active.profile)`;
+		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
-		sleep 20
+		sleep 10
 		SLEEP_MODE;
 	done &);
 else
