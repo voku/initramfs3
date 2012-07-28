@@ -1,15 +1,19 @@
 #!/sbin/busybox sh
+export _PATH="$PATH"
+export PATH=/sbin
 
 busybox cd /
 busybox rm init
 
 rm -f /init
 rm -f /init.samsung
-rm -f /init.cm9
 rm -f /update*
 rm -f init.jb
-mv /init.cm10 /init
+# FIX ME, for now booting with CM9 INIT to get MTP and ADB working,
+mv /init.cm9 /init
 
+export PATH="${_PATH}"
+busybox rm -fr /dev/*
 cd /
 exec /init
 

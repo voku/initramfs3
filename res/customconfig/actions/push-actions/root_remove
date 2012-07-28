@@ -26,8 +26,17 @@ if [ -f /system/xbin/su ]; then
 
 		# 1SuperUser, superuser Superuser SuperUser whatever...
 		/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
+		/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu.apk* > /dev/null 2>&1
+		/sbin/busybox rm -rf /data/dalvik-cache/?uper?u* > /dev/null 2>&1
+
 		/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1
+
 		/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1
+
 		/sbin/busybox mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 fi;
 )&

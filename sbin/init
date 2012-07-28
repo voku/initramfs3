@@ -32,7 +32,7 @@ mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
-[ -f /mnt/sdcard/.nobootlogo ] && NOBOOTLOGO=1
+[ -f /mnt/sdcard/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0
 umount /mnt/sdcard
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
@@ -86,7 +86,6 @@ if [ -d /preload/lib/ ]; then
 	cp /lib/modules/*.ko /preload/lib/modules/
 	chmod 775 /preload/lib/modules/*.ko
 fi;
-umount /preload
 
 if [ -f /system/recovery.cpio.gz ]; then
 	mount -o remount,rw /
@@ -97,8 +96,10 @@ AOSP=0
 MIUI=0
 B2G=0
 JELLY=0
+S4A=0
 
 [ -d /system/b2g ] && B2G=1
+[ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
 [ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1
 [ "`/sbin/busybox grep -i aosp /system/build.prop`" ] && AOSP=1
@@ -124,9 +125,8 @@ JELLY=0
 
 PARTITION_TUNING () {
 #Unmounting DATA, CACHE, and PAYLOAD-SEC-ROM.
-busybox umount -l /data > /dm-log
-busybox umount -l /cache >> /dm-log
-busybox umount -l /preload >> /dm-log
+/sbin/busybox umount -l /data > /dm-log
+/sbin/busybox umount -l /cache >> /dm-log
 
 #Setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM.
 /sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
@@ -144,12 +144,32 @@ busybox umount -l /preload >> /dm-log
 /sbin/e2fsck -p /res/dev/data > /data-log
 /sbin/e2fsck -p /res/dev/cache
 /sbin/e2fsck -p /res/dev/cache > /cache-log
-/sbin/e2fsck -p /dev/block/mmcblk0p12
-/sbin/e2fsck -p /dev/block/mmcblk0p12 > /preload-log
 }
+
+SYSTEM_UMOUNT () {
+/sbin/busybox umount /preload
+/sbin/busybox umount /system
+}
+
 #############################
 # END Partition global tuning!
 #############################
+
+
+if [ "$S4A" == 1 ]; then
+	echo 0 > /proc/sys/kernel/rom_feature_set
+	mv /res/misc/Sense4All-ROM/init.s4a /init.rc
+	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2
+
+	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
+		mv /sbin/init.no-bash-samsung /sbin/init.samsung
+		SYSTEM_UMOUNT
+	fi;
+
+	# Start ROM!
+	PARTITION_TUNING
+	exec /sbin/init.samsung
+fi;
 
 if [ "$B2G" == 1 ]; then
         echo 0 > /proc/sys/kernel/rom_feature_set
@@ -157,6 +177,7 @@ if [ "$B2G" == 1 ]; then
 
         if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
                 mv /sbin/init.no-bash-samsung /sbin/init.samsung
+		SYSTEM_UMOUNT
         fi;
 
         if [ "$SECONDROM" == "1" ]; then
@@ -170,23 +191,20 @@ if [ "$B2G" == 1 ]; then
 fi;
 
 if [ "$JELLY" == 1 ]; then
-	if [ -e /system/etc/CHANGELOG-CM ]; then
+	if [ -e /system/etc/CHANGELOG-CM.txt ]; then
 		cp -a /res/misc/JellyB-CM10/* /
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		rm -f /init.rc.2
 
-		if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-			mv /sbin/init.no-bash-jellyB-cm10 /sbin/init.samsung
-		else
-			mv /sbin/init.jellyB.cm10 /sbin/init.samsung
-		fi;
-
+		mv /sbin/init.no-bash-jellyB-cm10 /sbin/init.samsung
+		SYSTEM_UMOUNT
 	else
         	cp -a /res/misc/JellyB-ROM/* /
         	echo 0 > /proc/sys/kernel/rom_feature_set
 
         	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
                 	mv /sbin/init.no-bash-jellyB /sbin/init.samsung
+			SYSTEM_UMOUNT
 		else
 			mv /sbin/init.jellyB /sbin/init.samsung
         	fi;
@@ -222,6 +240,7 @@ if [ "$SLIM" == 1 ]; then
 
         # Start ROM!
 	PARTITION_TUNING
+	SYSTEM_UMOUNT
         exec /sbin/init.samsung
 fi;
 
@@ -236,6 +255,7 @@ if [ "$AOSP" == 1 ]; then
 		mv /sbin/init.cm9 /sbin/init.samsung
 	else
 		mv /sbin/init.no-bash-cm9 /sbin/init.samsung
+		SYSTEM_UMOUNT
 	fi;
 
 	if [ "$SECONDROM" == "1" ]; then
@@ -253,6 +273,7 @@ if [ "$MIUI" == 1 ]; then
 
 	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 		mv /sbin/init.no-bash-samsung /sbin/init.samsung
+		SYSTEM_UMOUNT
 	fi;
 
 	if [ "$SECONDROM" == "1" ]; then
@@ -275,6 +296,7 @@ fi;
 	
 if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
 	mv /sbin/init.no-bash-samsung /sbin/init.samsung
+	SYSTEM_UMOUNT
 fi;
 
 # Start ROM

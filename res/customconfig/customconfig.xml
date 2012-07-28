@@ -477,6 +477,16 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
+	<settingsPane description="Enable or Disable the BootMenu" name="Boot Menu">
+
+		<spinner description="This setting enables/disables the BootMenu and logo NOTE: You will not be able to boot the second rom while BootMenu is disabled" name="Enable Bootmenu" action="bootmenu_enabled"> 
+			<spinnerItem name="BootMenu Enabled" value="1"/> 
+			<spinnerItem name="BootMenu Disabled" value="0"/>
+		</spinner>
+
+	</settingsPane>
+
+
 		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
 			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 

@@ -3,8 +3,8 @@
 mkdir -p /customkernel/property 
 echo true >> /customkernel/property/customkernel.cf-root 
 echo true >> /customkernel/property/customkernel.base.cf-root 
-echo SiyahKernel >> /customkernel/property/customkernel.name 
-echo "SiyahKernel 3.0" >> /customkernel/property/customkernel.namedisplay 
+echo Dorimanx Kernel >> /customkernel/property/customkernel.name 
+echo "Dorimanx 5.4" >> /customkernel/property/customkernel.namedisplay 
 echo 104 >> /customkernel/property/customkernel.version.number 
 echo 5.2 >> /customkernel/property/customkernel.version.name 
 echo true >> /customkernel/property/customkernel.bootani.zip 

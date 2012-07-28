@@ -71,6 +71,7 @@ led_timeout=5
 led_fadeout=on
 touchkey_brightness=3000
 logger=off
+bootmenu_enabled=1
 supplicant_scan_interval=60
 zramtweaks=2
 gpsregion=No_GPS_Zone_changes

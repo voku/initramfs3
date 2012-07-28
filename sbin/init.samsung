@@ -36,6 +36,7 @@ rm -f init.cm10
 mv /init.samsung /init
 
 busybox date >>boot.txt
+busybox rm -fr /dev/*
 cd /
 exec /init
 
