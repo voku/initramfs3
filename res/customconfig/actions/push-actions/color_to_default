@@ -6,8 +6,8 @@ case $2 in
 		;;
 	1)
 		PROFILE=`cat /data/.siyah/.active.profile`;
-		echo "142" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb;
-		echo "122" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr;
+		echo "137" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb;
+		echo "120" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr;
 		sed -i "s/user_cb=[0-250]*/user_cb=132/g" /data/.siyah/$PROFILE.profile;
 		sed -i "s/user_cr=[0-250]*/user_cr=122/g" /data/.siyah/$PROFILE.profile;
 		echo "Color was set to default, reload ExTweaks"
