@@ -294,7 +294,7 @@ The third step is disabled as default by having the second to third threshold 10
 
 	<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
-	<seekBar description="Sets screen BLUE color scale (Default is 132)" 
+	<seekBar description="Sets screen BLUE color scale (Default is 142)" 
 		name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
 		unit="BLUE" min="0" reversed="false" step="1" max="244"/>
 
@@ -423,9 +423,6 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
 			name="Touch Keys Lights Settings">
 
-		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod." 
-			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
-
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
 			name="led_timeout" action="led_timeout">
 			<spinnerItem name="Always OFF" value="off"/> 
@@ -437,6 +434,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="30 sec" value="30"/> 
 			<spinnerItem name="Always ON" value="on"/> 
 		</spinner>
+
+		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod."
+			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
 
 		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touch keys leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
 

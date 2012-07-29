@@ -5,8 +5,8 @@ case $2 in
 		echo "nothnig to do"
 		;;
 	1)
-		PROFILE=$(cat /data/.siyah/.active.profile);
-		echo "132" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb;
+		PROFILE=`cat /data/.siyah/.active.profile`;
+		echo "142" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb;
 		echo "122" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr;
 		sed -i "s/user_cb=[0-250]*/user_cb=132/g" /data/.siyah/$PROFILE.profile;
 		sed -i "s/user_cr=[0-250]*/user_cr=122/g" /data/.siyah/$PROFILE.profile;

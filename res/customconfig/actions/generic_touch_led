@@ -6,6 +6,28 @@ fi
 
 filename=$(basename $2)
 
+PROFILE=`cat /data/.siyah/.active.profile`;
+. /data/.siyah/$PROFILE.profile;
+
+
+if [ $led_timeout == off ]; then
+	LED_TIMEOUT_SET=-2
+elif [ $led_timeout == 1 ]; then
+	LED_TIMEOUT_SET=1000
+elif [ $led_timeout == 2 ]; then
+	LED_TIMEOUT_SET=2000
+elif [ $led_timeout == 3 ]; then
+	LED_TIMEOUT_SET=3000
+elif [ $led_timeout == 5 ]; then
+	LED_TIMEOUT_SET=5000
+elif [ $led_timeout == 15 ]; then
+	LED_TIMEOUT_SET=15000
+elif [ $led_timeout == 30 ]; then
+	LED_TIMEOUT_SET=30000
+elif [ $led_timeout == on ]; then
+	LED_TIMEOUT_SET=-1
+fi;
+
 if [ "a$3" == "a" ]; then
 	evalcmd='eval "echo \$$filename"'
 	eval $evalcmd
@@ -14,14 +36,13 @@ else
 	eval $evalcmd
 	evalcmd='eval "echo \$$filename"'
 	eval $evalcmd
-	if [ -f $2 ];then
+	if [ -f $2 ]; then
 		case "$3" in
 			off)
-				echo 0 > $2
+				echo 0 > $2;
 			;;
 			on)
-				LED_TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
-				echo "$LED_TIMEOUT_SET" > $2
+				echo "$LED_TIMEOUT_SET" > $2;
 			;;
 		esac;
 	fi;

@@ -11,7 +11,7 @@ fi;
 case "${config_backup_restore}" in
 	1)
 	echo "Backup config file ...";
-	PROFILE=$(cat /data/.siyah/.active.profile);
+	PROFILE=`cat /data/.siyah/.active.profile`;
 	cp /data/.siyah/$PROFILE.profile /data/.siyah/$PROFILE.profile_backup;
 	echo "Backup Done!";
 	;;
@@ -20,7 +20,7 @@ case "${config_backup_restore}" in
 		echo "Restoring config file ...";
 		echo "Wait 90Sec till full restore, app will restart with new settings.";
 		(
-		PROFILE=$(cat /data/.siyah/.active.profile);
+		PROFILE=`cat /data/.siyah/.active.profile`;
 
 		file1=/data/.siyah/$PROFILE.profile;
 		file2=/data/.siyah/$PROFILE.profile_backup;

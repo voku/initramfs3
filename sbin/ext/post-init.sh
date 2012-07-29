@@ -79,14 +79,12 @@ if [ "$logger" == "off" ]; then
 	echo 0 > /sys/module/mali/parameters/mali_debug_level
 	echo 0 > /sys/module/kernel/parameters/initcall_debug
 	echo 0 > /sys//module/lowmemorykiller/parameters/debug_level
-#	echo 0 > /sys/module/wakelock/parameters/debug_mask
-#	echo 0 > /sys/module/userwakelock/parameters/debug_mask
 	echo 0 > /sys/module/earlysuspend/parameters/debug_mask
 	echo 0 > /sys/module/alarm/parameters/debug_mask
 	echo 0 > /sys/module/alarm_dev/parameters/debug_mask
 	echo 0 > /sys/module/binder/parameters/debug_mask
 	echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
-fi
+fi;
 
 #Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
