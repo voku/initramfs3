@@ -43,8 +43,10 @@ fi;
 
 if [ "$?" == "1" ]; then
 	SECONDROM=1
+	/sbin/busybox mount -t ext4 -o rw /res/dev/system /system
 else
 	SECONDROM=0
+	/sbin/busybox mount -t ext4 -o rw /dev/block/mmcblk0p9 /system
 fi;
 
 /sbin/busybox mount -t ext4 -o rw /res/dev/system /system
