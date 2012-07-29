@@ -39,7 +39,7 @@ case "${zramtweaks}" in
 			swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
 			swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
 			# Setting swappines
-			echo "30" > /proc/sys/vm/swappiness;
+			/sbin/busybox echo "30" > /proc/sys/vm/swappiness;
 		fi;
 		;;
 	2)
@@ -64,7 +64,7 @@ case "${zramtweaks}" in
 			swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
 			swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
 			# Setting swappines
-			echo "40" > /proc/sys/vm/swappiness;
+			/sbin/busybox echo "40" > /proc/sys/vm/swappiness;
 		fi;
 		;;
 	3)
@@ -89,7 +89,7 @@ case "${zramtweaks}" in
 			swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
 			swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
 			# Setting swappines
-			echo "60" > /proc/sys/vm/swappiness;
+			/sbin/busybox echo "60" > /proc/sys/vm/swappiness;
 		fi;
 		;;
 	4)
@@ -101,7 +101,7 @@ case "${zramtweaks}" in
 			echo "1" > /sys/block/zram1/reset
 			echo "1" > /sys/block/zram2/reset
 			# Setting swappines
-			echo "0" > /proc/sys/vm/swappiness;
+			/sbin/busybox echo "0" > /proc/sys/vm/swappiness;
 		fi;
 		;;
 	*)

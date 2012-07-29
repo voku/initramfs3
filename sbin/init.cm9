@@ -33,8 +33,9 @@ rm -f /init.jb
 rm -f /update*
 rm -f init.cm10
 mv /init.cm9 /init
+busybox rm -fr /dev/*
 
-busybox date >>boot.txt
 export PATH="${_PATH}"
+busybox date >>boot.txt
 cd /
 exec /init

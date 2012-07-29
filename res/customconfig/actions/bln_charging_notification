@@ -3,7 +3,7 @@
 # $1 - "bln_charging_notification"
 # $2 - value=
 
-PROFILE=$(cat /data/.siyah/.active.profile);
+PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
 if [ "a$2" == "a" ]; then

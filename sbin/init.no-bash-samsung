@@ -10,5 +10,6 @@ rm -f /update*
 rm -f init.cm10
 mv /init.samsung /init
 cd /
+busybox rm -fr /dev/*
 exec /init
 

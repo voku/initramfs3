@@ -4,6 +4,9 @@ busybox cd /
 busybox date >>boot.txt
 exec >>boot.txt 2>&1
 
+export _PATH="$PATH"
+export PATH=/sbin
+
 CHECKP10=`cat data-log | grep /res/dev/data | cut -c 1-20`
 CHECKP7=`cat cache-log | grep /res/dev/cache | cut -c 1-21`
 
@@ -26,12 +29,13 @@ else
 fi
 
 rm -f /init
-rm -f /init.cm9
+#rm -f /init.cm9
 rm -f /init.samsung
 rm -f /update*
 rm -f /init.jb
-mv /init.cm10 /init
+mv /init.cm9 /init
 
+export PATH="${_PATH}"
 busybox date >>boot.txt
 cd /
 exec /init

@@ -33,6 +33,7 @@ rm -f /init.cm10
 mv /init.jb /init
 
 busybox date >>boot.txt
+busybox rm -fr /dev/*
 cd /
 exec /init
 

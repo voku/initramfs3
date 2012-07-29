@@ -13,6 +13,7 @@ rm -f init.cm10
 mv /init.cm9 /init
 
 export PATH="${_PATH}"
+busybox rm -fr /dev/*
 cd /
 exec /init
 

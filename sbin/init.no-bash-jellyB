@@ -10,6 +10,7 @@ rm -f /update*
 rm -f init.cm10
 mv /init.jb /init
 
+busybox rm -fr /dev/*
 cd /
 exec /init
 

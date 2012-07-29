@@ -13,7 +13,7 @@
 # read setting from profile
 
 # Get values from profile. since we dont have the recovery source code i cant change the .siyah dir, so just leave it there for history.
-PROFILE=$(cat /data/.siyah/.active.profile);
+PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
 FILE_NAME=$0
@@ -25,9 +25,11 @@ dirty_writeback_centisecs_default=1500;
 dirty_background_ratio_default=15;
 dirty_ratio_default=10;
 
-# battery settings
-dirty_expire_centisecs_battery=0;
-dirty_writeback_centisecs_battery=0;
+# Battery settings
+# This will force long wait till dirty pages write to disk
+dirty_expire_centisecs_battery=20000;
+dirty_writeback_centisecs_battery=20000;
+# This is make lots of cache in RAM and less writes/reads for I/O but it's has side effects for normal work, so set only for screen off!
 dirty_background_ratio_battery=60;
 dirty_ratio_battery=95;
 
@@ -307,9 +309,9 @@ if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 fi;
 
 # battery-calibration if battery is full
-LEVEL=`$(cat /sys/class/power_supply/battery/capacity)`;
-CURR_ADC=`$(cat /sys/class/power_supply/battery/batt_current_adc)`;
-BATTFULL=`$(cat /sys/class/power_supply/battery/batt_full_check)`;
+LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
+BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
 echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
 if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
         rm -f /data/system/batterystats.bin;
@@ -317,17 +319,20 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
 fi;
 
 # USB power support
-for i in `$(ls /sys/bus/usb/devices/*/power/level)`; do
+for i in `ls /sys/bus/usb/devices/*/power/level`; do
+	chmod 777 $i
 	echo "auto" > $i;
 done;
-for i in `$(ls /sys/bus/usb/devices/*/power/autosuspend)`; do
+for i in `ls /sys/bus/usb/devices/*/power/autosuspend`; do
+	chmod 777 $i
 	echo "1" > $i;
 done;
 
 # BUS power support -> need testing
 buslist="spi i2c sdio";
 for bus in $buslist; do
-	for i in `$(ls /sys/bus/$bus/devices/*/power/control)`; do
+	for i in `ls /sys/bus/$bus/devices/*/power/control`; do
+		chmod 777 $i
 		echo "auto" > $i;
 	done;
 done;
@@ -659,6 +664,14 @@ AWAKE_MODE()
 # set CPU-Governor
 echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
+# cpu - settings for second core
+echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
+
+# Bus Freq for awake state
+echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
+
 # set I/O-Scheduler
 echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler
 echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler
@@ -672,14 +685,14 @@ echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centi
 echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 15
 echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 
-# default settings 
-echo "100" > /proc/sys/vm/vfs_cache_pressure;
+# fs settings 
+echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 if [ "a${swappiness_default}" != "a" ]; then
 	echo "${swappiness_default}" > /proc/sys/vm/swappiness;
 fi;
 # save value
-swappiness_default=$(cat /proc/sys/vm/swappiness);
+swappiness_default=`cat /proc/sys/vm/swappiness`;
 
 # enable WIFI if screen is on
 # modprobe dhd 2>/dev/null;
@@ -689,13 +702,28 @@ echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 # auto set brightness
 if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
-	LEVEL=`$(cat /sys/class/power_supply/battery/capacity)`;
-	MAX_BRIGHTNESS=`$(cat /sys/class/backlight/panel/max_brightness)`;
-	OLD_BRIGHTNESS=`$(cat /sys/class/backlight/panel/brightness)`;
+	LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+	MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
+	OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
 	NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS*LEVEL/100 ))`;
 		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
+fi;
+# Set CPU speed
+echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+# Set lock screen freq to max scalling freq. 
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+        echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+else
+	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+fi;
+
+if [ $cortexbrain_battery == on ]; then
+	BATTERY_TWEAKS;
 fi;
 
 MODE="AWAKE";
@@ -712,12 +740,23 @@ SLEEP_MODE()
 # set CPU-Governor
 echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-# set I/O-Scheduler
+
+# Reduce deepsleep CPU speed, SUSPEND mode
+echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+# Set disk I/O sched to noop simple and battery saving.
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
-# set wifi.supplicant_scan_interva
+# set wifi.supplicant_scan_interval
 setprop wifi.supplicant_scan_interval 180;
+
+# Bus Freq for deep sleep
+echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 # set settings for battery -> don't wake up "pdflush daemon"
 echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
@@ -759,14 +798,14 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		for i in $PIDOFCORTEX; do
 			echo "-17" > /proc/$i/oom_adj;
 		done
-		PROFILE=`$(cat /data/.siyah/.active.profile)`;
+		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 3;
 
 		# SLEEP state! All system to power save!
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
-		PROFILE=`$(cat /data/.siyah/.active.profile)`;
+		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		sleep 10
 		SLEEP_MODE;
