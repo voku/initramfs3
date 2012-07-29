@@ -111,6 +111,9 @@ chmod 777 /mnt/ntfs
 ##### Early-init phase tweaks #####
 /sbin/ext/partitions-tune_on_init.sh
 
+##### DB Permissions fix #####
+chmod 666 /data/data/com.android.providers.downloads/databases/downloads.db
+
 ##### EFS Backup #####
 (
 /sbin/busybox sh /sbin/ext/efs-backup.sh
