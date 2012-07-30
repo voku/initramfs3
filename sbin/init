@@ -193,7 +193,7 @@ if [ "$B2G" == 1 ]; then
 fi;
 
 if [ "$JELLY" == 1 ]; then
-	if [ -e /system/etc/CHANGELOG-CM.txt ] || [ -e /preload/etc/CHANGELOG-CM.txt ]; then
+	if [ -e /system/etc/CHANGELOG-CM.txt ]; then
 		cp -a /res/misc/JellyB-CM10/* /
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		rm -f /init.rc.2

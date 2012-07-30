@@ -356,9 +356,10 @@ fi;
 # CPU-TWEAKS
 # ==============================================================
 
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+
 CPU_GOV_TWEAKS()
 {
-SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
 
@@ -688,12 +689,6 @@ echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 # fs settings 
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
-if [ "a${swappiness_default}" != "a" ]; then
-	echo "${swappiness_default}" > /proc/sys/vm/swappiness;
-fi;
-# save value
-swappiness_default=`cat /proc/sys/vm/swappiness`;
-
 # enable WIFI if screen is on
 # modprobe dhd 2>/dev/null;
 
@@ -701,7 +696,7 @@ swappiness_default=`cat /proc/sys/vm/swappiness`;
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 # auto set brightness
-if [ "${cortexbrain_auto_tweak_brightness}" == "1" ]; then
+if [ $cortexbrain_auto_tweak_brightness == 1 ]; then
 	LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 	MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 	OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
@@ -716,7 +711,7 @@ echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_fr
 
 # Set lock screen freq to max scalling freq. 
 SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+if [ $SYSTEM_GOVERNOR == lulzactive ]; then
         echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 else
 	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
@@ -739,7 +734,6 @@ SLEEP_MODE()
 
 # set CPU-Governor
 echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-
 
 # Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
@@ -765,10 +759,7 @@ echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; 
 echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 
 # set battery value
-echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
-
-# disable swap 
-echo "0" > /proc/sys/vm/swappiness;
+echo "1" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 # disable WIFI if screen is off
 # modprobe -r dhd 2>/dev/null;
@@ -797,7 +788,8 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
 			echo "-17" > /proc/$i/oom_adj;
-		done
+			renice -15 $i;
+		done;
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
@@ -807,11 +799,11 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
-		sleep 10
+		sleep 10;
 		SLEEP_MODE;
 	done &);
 else
-	echo "Cortex background process already running"
+	echo "Cortex background process already running";
 fi;
 
 # ==============================================================
