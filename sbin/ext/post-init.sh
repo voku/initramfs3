@@ -112,6 +112,7 @@ chmod 777 /mnt/ntfs
 ##### DB Permissions fix #####
 chmod 666 /data/data/com.android.providers.downloads/databases/*
 chmod 660 /data/data/com.android.providers.settings/databases/*
+chmod 760 /data/system/inputmethod/ -R
 
 ##### EFS Backup #####
 (
