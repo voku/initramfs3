@@ -171,7 +171,7 @@ on post-fs
 
     # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
-    chmod 0770 /cache/lost+found
+    chmod 0777 /cache/lost+found
 
 on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
@@ -186,8 +186,6 @@ on post-fs-data
     # storing dumps on platforms which do not have a dedicated dump partition.
 
     mkdir /data/dontpanic 0750 root log
-    chown root log /data/dontpanic
-    chmod 0750 /data/dontpanic
 
     # Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
@@ -222,9 +220,10 @@ on post-fs-data
     mkdir /data/misc/radio 0775 radio system
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0770 /data/misc/wifi
+    chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 shell shell
+
     # For security reasons, /data/local/tmp should always be empty.
     # Do not place files or directories in /data/local/tmp
     mkdir /data/local/tmp 0771 shell shell
@@ -257,11 +256,11 @@ on post-fs-data
 
     # double check the perms, in case lost+found already exists, and set owner
     chown root root /data/lost+found
-    chmod 0770 /data/lost+found
+    chmod 0777 /data/lost+found
 
     # create directory for DRM plug-ins - give drm the read/write access to
     # the following directory.
-    mkdir /data/drm 0774 drm drm
+    mkdir /data/drm 0770 drm drm
 
 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
 
@@ -376,7 +375,7 @@ on boot
 
 # Memory management.  Basic kernel parameters, and allow the high
 # level system server to be able to adjust the kernel OOM driver
-# paramters to match how it is managing things.
+# parameters to match how it is managing things.
     chown root system /sys/module/lowmemorykiller/parameters/adj
     chmod 0664 /sys/module/lowmemorykiller/parameters/adj
     chown root system /sys/module/lowmemorykiller/parameters/minfree
@@ -416,9 +415,6 @@ on boot
     write /proc/sys/vm/overcommit_memory 0
     write /proc/sys/vm/min_free_order_shift 4
     write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
-
-    # Set init its forked children's oom_adj.
-    write /proc/1/oom_adj -16
 
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
@@ -466,7 +462,7 @@ on boot
     chown radio system /sys/android_power/acquire_partial_wake_lock
     chown radio system /sys/android_power/release_wake_lock
     chown radio system /sys/power/state
-    chown radio system /sys/power/wakeup_count
+    chown system system /sys/power/wakeup_count
     chown radio system /sys/power/wake_lock
     chown radio system /sys/power/wake_unlock
     chmod 0660 /sys/power/state
@@ -644,6 +640,9 @@ on boot
 
 on nonencrypted
     class_start late_start
+
+on charger
+    class_start charger
 
 on property:vold.decrypt=trigger_reset_main
     class_reset main

@@ -36,9 +36,6 @@ on boot
     chmod 0660 /sys/power/gpu_lock
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
-
-    setprop ro.build.product GT-I9100
-    setprop ro.product.device GT-I9100
     setprop ro.radio.noril yes
 
 # Permisions for sensors
@@ -80,7 +77,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
     # user wifi
     # group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 
@@ -91,7 +88,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     #   user wifi
     #   group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 0666 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 

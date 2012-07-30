@@ -29,11 +29,13 @@ on early-init
 on fs
     # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait
+
     exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait rw
 
     exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -66,9 +68,9 @@ on post-fs-data
     chown system system /data/gps
 
     # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0776 wifi wifi
-    chmod 0776 /data/misc/wifi
-    chmod 0666 /data/misc/wifi/wpa_supplicant.conf
+    mkdir /data/misc/wifi 0770 wifi wifi
+    chmod 0770 /data/misc/wifi
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
@@ -176,6 +178,7 @@ on post-fs-data
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
 
     chown system radio /sys/devices/virtual/sec/sec_touchkey/enable_disable
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/force_disable
     chown system radio /sys/devices/virtual/sec/sec_touchkey/recommended_version
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touch_sensitivity
     chown system radio /sys/devices/virtual/sec/sec_touchkey/brightness
@@ -304,8 +307,6 @@ on post-fs-data
 on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-    setprop ro.build.product GT-I9100
-    setprop ro.product.device GT-I9100
     setprop ro.radio.noril yes
 
 # permissions for NFC
@@ -323,24 +324,24 @@ on boot
     setprop status.battery.level_scale 9
 
 service p2p_supplicant /system/bin/wpa_supplicant \
-    -Dnl80211 -iwlan0 -puse_p2p_group_interface=1 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin 
+    -Dnl80211 -puse_p2p_group_interface=1 -e/data/misc/wifi/entropy.bin
     # we will start as root and wpa_supplicant will switch to user wifi
     # after setting up the capabilities required for WEXT
     # user wifi
     # group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 666 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant \
-    -Dnl80211 -iwlan0 -puse_p2p_group_interface=1 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
+    -Dnl80211 -puse_p2p_group_interface=1 -e/data/misc/wifi/entropy.bin
     # we will start as root and wpa_supplicant will switch to user wifi
     # after setting up the capabilities required for WEXT
     # user wifi
     # group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 666 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 
