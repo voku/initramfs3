@@ -514,8 +514,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="cfq" value="cfq"/> 
 		</spinner>
 
-		<checkbox description="If checked, then kernel function that control the SYNC of file system will work extra time to sync all changes to file system, and save files from damage, but will slightly slow the flash drive, if you want your data to be more secured use this switch.(used in default and performance profiles by default)" 
-			name="Aggressive Files SYNC" action="generic_fsync /sys/class/misc/fsynccontrol/fsync_enabled" label="Data Files Protection"/>
+		<!--checkbox description="If checked, then kernel function that control the SYNC of file system will work extra time to sync all changes to file system, and save files from damage, but will slightly slow the flash drive, if you want your data to be more secured use this switch.(used in default and performance profiles by default)" 
+			name="Aggressive Files SYNC" action="generic_fsync /sys/class/misc/fsynccontrol/fsync_enabled" label="Data Files Protection"/-->
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or mtp" 
 			name="USB Mass Storage Mode" action="usb-mode">

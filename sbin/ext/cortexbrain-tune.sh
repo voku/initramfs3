@@ -303,11 +303,6 @@ chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
-# WIFI PM-FAST support
-if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-	echo "1" > /sys/module/dhd/parameters/wifi_pm;
-fi;
-
 # battery-calibration if battery is full
 LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
@@ -759,7 +754,7 @@ echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; 
 echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 
 # set battery value
-echo "1" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 # disable WIFI if screen is off
 # modprobe -r dhd 2>/dev/null;
@@ -784,12 +779,11 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
-		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
 			echo "-17" > /proc/$i/oom_adj;
-			renice -15 $i;
 		done;
+		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
