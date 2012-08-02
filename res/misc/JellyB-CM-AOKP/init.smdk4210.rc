@@ -12,7 +12,7 @@ on early-init
     mkdir /preload 0771 system system
     mkdir /mnt/.lfs 0755 root root
 
-    # for backwards compatibility
+# for backwards compatibility
     symlink /storage/sdcard0 /sdcard
     symlink /storage/sdcard0 /mnt/sdcard
     symlink /storage/sdcard1 /extSdCard
@@ -32,19 +32,17 @@ on early-init
     chmod 0777 /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
 on fs
-    # mount ext4 partitions
+# mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait
-    # verify filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
 
-    # make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
+# Check and mount /cache
+    exec sfsck /res/dev/cache ext4
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait rw
 
-    exec sfsck loop@/res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait rw
+# Check and mount /data
+    exec sfsck /res/dev/data ext4
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
-    exec sfsck loop@/res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -79,7 +77,7 @@ on post-fs-data
     mkdir /data/gps 771 system system
     chown system system /data/gps
 
-    # give system access to wpa_supplicant.conf for backup and restore
+# give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
@@ -92,7 +90,7 @@ on post-fs-data
     chown root root /system/etc/security/.drm
     chmod 0775 /system/etc/security/.drm
 
-    # Added for Playready DRM Support
+# Added for Playready DRM Support
     mkdir /data/data/.drm 0775
     chown drm system /data/data/.drm
     chmod 0775 /data/data/.drm
@@ -100,12 +98,12 @@ on post-fs-data
     chown drm system /data/data/.drm/.playready
     chmod 0775 /data/data/.drm/.playready
 
-    #Added drm folder to copy drm plugins
+#Added drm folder to copy drm plugins
     mkdir /system/lib/drm 0775
     chown root root /system/lib/drm
     chmod 0775 /system/lib/drm
 
-    # DivX DRM
+# DivX DRM
     mkdir /efs/.files 0775
     mkdir /efs/.files/.dx1 0775
     mkdir /efs/.files/.dm33 0775
@@ -137,7 +135,7 @@ on post-fs-data
     chmod 0770 /dev/snd/timer
     chmod 0770 /dev/snd/hwC0D0
 
-    # create log system
+# create log system
     mkdir /data/log 0775 system log
     chown system log /data/log
 
@@ -153,7 +151,7 @@ on post-fs-data
     chown system system /data/pxtmpdir
     chmod 0775 /data/pxtmpdir
 
-    # permission for HDMI audio path
+# permission for HDMI audio path
     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
 # Permissions for gpio_keys.
@@ -344,23 +342,23 @@ service mdnsd /system/bin/mdnsd
 
 service p2p_supplicant /system/bin/wpa_supplicant \
     -Dnl80211 -iwlan0 -puse_p2p_group_interface=1 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin 
-    # we will start as root and wpa_supplicant will switch to user wifi
-    # after setting up the capabilities required for WEXT
-    # user wifi
-    # group wifi inet keystore
+# we will start as root and wpa_supplicant will switch to user wifi
+# after setting up the capabilities required for WEXT
+# user wifi
+# group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant \
     -Dnl80211 -iwlan0 -puse_p2p_group_interface=1 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
-    # we will start as root and wpa_supplicant will switch to user wifi
-    # after setting up the capabilities required for WEXT
-    # user wifi
-    # group wifi inet keystore
+# we will start as root and wpa_supplicant will switch to user wifi
+# after setting up the capabilities required for WEXT
+# user wifi
+# group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 666 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 

@@ -2,7 +2,7 @@
 # ADDITIONAL_DEFAULT_PROPERTIES
 #
 ro.secure=1
-ro.allow.mock.location=1
+ro.allow.mock.location=0
 ro.debuggable=1
 persist.sys.vold.switchexternal=1
 persist.sys.usb.config=mass_storage,adb

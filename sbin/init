@@ -193,12 +193,12 @@ if [ "$B2G" == 1 ]; then
 fi;
 
 if [ "$JELLY" == 1 ]; then
-	if [ -e /system/etc/CHANGELOG-CM.txt ]; then
-		cp -a /res/misc/JellyB-CM10/* /
+	if [ -e /system/etc/CHANGELOG-CM.txt ] || [ -d /system/etc/cron ]; then
+		cp -a /res/misc/JellyB-CM-AOKP/* /
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		rm -f /init.rc.2
 
-		mv /sbin/init.no-bash-jellyB-cm10 /sbin/init.samsung
+		mv /sbin/init.no-bash-jellyB-cm-aokp /sbin/init.samsung
 		SYSTEM_UMOUNT
 	else
         	cp -a /res/misc/JellyB-ROM/* /

@@ -9,7 +9,7 @@ import /init.usb.rc
 import /init.trace.rc
 
 on early-init
-    # Set init and its forked children's oom_adj.
+# Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
 
     start ueventd
@@ -57,21 +57,21 @@ loglevel 3
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
-    # Directory for putting things only root should see.
+# Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
 
-    # Directory for staging bindmounts
+# Directory for staging bindmounts
     mkdir /mnt/secure/staging 0700 root root
 
-    # Directory-target for where the secure container
-    # imagefile directory will be bind-mounted
+# Directory-target for where the secure container
+# imagefile directory will be bind-mounted
     mkdir /mnt/secure/asec  0700 root root
 
-    # Secure container public mount points.
+# Secure container public mount points.
     mkdir /mnt/asec  0700 root system
     mount tmpfs tmpfs /mnt/asec mode=0755,gid=1000
 
-    # Filesystem image public mount points.
+# Filesystem image public mount points.
     mkdir /mnt/obb 0700 root system
     mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
 
@@ -109,7 +109,7 @@ loglevel 3
     mkdir /dev/cpuctl/apps/bg_non_interactive
     chown system system /dev/cpuctl/apps/bg_non_interactive/tasks
     chmod 0666 /dev/cpuctl/apps/bg_non_interactive/tasks
-    # 5.0 %
+# 5.0 %
     write /dev/cpuctl/apps/bg_non_interactive/cpu.shares 52
     write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_runtime_us 700000
     write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_period_us 1000000
@@ -127,50 +127,50 @@ on fs
     mount yaffs2 mtd@cache /cache nosuid nodev
 
 on post-fs
-    # once everything is setup, no need to modify /
+# once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
 
-    # We chown/chmod /cache again so because mount is run as root + defaults
+# We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
     chmod 0771 /cache
 
-    # This may have been created by the recovery system with odd permissions
+# This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
-    #change permissions on vmallocinfo so we can grab it from bugreports
+#change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
 
-    #change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
+#change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
     chown root system /proc/kmsg
     chmod 0440 /proc/kmsg
     chown root system /proc/sysrq-trigger
     chmod 0220 /proc/sysrq-trigger
 
-    # create the lost+found directories, so as to enforce our permissions
+# create the lost+found directories, so as to enforce our permissions
     mkdir /cache/lost+found 0770 root root
 
-    # double check the perms, in case lost+found already exists, and set owner
+# double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
     chmod 0777 /cache/lost+found
 
 on post-fs-data
-    # We chown/chmod /data again so because mount is run as root + defaults
+# We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
     mkdir /data/system
     chown system system /data/system
     chmod 0771 /data/system
 
-    # Create dump dir and collect dumps.
-    # Do this before we mount cache so eventually we can use cache for
-    # storing dumps on platforms which do not have a dedicated dump partition.
+# Create dump dir and collect dumps.
+# Do this before we mount cache so eventually we can use cache for
+# storing dumps on platforms which do not have a dedicated dump partition.
 
     mkdir /data/dontpanic 0750 root log
 
-    # Collect apanic data, free resources and re-arm trigger
+# Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
     chown root log /data/dontpanic/apanic_console
     chmod 0640 /data/dontpanic/apanic_console
@@ -181,7 +181,7 @@ on post-fs-data
 
     write /proc/apanic_console 1
 
-    # create basic filesystem structure
+# create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
     mkdir /data/misc/bluetooth 0770 system system
@@ -189,14 +189,14 @@ on post-fs-data
     mkdir /data/misc/keychain 0771 system system
     mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
-    # give system access to wpa_supplicant.conf for backup and restore
+# give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0751 root root
 
-    # For security reasons, /data/local/tmp should always be empty.
-    # Do not place files or directories in /data/local/tmp
+# For security reasons, /data/local/tmp should always be empty.
+# Do not place files or directories in /data/local/tmp
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
@@ -208,7 +208,7 @@ on post-fs-data
     mkdir /data/radio 0770 radio radio
     mkdir /cache/download 0777 system cache
 
-    # create dalvik-cache and double-check the perms, so as to enforce our permissions
+# create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
     chown system system /data/dalvik-cache
     chmod 0771 /data/dalvik-cache
@@ -217,27 +217,27 @@ on post-fs-data
     chown system system /cache/dalvik-cache
     chmod 0771 /cache/dalvik-cache
 
-    # create resource-cache and double-check the perms
+# create resource-cache and double-check the perms
     mkdir /data/resource-cache 0771 system system
     chown system system /data/resource-cache
     chmod 0771 /data/resource-cache
 
-    # create the lost+found directories, so as to enforce our permissions
+# create the lost+found directories, so as to enforce our permissions
     mkdir /data/lost+found 0770 root root
 
-    # double check the perms, in case lost+found already exists, and set owner
+# double check the perms, in case lost+found already exists, and set owner
     chown root root /data/lost+found
     chmod 0777 /data/lost+found
 
-    # create directory for DRM plug-ins - give drm the read/write access to
-    # the following directory.
+# create directory for DRM plug-ins - give drm the read/write access to
+# the following directory.
     mkdir /data/drm 0770 drm drm
 
-    # If there is no fs-post-data action in the init.<device>.rc file, you
-    # must uncomment this line, otherwise encrypted filesystems
-    # won't work.
-    # Set indication (checked by vold) that we have finished this action
-    #setprop vold.post_fs_data_done 1
+# If there is no fs-post-data action in the init.<device>.rc file, you
+# must uncomment this line, otherwise encrypted filesystems
+# won't work.
+# Set indication (checked by vold) that we have finished this action
+#setprop vold.post_fs_data_done 1
 
 # Include extra init file
     import /system/etc/init.local.rc
@@ -251,18 +251,18 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
-    # Tweaks For ROM
+# Tweaks For ROM
     setprop ro.kernel.android.checkjni 0
     setprop ro.telephony.call_ring.delay 0
     setprop ro.ril.disable.power.collapse 0
     setprop ro.lge.proximity.delay 15
 
-    #Video Quality
+#Video Quality
     setprop ro.media.enc.jpeg.quality 100,100,100
     setprop ro.media.dec.jpeg.memcap 20000000
     setprop ro.media.enc.hprof.vid.bps 20000000
 
-    #Disable Google OTA Update checkin
+#Disable Google OTA Update checkin
     setprop ro.config.nocheckin 1
 
 # Memory management.  Basic kernel parameters, and allow the high
@@ -275,11 +275,11 @@ on boot
     chown root system /sys/module/lowmemorykiller/parameters/minfree
     chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
 
-    # Tweak background writeout
+# Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
     write /proc/sys/vm/dirty_background_ratio  10
 
-    # Permissions for System Server and daemons.
+# Permissions for System Server and daemons.
     chown radio system /sys/android_power/state
     chown radio system /sys/android_power/request_state
     chown radio system /sys/android_power/acquire_full_wake_lock
@@ -293,7 +293,7 @@ on boot
     chmod 0660 /sys/power/wake_lock
     chmod 0660 /sys/power/wake_unlock
 
-    # Assume SMP uses shared cpufreq policy for all CPUs
+# Assume SMP uses shared cpufreq policy for all CPUs
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     chmod 0666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 
@@ -326,7 +326,7 @@ on boot
     chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
 
-    # allow system to modify cpufreq control files
+# allow system to modify cpufreq control files
     chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
     chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
     chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
@@ -390,7 +390,6 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset main
 
 ## Daemon processes to be run by init.
-##
 service ueventd /sbin/ueventd
     class core
     critical
@@ -413,6 +412,18 @@ service adbd /sbin/adbd
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
     start adbd
+
+# This property trigger has added to imitiate the previous behavior of "adb root".
+# The adb gadget driver used to reset the USB bus when the adbd daemon exited,
+# and the host side adb relied on this behavior to force it to reconnect with the
+# new adbd instance after init relaunches it. So now we force the USB bus to reset
+# here when adbd sets the service.adb.root property to 1.  We also restart adbd here
+# rather than waiting for init to notice its death and restarting it so the timing
+# of USB resetting and adb restarting more closely matches the previous behavior.
+on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1
 
 service servicemanager /system/bin/servicemanager
     class core
@@ -487,8 +498,8 @@ service bluetoothd /system/bin/bluetoothd -n
     class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
-    # init.rc does not yet support applying capabilities, so run as root and
-    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+# init.rc does not yet support applying capabilities, so run as root and
+# let bluetoothd drop uid to bluetooth with the right linux capabilities
     group bluetooth net_bt_admin misc
     disabled
 
@@ -499,7 +510,7 @@ service installd /system/bin/installd
 service racoon /system/bin/racoon
     class main
     socket racoon stream 600 system system
-    # IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
+# IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
     group vpn net_admin inet
     disabled
     oneshot
