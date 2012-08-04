@@ -1,4 +1,12 @@
+# Copyright (C) 2012 The Android Open Source Project
+#
+# IMPORTANT: Do not create world writable files or directories.
+# This is a common source of Android security bugs.
+#
 on early-init
+    # Set init and its forked children's oom_adj.
+    write /proc/1/oom_adj -16
+
     start ueventd
 
 # create mountpoints
@@ -17,6 +25,7 @@ loglevel 3
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export LD_LIBRARY_PATH /vendor/lib:/system/lib
     export ANDROID_BOOTLOGO 1
+    export ANDROID_CACHE /cache
     export ANDROID_ROOT /system
     export ANDROID_ASSETS /system/app
     export ANDROID_DATA /data
@@ -45,7 +54,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0770 system cache
+    mkdir /cache 0771 system cache
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
@@ -72,10 +81,9 @@ loglevel 3
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
-    write /proc/sys/kernel/sched_latency_ns 10000000
-    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
+    write /proc/sys/kernel/randomize_va_space 2
 
 # Create cgroup mount points for process groups
     mkdir /dev/cpuctl
@@ -100,9 +108,6 @@ loglevel 3
 # This is needed by any process that uses socket tagging.
     chmod 0644 /dev/xt_qtaguid
 
-# ko files for FM Radio
-    insmod /lib/modules/Si4709_driver.ko
-
 on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
@@ -122,7 +127,7 @@ on fs
     mkdir /efs
     # mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
     exec sfsck /dev/block/mmcblk0p1 ext4
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
     chown radio system /efs
     chmod 0771 /efs
     mkdir /efs/bluetooth
@@ -134,8 +139,9 @@ on fs
 
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /res/dev/data
-    
+
 on post-fs
+
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
 
@@ -144,7 +150,7 @@ on post-fs
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0770 /cache
+    chmod 0771 /cache
 
     # This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
@@ -162,11 +168,11 @@ on post-fs
     chmod 0220 /proc/sysrq-trigger
 
     # create the lost+found directories, so as to enforce our permissions
-    mkdir /cache/lost+found 0770
+    mkdir /cache/lost+found 0770 root root
 
     # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
-    chmod 0770 /cache/lost+found
+    chmod 0777 /cache/lost+found
 
 on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
@@ -180,9 +186,7 @@ on post-fs-data
     # Do this before we mount cache so eventually we can use cache for
     # storing dumps on platforms which do not have a dedicated dump partition.
 
-    mkdir /data/dontpanic
-    chown root log /data/dontpanic
-    chmod 0750 /data/dontpanic
+    mkdir /data/dontpanic 0750 root log
 
     # Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
@@ -217,36 +221,50 @@ on post-fs-data
     mkdir /data/misc/radio 0775 radio system
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0770 /data/misc/wifi
+    chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 shell shell
+    # For security reasons, /data/local/tmp should always be empty.
+    # Do not place files or directories in /data/local/tmp
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
 
-    # create dalvik-cache and double-check the perms
+    mkdir /cache/download 0777 system cache
+
+    # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
     chown system system /data/dalvik-cache
     chmod 0771 /data/dalvik-cache
 
+    mkdir /cache/dalvik-cache 0771 system system
+    chown system system /cache/dalvik-cache
+    chmod 0771 /cache/dalvik-cache
+
+    # create resource-cache and double-check the perms
+    mkdir /data/resource-cache 0771 system system
+    chown system system /data/resource-cache
+    chmod 0771 /data/resource-cache
+
     # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770
+    mkdir /data/lost+found 0770 root root
 
     # double check the perms, in case lost+found already exists, and set owner
     chown root root /data/lost+found
-    chmod 0770 /data/lost+found
+    chmod 0777 /data/lost+found
 
-    # create directory for DRM plug-ins
-    mkdir /data/drm 0774 drm drm
+    # create directory for DRM plug-ins - give drm the read/write access to
+    # the following directory.
+    mkdir /data/drm 0770 drm drm
 
 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
 
 	mkdir /data/system/databases 0771 system system
 	copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
 	chown system system /data/system/databases/drmdatabase.db
-	chmod 0774 /data/system/databases/drmdatabase.db	
+	chmod 0774 /data/system/databases/drmdatabase.db
 
 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
 
@@ -297,8 +315,8 @@ on post-fs-data
     chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
 
 # MTP Device permission.
-	chmod 0660 /dev/usb_mtp_gadget
-	chown system system /dev/usb_mtp_gadget
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system system /dev/usb_mtp_gadget
 
 # terminal mode
     chmod 0660 /sys/class/android_usb/android0/terminal_version
@@ -338,6 +356,28 @@ on boot
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
 
+    # Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.lge.proximity.delay 15
+
+    #Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+    #Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1
+
+# Memory management.  Basic kernel parameters, and allow the high
+# level system server to be able to adjust the kernel OOM driver
+# parameters to match how it is managing things.
+    chown root system /sys/module/lowmemorykiller/parameters/adj
+    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
+    chown root system /sys/module/lowmemorykiller/parameters/minfree
+    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
     setprop ro.FOREGROUND_APP_ADJ 0
@@ -346,7 +386,7 @@ on boot
     setprop ro.HEAVY_WEIGHT_APP_ADJ 3
     setprop ro.SECONDARY_SERVER_ADJ 4
     setprop ro.BACKUP_APP_ADJ 5
-    setprop ro.HOME_APP_ADJ 6
+    setprop ro.HOME_APP_ADJ 1
     setprop ro.HIDDEN_APP_MIN_ADJ 7
     setprop ro.EMPTY_APP_ADJ 15
 
@@ -363,34 +403,19 @@ on boot
     setprop ro.HIDDEN_APP_MEM 16384
     setprop ro.EMPTY_APP_MEM 20480
 
-    # Old values for phones.  Should probably be adjusted up for the next
-    # phone version.
-    #setprop ro.FOREGROUND_APP_MEM 2048
-    #setprop ro.VISIBLE_APP_MEM 3072
-    #setprop ro.PERCEPTIBLE_APP_MEM 4096
-    #setprop ro.HEAVY_WEIGHT_APP_MEM 4096
-    #setprop ro.SECONDARY_SERVER_MEM 6144
-    #setprop ro.BACKUP_APP_MEM 6144
-    #setprop ro.HOME_APP_MEM 6144
-    #setprop ro.HIDDEN_APP_MEM 7168
-    #setprop ro.EMPTY_APP_MEM 8192
-
 # Write value must be consistent with the above properties.
 # Note that the driver only supports 6 slots, so we have combined some of
 # the classes into the same memory level; the associated processes of higher
 # classes will still be killed first.
     write /sys/module/lowmemorykiller/parameters/adj 0,1,2,4,7,15
 
-    write /proc/sys/vm/overcommit_memory 1
+    write /proc/sys/vm/overcommit_memory 0
     write /proc/sys/vm/min_free_order_shift 4
     write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
 
-    # Set init its forked children's oom_adj.
-    write /proc/1/oom_adj -16
-
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
-    write /proc/sys/vm/dirty_background_ratio  5
+    write /proc/sys/vm/dirty_background_ratio  10
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
@@ -434,11 +459,16 @@ on boot
     chown radio system /sys/android_power/acquire_partial_wake_lock
     chown radio system /sys/android_power/release_wake_lock
     chown radio system /sys/power/state
+    chown system system /sys/power/wakeup_count
     chown radio system /sys/power/wake_lock
     chown radio system /sys/power/wake_unlock
     chmod 0660 /sys/power/state
     chmod 0660 /sys/power/wake_lock
     chmod 0660 /sys/power/wake_unlock
+
+    # Assume SMP uses shared cpufreq policy for all CPUs
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chmod 0666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
@@ -468,6 +498,14 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
+
+    # allow system to modify cpufreq control files
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # Permissions for input devices
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
@@ -549,8 +587,8 @@ on boot
     chown system radio /mnt/.lfs/sw_sel
 
 # Permissions for OTG Test
-	chown system radio /sys/class/host_notify/usb_otg/booster
-	chmod 0664 /sys/class/host_notify/usb_otg/booster
+    chown system radio /sys/class/host_notify/usb_otg/booster
+    chmod 0664 /sys/class/host_notify/usb_otg/booster
 
 # Permission for radio
     chown system radio /sys/devices/platform/s5p-ehci/ehci_power
@@ -567,6 +605,16 @@ on boot
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
+# allow system to modify ksm control files
+    chown root system /sys/kernel/mm/ksm/pages_to_scan
+    chmod 0664 /sys/kernel/mm/ksm/pages_to_scan
+    chown root system /sys/kernel/mm/ksm/sleep_millisecs
+    chmod 0664 /sys/kernel/mm/ksm/sleep_millisecs
+    chown root system /sys/kernel/mm/ksm/run
+    chmod 0664 /sys/kernel/mm/ksm/run
+    write /sys/kernel/mm/ksm/sleep_millisecs 1500
+    write /sys/kernel/mm/ksm/pages_to_scan 256
+
 # +++++++++++++++++++++++++++++++++++++++++++
 # for datarouter
     chown system system /dev/dun
@@ -581,16 +629,6 @@ on boot
     chmod 0770 /system/bin/rtc_log.sh
     chown system system /system/bin/rtc_log.sh
 
-# DVFS - cpufreq ondemand
-#    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
-#    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
-
-# DVFS - limit cpufreq during booting sequence
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
-#    write /data/dvfs "sleep 10 && echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && sleep 30 && echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-#    chmod 0770 /data/dvfs
-
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
 
@@ -599,6 +637,9 @@ on boot
 
 on nonencrypted
     class_start late_start
+
+on charger
+    class_start charger
 
 on property:vold.decrypt=trigger_reset_main
     class_reset main
@@ -621,12 +662,11 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset main
 
 on property:persist.sys.storage_preload=1
-    #mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
+    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait rw nodelalloc
     setprop storage.preload.complete 1
 
 on property:persist.sys.storage_preload=0
     exec /system/bin/umount /preload
-
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none
@@ -666,6 +706,8 @@ on property:sys.usb.config=accessory,adb
     start adbd
     setprop sys.usb.state $sys.usb.config
 
+# Used to set USB configuration at boot and to switch the configuration
+# when changing the default configuration
 on property:persist.sys.usb.config=*
     setprop sys.usb.config $persist.sys.usb.config
 
@@ -752,11 +794,20 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 666
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
+
+# adb over network
+on property:service.adb.tcp.port=5555
+    stop adbd
+    start adbd
+
+on property:service.adb.tcp.port=-1
+    stop adbd
+    start adbd
 
 service drm /system/bin/drmserver
     class main
@@ -778,11 +829,11 @@ service htcani /system/bin/bootanimation
 
 #for samsung boot sound
 service playsound /system/bin/playsound
-	class main
-	user media
-	group system
-	disabled
-	oneshot
+    class main
+    user media
+    group system
+    disabled
+    oneshot
 #for samsung boot sound
 
 service dbus /system/bin/dbus-daemon --system --nofork
@@ -791,7 +842,7 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
+service bluetoothd /system/bin/bluetoothd -n
     class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
@@ -802,8 +853,8 @@ service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
 
 # for bluetooth
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2bytes --tosleep 50000 \
-	--baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
-	--scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
+    --baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
+    --scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
     class main
     user bluetooth
     group bluetooth net_bt_admin
@@ -818,9 +869,9 @@ service bt_dut_cmd /system/bin/bcm_dut
 
 # for bluetooth pan
 service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
-	class main
-	disabled
-	oneshot
+    class main
+    disabled
+    oneshot
 
 service installd /system/bin/installd
     class main
@@ -860,20 +911,20 @@ service dumpstate /system/bin/dumpstate -s
 
 #for WiFi MFG(TestMode)
 service mfgloader /system/bin/mfgloader
-	class main
-	disabled
-	oneshot
+    class main
+    disabled
+    oneshot
 
 service wlandutservice /system/bin/wlandutservice
-	class main
-	user system
-	group wifi net_raw net_admin system inet
-	disabled
-	oneshot
+    class main
+    user system
+    group wifi net_raw net_admin system inet
+    disabled
+    oneshot
 
 service macloader /system/bin/macloader
-	class main
-	oneshot
+    class main
+    oneshot
 # end of wifi
 
 # Vibetonz
@@ -885,9 +936,9 @@ service immvibed /system/bin/immvibed
 
 # TVout
 service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group graphics
+    class main
+    user system
+    group graphics
 
 # RTC logging daemon
 service rtc_log /system/bin/sh /system/bin/rtc_log.sh
@@ -896,22 +947,10 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     group log
     oneshot
 
-# DVFS - limit cpufreq during booting sequence
-#service dvfs /system/bin/sh /system/bin/dvfs.sh
-#    class main
-#    user root
-#    oneshot
-    
-# 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/bugmailer.sh -v
-	class main
-	disabled
-	oneshot
-	keycodes 114 115 116
 on property:sys.boot_completed=1
     stop samsungani
 
 service postinit /sbin/ext/post-init.sh
-	class core
-	user root
-	oneshot
+    class core
+    user root
+    oneshot

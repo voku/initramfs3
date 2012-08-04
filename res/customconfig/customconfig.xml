@@ -106,9 +106,6 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<seekBar description="This is for CPU under voltage to save power, 0=Overvolt! +75mV -> 5=big undervolt! -50mV use it in your own risk! Warning if you want to use the simple undervolting below, please leave this setting as DEFAULT=3!" 
-			name="asv_group" action="generic /sys/devices/system/cpu/cpu0/cpufreq/asv_group" unit="Step" min="0" reversed="false" step="1" max="5"/>
-
 		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
 			<spinnerItem name="No Undervolting" value="0"/> 
@@ -128,10 +125,6 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 
 		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
-
-		<seekBar description="This is for CPU BUS-FREQ 400,267,133 MHz, 0=MAX Power(400MHz) -> 3=MAX-Battery Save(133MHz), default=3(133MHz)" 
-			name="busfreq_asv_group" action="generic /sys/devices/system/cpu/cpufreq/busfreq_asv_group" 
-			unit="Step" min="0" reversed="false" step="1" max="3"/>
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
@@ -514,8 +507,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="cfq" value="cfq"/> 
 		</spinner>
 
-		<checkbox description="If checked, then kernel function that control the SYNC of file system will work extra time to sync all changes to file system, and save files from damage, but will slightly slow the flash drive, if you want your data to be more secured use this switch.(used in default and performance profiles by default)" 
-			name="Aggressive Files SYNC" action="generic_fsync /sys/class/misc/fsynccontrol/fsync_enabled" label="Data Files Protection"/>
+		<!--checkbox description="If checked, then kernel function that control the SYNC of file system will work extra time to sync all changes to file system, and save files from damage, but will slightly slow the flash drive, if you want your data to be more secured use this switch.(used in default and performance profiles by default)" 
+			name="Aggressive Files SYNC" action="generic_fsync /sys/class/misc/fsynccontrol/fsync_enabled" label="Data Files Protection"/-->
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or mtp" 
 			name="USB Mass Storage Mode" action="usb-mode">
