@@ -695,7 +695,7 @@ echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 # enable WIFI-driver if screen is on
-if [ $cortexbrain_background_process_wifi == on ]; then
+if [ $cortexbrain_auto_tweak_wifi == on ]; then
 	modprobe dhd 2>/dev/null;
 fi;
 
@@ -703,7 +703,7 @@ fi;
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
 
 # auto set brightness
-if [ $cortexbrain_auto_tweak_brightness == 1 ]; then
+if [ $cortexbrain_auto_tweak_brightness == on ]; then
 	LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 	MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 	OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
@@ -769,7 +769,7 @@ echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 # disable WIFI-driver if screen is off
-if [ $cortexbrain_background_process_wifi == on ]; then
+if [ $cortexbrain_auto_tweak_wifi == on ]; then
 	modprobe -r dhd 2>/dev/null;
 fi;
 
