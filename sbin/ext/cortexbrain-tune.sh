@@ -20,18 +20,13 @@ FILE_NAME=$0
 PIDOFCORTEX=$$;
 
 # default settings
-dirty_expire_centisecs_default=1500;
-dirty_writeback_centisecs_default=1500;
-dirty_background_ratio_default=15;
-dirty_ratio_default=10;
+dirty_expire_centisecs_default=1000;
+dirty_writeback_centisecs_default=1000;
 
 # Battery settings
 # This will force long wait till dirty pages write to disk
-dirty_expire_centisecs_battery=20000;
-dirty_writeback_centisecs_battery=20000;
-# This is make lots of cache in RAM and less writes/reads for I/O but it's has side effects for normal work, so set only for screen off!
-dirty_background_ratio_battery=60;
-dirty_ratio_battery=95;
+dirty_expire_centisecs_battery=10000;
+dirty_writeback_centisecs_battery=10000;
 
 # static sets for functions, they will be changes by other functions later
 if [[ "$PROFILE" == "performance" ]]; then
@@ -511,8 +506,8 @@ MEMORY_TWEAKS()
 {
 echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
+echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "15" > /proc/sys/vm/dirty_ratio; # default: 20
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
@@ -660,6 +655,18 @@ AWAKE_MODE()
 # set CPU-Governor
 echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
+# Set CPU speed
+echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+# Set lock screen freq to max scalling freq.
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+if [ $SYSTEM_GOVERNOR == lulzactive ]; then
+        echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+else
+        echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+fi;
+
 # cpu - settings for second core
 echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -678,8 +685,6 @@ setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 # set default values
 echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 15
-echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 
 # fs settings 
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
@@ -699,17 +704,6 @@ if [ $cortexbrain_auto_tweak_brightness == 1 ]; then
 		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
-fi;
-# Set CPU speed
-echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-
-# Set lock screen freq to max scalling freq. 
-SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-if [ $SYSTEM_GOVERNOR == lulzactive ]; then
-        echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-else
-	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 fi;
 
 if [ $cortexbrain_battery == on ]; then
@@ -750,8 +744,6 @@ echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 # set settings for battery -> don't wake up "pdflush daemon"
 echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 15
-echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 
 # set battery value
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100

@@ -109,10 +109,12 @@ chmod 777 /mnt/ntfs
 ##### Early-init phase tweaks #####
 /sbin/ext/partitions-tune_on_init.sh
 
-##### DB Permissions fix #####
+##### Permissions fix #####
 chmod 666 /data/data/com.android.providers.downloads/databases/*
 chmod 660 /data/data/com.android.providers.settings/databases/*
 chmod 760 /data/system/inputmethod/ -R
+chmod 777 /data/local/ -R
+chmod 777 /sys/devices/system/cpu/ -R
 
 ##### EFS Backup #####
 (
