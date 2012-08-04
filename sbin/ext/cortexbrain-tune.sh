@@ -313,13 +313,23 @@ if [ "$LEVEL" == "100" ] && [ "$BATTFULL" == "1" ]; then
 		echo "battery-calibration done ...";
 fi;
 
+# WIFI PM-FAST support
+if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+	echo "1" > /sys/module/dhd/parameters/wifi_pm;
+fi;
+
+# LCD Power-Reduce
+if [ -e /sys/class/lcd/panel/power_reduce ]; then
+	echo "1" > /sys/class/lcd/panel/power_reduce;
+fi;
+
 # USB power support
 for i in `ls /sys/bus/usb/devices/*/power/level`; do
-	chmod 777 $i
+	chmod 777 $i;
 	echo "auto" > $i;
 done;
 for i in `ls /sys/bus/usb/devices/*/power/autosuspend`; do
-	chmod 777 $i
+	chmod 777 $i;
 	echo "1" > $i;
 done;
 
@@ -327,7 +337,7 @@ done;
 buslist="spi i2c sdio";
 for bus in $buslist; do
 	for i in `ls /sys/bus/$bus/devices/*/power/control`; do
-		chmod 777 $i
+		chmod 777 $i;
 		echo "auto" > $i;
 	done;
 done;
@@ -684,8 +694,10 @@ echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 # fs settings 
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
-# enable WIFI if screen is on
-# modprobe dhd 2>/dev/null;
+# enable WIFI-driver if screen is on
+if [ $cortexbrain_background_process_wifi == on ]; then
+	modprobe dhd 2>/dev/null;
+fi;
 
 # set the vibrator - force in case it's has been reseted
 echo "${pwm_val}" > /sys/vibrator/pwm_val;
@@ -756,8 +768,10 @@ echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 # set battery value
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
-# disable WIFI if screen is off
-# modprobe -r dhd 2>/dev/null;
+# disable WIFI-driver if screen is off
+if [ $cortexbrain_background_process_wifi == on ]; then
+	modprobe -r dhd 2>/dev/null;
+fi;
 
 if [ $cortexbrain_battery == on ]; then
 	BATTERY_TWEAKS;
