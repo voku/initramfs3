@@ -3,7 +3,7 @@
 
 		<settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." name="CPU Hotplug Settings">
 
-				<spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
+			<spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
 				<spinnerItem name="CPU Hotplug (default)" value="hotplug"/> 
 				<spinnerItem name="Second core always-off" value="always-off"/> 
 				<spinnerItem name="Second core always-on" value="always-on"/> 
@@ -552,41 +552,44 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-                <spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. Battery will not get statistics reset when full/100%, CPU tweaks will not be dynamically changed, use it in your own will/risk. After Enable wait 3sec, then push the `CHECK SERVICE` to see if service is online."
-                        name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
-                        <spinnerItem name="Enable" value="1"/> 
-                        <spinnerItem name="Disable" value="0"/> 
-                </spinner>
+		<spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. Battery will not get statistics reset when full/100%, CPU tweaks will not be dynamically changed, use it in your own will/risk. After Enable wait 3sec, then push the `CHECK SERVICE` to see if service is online."
+			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
+				<spinnerItem name="Enable" value="1"/> 
+				<spinnerItem name="Disable" value="0"/> 
+		</spinner>
 
 		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not"
 			name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<checkbox description="Enable or Disable the 'Auto-Brightness'-function from Cortexbrain-Script. [depends on 'cortexbrain_background_process']" 
+		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. [depends on 'cortexbrain_background_process']"
+			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+
+		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. [depends on 'cortexbrain_background_process']" 
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
 
-                <checkbox description="Enable or Disable the 'Firewall-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
+		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (reboot needed after change)"
+			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'TCP-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
+		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (reboot needed after change)"
+			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'CPU-Tweaks' from 'cortexbrain-tune.sh'. [for auto tune its depends on 'cortexbrain_background_process'] (reboot needed after change)"
-                        name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
+		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune its depends on 'cortexbrain_background_process'] (reboot needed after change)"
+			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'Memory-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
+		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (reboot needed after change)"
+			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'Battery-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
+		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (reboot needed after change)"
+			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'System-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
+		<checkbox description="Enable or Disable the 'System-Tweaks'. (reboot needed after change)"
+			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'Kernel-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
+		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (reboot needed after change)"
+			name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-                <checkbox description="Enable or Disable the 'I/O-Tweaks' from 'cortexbrain-tune.sh'. (reboot needed after change)"
-                        name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
+		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (reboot needed after change)"
+			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
 	</settingsPane>
 
