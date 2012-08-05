@@ -5,6 +5,9 @@ ln -s /sbin/recovery /sbin/busybox
 
 ln -s /sbin/busybox /sbin/sh
 
+# protecting fuelgauge reset trigger.
+chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
+
 rm /emmc
 mkdir /emmc
 chmod 777 /emmc

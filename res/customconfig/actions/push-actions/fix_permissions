@@ -1,7 +1,11 @@
 #!/sbin/busybox sh
 
 (
-/sbin/fix_permissions;
+if [ `pgrep -f "fix_permissions" |  wc -l` \< 2 ]; then
+	/sbin/fix_permissions;
+else
+	echo "fix_permissions still running"
+fi;
 )&
 echo "Fixing permissions started! please leave the phone alone for 3min, no need to reboot.!";
 
