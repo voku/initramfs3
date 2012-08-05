@@ -449,10 +449,12 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	</settingsPane>
 
-	<settingsPane description="Here you can run Fix Permissions script by one click! 
-		please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS">
+	<settingsPane description="Here you can run Fix Permissions snd Zipalign script's with one click! 
+		please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS + ZIPALIGN">
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
+
+		<button description="Click here to start Zipalign all system and user apps, system may be unresponsive, it's OK, do not use phone for 2Min." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
 	</settingsPane>
 

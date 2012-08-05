@@ -165,3 +165,8 @@ sleep 65
 /sbin/busybox sh /sbin/ext/partitions-tune.sh
 )&
 
+(
+sleep 50
+/sbin/busybox sh /sbin/ext/database_optimizing.sh
+)&
+

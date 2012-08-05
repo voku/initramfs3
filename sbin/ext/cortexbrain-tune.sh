@@ -548,6 +548,7 @@ echo "1" > /proc/sys/net/ipv4/route/flush;
 echo "2" > /proc/sys/net/ipv4/tcp_syn_retries;
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
+echo "0" > /proc/sys/net/ipv4/tcp_ecn;
 echo "256960" > /proc/sys/net/core/wmem_max;
 echo "563200" > /proc/sys/net/core/rmem_max;
 echo "256960" > /proc/sys/net/core/rmem_default;
