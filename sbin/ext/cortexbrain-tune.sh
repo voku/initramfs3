@@ -420,11 +420,11 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-		echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+		echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
  		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -472,7 +472,7 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
