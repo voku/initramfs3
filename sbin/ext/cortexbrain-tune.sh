@@ -788,7 +788,9 @@ if [ $cortexbrain_cpu == on ]; then
 fi;
 
 # set wifi.supplicant_scan_interval
-setprop wifi.supplicant_scan_interval 180;
+if [ $supplicant_scan_interval -lt 180 ]; then
+	setprop wifi.supplicant_scan_interval 180;
+fi;
 
 # Bus Freq for deep sleep
 echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
