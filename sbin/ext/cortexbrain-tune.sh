@@ -20,18 +20,13 @@ FILE_NAME=$0
 PIDOFCORTEX=$$;
 
 # default settings
-dirty_expire_centisecs_default=1500;
-dirty_writeback_centisecs_default=1500;
-dirty_background_ratio_default=15;
-dirty_ratio_default=10;
+dirty_expire_centisecs_default=1000;
+dirty_writeback_centisecs_default=1000;
 
 # Battery settings
 # This will force long wait till dirty pages write to disk
-dirty_expire_centisecs_battery=20000;
-dirty_writeback_centisecs_battery=20000;
-# This is make lots of cache in RAM and less writes/reads for I/O but it's has side effects for normal work, so set only for screen off!
-dirty_background_ratio_battery=60;
-dirty_ratio_battery=95;
+dirty_expire_centisecs_battery=10000;
+dirty_writeback_centisecs_battery=10000;
 
 # static sets for functions, they will be changes by other functions later
 if [[ "$PROFILE" == "performance" ]]; then
@@ -425,11 +420,11 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-		echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+		echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
  		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -477,7 +472,7 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -521,8 +516,8 @@ MEMORY_TWEAKS()
 {
 echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "$dirty_background_ratio_default" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "$dirty_ratio_default" > /proc/sys/vm/dirty_ratio; # default: 20
+echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "15" > /proc/sys/vm/dirty_ratio; # default: 20
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
@@ -553,6 +548,7 @@ echo "1" > /proc/sys/net/ipv4/route/flush;
 echo "2" > /proc/sys/net/ipv4/tcp_syn_retries;
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
+echo "0" > /proc/sys/net/ipv4/tcp_ecn;
 echo "256960" > /proc/sys/net/core/wmem_max;
 echo "563200" > /proc/sys/net/core/rmem_max;
 echo "256960" > /proc/sys/net/core/rmem_default;
@@ -670,6 +666,18 @@ AWAKE_MODE()
 # set CPU-Governor
 echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
+# Set CPU speed
+echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+# Set lock screen freq to max scalling freq.
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+if [ $SYSTEM_GOVERNOR == lulzactive ]; then
+        echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+else
+        echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
+fi;
+
 # cpu - settings for second core
 echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -688,8 +696,6 @@ setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 # set default values
 echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "${dirty_background_ratio_default}" > /proc/sys/vm/dirty_background_ratio; # default: 15
-echo "${dirty_ratio_default}" > /proc/sys/vm/dirty_ratio; # default: 10
 
 # fs settings 
 echo "25" > /proc/sys/vm/vfs_cache_pressure;
@@ -711,17 +717,6 @@ if [ $cortexbrain_auto_tweak_brightness == on ]; then
 		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
-fi;
-# Set CPU speed
-echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-
-# Set lock screen freq to max scalling freq. 
-SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-if [ $SYSTEM_GOVERNOR == lulzactive ]; then
-        echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-else
-	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 fi;
 
 if [ $cortexbrain_battery == on ]; then
@@ -762,8 +757,6 @@ echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 # set settings for battery -> don't wake up "pdflush daemon"
 echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "${dirty_background_ratio_battery}" > /proc/sys/vm/dirty_background_ratio; # default: 15
-echo "${dirty_ratio_battery}" > /proc/sys/vm/dirty_ratio; # default: 10
 
 # set battery value
 echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
