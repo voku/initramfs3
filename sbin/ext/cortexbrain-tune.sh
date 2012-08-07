@@ -6,6 +6,7 @@
 # Collin_ph@xda
 # Dorimanx@xda
 # Gokhanmoral@xda
+# Johnbeetee
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded!
@@ -20,13 +21,13 @@ FILE_NAME=$0
 PIDOFCORTEX=$$;
 
 # default settings
-dirty_expire_centisecs_default=1000;
+dirty_expire_centisecs_default=500;
 dirty_writeback_centisecs_default=1000;
 
 # Battery settings
 # This will force long wait till dirty pages write to disk
-dirty_expire_centisecs_battery=10000;
-dirty_writeback_centisecs_battery=10000;
+dirty_expire_centisecs_battery=20000;
+dirty_writeback_centisecs_battery=20000;
 
 # static sets for functions, they will be changes by other functions later
 if [[ "$PROFILE" == "performance" ]]; then
@@ -256,8 +257,8 @@ setprop dalvik.vm.execution-mode int:jit;
 setprop persist.adb.notify 0;
 setprop pm.sleep_mode 1;
 
-if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ]; then
-	setprop dalvik.vm.heapsize 72m
+if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 120 ]; then
+	setprop dalvik.vm.heapsize 128m
 fi;
 
 log -p i -t $FILE_NAME "*** system tweaks ***: enabled";
@@ -356,40 +357,30 @@ fi;
 # CPU-TWEAKS
 # ==============================================================
 
-SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-
 CPU_GOV_TWEAKS()
 {
+SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 
 if [ $MORE_BATTERY == 1 ]; then
 
-	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "85" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
-	fi;
-
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-		echo "95" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
+		echo 95 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
+		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
+		echo 15 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "85" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-	fi;
-
-	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
-		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
-		echo "50" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
-		echo "80" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
+		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+		echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
@@ -399,45 +390,50 @@ if [ $MORE_BATTERY == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
-		echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
-		echo "80" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold
-		echo "1" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential
+		echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+		echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+		echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
+		echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+		echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
+		echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
+		echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
+		echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
+		echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
+		echo "95" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/ignore_nice_load;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/io_is_busy;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 	fi;
 
 elif [ $DEFAULT_SPEED == 1 ]; then
-
-	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "70" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
-	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 		echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-		echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
- 		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
+		echo 95 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
+		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
+		echo 15 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "40" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-	fi;
-
-	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
-		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
-		echo "30" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
-		echo "60" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
+		echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
@@ -447,32 +443,43 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+		echo "40000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+		echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+		echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
+		echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
 		echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
 		echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
-		echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold
-		echo "1" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential
+		echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
+		echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
+		echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
+		echo "95" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/ignore_nice_load;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/io_is_busy;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 	fi;
 
 elif [ $MORE_SPEED == 1 ]; then
-
-	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
-	fi;
 
 	if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 		echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-		echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-		echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
-		echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-		#echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpufreq/HYPER/suspend_freq
-		echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
+		echo 90 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
+		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
+		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
+		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -482,12 +489,6 @@ elif [ $MORE_SPEED == 1 ]; then
 		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 	fi;
 
-	if [ $SYSTEM_GOVERNOR == "hotplug" ]; then
-		echo "1" > /sys/devices/system/cpu/cpufreq/hotplug/down_differential;
-		echo "20" > /sys/devices/system/cpu/cpufreq/hotplug/down_threshold;
-		echo "50" > /sys/devices/system/cpu/cpufreq/hotplug/up_threshold;
-	fi;
-
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 		echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
@@ -495,10 +496,24 @@ elif [ $MORE_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-		echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
-		echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
-		echo "50" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold
-		echo "1" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential
+		echo "40000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+		echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+		echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
+		echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+                echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
+                echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
+		echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
+		echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
+		echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
+		echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/ignore_nice_load;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/io_is_busy;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
+		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 	fi;
 
 fi;
@@ -516,8 +531,8 @@ MEMORY_TWEAKS()
 {
 echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-echo "15" > /proc/sys/vm/dirty_ratio; # default: 20
+echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
+echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
@@ -690,6 +705,24 @@ echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_
 echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler
 echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler
 
+if [[ "$PROFILE" == "performance" ]]; then
+        MORE_SPEED=1;
+        MORE_BATTERY=0;
+        DEFAULT_SPEED=0;
+elif [[ "$PROFILE" == "default" ]]; then
+        MORE_SPEED=0;
+        DEFAULT_SPEED=1;
+        MORE_BATTERY=0;
+else
+        MORE_BATTERY=1;
+        MORE_SPEED=0;
+        DEFAULT_SPEED=0;
+fi;
+
+if [ $cortexbrain_cpu == on ]; then
+        CPU_GOV_TWEAKS;
+fi;
+
 # set wifi.supplicant_scan_interval
 setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 
@@ -702,7 +735,7 @@ echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 # enable WIFI-driver if screen is on
 if [ $cortexbrain_auto_tweak_wifi == on ]; then
-	modprobe dhd 2>/dev/null;
+	svc wifi enable
 fi;
 
 # set the vibrator - force in case it's has been reseted
@@ -747,6 +780,13 @@ echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scalin
 echo "noop" > /sys/block/mmcblk0/queue/scheduler
 echo "noop" > /sys/block/mmcblk1/queue/scheduler
 
+if [ $cortexbrain_cpu == on ]; then
+        MORE_BATTERY=1;
+        MORE_SPEED=0;
+        DEFAULT_SPEED=0;
+	CPU_GOV_TWEAKS;
+fi;
+
 # set wifi.supplicant_scan_interval
 setprop wifi.supplicant_scan_interval 180;
 
@@ -763,7 +803,7 @@ echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 # disable WIFI-driver if screen is off
 if [ $cortexbrain_auto_tweak_wifi == on ]; then
-	modprobe -r dhd 2>/dev/null;
+	svc wifi disable
 fi;
 
 if [ $cortexbrain_battery == on ]; then
@@ -788,7 +828,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		# AWAKE State! all system ON!
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
-			echo "-17" > /proc/$i/oom_adj;
+			echo "-1000" > /proc/$i/oom_score_adj;
 		done;
 		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		PROFILE=`cat /data/.siyah/.active.profile`;

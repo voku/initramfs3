@@ -109,12 +109,38 @@ chmod 777 /mnt/ntfs
 ##### Early-init phase tweaks #####
 /sbin/ext/partitions-tune_on_init.sh
 
-##### Permissions fix #####
-chmod 666 /data/data/com.android.providers.downloads/databases/*
-chmod 660 /data/data/com.android.providers.settings/databases/*
+##### Critical Permissions fix #####
+chmod 666 /data/data/com.android.providers.*/databases/*
 chmod 760 /data/system/inputmethod/ -R
 chmod 777 /data/local/ -R
 chmod 777 /sys/devices/system/cpu/ -R
+
+##### Critical OWNER Permissions fix #####
+(
+/sbin/fix_permissions -l -v -f ApplicationsProvider.apk
+/sbin/fix_permissions -l -v -f Bluetooth.apk
+/sbin/fix_permissions -l -v -f Browser.apk
+/sbin/fix_permissions -l -v -f Camera.apk
+/sbin/fix_permissions -l -v -f Contacts.apk
+/sbin/fix_permissions -l -v -f ContactsProvider.apk
+/sbin/fix_permissions -l -v -f DrmProvider.apk
+/sbin/fix_permissions -l -v -f GoogleContactsSyncAdapter.apk
+/sbin/fix_permissions -l -v -f MediaProvider.apk
+/sbin/fix_permissions -l -v -f Mms.apk
+/sbin/fix_permissions -l -v -f NetworkLocation.apk
+/sbin/fix_permissions -l -v -f PackageInstaller.apk
+/sbin/fix_permissions -l -v -f Phone.apk
+/sbin/fix_permissions -l -v -f Phonesky.apk
+/sbin/fix_permissions -l -v -f ROMControl.apk
+/sbin/fix_permissions -l -v -f Settings.apk
+/sbin/fix_permissions -l -v -f SettingsProvider.apk
+/sbin/fix_permissions -l -v -f SharedStorageBackup.apk
+/sbin/fix_permissions -l -v -f Superuser.apk
+/sbin/fix_permissions -l -v -f SystemUI.apk
+/sbin/fix_permissions -l -v -f VpnDialogs.apk
+/sbin/fix_permissions -l -v -f VoiceDialer.apk
+chmod 666 /data/data/com.android.providers.*/databases/*
+)&
 
 ##### EFS Backup #####
 (

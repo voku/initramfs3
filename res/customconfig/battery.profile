@@ -1,7 +1,7 @@
 secondcore=hotplug
 scaling_max_freq=1000000
 scaling_min_freq=200000
-smooth_level0=8
+smooth_level0=14
 scaling_governor=scary
 load_l1=30
 load_h0=30
@@ -22,7 +22,6 @@ deep_sleep=scary
 GPUFREQ1=100
 GPUFREQ2=200
 GPUFREQ3=267
-mali_resume_freq_enabled=off
 GPUVOLT1=950
 GPUVOLT2=1000
 GPUVOLT3=1050
