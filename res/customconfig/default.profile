@@ -1,7 +1,7 @@
 secondcore=hotplug
 scaling_max_freq=1200000
 scaling_min_freq=200000
-smooth_level0=12
+smooth_level0=8
 scaling_governor=HYPER
 load_l1=25
 load_h0=30

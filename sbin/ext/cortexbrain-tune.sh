@@ -21,8 +21,8 @@ FILE_NAME=$0
 PIDOFCORTEX=$$;
 
 # default settings
-dirty_expire_centisecs_default=500;
-dirty_writeback_centisecs_default=1000;
+dirty_expire_centisecs_default=800;
+dirty_writeback_centisecs_default=800;
 
 # Battery settings
 # This will force long wait till dirty pages write to disk
@@ -370,7 +370,7 @@ if [ $MORE_BATTERY == 1 ]; then
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
 		echo 15 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
-		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
 		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
 		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
 		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
@@ -385,8 +385,8 @@ if [ $MORE_BATTERY == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 		echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-		echo "50" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-		echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+		echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+		echo "95" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
@@ -418,15 +418,12 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
-		echo 95 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
-		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 80 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 30 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
 		echo 15 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
-		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
+		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -437,9 +434,9 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-		echo "2" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+		echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 		echo "30" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-		echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+		echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
@@ -471,51 +468,45 @@ elif [ $MORE_SPEED == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
-		echo 90 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
-		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 60 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 20 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
 		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
-		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
+		echo 400000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-		echo "5" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+		echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 		echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-		echo "50" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-		echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+		echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 		echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-		echo "50" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-		echo "40000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+		echo "50000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
 		echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 		echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 		echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-		echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+		echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
                 echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
                 echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
 		echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
 		echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 		echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 		echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-		echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
-		echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
-		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/ignore_nice_load;
-		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/io_is_busy;
+		echo "70" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+		echo "400000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
 		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
 		echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 	fi;
-
 fi;
 
 log -p i -t $FILE_NAME "*** cpu gov tweaks ***: enabled";
@@ -537,7 +528,7 @@ echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
-echo "5" > /proc/sys/vm/page-cluster; # default: 3
+echo "3" > /proc/sys/vm/page-cluster; # default: 3
 echo "4096" > /proc/sys/vm/min_free_kbytes
 echo "65530" > /proc/sys/vm/max_map_count;
 echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
