@@ -45,6 +45,7 @@
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
+				<spinnerItem name="ondemand" value="ondemand"/> 
 				<!--spinnerItem name="smartassV2" value="smartassV2"/--> 
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="scary" value="scary"/> 
@@ -127,8 +128,13 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="600000"/>
 
+		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed (default is 200kHz) is still shutter, rise to 300kHz"
+			name="scaling_min_suspend_freq" action="generic /tmp/standby_freq"
+			unit="kHz" min="200000" reversed="false" step="100000" max="600000"/>
+
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
+			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="scary" value="scary"/>
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 

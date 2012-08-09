@@ -366,14 +366,19 @@ if [ $MORE_BATTERY == 1 ]; then
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
 		echo 80 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
-		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 80 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
 		echo 15 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/ignore_nice_load
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/io_is_busy
-		echo 0 > /sys/devices/system/cpu/cpufreq/HYPER/power_bias
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+		echo 100000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+		echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+		echo 5 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+		echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+		echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -417,13 +422,21 @@ elif [ $DEFAULT_SPEED == 1 ]; then
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
+		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
 		echo 80 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
-		echo 30 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 70 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
-		echo 15 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 20 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+		echo 100000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+		echo 80 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+		echo 5 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+		echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+		echo 30 > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -468,12 +481,20 @@ elif [ $MORE_SPEED == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
-		echo 60 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
-		echo 30 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 70 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 60 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
-		echo 20 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 30 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
 		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+	fi;
+
+	if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+		echo 50000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+		echo 60 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+		echo 5 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+		echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+		echo 30 > /sys/devices/system/cpu/cpufreq/ondemand/freq_step
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -764,7 +785,7 @@ echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 # Reduce deepsleep CPU speed, SUSPEND mode
 echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 # Set disk I/O sched to noop simple and battery saving.
