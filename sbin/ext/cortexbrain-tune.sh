@@ -693,9 +693,14 @@ AWAKE_MODE()
 # set CPU-Governor
 echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-# Set CPU speed
-echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+# Boost Wakeup!
+if [ $scaling_max_freq \> 800000 ]; then
+	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+else
+	echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+fi;
 
 # Set lock screen freq to max scalling freq.
 SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
@@ -704,10 +709,6 @@ if [ $SYSTEM_GOVERNOR == lulzactive ]; then
 else
         echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq
 fi;
-
-# cpu - settings for second core
-echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
-echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 # Bus Freq for awake state
 echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -734,6 +735,16 @@ fi;
 if [ $cortexbrain_cpu == on ]; then
         CPU_GOV_TWEAKS;
 fi;
+
+sleep 6
+
+# Set CPU speed
+echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+# cpu - settings for second core
+echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 # set wifi.supplicant_scan_interval
 setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
