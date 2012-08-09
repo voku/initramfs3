@@ -97,7 +97,7 @@ chmod 777 /mnt/ntfs
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Early-init phase tweaks #####
-/sbin/ext/partitions-tune_on_init.sh
+/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
 
 ##### Critical Permissions fix #####
 chmod 666 /data/data/com.android.providers.*/databases/*
