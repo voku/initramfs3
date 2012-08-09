@@ -96,9 +96,6 @@ chmod 777 /mnt/ntfs
 
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
-##### Early-init phase tweaks #####
-/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
-
 ##### Critical Permissions fix #####
 chmod 666 /data/data/com.android.providers.*/databases/*
 chmod 760 /data/system/inputmethod/ -R
@@ -135,6 +132,12 @@ chmod 666 /data/data/com.android.providers.*/databases/*
 #apply last soundgasm level on boot
 /res/uci.sh soundgasm_hp $soundgasm_hp
 
+##### Early-init phase tweaks #####
+(
+sleep 20
+/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
+)&
+
 ##### EFS Backup #####
 (
 /sbin/busybox sh /sbin/ext/efs-backup.sh
@@ -168,24 +171,27 @@ done
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
 /sbin/busybox rm -f /data/.siyah/uci_loaded
 /sbin/busybox rm -f /data/.siyah/booting
-)&
-
+# DB optimizing
+/sbin/busybox sh /sbin/ext/database_optimizing.sh
 ##### init scripts #####
-(
-sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
+/sbin/busybox sh /sbin/ext/partitions-tune.sh 
 )&
 
 # Change USB mode MTP or Mass Storage
 /res/customconfig/actions/usb-mode ${usb_mode}
 
-(
-sleep 65
-/sbin/busybox sh /sbin/ext/partitions-tune.sh
-)&
+PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
+for i in $PIDOFINIT; do
+	echo "-1000" > /proc/$i/oom_score_adj;
+done;
 
 (
-sleep 50
-/sbin/busybox sh /sbin/ext/database_optimizing.sh
+sleep 20
+PIDOFACORE=`pgrep -f "android.process.acore"`;
+for i in $PIDOFACORE; do
+        echo "-1000" > /proc/$i/oom_score_adj;
+	cat /proc/$i/oom_score_adj
+done;
 )&
 
