@@ -420,12 +420,15 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	</settingsPane>
 
-	<settingsPane description="Here you can run Fix Permissions snd Zipalign script's with one click! 
-		please click one time only, script will finish in 3Min max, no reboot needed." name="FIX PERMISIONS + ZIPALIGN">
+	<settingsPane description="Here you can run Fix Permissions, Zipalign, DB Optimization script's with one click! please click one time only, scripts will finish in 2~3Min max, no reboot needed." name="FIX PERMISIONS + ZIPALIGN + DB OPTIMIZE">
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipalign all system and user apps, system may be unresponsive, it's OK, do not use phone for 2Min." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipalign all system and user apps, system may be unresponsive, it's OK, do not use phone for 2Min." 
+			name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+
+		<button description="Click here to start Apps DataBase's Optimization, compacting, cleaning and reindexing, will take 2min max."
+			name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
 	</settingsPane>
 
