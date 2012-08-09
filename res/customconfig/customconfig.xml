@@ -325,7 +325,12 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
 
-	<checkbox description="BackLightNotification Switch" name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+		<checkbox description="BackLightNotification Switch" 
+			name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+
+		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON"
+			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" 
+				label="BLN Enabled on charging"/>
 
 		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
 			name="BLN MODE Switch" action="bln_switch">
@@ -333,9 +338,6 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Active and breathing" value="2"/> 
 			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
-
-		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" 
-			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" label="BLN Enabled on charging"/>
 
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">

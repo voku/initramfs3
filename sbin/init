@@ -274,7 +274,7 @@ if [ "$MIUI" == 1 ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
 	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-		mv /sbin/init.no-bash-samsung /sbin/init.samsung
+		mv /sbin/init.no-bash-miui /sbin/init.samsung
 		SYSTEM_UMOUNT
 	fi;
 

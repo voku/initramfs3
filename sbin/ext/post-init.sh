@@ -47,13 +47,6 @@ read_config
 #cpu undervolting
 echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
-# Fsync function.
-if [ ${fsync_enabled} == on ]; then
-	echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
-else
-	echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
-fi;
-
 #change cpu step count
 #case "${cpustepcount}" in
 #	6)
@@ -91,9 +84,6 @@ fi;
 
 #enable kmem interface for everyone by GM.
 echo 0 > /proc/sys/kernel/kptr_restrict
-
-#apply last soundgasm level on boot
-/res/uci.sh soundgasm_hp $soundgasm_hp
 
 # for ntfs automounting
 mkdir /mnt/ntfs
@@ -141,6 +131,9 @@ chmod 777 /sys/devices/system/cpu/ -R
 /sbin/fix_permissions -l -v -f VoiceDialer.apk
 chmod 666 /data/data/com.android.providers.*/databases/*
 )&
+
+#apply last soundgasm level on boot
+/res/uci.sh soundgasm_hp $soundgasm_hp
 
 ##### EFS Backup #####
 (

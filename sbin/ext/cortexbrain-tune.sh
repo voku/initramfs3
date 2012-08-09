@@ -365,7 +365,7 @@ if [ $MORE_BATTERY == 1 ]; then
 
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo 100000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
-		echo 95 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
+		echo 80 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
 		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
@@ -469,11 +469,11 @@ elif [ $MORE_SPEED == 1 ]; then
 	if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 		echo 50000 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate
 		echo 60 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold
-		echo 20 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
+		echo 30 > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq
 		echo 1 > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor
 		echo 5 > /sys/devices/system/cpu/cpufreq/HYPER/down_differential
-		echo 40 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
-		echo 400000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
+		echo 20 > /sys/devices/system/cpu/cpufreq/HYPER/freq_step
+		echo 200000 > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness
 	fi;
 
 	if [ $SYSTEM_GOVERNOR == "conservative" ]; then

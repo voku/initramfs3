@@ -17,10 +17,10 @@ else
 	if [ -f $2 ];then
 		case "$3" in
 			off)
-				echo 0 > $2
+				echo "0" > $2
 			;;
 			on)
-				echo 1 > $2
+				echo "1" > $2
 			;;
 		esac;
 	fi;

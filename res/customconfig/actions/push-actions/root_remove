@@ -3,6 +3,7 @@
 (
 if [ -f /system/xbin/su ]; then
 		/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+		/sbin/busybox mount -t rootfs -o remount,rw rootfs
 		/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1
 		/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1
 		# some roms have a busybox with su applet
@@ -41,13 +42,14 @@ if [ -f /system/xbin/su ]; then
 		/sbin/busybox rm -rf /data/data/com.noshufou.android.su
 
 		/sbin/busybox mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+		/sbin/busybox mount -t rootfs -o remount,ro rootfs
 fi;
-)&
 
-sleep 2
+sleep 3
 if [ ! -f /system/xbin/su ]; then
 	echo "ROOT REMOVED! STOCK SYSTEM!"
 else
 	echo "ROOT NOT REMOVED! Try again"
 fi;
+)&
 
