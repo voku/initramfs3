@@ -812,7 +812,8 @@ SLEEP_MODE()
 	# reduce deepsleep CPU speed, SUSPEND mode
 	echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	# moved to background function
+	#echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# set disk I/O sched to noop simple and battery saving.
@@ -885,8 +886,12 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
+		echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		sleep 10;
-		SLEEP_MODE;
+		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+		if [ ! "$CHARGING" -ge "1" ]; then
+			SLEEP_MODE;
+		fi;
 	done &);
 else
 	echo "Cortex background process already running";
