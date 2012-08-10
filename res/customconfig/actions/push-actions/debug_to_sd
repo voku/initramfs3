@@ -8,21 +8,29 @@ else
 	echo $debug_to_sd;
 fi;
 
+SEPARATOR()
+{
+	echo "" >> /sdcard/dorimanx_debug;
+	echo " ---------------------------- " >> /sdcard/dorimanx_debug;
+	echo "" >> /sdcard/dorimanx_debug;
+}
+
 case "${debug_to_sd}" in
 	1)
 
 	# Kernel-Info
 	echo "Kernel-Version:" > /sdcard/dorimanx_debug;
 	cat /proc/version >> /sdcard/dorimanx_debug;
+	SEPARATOR;
+
 	date +"Last Reboot: %d.%m.%y / %H:%m" -d @$(( $(date +%s) - $(cut -f1 -d. /proc/uptime) )) >> /sdcard/dorimanx_debug;
-	lsmod >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# Memory
 	echo "Memory-Info:" >> /sdcard/dorimanx_debug;
 	free >> /sdcard/dorimanx_debug;
 	cat /proc/meminfo >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# CPU
 	echo "CPU-Info:" >> /sdcard/dorimanx_debug;
@@ -35,7 +43,8 @@ case "${debug_to_sd}" in
         scaling_min_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq);
         echo "Min.-Freq: $scaling_min_freq" >> /sdcard/dorimanx_debug;
 	total_trans=$(cat /sys/devices/system/cpu/cpu0/cpufreq/stats/total_trans);
-	echo "Total freq-switch: $total_trans" >> /sdcard/dorimanx_debug; 
+	echo "Total freq-switch: $total_trans" >> /sdcard/dorimanx_debug;
+	echo "" >> /sdcard/dorimanx_debug;
 	echo "Time-In-State:" >> /sdcard/dorimanx_debug;
 	cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state >> /sdcard/dorimanx_debug;
 	for i in `cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state | cut -f 2 -d ' '`; do 
@@ -45,45 +54,55 @@ case "${debug_to_sd}" in
 	summe=$(($summe/60)); 
 	summe=$(($summe/100)); 
 	echo "uptime with CPU on: $summe h" >> /sdcard/dorimanx_debug;
+	echo "" >> /sdcard/dorimanx_debug;
+	echo "Uptime:" >> /sdcard/dorimanx_debug;
 	uptime >> /sdcard/dorimanx_debug;
 	#cat /proc/loadavg >> /sdcard/dorimanx_debug;
+	SEPARATOR;
+
+	echo "more CPU-Infos:" >> /sdcard/dorimanx_debug;	
 	cpuinfo_cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq);
 	for i in `ls /sys/devices/system/cpu/cpu0/cpufreq/`; do
-		echo $i >> /sdcard/dorimanx_debug;
-		cat  /sys/devices/system/cpu/cpu0/cpufreq/$i >> /sdcard/dorimanx_debug;
+		echo ${i} >> /sdcard/dorimanx_debug;
+		cat /sys/devices/system/cpu/cpu0/cpufreq/${i} >> /sdcard/dorimanx_debug;
 	done;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# USB
 	echo "USB-Info:" >> /sdcard/dorimanx_debug;
 	lsusb >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
+
+	# lsmod
+        echo "lsmod-Info:" >> /sdcard/dorimanx_debug;
+        lsmod >> /sdcard/dorimanx_debug;
+        SEPARATOR;
 
 	# Partitions 
 	echo "Partitions-Info:" >> /sdcard/dorimanx_debug;
 	mount >> /sdcard/dorimanx_debug;
 	cat /proc/partitions >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# Processes
 	echo "Process-Info:" >> /sdcard/dorimanx_debug;
 	top -n 1 >> /sdcard/dorimanx_debug;
 	ps -wTl >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# Profile
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	echo "Profile-Config: $PROFILE" >> /sdcard/dorimanx_debug;
 	cat /data/.siyah/$PROFILE.profile >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# dmesg
 	echo "dmesg-Info:" >> /sdcard/dorimanx_debug;
 	dmesg >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
+	SEPARATOR;
 
 	# logcat
-	echo "" > /sdcard/dorimanx_debug;
-	logcat -f /sdcard/dorimanx_debug_logcat;
+	# logcat -f /sdcard/dorimanx_debug_logcat;
 	# maybe we can also grep / remove personal infos here (e.g . email address)
 
 	;;
