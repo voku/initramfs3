@@ -92,7 +92,9 @@ chmod 777 /mnt/ntfs
 
 /sbin/busybox sh /sbin/ext/properties.sh
 
+(
 /sbin/busybox sh /sbin/ext/install.sh
+)&
 
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
@@ -171,8 +173,6 @@ done
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
 /sbin/busybox rm -f /data/.siyah/uci_loaded
 /sbin/busybox rm -f /data/.siyah/booting
-# DB optimizing
-/sbin/busybox sh /sbin/ext/database_optimizing.sh
 ##### init scripts #####
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 /sbin/busybox sh /sbin/ext/partitions-tune.sh 
@@ -183,14 +183,14 @@ done
 
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
-	echo "-1000" > /proc/$i/oom_score_adj;
+	echo "-600" > /proc/$i/oom_score_adj;
 done;
 
 (
 sleep 20
 PIDOFACORE=`pgrep -f "android.process.acore"`;
 for i in $PIDOFACORE; do
-        echo "-1000" > /proc/$i/oom_score_adj;
+        echo "-600" > /proc/$i/oom_score_adj;
 	cat /proc/$i/oom_score_adj
 done;
 )&
