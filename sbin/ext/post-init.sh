@@ -47,13 +47,6 @@ read_config
 #cpu undervolting
 echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
-# Fsync function.
-if [ ${fsync_enabled} == on ]; then
-	echo "1" > /sys/class/misc/fsynccontrol/fsync_enabled
-else
-	echo "0" > /sys/class/misc/fsynccontrol/fsync_enabled
-fi;
-
 #change cpu step count
 #case "${cpustepcount}" in
 #	6)
@@ -92,9 +85,6 @@ fi;
 #enable kmem interface for everyone by GM.
 echo 0 > /proc/sys/kernel/kptr_restrict
 
-#apply last soundgasm level on boot
-/res/uci.sh soundgasm_hp $soundgasm_hp
-
 # for ntfs automounting
 mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
@@ -106,15 +96,47 @@ chmod 777 /mnt/ntfs
 
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
-##### Early-init phase tweaks #####
-/sbin/ext/partitions-tune_on_init.sh
-
-##### Permissions fix #####
-chmod 666 /data/data/com.android.providers.downloads/databases/*
-chmod 660 /data/data/com.android.providers.settings/databases/*
+##### Critical Permissions fix #####
+chmod 666 /data/data/com.android.providers.*/databases/*
 chmod 760 /data/system/inputmethod/ -R
 chmod 777 /data/local/ -R
 chmod 777 /sys/devices/system/cpu/ -R
+
+##### Critical OWNER Permissions fix #####
+(
+/sbin/fix_permissions -l -v -f ApplicationsProvider.apk
+/sbin/fix_permissions -l -v -f Bluetooth.apk
+/sbin/fix_permissions -l -v -f Browser.apk
+/sbin/fix_permissions -l -v -f Camera.apk
+/sbin/fix_permissions -l -v -f Contacts.apk
+/sbin/fix_permissions -l -v -f ContactsProvider.apk
+/sbin/fix_permissions -l -v -f DrmProvider.apk
+/sbin/fix_permissions -l -v -f GoogleContactsSyncAdapter.apk
+/sbin/fix_permissions -l -v -f MediaProvider.apk
+/sbin/fix_permissions -l -v -f Mms.apk
+/sbin/fix_permissions -l -v -f NetworkLocation.apk
+/sbin/fix_permissions -l -v -f PackageInstaller.apk
+/sbin/fix_permissions -l -v -f Phone.apk
+/sbin/fix_permissions -l -v -f Phonesky.apk
+/sbin/fix_permissions -l -v -f ROMControl.apk
+/sbin/fix_permissions -l -v -f Settings.apk
+/sbin/fix_permissions -l -v -f SettingsProvider.apk
+/sbin/fix_permissions -l -v -f SharedStorageBackup.apk
+/sbin/fix_permissions -l -v -f Superuser.apk
+/sbin/fix_permissions -l -v -f SystemUI.apk
+/sbin/fix_permissions -l -v -f VpnDialogs.apk
+/sbin/fix_permissions -l -v -f VoiceDialer.apk
+chmod 666 /data/data/com.android.providers.*/databases/*
+)&
+
+#apply last soundgasm level on boot
+/res/uci.sh soundgasm_hp $soundgasm_hp
+
+##### Early-init phase tweaks #####
+(
+sleep 20
+/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
+)&
 
 ##### EFS Backup #####
 (
@@ -149,24 +171,27 @@ done
 /sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/
 /sbin/busybox rm -f /data/.siyah/uci_loaded
 /sbin/busybox rm -f /data/.siyah/booting
-)&
-
+# DB optimizing
+/sbin/busybox sh /sbin/ext/database_optimizing.sh
 ##### init scripts #####
-(
-sleep 60
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
+/sbin/busybox sh /sbin/ext/partitions-tune.sh 
 )&
 
 # Change USB mode MTP or Mass Storage
 /res/customconfig/actions/usb-mode ${usb_mode}
 
-(
-sleep 65
-/sbin/busybox sh /sbin/ext/partitions-tune.sh
-)&
+PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
+for i in $PIDOFINIT; do
+	echo "-1000" > /proc/$i/oom_score_adj;
+done;
 
 (
-sleep 50
-/sbin/busybox sh /sbin/ext/database_optimizing.sh
+sleep 20
+PIDOFACORE=`pgrep -f "android.process.acore"`;
+for i in $PIDOFACORE; do
+        echo "-1000" > /proc/$i/oom_score_adj;
+	cat /proc/$i/oom_score_adj
+done;
 )&
 

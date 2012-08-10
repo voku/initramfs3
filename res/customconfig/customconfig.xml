@@ -45,6 +45,7 @@
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
+				<spinnerItem name="ondemand" value="ondemand"/> 
 				<!--spinnerItem name="smartassV2" value="smartassV2"/--> 
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="scary" value="scary"/> 
@@ -127,8 +128,13 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="600000"/>
 
+		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed (default is 200kHz) is still shutter, rise to 300kHz"
+			name="scaling_min_suspend_freq" action="generic /tmp/standby_freq"
+			unit="kHz" min="200000" reversed="false" step="100000" max="600000"/>
+
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
+			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="scary" value="scary"/>
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
@@ -179,9 +185,6 @@ Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
 		<spinnerItem name="66MHz" value="66"/> 
 		<spinnerItem name="40MHz" value="40"/> 
 	</spinner>
-
-        <checkbox description="Lock GPU Freq to 267MHz on screen wakeup or leave it as set for 1st level"
-                        name="GPU WAKEUP FREQ" action="generic01 /sys/module/mali/parameters/mali_resume_freq_enabled" label="GPU WAKEUP FREQ"/>
 
 	</settingsPane>
 
@@ -328,7 +331,12 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
 
-	<checkbox description="BackLightNotification Switch" name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+		<checkbox description="BackLightNotification Switch" 
+			name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+
+		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON"
+			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" 
+				label="BLN Enabled on charging"/>
 
 		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
 			name="BLN MODE Switch" action="bln_switch">
@@ -336,9 +344,6 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Active and breathing" value="2"/> 
 			<spinnerItem name="Active and blinking" value="3"/> 
 		</spinner>
-
-		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON" 
-			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" label="BLN Enabled on charging"/>
 
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">

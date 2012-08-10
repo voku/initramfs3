@@ -40,12 +40,14 @@ done;
 # =========
 # remount all partitions with noatime, nodiratime
 # =========
-PARTITIONS=`/sbin/busybox mount | /sbin/busybox grep relatime | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3`
-for k in $PARTITIONS; do
-        /sbin/busybox mount -o remount,noatime,nodiratime $k;
+PARTITIONS=`/sbin/busybox mount | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3`
+for k in $PARTITIONS 
+do
+	/sbin/busybox mount -o remount,noatime,nodiratime $k;
 done;
 
-mount -o remount,rw /system;
+umount /preload
+/sbin/busybox mount -o remount,rw /system;
 
 # ==============================================================
 # CLEANING-TWEAKS
