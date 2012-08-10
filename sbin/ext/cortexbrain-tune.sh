@@ -772,8 +772,10 @@ AWAKE_MODE()
 	echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 	# enable WIFI-driver if screen is on
-	if [ $cortexbrain_auto_tweak_wifi == on ]; then
-		svc wifi enable;
+	if [ $wifiON == 1 ]; then
+		if [ $cortexbrain_auto_tweak_wifi == on ]; then
+			svc wifi enable;
+		fi;
 	fi;
 
 	# set the vibrator - force in case it's has been reseted
@@ -847,8 +849,14 @@ SLEEP_MODE()
 	echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 	# disable WIFI-driver if screen is off
-	if [ $cortexbrain_auto_tweak_wifi == on ]; then
-		svc wifi disable;
+	wifiOFF=`cat /sys/module/dhd/initstate`;
+	if [ "a$wifiOFF" != "a" ]; then
+		if [ $cortexbrain_auto_tweak_wifi == on ]; then
+			svc wifi disable;
+			wifiON=1;
+		fi;
+	else
+		wifiON=0;
 	fi;
 
 	if [ $cortexbrain_battery == on ]; then
