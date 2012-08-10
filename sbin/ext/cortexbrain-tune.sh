@@ -873,7 +873,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		# AWAKE State! all system ON!
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 		for i in $PIDOFCORTEX; do
-			echo "-1000" > /proc/$i/oom_score_adj;
+			echo "-600" > /proc/$i/oom_score_adj;
 		done;
 		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		PROFILE=`cat /data/.siyah/.active.profile`;
