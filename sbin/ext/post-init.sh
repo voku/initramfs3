@@ -165,6 +165,9 @@ echo "uci done" > /data/.siyah/uci_loaded
 (
 while [ ! -e /data/.siyah/uci_loaded ]
 do
+	EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
+	echo "Killing extweaks app proccess till all tweaks are loaded."
+	kill $EXTWEAKSAPP
 	sleep 5
 	echo "waiting till UCI finish his work!"
 done
