@@ -14,14 +14,14 @@
 		<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-			<!--spinner description="This setting will change CPU step count (Restart required)." 
+			<spinner description="This setting will change CPU step count (Restart required)." 
 				name="CPU Step Count" action="generic /tmp/cpustepcount">
 				<spinnerItem name="6 (1200-1000-800-500-200-100MHz)" value="6"/> 
 				<spinnerItem name="7 (1400->100-7-Steps)" value="7"/> 
 				<spinnerItem name="8 (1500->100-8-Steps)" value="8"/> 
 				<spinnerItem name="9 (1500->100-9-Steps)" value="9"/> 
 				<spinnerItem name="15 (1500->100-15-Steps)" value="15"/> 
-			</spinner-->
+			</spinner>
 
 			<seekBar description="Maximum CPU Speed (default is 1200)" 
 				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" 
@@ -379,8 +379,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="BLN OFF if 30% battery" value="6"/> 
 		</spinner>
 
-		<button description="Use this button to test bln. BLN will be active after you turn the screen off." 
-			name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
+		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 		</settingsPane>
 
@@ -424,11 +423,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipalign all system and user apps, system may be unresponsive, it's OK, do not use phone for 2Min." 
-			name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipalign all system and user apps, system may be unresponsive, it's OK, do not use phone for 2Min." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
-		<button description="Click here to start Apps DataBase's Optimization, compacting, cleaning and reindexing, will take 2min max."
-			name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
+		<button description="Click here to start Apps DataBase's Optimization, compacting, cleaning and reindexing, will take 2min max." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
 	</settingsPane>
 

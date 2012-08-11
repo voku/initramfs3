@@ -1,4 +1,4 @@
-#!/sbin/ext/busybox sh
+#!/sbin/busybox sh
 
 mount -t rootfs -o remount,rw rootfs
 ln -s /sbin/recovery /sbin/busybox
@@ -46,9 +46,9 @@ mkdir /secondrom_system
 
 echo "75" > /sys/vibrator/pwm_val
 
-if /sbin/ext/busybox [ -f /cache/recovery/command ];
+if /sbin/busybox [ -f /cache/recovery/command ];
 then
-	/sbin/ext/busybox cp /res/keys-samsung /res/keys
+	/sbin/busybox cp /res/keys-samsung /res/keys
 	recovery-samsung
 else
 	echo 1 > /sbin/recovery-is-running

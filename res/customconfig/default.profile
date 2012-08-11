@@ -1,4 +1,5 @@
 secondcore=hotplug
+cpustepcount=15
 scaling_max_freq=1200000
 scaling_min_freq=200000
 smooth_level0=8
