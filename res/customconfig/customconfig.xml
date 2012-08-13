@@ -478,6 +478,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="deadline" value="deadline"/> 
 			<spinnerItem name="vr" value="vr"/> 
 			<spinnerItem name="cfq" value="cfq"/> 
+			<spinnerItem name="bfq" value="bfq"/> 
 		</spinner>
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or mtp" 
