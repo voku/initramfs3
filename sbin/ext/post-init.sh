@@ -151,7 +151,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox chmod 755 /res/customconfig/actions/ -R
-/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
+/sbin/busybox mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
 (
 # apply ExTweaks defaults
