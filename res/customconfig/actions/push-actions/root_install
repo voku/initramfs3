@@ -10,7 +10,7 @@ if [ ! -e /system/xbin/su ]; then
         load_offset=$boot_offset
         load_len=$boot_len
         cd /
-        dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x
+        dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x > /dev/null 2>&1
 
 	# Clean su traces.
 	/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1
@@ -55,6 +55,7 @@ if [ ! -e /system/xbin/su ]; then
 
 	# Delete payload
 	/sbin/busybox rm -rf /res/misc/payload
+	pkill -f "com.noshufou.android.su" > /dev/null 2>&1
 fi;
 sleep 2
 

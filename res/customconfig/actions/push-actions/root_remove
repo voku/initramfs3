@@ -44,6 +44,7 @@ if [ -f /system/xbin/su ]; then
 		/sbin/busybox mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
 		/sbin/busybox mount -t rootfs -o remount,ro rootfs
 fi;
+pkill -f "com.noshufou.android.su" > /dev/null 2>&1
 
 sleep 3
 if [ ! -f /system/xbin/su ]; then
