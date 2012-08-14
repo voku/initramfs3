@@ -503,8 +503,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Remove OR Reinstall ROOT, You can have ROOTED or not ROOTED phone." name="Remove OR Reinstall Root">
 
-		<!--button description="Root Install, Click to install ROOT (SuperUser) + ROM busybox if existed in case you have used the remove button, to Reinstall ROOT first REMOVE it." 
-			name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/-->
+		<button description="Root Install, Click to install ROOT (SuperUser) + ROM busybox if existed in case you have used the remove button, to Reinstall ROOT first REMOVE it, this function depend on CORTEX Process Enabled!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
 
 		<button description="Root Remove/Uninstall, Click to remove Any ROOT installed + busybox (kernel busybox remain, but hidden from system) to install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
 

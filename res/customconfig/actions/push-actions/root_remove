@@ -38,19 +38,20 @@ if [ -f /system/xbin/su ]; then
 		/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
 		/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1
 
-		/sbin/busybox rm -rf /data/data/eu.chainfire.supersu
-		/sbin/busybox rm -rf /data/data/com.noshufou.android.su
+		/sbin/busybox rm -rf /data/data/eu.chainfire.supersu > /dev/null 2>&1
+		/sbin/busybox rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1
 
 		/sbin/busybox mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
-		/sbin/busybox mount -t rootfs -o remount,ro rootfs
+		/sbin/busybox mount -t rootfs -o remount,ro rootfs > /dev/null 2>&1
 fi;
 pkill -f "com.noshufou.android.su" > /dev/null 2>&1
 
+)&
+
 sleep 3
 if [ ! -f /system/xbin/su ]; then
-	echo "ROOT REMOVED! STOCK SYSTEM!"
+        echo "ROOT REMOVED! STOCK SYSTEM!"
 else
-	echo "ROOT NOT REMOVED! Try again"
+        echo "ROOT NOT REMOVED! Try again"
 fi;
-)&
 

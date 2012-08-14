@@ -27,16 +27,7 @@ if [ "$install_root" == "on" ]; then
 	else
 		if [ "$payload_extracted" == "0" ]; then
 			extract_payload
-		fi
-		# Extract Payload with root files.
-		/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
-		/sbin/busybox mount -t rootfs -o remount,rw rootfs
-		/sbin/busybox chmod 755 /sbin/read_boot_headers
-		eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
-		load_offset=$boot_offset
-		load_len=$boot_len
-		cd /
-		dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x
+		fi;
 
 		# Clean su traces.
 		/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1

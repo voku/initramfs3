@@ -1,0 +1,11 @@
+#!/sbin/busybox sh
+
+(
+if [ ! -e /system/xbin/su ]; then
+	echo "install root" > /data/.siyah/root_install
+	echo "Please turn your screen off to 10sec to install root by cortex."
+else
+	echo "You have root installed already! first remove it."
+fi;
+)&
+
