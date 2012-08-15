@@ -151,7 +151,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 /sbin/busybox mount -o remount,rw rootfs
 /sbin/busybox chmod 755 /res/customconfig/actions/ -R
-/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
+/sbin/busybox mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
 (
 # apply ExTweaks defaults
@@ -165,9 +165,8 @@ echo "uci done" > /data/.siyah/uci_loaded
 (
 while [ ! -e /data/.siyah/uci_loaded ]
 do
-	EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
 	echo "Killing extweaks app proccess till all tweaks are loaded."
-	kill $EXTWEAKSAPP
+	pkill -f "com.darekxan.extweaks.app"
 	sleep 5
 	echo "waiting till UCI finish his work!"
 done

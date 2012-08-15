@@ -11,6 +11,7 @@ tar xvf /res/misc/dev.tar
 if grep -q bootmode=2 /proc/cmdline ; then
 	# Recovery mode
 	echo 0 > /proc/sys/kernel/rom_feature_set
+	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png
 	cp -a /recovery.rc /init.rc
 	cp /res/misc/recovery-init/init.smdk4210.rc /init.smdk4210.rc
 	exec /sbin/init.recovery
@@ -19,6 +20,7 @@ fi;
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
 	# low power mode
 	echo 0 > /proc/sys/kernel/rom_feature_set
+	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png
 	cp -a lpm.rc init.rc
 	rm init.smdk4210.rc
 	exec /sbin/init.recovery

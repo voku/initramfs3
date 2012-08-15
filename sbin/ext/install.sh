@@ -21,36 +21,59 @@ payload_extracted=0
 
 cd /
 
-if [ "$install_root" == "on" ];
-then
-	if [ -s /system/xbin/su ];
-	then
-    		echo "Superuser already exists"
-  	else
-    		if [ "$payload_extracted" == "0" ];
-		then
-      			extract_payload
-    		fi
-    			/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1
-    			/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1
-    			/sbin/busybox mkdir /system/xbin > /dev/null 2>&1
-    			/sbin/busybox chmod 755 /system/xbin
-    			/sbin/busybox xzcat /res/misc/payload/su.xz > /system/xbin/su
-    			/sbin/busybox chown 0.0 /system/xbin/su
-    			/sbin/busybox chmod 6755 /system/xbin/su
+if [ "$install_root" == "on" ]; then
+	if [ -s /system/xbin/su ]; then
+		echo "Superuser already exists"
+	else
+		if [ "$payload_extracted" == "0" ]; then
+			extract_payload
+		fi;
 
-    			/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
-    			/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1
-    			/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1
-    			/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
-    			/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1
-    			/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
-    			/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
-    			/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1
-    			/sbin/busybox xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
-    			/sbin/busybox chown 0.0 /system/app/Superuser.apk
-    			/sbin/busybox chmod 644 /system/app/Superuser.apk
-  	fi
+		# Clean su traces.
+		/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1
+		/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1
+		/sbin/busybox mkdir /system/xbin > /dev/null 2>&1
+		/sbin/busybox chmod 755 /system/xbin
+
+		# Extract SU binary.
+		/sbin/busybox xzcat /res/misc/payload/su.xz > /system/xbin/su
+		/sbin/busybox chown 0.0 /system/xbin/su
+		/sbin/busybox chmod 6755 /system/xbin/su
+
+		# Clean super user old apps.
+		/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1
+		/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
+		/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
+		/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1
+
+		# extract super user app.
+		/sbin/busybox xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
+		/sbin/busybox chown 0.0 /system/app/Superuser.apk
+		/sbin/busybox chmod 644 /system/app/Superuser.apk
+
+		# Restore witch if exist
+		if [ -e /system/xbin/waswhich-bkp ]; then
+			/sbin/busybox rm -f /system/xbin/which > /dev/null 2>&1
+			/sbin/busybox cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1
+			/sbin/busybox chmod 755 /system/xbin/which > /dev/null 2>&1
+		fi;
+
+		if [ -e /system/xbin/boxman ]; then
+			/sbin/busybox rm -f /system/xbin/busybox > /dev/null 2>&1
+			/sbin/busybox mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1
+			/sbin/busybox chmod 755 /system/xbin/busybox > /dev/null 2>&1
+			/sbin/busybox mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1
+			/sbin/busybox chmod 755 /system/bin/busybox > /dev/null 2>&1
+		fi;
+
+		# Delete payload and kill superuser pid.
+		/sbin/busybox rm -rf /res/misc/payload
+		pkill -f "com.noshufou.android.su" > /dev/null 2>&1
+	fi;
 fi;
 
 romtype=`cat /proc/sys/kernel/rom_feature_set`
