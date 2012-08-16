@@ -1,0 +1,13 @@
+# Tweaks For ROM
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.telephony.call_ring.delay 0
+    setprop ro.ril.disable.power.collapse 0
+    setprop ro.lge.proximity.delay 15
+
+#Video Quality
+    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.enc.hprof.vid.bps 20000000
+
+#Disable Google OTA Update checkin
+    setprop ro.config.nocheckin 1

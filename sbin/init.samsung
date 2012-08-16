@@ -1,42 +1,7 @@
-#!/system/xbin/bash
-
-busybox date >>boot.txt
-exec >>boot.txt 2>&1
-
-CHECKP10=`cat data-log | grep /dev/block/mmcblk0p10 | cut -c 1-28`
-CHECKP7=`cat cache-log | grep /dev/block/mmcblk0p7 | cut -c 1-27`
-
-if [ "$CHECKP10" == "/dev/block/mmcblk0p10: clean" ]; then
-        echo "DATA OK"
-        #Tune DATA
-else
-        echo "DATA partition damaged fixing"
-        /sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
-        #Sec run just in case
-        /sbin/e2fsck -y /dev/block/mmcblk0p10 >> /dm-log
-        /sbin/e2fsck -p /dev/block/mmcblk0p10 > /data-log
-fi
-
-if [ "$CHECKP7" == "/dev/block/mmcblk0p7: clean" ]; then
-        echo "CACHE OK"
-        #Tune Cache
-else
-        echo "partition damaged fixing"
-        /sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
-        #Sec run just in case
-        /sbin/e2fsck -y /dev/block/mmcblk0p7 >> /dm-log
-        /sbin/e2fsck -p /dev/block/mmcblk0p7 > /cache-log
-fi
+#!/sbin/busybox sh
 
 rm -f /init
-rm -f /init.cm9
-rm -f /init.jb
-rm -f /update*
-rm -f init.cm10
-mv /init.samsung /init
-
-busybox date >>boot.txt
-busybox rm -fr /dev/*
+mv /boot /init
 cd /
 exec /init
 

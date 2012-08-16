@@ -5,17 +5,23 @@ on init
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export ANDROID_ROOT /system
     export ANDROID_DATA /data
+    export ANDROID_CACHE /cache
+    export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
     #symlink /system/etc /etc
 
+    mkdir /emmc
     mkdir /sdcard
-    mkdir /sdcard1
+    mkdir /usbdisk
     mkdir /system
     mkdir /data
     mkdir /cache
     mkdir /preload
     mount /tmp /tmp tmpfs
+
+on fs
+    mount ext4 /dev/block/mmcblk0p9 /system noatime wait
 
 #    mkdir /efs
 #    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -27,9 +33,16 @@ on init
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on boot
+# Permissions for mDNIe
+    chown system media_rw /sys/class/mdnie/mdnie/mode
+    chown system media_rw /sys/class/mdnie/mdnie/outdoor
+    chown system media_rw /sys/class/mdnie/mdnie/scenario
+    write /sys/class/mdnie/mdnie/scenario 4
+
     ifup lo
     hostname localhost
     domainname localdomain
+
     class_start default
 
 service ueventd /sbin/ueventd
