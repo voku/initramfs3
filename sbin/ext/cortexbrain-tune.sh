@@ -381,6 +381,7 @@ CPU_GOV_TWEAKS()
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+			echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
