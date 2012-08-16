@@ -95,7 +95,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<spinner description="Sets the CPU undervolting value which will be set during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
+		<spinner description="Sets the CPU undervolting value which will be set during boot time only. 'ALERT -100 and -75 can brake the boot or stuck the CPU, i have UV the CPU already by default! so dont post about it if you stuck!' It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
 			<spinnerItem name="No Undervolting" value="0"/> 
 			<spinnerItem name=" -25 mV" value="-25"/> 
@@ -133,7 +133,7 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 
 		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed, (default is 200kHz) if music still shutter, rise to 300kHz"
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
-			unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
+			unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
@@ -259,7 +259,7 @@ The third step is disabled as default by having the second to third threshold 10
 
 	<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
-	<seekBar description="Sets screen BLUE color scale (Default is 137)" 
+	<seekBar description="Sets screen BLUE color scale (Default is 135)" 
 		name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
 		unit="BLUE" min="0" reversed="false" step="1" max="244"/>
 
@@ -351,12 +351,14 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<spinner description="Notification timeout. -1: disabled" 
 			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
 			<spinnerItem name="Never timeout" value="-1"/> 
+			<spinnerItem name="1 Minutes" value="60000"/> 
+			<spinnerItem name="3 Minutes" value="180000"/> 
 			<spinnerItem name="5 Minutes" value="300000"/> 
 			<spinnerItem name="10 Minutes" value="600000"/> 
 			<spinnerItem name="15 Minutes" value="900000"/> 
 			<spinnerItem name="30 Minutes" value="1800000"/> 
 			<spinnerItem name="1 Hour" value="3600000"/> 
-			<spinnerItem name="2 Hours" value="7200000"/>
+			<spinnerItem name="2 Hours" value="7200000"/> 
 			<spinnerItem name="5 Hours" value="18000000"/> 
 		</spinner>
 
