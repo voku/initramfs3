@@ -7,4 +7,3 @@ elif [ -f /data/local/bootanimation.zip ] || [ -f /system/media/bootanimation.zi
 else
 	/system/bin/samsungani
 fi;
-
