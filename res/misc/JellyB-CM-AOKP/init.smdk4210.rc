@@ -41,7 +41,7 @@ on fs
 
 # Check and mount /data
     exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc rw
 
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
