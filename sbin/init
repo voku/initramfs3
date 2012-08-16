@@ -76,7 +76,7 @@ if [ ! -d /system/lib/modules ]; then
 fi;
 rm -f /system/lib/modules/*.ko
 cp /lib/modules/*.ko /system/lib/modules/
-chmod 777 /system/lib/modules/*.ko
+chmod 755 /system/lib/modules/*.ko
 
 mount -o remount,rw /preload
 if [ -d /preload/lib/ ]; then
@@ -86,7 +86,7 @@ if [ -d /preload/lib/ ]; then
 	fi;
 	rm -f /preload/lib/modules/*.ko
 	cp /lib/modules/*.ko /preload/lib/modules/
-	chmod 775 /preload/lib/modules/*.ko
+	chmod 755 /preload/lib/modules/*.ko
 fi;
 
 if [ -f /system/recovery.cpio.gz ]; then
@@ -206,7 +206,7 @@ if [ "$SLIM" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
         echo 1 > /proc/sys/kernel/rom_feature_set
         cp -a /res/misc/libsqlite.so /system/lib/
-        chmod 777 /system/lib/libsqlite.so
+        chmod 755 /system/lib/libsqlite.so
         rm /init.rc.2
         
         if [ "$SECONDROM" == "1" ]; then
@@ -223,7 +223,7 @@ if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
 	echo 1 > /proc/sys/kernel/rom_feature_set
 	cp -a /res/misc/libsqlite.so /system/lib/
-	chmod 777 /system/lib/libsqlite.so
+	chmod 755 /system/lib/libsqlite.so
 	rm /init.rc.2
 
 	if [ "$SECONDROM" == "1" ]; then

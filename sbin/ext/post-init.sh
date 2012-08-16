@@ -79,10 +79,10 @@ if [ "$logger" == "off" ]; then
 	echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
 fi;
 
-#Run my modules
+# Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh
 
-#enable kmem interface for everyone by GM.
+# enable kmem interface for everyone by GM.
 echo 0 > /proc/sys/kernel/kptr_restrict
 
 # for ntfs automounting
