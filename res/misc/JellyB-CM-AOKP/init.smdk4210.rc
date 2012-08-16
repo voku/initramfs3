@@ -10,6 +10,7 @@ on early-init
     mkdir /storage/usbdisk0 0775 system system
     mkdir /efs 0771 radio system
     mkdir /preload 0771 system system
+	mkdir /mnt 0775 root system
     mkdir /mnt/.lfs 0755 root root
 
 # for backwards compatibility
@@ -33,16 +34,17 @@ on early-init
 
 on fs
 # mount ext4 partitions
-    mount ext4 /res/dev/system /system noatime wait
+    mount ext4 /res/dev/system /system noatime wait ro
 
 # Check and mount /cache
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait rw
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait noauto_da_alloc rw
 
-# Check and mount /data
+# check and mount /data
     exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc rw
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
+# mount /preload
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -60,6 +62,7 @@ on fs
 on post-fs-data
 # insmod kernel modules
     insmod /system/lib/modules/j4fs.ko
+	insmod /system/lib/modules/Si4709_driver.ko
 
 # mount param.lfs
     mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
@@ -98,7 +101,7 @@ on post-fs-data
     chown drm system /data/data/.drm/.playready
     chmod 0775 /data/data/.drm/.playready
 
-#Added drm folder to copy drm plugins
+# added drm folder to copy drm plugins
     mkdir /system/lib/drm 0775
     chown root root /system/lib/drm
     chmod 0775 /system/lib/drm
@@ -134,7 +137,8 @@ on post-fs-data
     chmod 0770 /dev/snd/controlC0
     chmod 0770 /dev/snd/timer
     chmod 0770 /dev/snd/hwC0D0
-# Permission for MHL
+
+# permission for MHL
     chown system radio /sys/class/mhl/test_result
 
 # create log system
@@ -150,7 +154,7 @@ on post-fs-data
     chmod 0662 /dev/log/main
     chmod 0662 /dev/log/event
 
-#panorama directory creation
+# panorama directory creation
     mkdir /data/pxtmpdir 0775
     chown system system /data/pxtmpdir
     chmod 0775 /data/pxtmpdir
@@ -158,11 +162,11 @@ on post-fs-data
 # permission for HDMI audio path
     chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
-# Permissions for gpio_keys.
+# permissions for gpio_keys
     chown system radio /sys/class/sec/sec_key/wakeup_keys 
     write /sys/class/sec/sec_key/wakeup_keys  102,116
 
-# Add permission for ATM. 2010.03.20
+# add permission for ATM. 2010.03.20
     chown system radio /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_read_soc
     chown system radio /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
     chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_lpm_state
