@@ -45,13 +45,11 @@ fi;
 
 if [ "$?" == "1" ]; then
 	SECONDROM=1
-	/sbin/busybox mount -t ext4 -o rw /res/dev/system /system
 else
 	SECONDROM=0
-	/sbin/busybox mount -t ext4 -o rw /dev/block/mmcblk0p9 /system
 fi;
 
-/sbin/busybox mount -t ext4 -o rw /res/dev/system /system
+/sbin/busybox mount -t ext4 /res/dev/system /system
 
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /system/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
@@ -78,7 +76,7 @@ if [ ! -d /system/lib/modules ]; then
 fi;
 rm -f /system/lib/modules/*.ko
 cp /lib/modules/*.ko /system/lib/modules/
-chmod 755 /system/lib/modules/*.ko
+chmod 777 /system/lib/modules/*.ko
 
 mount -o remount,rw /preload
 if [ -d /preload/lib/ ]; then
@@ -128,31 +126,31 @@ S4A=0
 #############################
 
 PARTITION_TUNING () {
-	# unmounting DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/busybox umount -l /data > /dm-log
-	/sbin/busybox umount -l /cache >> /dm-log
+#Unmounting DATA, CACHE, and PAYLOAD-SEC-ROM.
+/sbin/busybox umount -l /data > /dm-log
+/sbin/busybox umount -l /cache >> /dm-log
 
-	# setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
-	/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
-	/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log # Restore journal / check if ok.
-	/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
-	/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log #CACHE
-	/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p12 > /preload-log #PRELOAD
-	/sbin/tune2fs -I 256 /res/dev/data >> /dm-log
-	/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
-	/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
-	/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log # SEC-SYSTEM /preload
-	# checking Partitions X2! needed for clean flag
-	/sbin/e2fsck -p /res/dev/data
-	/sbin/e2fsck -p /res/dev/data > /data-log
-	/sbin/e2fsck -p /res/dev/cache
-	/sbin/e2fsck -p /res/dev/cache > /cache-log
+#Setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM.
+/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
+/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
+/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log # Restore journal / check if ok.
+/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
+/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log #CACHE
+/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p12 > /preload-log #PRELOAD
+/sbin/tune2fs -I 256 /res/dev/data >> /dm-log
+/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
+/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
+/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log # SEC-SYSTEM /preload
+# Checking Partitions X2! needed for clean flag.
+/sbin/e2fsck -p /res/dev/data
+/sbin/e2fsck -p /res/dev/data > /data-log
+/sbin/e2fsck -p /res/dev/cache
+/sbin/e2fsck -p /res/dev/cache > /cache-log
 }
 
 SYSTEM_UMOUNT () {
-	/sbin/busybox umount /preload
-	/sbin/busybox umount /system
+/sbin/busybox umount /preload
+/sbin/busybox umount /system
 }
 
 #############################
@@ -160,29 +158,20 @@ SYSTEM_UMOUNT () {
 #############################
 
 
-if [ "$S4A" == "1" ]; then
+if [ "$S4A" == 1 ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
 	mv /res/misc/Sense4All-ROM/init.s4a /init.rc
 	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2
 
-	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-		mv /sbin/init.no-bash-samsung /sbin/init.samsung
-		SYSTEM_UMOUNT
-	fi;
-
 	# Start ROM!
 	PARTITION_TUNING
+	SYSTEM_UMOUNT
 	exec /sbin/init.samsung
 fi;
 
-if [ "$B2G" == "1" ]; then
+if [ "$B2G" == 1 ]; then
         echo 0 > /proc/sys/kernel/rom_feature_set
 	cp -a /res/misc/B2G-ROM/* /	
-
-        if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-                mv /sbin/init.no-bash-samsung /sbin/init.samsung
-		SYSTEM_UMOUNT
-        fi;
 
         if [ "$SECONDROM" == "1" ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
@@ -191,53 +180,35 @@ if [ "$B2G" == "1" ]; then
 
         # Start ROM!
 	PARTITION_TUNING
+	SYSTEM_UMOUNT
         exec /sbin/init.samsung
 fi;
 
-if [ "$JELLY" == "1" ]; then
-	if [ -e /system/etc/CHANGELOG-CM.txt ] || [ -d /system/etc/cron ]; then
+if [ "$JELLY" == 1 ]; then
 		cp -a /res/misc/JellyB-CM-AOKP/* /
         	echo 1 > /proc/sys/kernel/rom_feature_set
-		rm -f /init.rc.2
-
-		mv /sbin/init.no-bash-jellyB-cm-aokp /sbin/init.samsung
-		SYSTEM_UMOUNT
-	else
-        	cp -a /res/misc/JellyB-ROM/* /
-        	echo 0 > /proc/sys/kernel/rom_feature_set
-
-        	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-                	mv /sbin/init.no-bash-jellyB /sbin/init.samsung
-			SYSTEM_UMOUNT
-		else
-			mv /sbin/init.jellyB /sbin/init.samsung
-        	fi;
-	fi;
+		rm -rf /vendor
+		rm -f init.rc.2
 
         if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then
                 	mv /init.smdk4210.rc.2 /init.smdk4210.rc
 		fi;
-
-		if [ -e /init.rc.2 ]; then
-                	mv /init.rc.2 /init.rc
-		fi;
         fi;
 
         # Start ROM!
 	PARTITION_TUNING
+	SYSTEM_UMOUNT
         exec /sbin/init.samsung
 fi;
 
-if [ "$SLIM" == "1" ]; then
+if [ "$SLIM" == 1 ]; then
 	cp -a /res/misc/CM-ROM/* /
         echo 1 > /proc/sys/kernel/rom_feature_set
         cp -a /res/misc/libsqlite.so /system/lib/
-        chmod 755 /system/lib/libsqlite.so
+        chmod 777 /system/lib/libsqlite.so
         rm /init.rc.2
         
-        mv /sbin/init.no-bash-cm9 /sbin/init.samsung
-
         if [ "$SECONDROM" == "1" ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
         fi;
@@ -248,19 +219,12 @@ if [ "$SLIM" == "1" ]; then
         exec /sbin/init.samsung
 fi;
 
-if [ "$AOSP" == "1" ]; then
+if [ "$AOSP" == 1 ]; then
 	cp -a /res/misc/CM-ROM/* /
 	echo 1 > /proc/sys/kernel/rom_feature_set
 	cp -a /res/misc/libsqlite.so /system/lib/
-	chmod 755 /system/lib/libsqlite.so
+	chmod 777 /system/lib/libsqlite.so
 	rm /init.rc.2
-
-	if [ -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-		mv /sbin/init.cm9 /sbin/init.samsung
-	else
-		mv /sbin/init.no-bash-cm9 /sbin/init.samsung
-		SYSTEM_UMOUNT
-	fi;
 
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc
@@ -268,17 +232,13 @@ if [ "$AOSP" == "1" ]; then
 
 	# Start ROM!
 	PARTITION_TUNING
+	SYSTEM_UMOUNT
 	exec /sbin/init.samsung
 fi;
 
-if [ "$MIUI" == "1" ]; then
+if [ "$MIUI" == 1 ]; then
 	cp -a /res/misc/Miui-ROM/* /
 	echo 0 > /proc/sys/kernel/rom_feature_set
-
-	if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-		mv /sbin/init.no-bash-miui /sbin/init.samsung
-		SYSTEM_UMOUNT
-	fi;
 
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc
@@ -287,6 +247,7 @@ if [ "$MIUI" == "1" ]; then
 
 	# Start ROM!
 	PARTITION_TUNING
+	SYSTEM_UMOUNT
 	exec /sbin/init.samsung
 fi;
 
@@ -297,13 +258,9 @@ if [ "$SECONDROM" == "1" ]; then
 	mv /init.smdk4210.rc.2 /init.smdk4210.rc
 	mv /init.rc.2 /init.rc
 fi;
-	
-if [ ! -e /system/xbin/bash ] || [ ! -e /system/bin/bash ]; then
-	mv /sbin/init.no-bash-samsung /sbin/init.samsung
-	SYSTEM_UMOUNT
-fi;
 
 # Start ROM
 PARTITION_TUNING
+SYSTEM_UMOUNT
 exec /sbin/init.samsung
 
