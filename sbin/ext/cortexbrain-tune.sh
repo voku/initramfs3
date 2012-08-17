@@ -768,6 +768,13 @@ AWAKE_MODE()
 		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	fi;
 
+	if [ $gesture_tweak == "on" ]; then
+		# check if running already
+		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
+			/sbin/busybox sh /data/gesture_set.sh
+		fi;
+	fi;
+
 	# set lock screen freq to max scalling freq.
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 	if [ $SYSTEM_GOVERNOR == lulzactive ]; then
@@ -936,6 +943,17 @@ SLEEP_MODE()
 }
 
 # ==============================================================
+# Background gesture process control
+# ==============================================================
+
+GESTURE_FUNCTION_OFF ()
+{
+	# shutdown gestures loop on screen off, we dont need it.
+	pkill -f "gesture_set.sh"
+	pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
+}
+
+# ==============================================================
 # Background process to check screen state
 # ==============================================================
 
@@ -962,6 +980,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		# Install ROOT is requested!
 		ROOT_INSTALL_NOW
+		GESTURE_FUNCTION_OFF
 		sleep 10;
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ ! "$CHARGING" -ge "1" ]; then

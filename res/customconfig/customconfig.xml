@@ -319,12 +319,22 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 </settingsTab>
 
-<settingsTab name="Audio">
+<settingsTab name="Audio+Swipes">
 
 	<settingsPane description="Headphone Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
 	<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
                 name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+
+	</settingsPane>
+
+	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more will be added later" name="Gestures Panel">
+
+	<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum." 
+		name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="GESTURES SWITCH"/>
+
+
+	<button description="Click to reset gestures to default, or update with new one from dev, gesture file will be added to `/data/` only once if was missing." name="RESET GESTURES" action="push-actions/reset_gestures" label="Reset Gestures"/>
 
 	</settingsPane>
 

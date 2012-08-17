@@ -76,18 +76,20 @@ if [ "$install_root" == "on" ]; then
 	fi;
 fi;
 
-romtype=`cat /proc/sys/kernel/rom_feature_set`
-lightsmd5sum=`/sbin/busybox md5sum /system/lib/hw/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
-blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
 
-  	if [ "${lightsmd5sum}a" != "${blnlightsmd5sum}a" ];
-  	then
-    		echo "Copying liblights"
-    		/sbin/busybox mv /system/lib/hw/lights.exynos4.so /system/lib/hw/lights.exynos4.so.BAK
-    		/sbin/busybox cp /res/misc/lights.exynos4.so /system/lib/hw/lights.exynos4.so
-    		/sbin/busybox chown 0.0 /system/lib/hw/lights.exynos4.so
-    		/sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
-  	fi
+# liblights install by force to allow BLN.
+if [ ! -e /system/lib/hw/lights.exynos4.so.BAK ]; then
+	/sbin/busybox mv /system/lib/hw/lights.exynos4.so /system/lib/hw/lights.exynos4.so.BAK
+fi;
+echo "Copying liblights"
+/sbin/busybox cp -a /res/misc/lights.exynos4.so /system/lib/hw/lights.exynos4.so
+/sbin/busybox chown root:root /system/lib/hw/lights.exynos4.so
+/sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
+
+# add gusture_set.sh with default gustures to data to be used by user.
+if [ ! -e /data/gusture_set.sh ]; then
+	/sbin/busybox cp -a /res/misc/gusture_set.sh /data/
+fi;
 
 # New GM EXTWEAKS, Still not fully ready, lets wait for great app.
 GMTWEAKS () {

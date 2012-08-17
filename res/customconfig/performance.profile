@@ -53,6 +53,7 @@ TOUCHSCREEN4=53
 TOUCHSCREEN5=38
 TOUCHSCREEN6=46
 soundgasm_hp=0
+gesture_tweak=on
 enabled=off
 bln_switch=2
 enabled_charging=on
