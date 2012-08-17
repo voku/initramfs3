@@ -76,7 +76,7 @@ if [ ! -d /system/lib/modules ]; then
 fi;
 rm -f /system/lib/modules/*.ko
 cp /lib/modules/*.ko /system/lib/modules/
-chmod 777 /system/lib/modules/*.ko
+chmod 755 /system/lib/modules/*.ko
 
 mount -o remount,rw /preload
 if [ -d /preload/lib/ ]; then
@@ -86,7 +86,7 @@ if [ -d /preload/lib/ ]; then
 	fi;
 	rm -f /preload/lib/modules/*.ko
 	cp /lib/modules/*.ko /preload/lib/modules/
-	chmod 775 /preload/lib/modules/*.ko
+	chmod 755 /preload/lib/modules/*.ko
 fi;
 
 if [ -f /system/recovery.cpio.gz ]; then
@@ -126,31 +126,31 @@ S4A=0
 #############################
 
 PARTITION_TUNING () {
-#Unmounting DATA, CACHE, and PAYLOAD-SEC-ROM.
-/sbin/busybox umount -l /data > /dm-log
-/sbin/busybox umount -l /cache >> /dm-log
+	# unmounting DATA, CACHE, and PAYLOAD-SEC-ROM
+	/sbin/busybox umount -l /data > /dm-log
+	/sbin/busybox umount -l /cache >> /dm-log
 
-#Setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM.
-/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
-/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
-/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log # Restore journal / check if ok.
-/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
-/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log #CACHE
-/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p12 > /preload-log #PRELOAD
-/sbin/tune2fs -I 256 /res/dev/data >> /dm-log
-/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
-/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
-/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log # SEC-SYSTEM /preload
-# Checking Partitions X2! needed for clean flag.
-/sbin/e2fsck -p /res/dev/data
-/sbin/e2fsck -p /res/dev/data > /data-log
-/sbin/e2fsck -p /res/dev/cache
-/sbin/e2fsck -p /res/dev/cache > /cache-log
+	# setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM
+	/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
+	/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
+	/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log # Restore journal / check if ok.
+	/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
+	/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log #CACHE
+	/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p12 > /preload-log #PRELOAD
+	/sbin/tune2fs -I 256 /res/dev/data >> /dm-log
+	/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
+	/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
+	/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log # SEC-SYSTEM /preload
+	# checking Partitions X2! needed for clean flag
+	/sbin/e2fsck -p /res/dev/data
+	/sbin/e2fsck -p /res/dev/data > /data-log
+	/sbin/e2fsck -p /res/dev/cache
+	/sbin/e2fsck -p /res/dev/cache > /cache-log
 }
 
 SYSTEM_UMOUNT () {
-/sbin/busybox umount /preload
-/sbin/busybox umount /system
+	/sbin/busybox umount /preload
+	/sbin/busybox umount /system
 }
 
 #############################
@@ -158,7 +158,7 @@ SYSTEM_UMOUNT () {
 #############################
 
 
-if [ "$S4A" == 1 ]; then
+if [ "$S4A" == "1" ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
 	mv /res/misc/Sense4All-ROM/init.s4a /init.rc
 	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2
@@ -169,7 +169,7 @@ if [ "$S4A" == 1 ]; then
 	exec /sbin/init.samsung
 fi;
 
-if [ "$B2G" == 1 ]; then
+if [ "$B2G" == "1" ]; then
         echo 0 > /proc/sys/kernel/rom_feature_set
 	cp -a /res/misc/B2G-ROM/* /	
 
@@ -184,7 +184,7 @@ if [ "$B2G" == 1 ]; then
         exec /sbin/init.samsung
 fi;
 
-if [ "$JELLY" == 1 ]; then
+if [ "$JELLY" == "1" ]; then
 		cp -a /res/misc/JellyB-CM-AOKP/* /
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		rm -rf /vendor
@@ -202,11 +202,11 @@ if [ "$JELLY" == 1 ]; then
         exec /sbin/init.samsung
 fi;
 
-if [ "$SLIM" == 1 ]; then
+if [ "$SLIM" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
         echo 1 > /proc/sys/kernel/rom_feature_set
         cp -a /res/misc/libsqlite.so /system/lib/
-        chmod 777 /system/lib/libsqlite.so
+        chmod 755 /system/lib/libsqlite.so
         rm /init.rc.2
         
         if [ "$SECONDROM" == "1" ]; then
@@ -219,11 +219,11 @@ if [ "$SLIM" == 1 ]; then
         exec /sbin/init.samsung
 fi;
 
-if [ "$AOSP" == 1 ]; then
+if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
 	echo 1 > /proc/sys/kernel/rom_feature_set
 	cp -a /res/misc/libsqlite.so /system/lib/
-	chmod 777 /system/lib/libsqlite.so
+	chmod 755 /system/lib/libsqlite.so
 	rm /init.rc.2
 
 	if [ "$SECONDROM" == "1" ]; then
@@ -236,7 +236,7 @@ if [ "$AOSP" == 1 ]; then
 	exec /sbin/init.samsung
 fi;
 
-if [ "$MIUI" == 1 ]; then
+if [ "$MIUI" == "1" ]; then
 	cp -a /res/misc/Miui-ROM/* /
 	echo 0 > /proc/sys/kernel/rom_feature_set
 
