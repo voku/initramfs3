@@ -86,9 +86,9 @@ echo "Copying liblights"
 /sbin/busybox chown root:root /system/lib/hw/lights.exynos4.so
 /sbin/busybox chmod 644 /system/lib/hw/lights.exynos4.so
 
-# add gusture_set.sh with default gustures to data to be used by user.
-if [ ! -e /data/gusture_set.sh ]; then
-	/sbin/busybox cp -a /res/misc/gusture_set.sh /data/
+# add gesture_set.sh with default gustures to data to be used by user.
+if [ ! -e /data/gesture_set.sh ]; then
+	/sbin/busybox cp -a /res/misc/gesture_set.sh /data/
 fi;
 
 # New GM EXTWEAKS, Still not fully ready, lets wait for great app.
