@@ -10,6 +10,9 @@ else
 	echo $led_timeout
 fi;
 
+PROFILE=`cat /data/.siyah/.active.profile`;
+. /data/.siyah/$PROFILE.profile;
+
 case "${led_timeout}" in
 	off)
 		echo "-2" > /sys/class/misc/backlightnotification/led_timeout
@@ -40,3 +43,8 @@ case "${led_timeout}" in
 		;;
 esac;
 
+if [ "$tsp_flash_timeout" == "on" ]; then
+	TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
+	echo "$TIMEOUT_SET" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
+fi;
+ 
