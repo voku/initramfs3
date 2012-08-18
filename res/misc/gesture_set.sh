@@ -56,7 +56,7 @@ do
 
 	elif [ "$GESTURE" -eq "2" ]; then
 
-		# Power down the screen
+		# Power down the screen, for 4.0.3 or 4.0.4 ONLY.
 		key=26; service call window 12 i32 1 i32 1 i32 5 i32 0 i32 0 i32 $key i32 0 i32 0 i32 0 i32 8 i32 0 i32 0 i32 0 i32 0; service call window 12 i32 1 i32 1 i32 5 i32 0 i32 1 i32 $key i32 0 i32 0 i32 27 i32 8 i32 0 i32 0 i32 0 i32 0
 		
 	elif [ "$GESTURE" -eq "3" ]; then
@@ -77,15 +77,12 @@ do
 	elif [ "$GESTURE" -eq "5" ]; then
 
 		# Start Camera APP
-		# for CM10 or JELLY-B
+		# for CM10
 		am start --activity-exclude-from-recents com.sec.android.app.camera
 
 		# For 4.0.3 or 4.0.4
 		am start --activity-exclude-from-recents com.android.camera/.Camera
 
-
-	else
-		sleep 2
 	fi;
 
 done &);

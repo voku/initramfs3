@@ -1,6 +1,5 @@
 #!/sbin/busybox sh
-# Logging
-#/sbin/busybox cp /data/user.log /data/user.log.bak
+
 /sbin/busybox rm /data/user.log
 exec >>/data/user.log
 exec 2>&1
@@ -13,25 +12,6 @@ if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	rm -f /data/.siyah/*.profile
 	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
 fi
-
-# Reset profile in case i messed with it.
-#md5battery=`md5sum /res/customconfig/battery.profile | awk '{print $1}'`
-#if [ "a${md5battery}" != "a`cat /data/.siyah/.md5battery`" ]; then
-#	rm -f /data/.siyah/battery.profile
-#	echo ${md5battery} > /data/.siyah/.md5battery
-#fi;
-
-#md5default=`md5sum /res/customconfig/default.profile | awk '{print $1}'`
-#if [ "a${md5default}" != "a`cat /data/.siyah/.md5default`" ]; then
-#        rm -f /data/.siyah/default.profile
-#        echo ${md5default} > /data/.siyah/.md5default
-#fi;
-
-#md5performance=`md5sum /res/customconfig/performance.profile | awk '{print $1}'`
-#if [ "a${md5performance}" != "a`cat /data/.siyah/.md5performance`" ]; then
-#        rm -f /data/.siyah/performance.profile
-#        echo ${md5performance} > /data/.siyah/.md5performance
-#fi;
 
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
@@ -99,10 +79,12 @@ chmod 777 /mnt/ntfs
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Critical Permissions fix #####
-chmod 666 /data/data/com.android.providers.*/databases/*
-chmod 760 /data/system/inputmethod/ -R
-chmod 777 /data/local/ -R
-chmod 777 /sys/devices/system/cpu/ -R
+/sbin/busybox chmod 766 /data/anr/*
+/sbin/busybox chmod 766 /data/data/com.android.providers.*/databases/*
+/sbin/busybox chmod 766 /data/system/inputmethod/* -R
+/sbin/busybox chmod 777 /data/local/* -R
+/sbin/busybox chmod 766 /sys/devices/system/cpu/* -R
+/sbin/busybox chown root:system /sys/devices/system/cpu/* -R
 
 ##### Critical OWNER Permissions fix #####
 (
@@ -128,7 +110,7 @@ chmod 777 /sys/devices/system/cpu/ -R
 /sbin/fix_permissions -l -v -f SystemUI.apk
 /sbin/fix_permissions -l -v -f VpnDialogs.apk
 /sbin/fix_permissions -l -v -f VoiceDialer.apk
-chmod 666 /data/data/com.android.providers.*/databases/*
+chmod 766 /data/data/com.android.providers.*/databases/*
 )&
 
 #apply last soundgasm level on boot

@@ -785,7 +785,6 @@ AWAKE_MODE()
 
 	# Bus-Freq for awake state
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 	# set I/O-Scheduler
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
@@ -842,7 +841,9 @@ AWAKE_MODE()
 	echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
 
 	# enable NMI Watchdog to detect hangs
-	echo "1" > /proc/sys/kernel/nmi_watchdog; 
+	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+		echo "1" > /proc/sys/kernel/nmi_watchdog; 
+	fi;
 
 	# fs settings 
 	echo "25" > /proc/sys/vm/vfs_cache_pressure;
@@ -886,8 +887,6 @@ SLEEP_MODE()
 	# reduce deepsleep CPU speed, SUSPEND mode
 	echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	# moved to background function
-	#echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# set disk I/O sched to noop simple and battery saving.
@@ -912,15 +911,16 @@ SLEEP_MODE()
 
 	# Bus Freq for deep sleep
 	echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 	# set settings for battery -> don't wake up "pdflush daemon"
 	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 
 	# disable NMI Watchdog to detect hangs
-	echo "0" > /proc/sys/kernel/nmi_watchdog;
-	
+	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+		echo "0" > /proc/sys/kernel/nmi_watchdog;
+	fi;
+
 	# set battery value
 	echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
