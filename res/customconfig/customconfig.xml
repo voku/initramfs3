@@ -83,13 +83,6 @@
 		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
 			name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
 
-		<!--spinner description="Changes CFS granularity and latency settings. Using anything other than stock may decrease benchmark scores,
-but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
-			<spinnerItem name="Samsung defaults" value="0"/> 
-			<spinnerItem name="Linux kernel defaults" value="1"/> 
-			<spinnerItem name="Dori Power" value="2"/> 
-		</spinner-->
-
 		</settingsPane>
 
 		<settingsPane description="Here you can set all the settings for power save!" 
@@ -328,7 +321,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	</settingsPane>
 
-	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more will be added later" name="Gestures Panel">
+	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more will be added later, this tweak depend on cortex background service ON" name="Gestures Panel">
 
 	<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum." 
 		name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="GESTURES SWITCH"/>
@@ -402,7 +395,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			name="Touch Keys Lights Settings">
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
-			name="led_timeout" action="led_timeout">
+			name="Keys led timeout" action="led_timeout">
 			<spinnerItem name="Always OFF" value="off"/> 
 			<spinnerItem name="1 sec" value="1"/> 
 			<spinnerItem name="2 sec" value="2"/> 

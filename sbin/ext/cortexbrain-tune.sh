@@ -971,7 +971,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 3;
+		sleep 15;
 
 		# SLEEP state! All system to power save!
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
@@ -981,7 +981,6 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		# Install ROOT is requested!
 		ROOT_INSTALL_NOW
 		GESTURE_FUNCTION_OFF
-		sleep 10;
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ ! "$CHARGING" -ge "1" ]; then
 			SLEEP_MODE;
