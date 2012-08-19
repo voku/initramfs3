@@ -81,9 +81,9 @@ chmod 777 /mnt/ntfs
 ##### Critical Permissions fix #####
 /sbin/busybox chmod 766 /data/anr/*
 /sbin/busybox chmod 766 /data/data/com.android.providers.*/databases/*
-/sbin/busybox chmod 766 /data/system/inputmethod/* -R
+/sbin/busybox chmod 777 /data/system/inputmethod/* -R
 /sbin/busybox chmod 777 /data/local/* -R
-/sbin/busybox chmod 766 /sys/devices/system/cpu/* -R
+/sbin/busybox chmod 0777 /sys/devices/system/cpu/* -R
 /sbin/busybox chown root:system /sys/devices/system/cpu/* -R
 
 ##### Critical OWNER Permissions fix #####
