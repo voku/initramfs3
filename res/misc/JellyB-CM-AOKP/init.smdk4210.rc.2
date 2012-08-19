@@ -140,6 +140,9 @@ on post-fs-data
     chmod 0770 /dev/snd/timer
     chmod 0770 /dev/snd/hwC0D0
 
+# Permission for MHL
+    chown system radio /sys/class/mhl/test_result
+
 # create log system
     mkdir /data/log 0775 system log
     chown system log /data/log

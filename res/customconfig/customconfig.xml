@@ -83,13 +83,6 @@
 		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
 			name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
 
-		<!--spinner description="Changes CFS granularity and latency settings. Using anything other than stock may decrease benchmark scores,
-but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
-			<spinnerItem name="Samsung defaults" value="0"/> 
-			<spinnerItem name="Linux kernel defaults" value="1"/> 
-			<spinnerItem name="Dori Power" value="2"/> 
-		</spinner-->
-
 		</settingsPane>
 
 		<settingsPane description="Here you can set all the settings for power save!" 
@@ -115,12 +108,8 @@ but will increase UI responsiveness" name="CFS Tweaks" action="cfs_tweaks">
 		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=30%" 
+		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=23%" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
-			unit="%" min="23" reversed="false" step="1" max="50"/>
-
-		<seekBar description="This is for CPU BUS-FREQ DOWN-FREQ-Scaling, based on CPU load! default=30%" 
-			name="busfreq_down_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_down_threshold" 
 			unit="%" min="23" reversed="false" step="1" max="50"/>
 
 		<seekBar description="Maximum DEEP SLEEP CPU Speed (only 500 or 600 default is 600)" 
@@ -319,12 +308,22 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 </settingsTab>
 
-<settingsTab name="Audio">
+<settingsTab name="Audio+Swipes">
 
 	<settingsPane description="Headphone Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
 	<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
                 name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+
+	</settingsPane>
+
+	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more will be added later, this tweak depend on cortex background service ON" name="Gestures Panel">
+
+	<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum." 
+		name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="GESTURES SWITCH"/>
+
+
+	<button description="Click to reset gestures to default, or update with new one from dev, gesture file will be added to `/data/` only once if was missing." name="RESET GESTURES" action="push-actions/reset_gestures" label="Reset Gestures"/>
 
 	</settingsPane>
 
@@ -392,7 +391,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			name="Touch Keys Lights Settings">
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
-			name="led_timeout" action="led_timeout">
+			name="Keys led timeout" action="led_timeout">
 			<spinnerItem name="Always OFF" value="off"/> 
 			<spinnerItem name="1 sec" value="1"/> 
 			<spinnerItem name="2 sec" value="2"/> 

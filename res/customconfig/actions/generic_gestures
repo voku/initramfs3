@@ -14,14 +14,16 @@ else
 	eval $evalcmd
 	evalcmd='eval "echo \$$filename"'
 	eval $evalcmd
-	if [ -f $2 ]; then
+	if [ -f $2 ];then
 		case "$3" in
 			off)
-				echo 0 > $2;
+				pkill -f "gesture_set.sh"
+				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
 			;;
 			on)
-				TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
-				echo "$TIMEOUT_SET" > $2;
+				if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
+					/sbin/busybox sh /data/gesture_set.sh
+				fi;
 			;;
 		esac;
 	fi;

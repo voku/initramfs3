@@ -364,42 +364,42 @@ CPU_GOV_TWEAKS()
 
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "120000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "99" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "99" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "10" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "99" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "10" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
 			echo "120000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "99" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 			echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 			echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-			echo "99" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
 			echo "120000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "95" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
 			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -477,11 +477,11 @@ CPU_GOV_TWEAKS()
 
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+			echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+			echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+			echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 		fi;
 
@@ -490,7 +490,7 @@ CPU_GOV_TWEAKS()
 			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
@@ -508,10 +508,10 @@ CPU_GOV_TWEAKS()
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
 			echo "50000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "70" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+			echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "30" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+			echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
 			echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
 			echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
 			echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -685,66 +685,66 @@ fi;
 # ROOT: Install function.
 # ==============================================================
 
-ROOT_INSTALL_NOW()
+ROOT_INSTALL_NOW ()
 {
 
 if [ -e /data/.siyah/root_install ] && [ ! -e /system/xbin/su ]; then
 
-	# extract Payload with root files
-	/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1;
-	/sbin/busybox mount -t rootfs -o remount,rw rootfs;
-	/sbin/busybox chmod 755 /sbin/read_boot_headers;
-	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
-	load_offset=$boot_offset;
-	load_len=$boot_len;
-	cd /;
-	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x;
+	# Extract Payload with root files.
+	/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+	/sbin/busybox mount -t rootfs -o remount,rw rootfs
+	/sbin/busybox chmod 755 /sbin/read_boot_headers
+	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
+	load_offset=$boot_offset
+	load_len=$boot_len
+	cd /
+	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x
 
-	# clean su traces
-	/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1;
-	/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1;
-	/sbin/busybox mkdir /system/xbin > /dev/null 2>&1;
-	/sbin/busybox chmod 755 /system/xbin;
+	# Clean su traces.
+	/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1
+	/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1
+	/sbin/busybox mkdir /system/xbin > /dev/null 2>&1
+	/sbin/busybox chmod 755 /system/xbin
 
-	# extract SU binary
-	/sbin/busybox xzcat /res/misc/payload/su.xz > /system/xbin/su;
-	/sbin/busybox chown 0.0 /system/xbin/su;
-	/sbin/busybox chmod 6755 /system/xbin/su;
+	# Extract SU binary.
+	/sbin/busybox xzcat /res/misc/payload/su.xz > /system/xbin/su
+	/sbin/busybox chown 0.0 /system/xbin/su
+	/sbin/busybox chmod 6755 /system/xbin/su
 
-	# clean super user old apps
-	/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
-	/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
-	/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
-	/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
-	/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
-	/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
-	/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
-	/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1;
+	# Clean super user old apps.
+	/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
+	/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1
+	/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1
+	/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
+	/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1
+	/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
+	/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
+	/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1
 
-	# extract super user app
-	/sbin/busybox xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk;
-	/sbin/busybox chown 0.0 /system/app/Superuser.apk;
-	/sbin/busybox chmod 644 /system/app/Superuser.apk;
+	# extract super user app.
+	/sbin/busybox xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
+	/sbin/busybox chown 0.0 /system/app/Superuser.apk
+	/sbin/busybox chmod 644 /system/app/Superuser.apk
 
-	# restore witch if exist
+	# Restore witch if exist
 	if [ -e /system/xbin/waswhich-bkp ]; then
-		/sbin/busybox rm -f /system/xbin/which > /dev/null 2>&1;
-		/sbin/busybox cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1;
-		/sbin/busybox chmod 755 /system/xbin/which > /dev/null 2>&1;
+		/sbin/busybox rm -f /system/xbin/which > /dev/null 2>&1
+		/sbin/busybox cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1
+		/sbin/busybox chmod 755 /system/xbin/which > /dev/null 2>&1
 	fi;
 
 	if [ -e /system/xbin/boxman ]; then
-		/sbin/busybox rm -f /system/xbin/busybox > /dev/null 2>&1;
-		/sbin/busybox mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1;
-		/sbin/busybox chmod 755 /system/xbin/busybox > /dev/null 2>&1;
-		/sbin/busybox mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1;
-		/sbin/busybox chmod 755 /system/bin/busybox > /dev/null 2>&1;
+		/sbin/busybox rm -f /system/xbin/busybox > /dev/null 2>&1
+		/sbin/busybox mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1
+		/sbin/busybox chmod 755 /system/xbin/busybox > /dev/null 2>&1
+		/sbin/busybox mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1
+		/sbin/busybox chmod 755 /system/bin/busybox > /dev/null 2>&1
 	fi;
 
-	# delete payload and kill superuser pid
-	/sbin/busybox rm -rf /res/misc/payload;
-	/sbin/busybox rm -f /data/.siyah/root_install;
-	pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
+	# Delete payload and kill superuser pid.
+	/sbin/busybox rm -rf /res/misc/payload
+	/sbin/busybox rm -f /data/.siyah/root_install
+	pkill -f "com.noshufou.android.su" > /dev/null 2>&1
 fi;
 }
 
@@ -768,6 +768,13 @@ AWAKE_MODE()
 		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	fi;
 
+	if [ $gesture_tweak == "on" ]; then
+		# check if running already
+		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
+			/sbin/busybox sh /data/gesture_set.sh
+		fi;
+	fi;
+
 	# set lock screen freq to max scalling freq.
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 	if [ $SYSTEM_GOVERNOR == lulzactive ]; then
@@ -778,7 +785,6 @@ AWAKE_MODE()
 
 	# Bus-Freq for awake state
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "${busfreq_down_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 	# set I/O-Scheduler
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
@@ -835,7 +841,9 @@ AWAKE_MODE()
 	echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
 
 	# enable NMI Watchdog to detect hangs
-	echo "1" > /proc/sys/kernel/nmi_watchdog; 
+	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+		echo "1" > /proc/sys/kernel/nmi_watchdog; 
+	fi;
 
 	# fs settings 
 	echo "25" > /proc/sys/vm/vfs_cache_pressure;
@@ -879,8 +887,6 @@ SLEEP_MODE()
 	# reduce deepsleep CPU speed, SUSPEND mode
 	echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	# moved to background function
-	#echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 	# set disk I/O sched to noop simple and battery saving.
@@ -905,15 +911,16 @@ SLEEP_MODE()
 
 	# Bus Freq for deep sleep
 	echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_down_threshold;
 
 	# set settings for battery -> don't wake up "pdflush daemon"
 	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
 	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 
 	# disable NMI Watchdog to detect hangs
-	echo "0" > /proc/sys/kernel/nmi_watchdog;
-	
+	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+		echo "0" > /proc/sys/kernel/nmi_watchdog;
+	fi;
+
 	# set battery value
 	echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
@@ -936,6 +943,17 @@ SLEEP_MODE()
 }
 
 # ==============================================================
+# Background gesture process control
+# ==============================================================
+
+GESTURE_FUNCTION_OFF ()
+{
+	# shutdown gestures loop on screen off, we dont need it.
+	pkill -f "gesture_set.sh"
+	pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
+}
+
+# ==============================================================
 # Background process to check screen state
 # ==============================================================
 
@@ -953,7 +971,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
-		sleep 3;
+		sleep 15;
 
 		# SLEEP state! All system to power save!
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
@@ -962,7 +980,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		# Install ROOT is requested!
 		ROOT_INSTALL_NOW
-		sleep 10;
+		GESTURE_FUNCTION_OFF
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ ! "$CHARGING" -ge "1" ]; then
 			SLEEP_MODE;
