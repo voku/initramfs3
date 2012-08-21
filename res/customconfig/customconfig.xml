@@ -578,4 +578,18 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 </settingsTab>
 
+<settingsTab name="BUG-REPORT">
+
+	<settingsPane description="Here you can ..." 
+			name="Bug-Report">
+
+	<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
+
+	<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
+
+	</settingsPane>
+
+</settingsTab>
+
+
 </settingsRoot>
