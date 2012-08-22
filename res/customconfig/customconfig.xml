@@ -587,7 +587,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 <settingsTab name="BUG-REPORT">
 
-	<settingsPane description="Here you can ..." 
+	<settingsPane description="Debug to SD-Card (/sdcard) ..." 
 			name="Bug-Report">
 
 	<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
