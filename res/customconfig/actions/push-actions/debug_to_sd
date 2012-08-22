@@ -26,6 +26,14 @@ case "${debug_to_sd}" in
 	date +"Last Reboot: %d.%m.%y / %H:%m" -d @$(( $(date +%s) - $(cut -f1 -d. /proc/uptime) )) >> /sdcard/dorimanx_debug;
 	SEPARATOR;
 
+	# System
+	echo "ROM-Version:" >> /sdcard/dorimanx_debug;
+	getprop ro.build.description >> /sdcard/dorimanx_debug;
+	getprop ro.build.date >> /sdcard/dorimanx_debug;
+	getprop ro.build.display.id >> /sdcard/dorimanx_debug;
+	getprop ro.build.id >> /sdcard/dorimanx_debug;
+	SEPARATOR;
+
 	# Memory
 	echo "Memory-Info:" >> /sdcard/dorimanx_debug;
 	free >> /sdcard/dorimanx_debug;
