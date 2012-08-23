@@ -537,6 +537,13 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. [depends on 'cortexbrain_background_process']" 
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
 
+		<spinner description="Here you can control android logger `logcat and dmesg` you can set it to auto, then you will have logs on screen ON, when screen will be off, module will be unloaded to save battery, if you set debug it will be working non stop! if disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using auto mode, logger will not be unloaded so we can debug."
+			name="Android Logger control" action="android_logger">
+				<spinnerItem name="AUTO" value="auto"/> 
+				<spinnerItem name="DEBUG" value="debug"/> 
+				<spinnerItem name="DISABLED" value="disabled"/> 
+		</spinner>
+
 		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (reboot needed after change)"
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
