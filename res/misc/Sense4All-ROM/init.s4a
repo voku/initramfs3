@@ -3,6 +3,9 @@
 # IMPORTANT: Do not create world writable files or directories.
 # This is a common source of Android security bugs.
 #
+
+import /dm_kernel.rc
+
 on early-init
 # Set init and its forked children's oom_adj.
     write /proc/1/oom_adj -16
@@ -54,7 +57,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0771 system cache
+    mkdir /cache 0770 system cache
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
@@ -83,7 +86,6 @@ loglevel 3
     write /proc/cpu/alignment 4
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
-    write /proc/sys/kernel/randomize_va_space 2
 
 # Create cgroup mount points for process groups
     mkdir /dev/cpuctl
@@ -111,17 +113,17 @@ loglevel 3
 on fs
 # mount ext4 partitions
 # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /res/dev/system /system noatime wait rw
+    mount ext4 /res/dev/system /system noatime wait rw nodelalloc
 
     Mount Data as we are symlinking our Apps folder
     exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
-#mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
+# mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
     exec sfsck /dev/block/mmcblk0p1 ext4
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
     chown radio system /efs
@@ -133,7 +135,7 @@ on fs
     chmod 0775 /efs/bluetooth
     chmod 0775 /efs/wifi
 
-# check encryption status, checking UMS & data should be excuted after this command 
+# check encryption status, checking UMS & data should be excuted after this command
     exec check_encryption_status /res/dev/data
 
 # verfiy filesystem (UMS)
@@ -149,29 +151,29 @@ on post-fs
 
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0771 /cache
+    chmod 0770 /cache
 
 # This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
-#change permissions on vmallocinfo so we can grab it from bugreports
+# change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
 
-#change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
+# change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
     chown root system /proc/kmsg
     chmod 0440 /proc/kmsg
     chown root system /proc/sysrq-trigger
     chmod 0220 /proc/sysrq-trigger
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /cache/lost+found 0770 root root
+    mkdir /cache/lost+found 0770 root cache
 
 # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
-    chmod 0777 /cache/lost+found
+    chmod 0770 /cache/lost+found
 
 on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
@@ -222,7 +224,7 @@ on post-fs-data
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0771 shell shell
+    mkdir /data/local 0771 root shell
 
 # For security reasons, /data/local/tmp should always be empty.
 # Do not place files or directories in /data/local/tmp
@@ -251,24 +253,24 @@ on post-fs-data
     chmod 0771 /data/resource-cache
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770 root root
+    mkdir /data/lost+found 0770
 
 # double check the perms, in case lost+found already exists, and set owner
-    chown root root /data/lost+found
-    chmod 0777 /data/lost+found
+    chown root system /data/lost+found
+    chmod 0770 /data/lost+found
 
 # create directory for DRM plug-ins - give drm the read/write access to
 # the following directory.
-    mkdir /data/drm 0770 drm drm
+    mkdir /data/drm 0774 drm drm
 
-#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
+# Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
 
     mkdir /data/system/databases 0771 system system
     copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
     chown system system /data/system/databases/drmdatabase.db
     chmod 0774 /data/system/databases/drmdatabase.db
 
-#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
+# Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. ends	
 	
 #SISO-PLAYREADY-CHANGES
 #DRM directory creation
@@ -302,7 +304,7 @@ on post-fs-data
     chmod 0775 /efs/.files/.dm33
     chmod 0775 /efs/.files/.mp301
 
-    # IMEI
+# IMEI
     mkdir /efs/imei 0775
     chown radio system /efs/imei
     chmod 0775 /efs/imei
@@ -367,28 +369,6 @@ on boot
 
 # set RLIMIT_NICE to allow priorities from 19 to -20
     setrlimit 13 40 40
-
-# Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
-    setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.lge.proximity.delay 15
-
-#Video Quality
-    setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
-
-#Disable Google OTA Update checkin
-    setprop ro.config.nocheckin 1
-
-# Memory management.  Basic kernel parameters, and allow the high
-# level system server to be able to adjust the kernel OOM driver
-# parameters to match how it is managing things.
-    chown root system /sys/module/lowmemorykiller/parameters/adj
-    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
-    chown root system /sys/module/lowmemorykiller/parameters/minfree
-    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
 
 # Define the oom_adj values for the classes of processes that can be
 # killed by the kernel.  These are used in ActivityManagerService.
@@ -478,10 +458,6 @@ on boot
     chmod 0660 /sys/power/wake_lock
     chmod 0660 /sys/power/wake_unlock
 
-# Assume SMP uses shared cpufreq policy for all CPUs
-    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chmod 0666 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
@@ -510,14 +486,6 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
-
-# allow system to modify cpufreq control files
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chown root system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
 # Permissions for input devices
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
@@ -616,16 +584,6 @@ on boot
     setprop net.tcp.buffersize.hspa    4094,87380,704512,4096,16384,262144
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-
-# allow system to modify ksm control files
-    chown root system /sys/kernel/mm/ksm/pages_to_scan
-    chmod 0664 /sys/kernel/mm/ksm/pages_to_scan
-    chown root system /sys/kernel/mm/ksm/sleep_millisecs
-    chmod 0664 /sys/kernel/mm/ksm/sleep_millisecs
-    chown root system /sys/kernel/mm/ksm/run
-    chmod 0664 /sys/kernel/mm/ksm/run
-    write /sys/kernel/mm/ksm/sleep_millisecs 1500
-    write /sys/kernel/mm/ksm/pages_to_scan 256
 
 # +++++++++++++++++++++++++++++++++++++++++++
 # for datarouter

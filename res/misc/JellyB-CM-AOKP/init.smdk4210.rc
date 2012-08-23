@@ -38,7 +38,8 @@ on fs
 
 # Check and mount /cache
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait rw
+
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
@@ -143,6 +144,10 @@ on post-fs-data
     chmod 0775 /data/log
     chmod 0775 /data/anr
 
+    chmod 0662 /dev/log/radio
+    chmod 0662 /dev/log/main
+    chmod 0662 /dev/log/event
+
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
     chown system system /data/pxtmpdir
@@ -185,6 +190,7 @@ on post-fs-data
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
 
     chown system radio /sys/devices/virtual/sec/sec_touchkey/force_disable
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/enable_disable
     chown system radio /sys/devices/virtual/sec/sec_touchkey/recommended_version
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touch_sensitivity
     chown system radio /sys/devices/virtual/sec/sec_touchkey/brightness
@@ -344,7 +350,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
 # user wifi
 # group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
     oneshot
 
