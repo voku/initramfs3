@@ -874,6 +874,9 @@ AWAKE_MODE()
 	fi;
 
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
+
+	# load logger if needed
+	ANDROID_LOG_ON;
 }
 
 # ==============================================================
@@ -954,6 +957,28 @@ GESTURE_FUNCTION_OFF ()
 }
 
 # ==============================================================
+# Background android logger process control
+# ==============================================================
+
+ANDROID_LOG_ON ()
+{
+	if [ $android_logger == "auto" ] || [ $android_logger == "debug" ]; then
+		if [ -e /dev/log-sleep ] && [ ! -e /dev/log ]; then
+			mv -f /dev/log-sleep /dev/log
+		fi;
+	fi;
+}
+
+ANDROID_LOG_OFF ()
+{
+	if [ $android_logger == "auto" ] || [ $android_logger == "disabled" ]; then
+		if [ -e /dev/log ]; then
+			mv -f /dev/log /dev/log-sleep
+		fi;
+	fi;
+}
+
+# ==============================================================
 # Background process to check screen state
 # ==============================================================
 
@@ -983,6 +1008,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		#GESTURE_FUNCTION_OFF
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ ! "$CHARGING" -ge "1" ]; then
+			ANDROID_LOG_OFF;
 			SLEEP_MODE;
 		fi;
 		sleep 2;

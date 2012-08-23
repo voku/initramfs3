@@ -110,7 +110,7 @@ loglevel 3
 on fs
 # mount ext4 partitions
 # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /res/dev/system /system noatime wait rw
+    mount ext4 /res/dev/system /system noatime wait rw nodelalloc
 
 # verify filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
@@ -118,7 +118,7 @@ on fs
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
     exec sfsck /res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
 #mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
@@ -179,14 +179,15 @@ on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+    mkdir /data/system
+    chown system system /data/system
+    chmod 0771 /data/system
 
 # Create dump dir and collect dumps.
 # Do this before we mount cache so eventually we can use cache for
 # storing dumps on platforms which do not have a dedicated dump partition.
 
-    mkdir /data/dontpanic
-    chown root log /data/dontpanic
-    chmod 0750 /data/dontpanic
+    mkdir /data/dontpanic 0750 root log
 
 # Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
@@ -221,9 +222,9 @@ on post-fs-data
     mkdir /data/misc/radio 0775 radio system
 # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0770 /data/misc/wifi
+    chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0751 root root
+    mkdir /data/local 0771 root shell
 
 # For security reasons, /data/local/tmp should always be empty.
 # Do not place files or directories in /data/local/tmp
@@ -232,6 +233,7 @@ on post-fs-data
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
+    mkdir /cache/download 0777 system cache
 
 # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -239,10 +241,10 @@ on post-fs-data
     chmod 0771 /data/dalvik-cache
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770 root root
+    mkdir /data/lost+found 0770
 
 # double check the perms, in case lost+found already exists, and set owner
-    chown root root /data/lost+found
+    chown root system /data/lost+found
     chmod 0770 /data/lost+found
 
 # create directory for DRM plug-ins - give drm the read/write access to
@@ -387,7 +389,7 @@ on boot
 # classes will still be killed first.
     write /sys/module/lowmemorykiller/parameters/adj 0,1,2,4,7,15
 
-    write /proc/sys/vm/overcommit_memory 1
+    write /proc/sys/vm/overcommit_memory 0
     write /proc/sys/vm/min_free_order_shift 4
     write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
 
@@ -437,6 +439,7 @@ on boot
     chown radio system /sys/android_power/acquire_partial_wake_lock
     chown radio system /sys/android_power/release_wake_lock
     chown radio system /sys/power/state
+    chown system system /sys/power/wakeup_count
     chown radio system /sys/power/wake_lock
     chown radio system /sys/power/wake_unlock
     chmod 0660 /sys/power/state
@@ -592,6 +595,9 @@ on boot
 
 on nonencrypted
     class_start late_start
+
+on charger
+    class_start charger
 
 on property:vold.decrypt=trigger_reset_main
     class_reset main
@@ -784,7 +790,7 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service bluetoothd /system/bin/logwrapper /system/bin/bluetoothd -n -d
+service bluetoothd /system/bin/bluetoothd -n
     class main
     socket bluetooth stream 660 bluetooth bluetooth
     socket dbus_bluetooth stream 660 bluetooth bluetooth
@@ -835,7 +841,7 @@ service mtpd /system/bin/mtpd
     class main
     socket mtpd stream 600 system system
     user vpn
-    group vpn net_admin net_raw
+    group vpn net_admin inet net_raw
     disabled
     oneshot
 

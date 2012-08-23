@@ -9,6 +9,7 @@ on early-init
     mkdir /mnt/usbdisk 0775 system system
     mkdir /efs 0771 radio system
     mkdir /preload 0771 system system
+    mkdir /mnt 0775 root system
     mkdir /mnt/.lfs 0755 root root
 
     # for backwards compatibility
@@ -56,11 +57,6 @@ on fs
     chmod 0770 /data/misc/wifi 
 
 on post-fs-data
-# insmod kernel modules
-
-# mount param.lfs
-    insmod /lib/modules/j4fs.ko
-    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 
 # GPS
     chown root system /dev/ttySAC1
@@ -182,6 +178,7 @@ on post-fs-data
 # Permissions for input devices
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
 
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/force_disable
     chown system radio /sys/devices/virtual/sec/sec_touchkey/enable_disable
     chown system radio /sys/devices/virtual/sec/sec_touchkey/recommended_version
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touch_sensitivity
@@ -194,6 +191,7 @@ on post-fs-data
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_update_status
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_update
     chown system radio /sys/devices/virtual/sec/sec_touchkey/updated_version
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/led_timeout
 
     chown system radio /sys/devices/virtual/sec/tsp_noise_test/set_firm_version
     chown system radio /sys/devices/virtual/sec/tsp_noise_test/set_threshould

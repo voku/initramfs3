@@ -51,8 +51,9 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0771 system cache
+    mkdir /cache 0770 system cache
     mkdir /config 0500 root root
+    mkdir /preload 0771 system system
 
 # Directory for putting things only root should see.
     mkdir /mnt/secure 0700 root root
@@ -72,12 +73,13 @@ loglevel 3
     mkdir /mnt/obb 0700 root system
     mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
 
+    mkdir /mnt/.lfs 0755 root root
+
     write /proc/sys/kernel/panic_on_oops 1
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
-    write /proc/sys/kernel/randomize_va_space 2
     write /proc/sys/kernel/kptr_restrict 2
     write /proc/sys/kernel/dmesg_restrict 1
     write /proc/sys/vm/mmap_min_addr 32768
@@ -125,35 +127,47 @@ on post-fs
 # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
 
+    insmod /lib/modules/j4fs.ko
+    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
+
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0771 /cache
+    chmod 0770 /cache
 
 # This may have been created by the recovery system with odd permissions
+    mkdir /cache/recovery 0770
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
-#change permissions on vmallocinfo so we can grab it from bugreports
+# change permissions on vmallocinfo so we can grab it from bugreports
     chown root log /proc/vmallocinfo
     chmod 0440 /proc/vmallocinfo
 
-#change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
+# change permissions on kmsg & sysrq-trigger so bugreports can grab kthread stacks
     chown root system /proc/kmsg
     chmod 0440 /proc/kmsg
     chown root system /proc/sysrq-trigger
     chmod 0220 /proc/sysrq-trigger
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /cache/lost+found 0770 root root
+    mkdir /cache/lost+found 0770 root cache
+
+# double check the perms, in case lost+found already exists, and set owner
+    chown root root /cache/lost+found
+    chmod 0770 /cache/lost+found
 
 on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+    mkdir /data/system
+    chown system system /data/system
+    chmod 0771 /data/system
 
 # Create dump dir and collect dumps.
 # Do this before we mount cache so eventually we can use cache for
 # storing dumps on platforms which do not have a dedicated dump partition.
+
     mkdir /data/dontpanic 0750 root log
 
 # Collect apanic data, free resources and re-arm trigger
@@ -175,10 +189,13 @@ on post-fs-data
     mkdir /data/misc/keychain 0771 system system
     mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
+    mkdir /data/misc/vpn/profiles 0770 system system
+    mkdir /data/misc/radio 0775 radio system
 # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
+    chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0751 root root
+    mkdir /data/local 0771 root shell
 
 # For security reasons, /data/local/tmp should always be empty.
 # Do not place files or directories in /data/local/tmp
@@ -191,6 +208,7 @@ on post-fs-data
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
     mkdir /data/radio 0770 radio radio
+    mkdir /cache/download 0777 system cache
 
 # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -207,11 +225,15 @@ on post-fs-data
     chmod 0771 /data/resource-cache
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770 root root
+    mkdir /data/lost+found 0770
+
+# double check the perms, in case lost+found already exists, and set owner
+    chown root system /data/lost+found
+    chmod 0770 /data/lost+found
 
 # create directory for DRM plug-ins - give drm the read/write access to
 # the following directory.
-    mkdir /data/drm 0770 drm drm
+    mkdir /data/drm 0774 drm drm
 
 # IMEI
     mkdir /efs/imei 0775
@@ -239,7 +261,7 @@ on boot
 # Memory management.  Basic kernel parameters, and allow the high
 # level system server to be able to adjust the kernel OOM driver
 # parameters to match how it is managing things.
-    write /proc/sys/vm/overcommit_memory 0
+    write /proc/sys/vm/overcommit_memory 1
     write /proc/sys/vm/min_free_order_shift 4
     chown root system /sys/module/lowmemorykiller/parameters/adj
     chmod 0664 /sys/module/lowmemorykiller/parameters/adj
@@ -256,7 +278,7 @@ on boot
     chown radio system /sys/android_power/acquire_full_wake_lock
     chown radio system /sys/android_power/acquire_partial_wake_lock
     chown radio system /sys/android_power/release_wake_lock
-    chown system system /sys/power/state
+    chown radio system /sys/power/state
     chown system system /sys/power/wakeup_count
     chown radio system /sys/power/wake_lock
     chown radio system /sys/power/wake_unlock
@@ -287,6 +309,7 @@ on boot
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/backlight/panel/brightness
     chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/jogball-backlight/brightness
     chown system system /sys/class/leds/red/brightness
@@ -309,6 +332,7 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_min
     chown system system /sys/kernel/ipv4/tcp_rmem_def
     chown system system /sys/kernel/ipv4/tcp_rmem_max
+    chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
 
 # allow system to modify cpufreq control files
@@ -446,7 +470,7 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
 service drm /system/bin/drmserver
     class main
     user drm
-    group drm system inet drmrpc sdcard_r
+    group drm system inet drmrpc sdcard_rw media_rw radio sdcard_r
 
 service media /system/bin/mediaserver
     class main

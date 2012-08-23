@@ -77,6 +77,7 @@ install_root=on
 cortexbrain_background_process=1
 cortexbrain_auto_tweak_brightness=off
 cortexbrain_auto_tweak_wifi=off
+android_logger=auto
 cortexbrain_firewall=on
 cortexbrain_tcp=on
 cortexbrain_cpu=on
