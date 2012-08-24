@@ -2,6 +2,6 @@
 
 (
 	cp -a /res/misc/hosts /system/etc/hosts
-}&
+)&
 echo "New AD Blocker Installed to /system/etc/hosts"
 
