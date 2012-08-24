@@ -583,6 +583,12 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	</settingsPane>
 
+	<settingsPane description="Here you can add/restore AD Blocker! updated to last one by voku. if your ROM dont have any AD blocker then it's will be installed one time only!, then if we update the blocker, you need to push the UPDATE AD, to get the new one installed!" name="AD Blocker menu.">
+
+	<button description="Update the AD Blocker" name="AD UPDATE" action="push-actions/ad_update" label="UPDATE AD NOW"/>
+
+	</settingsPane>
+
 </settingsTab>
 
 <settingsTab name="BUG-REPORT">
