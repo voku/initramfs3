@@ -10,7 +10,7 @@ else
   eval $evalcmd
 fi
 
-if [ -f /sys/class/misc/gpu_clock_control/gpu_control ];then
-echo "${GPUTHRESHOLD1UP}% ${GPUTHRESHOLD2DOWN}% ${GPUTHRESHOLD2UP}% ${GPUTHRESHOLD3DOWN}%" > /sys/class/misc/gpu_clock_control/gpu_control
+if [ -f /sys/class/misc/gpu_clock_control/gpu_control ]; then
+	echo "${GPUTHRESHOLD1UP}% ${GPUTHRESHOLD2DOWN}% ${GPUTHRESHOLD2UP}% ${GPUTHRESHOLD3DOWN}% ${GPUTHRESHOLD3UP}% ${GPUTHRESHOLD4DOWN}%" > /sys/class/misc/gpu_clock_control/gpu_control
 fi
 
