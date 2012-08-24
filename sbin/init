@@ -180,13 +180,14 @@ fi;
 if [ "$JELLY" == "1" ]; then
 	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
+		cp -a /res/misc/JellyB-CM-AOKP/* /
+		rm -f init.rc.2
 	else
 		echo 0 > /proc/sys/kernel/rom_feature_set
+		cp /res/misc/JellyB-SAMMY/* /
 	fi;
 
-	cp -a /res/misc/JellyB-CM-AOKP/* /
 	rm -rf /vendor
-	rm -f init.rc.2
 
         if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then
