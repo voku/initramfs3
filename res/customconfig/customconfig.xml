@@ -112,15 +112,15 @@
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
 			unit="%" min="23" reversed="false" step="1" max="50"/>
 
-		<seekBar description="Maximum DEEP SLEEP CPU Speed (only 500 or 600 default is 600)" 
+		<seekBar description="Maximum DEEP SLEEP CPU Speed (only 500000 or 600000 default is 600000)" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
 			unit="kHz" min="500000" reversed="false" step="100000" max="600000"/>
 
-		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200)" 
+		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200000)" 
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="600000"/>
 
-		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed, (default is 100kHz) if music still shutter, rise to 200/300kHz"
+		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed, (default is 100000kHz) if music still shutter, rise to 200000/300000kHz"
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="300000"/>
 
@@ -211,8 +211,10 @@
 	<seekBar description="GPU Voltage for the fourth step" 
 		name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="50" max="1400"/>
 
-	<settingsPane description="GPU load thresholds to change between frequency steps. 
-The third step is disabled as default by having the second to third threshold 100." name="GPU Thresholds">
+	</settingsPane>
+
+	<settingsPane description="GPU load thresholds to change between frequency steps. The third step is disabled as default by having the second to third threshold 100." 
+		name="GPU Thresholds">
 
 	<seekBar description="GPU threshold to jump up from first to second step" 
 		name="GPU Threshold 1-UP" action="gpu-thresh 1UP" unit="%" min="0" reversed="false" step="5" max="100"/>
@@ -416,7 +418,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod."
 			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touch keys leds to always on or always off, and use led timeout in ExTweaks." name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touch keys leds to always on or always off, and use led timeout in ExTweaks." 
+			name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
@@ -458,7 +461,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
-		<spinner description="This setting enables/disables the BootMenu and logo NOTE: You will not be able to boot the second rom while BootMenu is disabled" name="Enable Bootmenu" action="bootmenu_enabled"> 
+		<spinner description="This setting enables/disables the BootMenu and logo NOTE: You will not be able to boot the second rom while BootMenu is disabled" 
+			name="Enable Bootmenu" action="bootmenu_enabled"> 
 			<spinnerItem name="BootMenu Enabled" value="1"/> 
 			<spinnerItem name="BootMenu Disabled" value="0"/> 
 		</spinner>
@@ -614,6 +618,5 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 	</settingsPane>
 
 </settingsTab>
-
 
 </settingsRoot>
