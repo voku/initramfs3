@@ -1005,13 +1005,12 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		# Install ROOT is requested!
 		ROOT_INSTALL_NOW
-		#GESTURE_FUNCTION_OFF
+		GESTURE_FUNCTION_OFF
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ ! "$CHARGING" -ge "1" ]; then
 			ANDROID_LOG_OFF;
 			SLEEP_MODE;
 		fi;
-		sleep 2;
 	done &);
 else
 	echo "Cortex background process already running";

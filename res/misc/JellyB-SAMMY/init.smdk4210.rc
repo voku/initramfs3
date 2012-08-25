@@ -6,31 +6,9 @@ on early-init
     # for backwards compatibility
     symlink /mnt/sdcard /sdcard
 
-# FIXME: permissions for tvout
-    chmod 0777 /dev/graphics/fb0
-    chmod 0777 /dev/graphics/fb10
-    chmod 0777 /dev/graphics/fb11
-    chown media graphics /sys/class/switch/hdmi
-    chmod 0777 /sys/class/switch/hdmi
-
-# FIXME: permission for HDMI audio path
-    chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
-    chmod 0777 /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
-
 on post-fs-data
-
-# GPS
-    chown root system /dev/ttySAC1
-    chmod 0660 /dev/ttySAC1
-    chown root system /sys/class/sec/gps/GPS_PWR_EN/value
-    chmod 0664 /sys/class/sec/gps/GPS_PWR_EN/value
-    chown root system /sys/class/sec/gps/GPS_nRST/value
-    chmod 0664 /sys/class/sec/gps/GPS_nRST/value
-    mkdir /data/gps 771 system system
-    chown system system /data/gps
-
-# give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0774 wifi wifi
+    # give system access to wpa_supplicant.conf for backup and restore
+    mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/misc/wifi/sockets 0774 wifi wifi
@@ -43,27 +21,7 @@ on boot
     chown radio system /sys/devices/virtual/misc/melfas_touchkey/brightness
     chmod 0660 /sys/devices/virtual/misc/melfas_touchkey/brightness
 
-# MTP Device permission.
-    chmod 0660 /dev/usb_mtp_gadget
-    chown system system /dev/usb_mtp_gadget
-
-# terminal mode
-    chmod 0660 /sys/class/android_usb/android0/terminal_version
-    chown system system /sys/class/android_usb/android0/terminal_version
-
-# NFC
-    setprop ro.nfc.port "I2C"
-    chmod 0600 /dev/pn544
-    chown nfc nfc /dev/pn544
-
-# setup for alsa snd device
-    chmod 0770 /dev/snd/pcmC0D0c
-    chmod 0770 /dev/snd/pcmC0D0p
-    chmod 0770 /dev/snd/controlC0
-    chmod 0770 /dev/snd/timer
-    chmod 0770 /dev/snd/hwC0D0
-
-# panorama directory creation
+#panorama directory creation
     mkdir /data/pxtmpdir 0775
     chown system system /data/pxtmpdir
     chmod 0775 /data/pxtmpdir
@@ -95,9 +53,6 @@ on boot
     setprop ro.nfc.port "I2C"
     chmod 0600 /dev/pn544
     chown nfc nfc /dev/pn544
-
-# Permission for MHL
-    chown system radio /sys/class/mhl/test_result
 
 # Device Encryption by B2B Security Lab. 
     setprop ro.crypto.keyfile.userdata /efs/metadata
@@ -164,9 +119,3 @@ service iprenew_p2p /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
-
-# TVout
-service TvoutService_C /system/bin/bintvoutservice
-   class main
-   user system
-   group graphics

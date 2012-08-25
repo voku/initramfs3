@@ -28,13 +28,15 @@ fi;
 SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
+mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard && ( touch /mnt/sdcard/clockworkmod/.nomedia )
+mount -t vfat /dev/block/mmcblk1p1 /mnt/emmc && ( touch /mnt/emmc/clockworkmod/.nomedia )
 
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0
 umount /mnt/sdcard
+umount /mnt/emmc
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
 	/sbin/choose_rom
@@ -97,25 +99,17 @@ AOSP=0
 MIUI=0
 B2G=0
 JELLY=0
+CM10=0
 S4A=0
 
 [ -d /system/b2g ] && B2G=1
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
 [ -f /system/framework/miui-framework.jar ] && MIUI=1
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
+[ -f /system/framework/seccamera.jar ] || CM10=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1
 [ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1
-[ "`/sbin/busybox grep -i aosp /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i hydrog /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i DragonICS /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i =aokp /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i CyanogenMod /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i AdyScorpius /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i insanity /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ] && MIUI=1
 
 # One more time set / rw just for good sleep.
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
@@ -184,10 +178,16 @@ if [ "$B2G" == "1" ]; then
 fi;
 
 if [ "$JELLY" == "1" ]; then
-		cp -a /res/misc/JellyB-CM-AOKP/* /
+	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
-		rm -rf /vendor
+		cp -a /res/misc/JellyB-CM-AOKP/* /
 		rm -f init.rc.2
+	else
+		echo 0 > /proc/sys/kernel/rom_feature_set
+		cp /res/misc/JellyB-SAMMY/* /
+	fi;
+
+	rm -rf /vendor
 
         if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then

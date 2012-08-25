@@ -51,7 +51,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0770 system cache
+    mkdir /cache 0777 system cache
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
@@ -132,7 +132,7 @@ on post-fs
 
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0770 /cache
+    chmod 0777 /cache
 
 # This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
@@ -150,7 +150,7 @@ on post-fs
     chmod 0220 /proc/sysrq-trigger
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /cache/lost+found 0770 root cache
+    mkdir /cache/lost+found 0777 root cache
 
 # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
@@ -207,7 +207,7 @@ on post-fs-data
     mkdir /data/property 0700 root root
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
-    mkdir /data/radio 0770 radio radio
+    mkdir /data/radio 0777 radio radio
     mkdir /cache/download 0777 system cache
 
 # create dalvik-cache and double-check the perms, so as to enforce our permissions
@@ -448,8 +448,8 @@ service debuggerd /system/bin/debuggerd
 
 service ril-daemon /system/bin/rild
     class main
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
+    socket rild stream 0660 root radio
+    socket rild-debug stream 0660 radio system
     user root
     group radio cache inet misc audio sdcard_rw qcom_oncrpc diag
 
@@ -502,11 +502,11 @@ service bluetoothd /system/bin/bluetoothd -n
 
 service installd /system/bin/installd
     class main
-    socket installd stream 600 system system
+    socket installd stream 0600 system system
 
 service racoon /system/bin/racoon
     class main
-    socket racoon stream 600 system system
+    socket racoon stream 0600 system system
 # IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
     group vpn net_admin inet
     disabled
@@ -514,7 +514,7 @@ service racoon /system/bin/racoon
 
 service mtpd /system/bin/mtpd
     class main
-    socket mtpd stream 600 system system
+    socket mtpd stream 0600 system system
     user vpn
     group vpn net_admin inet net_raw
     disabled
@@ -524,7 +524,7 @@ service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
     group keystore drmrpc
-    socket keystore stream 666
+    socket keystore stream 0666
 
 service dumpstate /system/bin/dumpstate -s
     class main
