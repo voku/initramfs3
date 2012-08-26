@@ -631,7 +631,11 @@ FIREWALL_TWEAKS()
 	fi;
 
 	if [ -e /proc/sys/net/ipv4/tcp_syncookies ]; then
-		echo "3" > /proc/sys/net/ipv4/tcp_syncookies;
+		echo "1" > /proc/sys/net/ipv4/tcp_syncookies;
+	fi;
+
+	if [ -e /proc/sys/net/ipv4/tcp_max_syn_backlog ]; then
+		echo "4096" > /proc/sys/net/ipv4/tcp_max_syn_backlog;
 	fi;
 
 	# IPv6 privacy tweak
