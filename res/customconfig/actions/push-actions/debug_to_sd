@@ -28,6 +28,8 @@ case "${debug_to_sd}" in
 
 	# System
 	echo "ROM-Version:" >> /sdcard/dorimanx_debug;
+	getprop ro.modversion >> /sdcard/dorimanx_debug;
+	getprop cm.version >> /sdcard/dorimanx_debug;
 	getprop ro.build.description >> /sdcard/dorimanx_debug;
 	getprop ro.build.date >> /sdcard/dorimanx_debug;
 	getprop ro.build.display.id >> /sdcard/dorimanx_debug;
