@@ -541,6 +541,7 @@ MEMORY_TWEAKS()
 	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 	echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
 	echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
+	#echo "1" > /proc/sys/vm/compact_memory;
 	echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 	echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 	echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
