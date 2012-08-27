@@ -52,6 +52,7 @@
 				<!--spinnerItem name="smartassV2" value="smartassV2"/--> 
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="scary" value="scary"/> 
+				<spinnerItem name="sleepy" value="sleepy"/>
 			</spinner>
 
 			<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
@@ -128,6 +129,7 @@
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="scary" value="scary"/>
+			<spinnerItem name="sleepy" value="sleepy"/>
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="abyssplug" value="abyssplug"/> 
