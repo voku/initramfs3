@@ -37,8 +37,38 @@ echo "
 5:2:(0|480,600|800)5:2:(0|480,0|200)
 5:3:(0|480,600|800)5:3:(0|480,0|200)
 
+# Gesture 6 - one finger on bottom right while another goes from top-left to middle and back
+6:1:(0|240,0|320)      6:1:(180|300,340|460)  6:1:(0|240,0|320) # top-left, middle, top-left
+6:2:(530|800,960|1280)  # 2nd finger on the bottom right
+
+# Gesture 7 - one finger on bottom left while another goes from top-right to middle and back
+7:1:(530|800,0|320)    7:1:(180|300,340|460)  7:1:(530|800,0|320) # top-right, middle, top-right
+7:2:(0|240,960|1280)    # 2nd finger on the bottom left
+
+# Gesture 8 - 2 fingers start from the top-left and bottom-left corners and end in the middle right, like an arrow
+8:1:(0|240,0|320)     8:1:(300|800,300|500)  # top-left to middle-right
+8:2:(0|240,960|1280)   8:2:(300|800,300|500)  # bottom-left to middle-right
+
+# Gesture 9 - 1 finger draws an X starting at the top left
+9:1:(0|240,0|320)     # top left
+9:1:(530|800,960|1280) # bottom right
+9:1:(530|800,0|320)   # top right
+9:1:(0|240,960|1280)   # bottom left
+
+# Gesture 10 - 1 finger from bottom-left, bottom-right, bottom-left, bottom-right
+10:1:(0|240,960|1280)   # bottom left
+10:1:(530|800,960|1280) # bottom right
+10:1:(0|240,960|1280)   # bottom left
+10:1:(530|800,960|1280) # bottom right
+
 " > /sys/devices/virtual/misc/touch_gestures/gesture_patterns
 )&
+
+# Detect ICS or JB - bluetooth calls are different
+case "`getprop ro.build.version.release`" in
+	4.1.* ) is_jb=1;;
+	* )     is_jb=0;;
+esac
 
 (while [ 1 ];
 do
@@ -56,9 +86,9 @@ do
 
 	elif [ "$GESTURE" -eq "2" ]; then
 
-		# Power down the screen, for 4.0.3 or 4.0.4 ONLY.
-		key=26; service call window 12 i32 1 i32 1 i32 5 i32 0 i32 0 i32 $key i32 0 i32 0 i32 0 i32 8 i32 0 i32 0 i32 0 i32 0; service call window 12 i32 1 i32 1 i32 5 i32 0 i32 1 i32 $key i32 0 i32 0 i32 27 i32 8 i32 0 i32 0 i32 0 i32 0
-		
+		# Power down the screen.
+		input keyevent 26
+				
 	elif [ "$GESTURE" -eq "3" ]; then
 	
 		# Start the extweaks
@@ -78,12 +108,83 @@ do
 
 		# Start Camera APP
 		# for CM10
-		am start --activity-exclude-from-recents com.sec.android.app.camera
+		launch_flags="--activity-exclude-from-recents --activity-reset-task-if-needed"
+        
+		result=`am start $launch_flags com.sec.android.app.camera/.Camera 2>&1 | grep Error`
+		[ "$result" != "" ] && result=`am start $launch_flags com.android.camera/.Camera 2>&1 | grep Error`
+		[ "$result" != "" ] && result=`am start $launch_flags com.android.gallery3d/com.android.camera.CameraLauncher 2>&1 | grep Error`
+		[ "$result" != "" ] && result=`am start $launch_flags com.android.camera/.Camera 2>&1 | grep Error`
 
-		# For 4.0.3 or 4.0.4
-		am start --activity-exclude-from-recents com.android.camera/.Camera
+	elif [ "$GESTURE" == "6" ]; then
 
+		# Toggle bluetooth on/off
+		service call bluetooth 1 | grep "0 00000000" > /dev/null
+		if [ "$?" -eq "0" ]; then
+			service call bluetooth 3 > /dev/null
+		else
+			[ "$is_jb" -eq "1" ] && service call bluetooth 5 > /dev/null
+			[ "$is_jb" -ne "1" ] && service call bluetooth 4 > /dev/null
+		fi;
+        
+	elif [ "$GESTURE" == "7" ]; then
+
+		# Toggle WiFi on/off
+		service call wifi 14 | grep "0 00000001" > /dev/null
+		if [ "$?" -eq "0" ]; then
+			service call wifi 13 i32 1 > /dev/null
+		else
+			service call wifi 13 i32 0 > /dev/null
+		fi;
+        
+	elif [ "$GESTURE" == "8" ]; then
+
+		# Simulate key press - Play/Pause
+
+		# 26 = Power
+		# 3 = Home
+		# 24/25 = Volume up/down
+		# 85 = Media Play / pause
+		# 86 = Media stop
+		# 87/88 = Media next / previous
+		# 164 = Volume mute / unmute
+
+		input keyevent 85
+    
+	elif [ "$GESTURE" == "9" ]; then
+
+		# Simulate key press - Volume mute / unmute
+
+		# 26 = Power
+		# 3 = Home
+		# 24/25 = Volume up/down
+		# 85 = Media Play / pause
+		# 86 = Media stop
+		# 87/88 = Media next / previous
+		# 164 = Volume mute / unmute
+		# 187 = Recent apps
+
+		input keyevent 164
+
+	elif [ "$GESTURE" == "10" ]; then
+
+		# Simulate key press - Home
+        
+		# 26 = Power
+		# 3 = Home
+		# 24/25 = Volume up/down
+		# 85 = Media Play / pause
+		# 86 = Media stop
+		# 87/88 = Media next / previous
+		# 164 = Volume mute / unmute
+		# 187 = Recent apps
+
+		input keyevent 3
 	fi;
 
-done &);
+	# Small vibration to provide feedback
+	service call vibrator 2 i32 100 i32 0
+
+	sleep 2
+
+done &) > /dev/null 2>&1;
 
