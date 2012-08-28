@@ -1015,6 +1015,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 			ANDROID_LOG_OFF;
 			SLEEP_MODE;
 		fi;
+		sleep 1;
 	done &);
 else
 	echo "Cortex background process already running";
