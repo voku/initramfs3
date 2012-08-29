@@ -28,8 +28,8 @@ fi;
 SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard && ( touch /mnt/sdcard/clockworkmod/.nomedia )
-mount -t vfat /dev/block/mmcblk1p1 /mnt/emmc && ( touch /mnt/emmc/clockworkmod/.nomedia )
+mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard && ( touch /mnt/sdcard/clockworkmod/.nomedia ) && ( touch /mnt/sdcard/clockworkmod/blobs/.nomedia )
+mount -t vfat /dev/block/mmcblk1p1 /mnt/emmc && ( touch /mnt/emmc/clockworkmod/.nomedia ) && ( touch /mnt/emmc/clockworkmod/blobs/.nomedia )
 
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
@@ -120,8 +120,9 @@ S4A=0
 
 PARTITION_TUNING () {
 	# unmounting DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/busybox umount -l /data > /dm-log
-	/sbin/busybox umount -l /cache >> /dm-log
+	/sbin/busybox umount -l /data
+	/sbin/busybox umount -l /cache
+	/sbin/busybox umount -l /preload
 
 	# setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM
 	/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
@@ -142,7 +143,6 @@ PARTITION_TUNING () {
 }
 
 SYSTEM_UMOUNT () {
-	/sbin/busybox umount /preload
 	/sbin/busybox umount /system
 }
 

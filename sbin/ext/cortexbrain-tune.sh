@@ -76,8 +76,8 @@ TOUCHSCREENTUNE()
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 19 `pidof kswapd0`;
-renice 19 `pgrep logcat`;
+renice 15 `pidof kswapd0`;
+renice 15 `pgrep logcat`;
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -276,9 +276,6 @@ fi;
 # ==============================================================
 # CLEANING-TWEAKS
 # ==============================================================
-rm -rf /data/lost+found/* 2> /dev/null;
-rm -rf /system/lost+found/* 2> /dev/null;
-rm -rf /preload/lost+found/* 2> /dev/null;
 rm -rf /cache/lost+found/* 2> /dev/null;
 rm -rf /data/tombstones/* 2> /dev/null;
 rm -rf /data/anr/* 2> /dev/null;

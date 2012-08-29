@@ -49,9 +49,3 @@ done;
 umount /preload
 /sbin/busybox mount -o remount,rw /system;
 
-# ==============================================================
-# CLEANING-TWEAKS
-# ==============================================================
-rm -rf /emmc/lost+found/* 2> /dev/null;
-rm -rf /sdcard/lost+found/* 2> /dev/null;
-
