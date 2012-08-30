@@ -8,16 +8,15 @@ else
 	echo $debug_to_sd;
 fi;
 
-SEPARATOR()
-{
-	echo "" >> /sdcard/dorimanx_debug;
-	echo " ---------------------------- " >> /sdcard/dorimanx_debug;
-	echo "" >> /sdcard/dorimanx_debug;
-}
-
 case "${debug_to_sd}" in
 	1)
-
+	(
+	SEPARATOR() {
+        	echo "" >> /sdcard/dorimanx_debug;
+        	echo " ---------------------------- " >> /sdcard/dorimanx_debug;
+        	echo "" >> /sdcard/dorimanx_debug;
+	}
+	
 	# Kernel-Info
 	echo "Kernel-Version:" > /sdcard/dorimanx_debug;
 	cat /proc/version >> /sdcard/dorimanx_debug;
@@ -110,17 +109,19 @@ case "${debug_to_sd}" in
 	echo "dmesg-Info:" >> /sdcard/dorimanx_debug;
 	dmesg >> /sdcard/dorimanx_debug;
 	SEPARATOR;
-
+	echo "All Data collected and ready at /sdcard/dorimanx_debug"
+	)&
 	;;
-
 	2)
 
 	# logcat
+	(
 	logcat -f /sdcard/dorimanx_debug_logcat;
+	echo "Collecting logs for 60Sec please wait"
 	wait 60;
 	pkill logcat;
 	#maybe we can also grep / remove personal infos here (e.g . email address)
-
+	)&
 	;;	
 	*)
 	echo "need input";

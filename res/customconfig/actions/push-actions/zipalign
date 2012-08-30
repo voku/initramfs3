@@ -33,7 +33,7 @@ if [ `pgrep -f "zipalign" | wc -l` \< 5 ]; then
 
 	echo "Starting FV Automatic ZipAlign $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE;
 
-	for DIR in /system/app/ /data/app/; do
+	for DIR in /data/app/; do
 		cd $DIR;
 		for APK in *.apk; do
 			if [ $APK -ot $ZIPALIGNDB ] && [ $(grep "$DIR/$APK" $ZIPALIGNDB | wc -l) -gt 0 ]; then
