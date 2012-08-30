@@ -33,7 +33,7 @@ mount -t vfat /dev/block/mmcblk0p11 /mnt && ( touch /mnt/clockworkmod/.nomedia )
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/.secondrom/cache.img ] || SECONDROM=0
-[ -f /mnt/.nobootlogo ] && NOBOOTLOGO=1
+[ -f /mnt/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0
 umount /preload
 umount /mnt
 
@@ -134,15 +134,12 @@ PARTITION_TUNING () {
 	/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
 	/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
 	/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log # SEC-SYSTEM /preload
+
 	# checking Partitions X2! needed for clean flag
 	/sbin/e2fsck -p /res/dev/data
 	/sbin/e2fsck -p /res/dev/data > /data-log
 	/sbin/e2fsck -p /res/dev/cache
 	/sbin/e2fsck -p /res/dev/cache > /cache-log
-}
-
-SYSTEM_UMOUNT () {
-	/sbin/busybox umount /system
 }
 
 #############################
@@ -157,7 +154,7 @@ if [ "$S4A" == "1" ]; then
 
 	# Start ROM!
 	PARTITION_TUNING
-	SYSTEM_UMOUNT
+	/sbin/busybox umount /system
 	exec /sbin/init.samsung
 fi;
 
@@ -172,7 +169,7 @@ if [ "$B2G" == "1" ]; then
 
         # Start ROM!
 	PARTITION_TUNING
-	SYSTEM_UMOUNT
+	/sbin/busybox umount /system
         exec /sbin/init.samsung
 fi;
 
@@ -197,7 +194,7 @@ if [ "$JELLY" == "1" ]; then
 
         # Start ROM!
 	PARTITION_TUNING
-	SYSTEM_UMOUNT
+	/sbin/busybox umount /system
         exec /sbin/init.samsung
 fi;
 
@@ -214,7 +211,7 @@ if [ "$SLIM" == "1" ]; then
 
         # Start ROM!
 	PARTITION_TUNING
-	SYSTEM_UMOUNT
+	/sbin/busybox umount /system
         exec /sbin/init.samsung
 fi;
 
@@ -231,7 +228,7 @@ if [ "$AOSP" == "1" ]; then
 
 	# Start ROM!
 	PARTITION_TUNING
-	SYSTEM_UMOUNT
+	/sbin/busybox umount /system
 	exec /sbin/init.samsung
 fi;
 
@@ -246,7 +243,7 @@ if [ "$MIUI" == "1" ]; then
 
 	# Start ROM!
 	PARTITION_TUNING
-	SYSTEM_UMOUNT
+	/sbin/busybox umount /system
 	exec /sbin/init.samsung
 fi;
 
@@ -260,6 +257,6 @@ fi;
 
 # Start ROM
 PARTITION_TUNING
-SYSTEM_UMOUNT
+/sbin/busybox umount /system
 exec /sbin/init.samsung
 
