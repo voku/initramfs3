@@ -48,6 +48,7 @@
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="lulzactive" value="lulzactive"/> 
+				<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
 				<spinnerItem name="ondemand" value="ondemand"/> 
 				<!--spinnerItem name="smartassV2" value="smartassV2"/--> 
 				<spinnerItem name="conservative" value="conservative"/> 
@@ -134,7 +135,8 @@
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="abyssplug" value="abyssplug"/> 
 			<!--spinnerItem name="smartassV2" value="smartassV2"/--> 
-			<spinnerItem name="lulzactive" value="lulzactive"/> 
+			<spinnerItem name="lulzactive" value="lulzactive"/>
+			<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
 			<spinnerItem name="HYPER" value="HYPER"/> 
 		</spinner>
 
