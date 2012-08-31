@@ -310,9 +310,11 @@ BATTERY_TWEAKS()
 		echo "1" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
 
-	# LCD Power-Reduce
-	if [ -e /sys/class/lcd/panel/power_reduce ]; then
-		echo "1" > /sys/class/lcd/panel/power_reduce;
+	if [ $lcd_power_reduce == 1 ]; then
+		# LCD Power-Reduce
+		if [ -e /sys/class/lcd/panel/power_reduce ]; then
+			echo "1" > /sys/class/lcd/panel/power_reduce;
+		fi;
 	fi;
 
 	# USB power support
