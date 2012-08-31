@@ -49,3 +49,10 @@ done;
 umount /preload
 /sbin/busybox mount -o remount,rw /system;
 
+if [ -e /data/.siyah/jb-installed ]; then
+	rm -f /data/.siyah/jb-installed
+	mount -o remount,utf8 /storage/sdcard1 
+else
+	mount -o remount,utf8 /mnt/emmc
+fi;
+

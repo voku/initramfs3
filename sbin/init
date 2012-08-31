@@ -175,6 +175,11 @@ fi;
 
 if [ "$JELLY" == "1" ]; then
 	mv -f /sbin/adbd.jb /sbin/adbd
+	rm -rf /sdcard/
+	rm -rf /mnt/sdcard/
+	rm -rf /emmc/
+	rm -rf /mnt/emmc/
+	echo "JB-INSTALLED" > /data/.siyah/jb-installed
 	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		cp -a /res/misc/JellyB-CM-AOKP/* /
