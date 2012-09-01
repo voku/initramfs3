@@ -25,17 +25,33 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
 	exec /sbin/init.recovery
 fi;
 
+# Cleaning and rebuilding the /mnt and sdcards mounts folders.
+rm -rf /mnt
+rm -rf /sdcard
+rm -rf /emmc
+mkdir /mnt
+mkdir /mnt/asec
+mkdir /mnt/.lfs
+mkdir /mnt/obb
+mkdir /mnt/secure
+mkdir /mnt/tmp
+chmod 777 /mnt/ -R
+# done.
+
 SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk1p1 /mnt && ( touch /mnt/clockworkmod/.nomedia ) && ( touch /mnt/clockworkmod/blobs/.nomedia; umount /mnt; )
-mount -t vfat /dev/block/mmcblk0p11 /mnt && ( touch /mnt/clockworkmod/.nomedia ) && ( touch /mnt/clockworkmod/blobs/.nomedia )
+mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia )
+sync
+umount -l /mnt/tmp
+mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia )
 [ -f /preload/build.prop ] || SECONDROM=0
-[ -f /mnt/.secondrom/data.img ] || SECONDROM=0
-[ -f /mnt/.secondrom/cache.img ] || SECONDROM=0
-[ -f /mnt/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0
+[ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0
+[ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0
+[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0
+sync
 umount /preload
-umount /mnt
+umount -l /mnt/tmp
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
 	/sbin/choose_rom
@@ -175,11 +191,7 @@ fi;
 
 if [ "$JELLY" == "1" ]; then
 	mv -f /sbin/adbd.jb /sbin/adbd
-	rm -rf /sdcard/
-	rm -rf /mnt/sdcard/
-	rm -rf /emmc/
-	rm -rf /mnt/emmc/
-	echo "JB-INSTALLED" > /data/.siyah/jb-installed
+	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		cp -a /res/misc/JellyB-CM-AOKP/* /
