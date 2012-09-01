@@ -72,8 +72,8 @@ case "${debug_to_sd}" in
 	echo "more CPU-Infos:" >> /sdcard/dorimanx_debug;	
 	cpuinfo_cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq);
 	for i in `ls /sys/devices/system/cpu/cpu0/cpufreq/`; do
-		echo ${i} >> /sdcard/dorimanx_debug;
-		cat /sys/devices/system/cpu/cpu0/cpufreq/${i} >> /sdcard/dorimanx_debug;
+		echo $i >> /sdcard/dorimanx_debug;
+		cat /sys/devices/system/cpu/cpu0/cpufreq/$i >> /sdcard/dorimanx_debug 2>&1;
 	done;
 	SEPARATOR;
 
@@ -109,19 +109,19 @@ case "${debug_to_sd}" in
 	echo "dmesg-Info:" >> /sdcard/dorimanx_debug;
 	dmesg >> /sdcard/dorimanx_debug;
 	SEPARATOR;
-	echo "All Data collected and ready at /sdcard/dorimanx_debug"
 	)&
+	echo "All Data collected and ready at /sdcard/dorimanx_debug"
 	;;
 	2)
 
 	# logcat
 	(
 	logcat -f /sdcard/dorimanx_debug_logcat;
-	echo "Collecting logs for 60Sec please wait"
 	wait 60;
 	pkill logcat;
 	#maybe we can also grep / remove personal infos here (e.g . email address)
 	)&
+	echo "Collecting logs for 60Sec please wait"
 	;;	
 	*)
 	echo "need input";
