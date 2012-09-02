@@ -97,9 +97,9 @@
 			<spinnerItem name="-100 mV" value="-100"/> 
 		</spinner>
 
-		<spinner description="Sets the CPU Idle Mode. AFTR+LPA is the default and best for the battery life but if you have problems try Idle+LPA." 
+		<spinner description="Sets the CPU Idle Mode. for best stability use Idle + LPA" 
 			name="CPU Idle Mode" action="generic /sys/module/cpuidle_exynos4/parameters/enable_mask">
-			<spinnerItem name="AFTR + LPA (default)" value="3"/> 
+			<spinnerItem name="AFTR + LPA" value="3"/> 
 			<spinnerItem name="Idle + LPA" value="2"/> 
 			<spinnerItem name="AFTR only" value="1"/> 
 			<spinnerItem name="Idle only" value="0"/> 

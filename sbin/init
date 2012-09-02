@@ -158,10 +158,16 @@ PARTITION_TUNING () {
 	/sbin/e2fsck -p /res/dev/cache > /cache-log
 }
 
-#############################
-# END Partition global tuning!
-#############################
+############################################
+# Injecting Modded by VOKU, SUPER libsqlite!
+############################################
 
+cp -a /res/misc/libsqlite.so /system/lib/
+chmod 755 /system/lib/libsqlite.so
+
+######################################
+# Starting ROM choose and INIT config.
+######################################
 
 if [ "$S4A" == "1" ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
@@ -235,8 +241,6 @@ fi;
 if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
 	echo 1 > /proc/sys/kernel/rom_feature_set
-	cp -a /res/misc/libsqlite.so /system/lib/
-	chmod 755 /system/lib/libsqlite.so
 	rm /init.rc.2
 
 	if [ "$SECONDROM" == "1" ]; then
