@@ -158,13 +158,6 @@ PARTITION_TUNING () {
 	/sbin/e2fsck -p /res/dev/cache > /cache-log
 }
 
-############################################
-# Injecting Modded by VOKU, SUPER libsqlite!
-############################################
-
-cp -a /res/misc/libsqlite.so /system/lib/
-chmod 755 /system/lib/libsqlite.so
-
 ######################################
 # Starting ROM choose and INIT config.
 ######################################
@@ -197,6 +190,8 @@ fi;
 
 if [ "$JELLY" == "1" ]; then
 	mv -f /sbin/adbd.jb /sbin/adbd
+	# Injecting JB Modded by VOKU, SUPER libsqlite!
+	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.tar.xz > /system/lib/libsqlite.so
 	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
@@ -240,6 +235,8 @@ fi;
 
 if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
+        # Injecting ICS Modded by Dorimanx, SUPER libsqlite!
+        /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.tar.xz > /system/lib/libsqlite.so
 	echo 1 > /proc/sys/kernel/rom_feature_set
 	rm /init.rc.2
 
