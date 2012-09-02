@@ -70,6 +70,7 @@ fi;
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /system/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
 if [ "$CHECKHOSTS" != " www.link" ]; then
+	/sbin/busybox xzcat /res/misc/hosts.xz > /res/misc/hosts
 	cp -a /res/misc/hosts /system/etc/
 	chmod 644 /system/etc/hosts
 else
@@ -79,6 +80,7 @@ fi;
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /preload/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
 if [ "$CHECKHOSTS" != " www.link" ]; then
+	/sbin/busybox xzcat /res/misc/hosts.xz > /res/misc/hosts
         cp -a /res/misc/hosts /preload/etc/
         chmod 644 /preload/etc/hosts
 else
@@ -158,10 +160,9 @@ PARTITION_TUNING () {
 	/sbin/e2fsck -p /res/dev/cache > /cache-log
 }
 
-#############################
-# END Partition global tuning!
-#############################
-
+######################################
+# Starting ROM choose and INIT config.
+######################################
 
 if [ "$S4A" == "1" ]; then
 	echo 0 > /proc/sys/kernel/rom_feature_set
@@ -191,6 +192,9 @@ fi;
 
 if [ "$JELLY" == "1" ]; then
 	mv -f /sbin/adbd.jb /sbin/adbd
+	# Injecting JB Modded by VOKU, SUPER libsqlite!
+	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so
+	chmod 755 /system/lib/libsqlite.so
 	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
@@ -234,9 +238,10 @@ fi;
 
 if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
-	echo 1 > /proc/sys/kernel/rom_feature_set
-	cp -a /res/misc/libsqlite.so /system/lib/
+        # Injecting ICS Modded by Dorimanx, SUPER libsqlite!
+        /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so
 	chmod 755 /system/lib/libsqlite.so
+	echo 1 > /proc/sys/kernel/rom_feature_set
 	rm /init.rc.2
 
 	if [ "$SECONDROM" == "1" ]; then

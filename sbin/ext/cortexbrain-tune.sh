@@ -756,35 +756,25 @@ fi;
 # ==============================================================
 AWAKE_MODE()
 {
-	# set second core online
-	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
-	sleep 1;
-
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	# boost wakeup!
 	if [ $scaling_max_freq \> 1100000 ]; then
-		# Powering MAX FREQ Gracefully
-		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		# Powering MAX FREQ
 		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		# Powering MIN FREQ
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		# Powering SCREEN TOUCH FREQ
-		echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	else
-		# Powering MAX FREQ Gracefully
-		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		# Powering MAX FREQ
 		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		# Powering MIN FREQ
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		# Powering SCREEN TOUCH FREQ
-		echo "1200000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
 	if [ $gesture_tweak == "on" ]; then
@@ -796,6 +786,10 @@ AWAKE_MODE()
 
 	# Bus-Freq for awake state
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
+	# cpu-settings for second core
+	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# set I/O-Scheduler
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
@@ -829,28 +823,9 @@ AWAKE_MODE()
 		echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
-	# set cpu
-	if [ "${secondcore}" == "hotplug" ]; then
-		echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	else
-		echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	fi;
-
-	if [ "${secondcore}" == "always-off" ]; then
-		echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
-	fi;
-
-	if [ "${secondcore}" == "always-on" ]; then
-		echo "on" > /sys/devices/virtual/misc/second_core/second_core_on;
-	fi;
-
 	# set CPU speed
 	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-
-	# cpu-settings for second core
-	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# set wifi.supplicant_scan_interval
 	setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
@@ -1035,6 +1010,7 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 else
 	echo "Cortex background process already running";
 fi;
+
 
 # ==============================================================
 # Logic Explanations
