@@ -1,7 +1,9 @@
 #!/sbin/busybox sh
 
 (
-	cp -a /res/misc/hosts /system/etc/hosts
+	xzcat /res/misc/hosts.xz > /res/misc/hosts;
+	cp -a /res/misc/hosts /system/etc/hosts;
+	rm -f /res/misc/hosts;
 )&
 echo "New AD Blocker Installed to /system/etc/hosts"
 
