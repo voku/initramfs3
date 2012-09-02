@@ -10,7 +10,7 @@ rm hosts.zip;
 diff /tmp/hosts res/misc/hosts;
 echo "<- changes";
 rm -f res/misc/hosts.tar.xz;
-tar -cvJ --xz res/misc/hosts > res/misc/hosts.tar.xz;
+xz -zekv9 res/misc/hosts;
 rm -f res/misc/hosts;
 echo "compressed new hosts file";
 
