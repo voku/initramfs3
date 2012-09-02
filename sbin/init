@@ -70,6 +70,7 @@ fi;
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /system/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
 if [ "$CHECKHOSTS" != " www.link" ]; then
+	/sbin/busybox xzcat /res/misc/hosts.tar.xz > /res/misc/hosts
 	cp -a /res/misc/hosts /system/etc/
 	chmod 644 /system/etc/hosts
 else
@@ -79,6 +80,7 @@ fi;
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /preload/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
 if [ "$CHECKHOSTS" != " www.link" ]; then
+	/sbin/busybox xzcat /res/misc/hosts.tar.xz > /res/misc/hosts
         cp -a /res/misc/hosts /preload/etc/
         chmod 644 /preload/etc/hosts
 else
