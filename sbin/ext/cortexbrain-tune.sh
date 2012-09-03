@@ -881,10 +881,6 @@ SLEEP_MODE()
 	# set CPU-Governor
 	echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-	# disable second core
-	echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on;
-	echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
-
 	# reduce deepsleep CPU speed, SUSPEND mode
 	echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
