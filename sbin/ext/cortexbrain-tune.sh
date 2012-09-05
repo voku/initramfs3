@@ -125,20 +125,16 @@ IO_TWEAKS()
 			echo "0" > $i/queue/iostats;
 		fi;
 
-		if [ -e $i/queue/rq_affinity ]; then
-			echo "1" > $i/queue/rq_affinity;   
-		fi;
-
 		if [ -e $i/queue/read_ahead_kb ]; then
-			echo "1024" >  $i/queue/read_ahead_kb; # default: 128
+			echo "2048" >  $i/queue/read_ahead_kb; # default: 128
 		fi;
 
 		if [ -e $i/queue/max_sectors_kb ]; then
-			echo "1024" >  $i/queue/max_sectors_kb; # default: 512
+			echo "512" >  $i/queue/max_sectors_kb; # default: 512
 		fi;
 
 		if [ -e $i/queue/nr_requests ]; then
-			echo "128" > $i/queue/nr_requests; # default: 128
+			echo "64" > $i/queue/nr_requests; # default: 128
 		fi;
 
 		if [ -e $i/queue/iosched/writes_starved ]; then
@@ -159,10 +155,6 @@ IO_TWEAKS()
 
 		if [ -e $i/queue/iosched/fifo_expire_sync ]; then
 			echo "125" > $i/queue/iosched/fifo_expire_sync; # default: 125
-		fi;
-
-		if [ -e $i/queue/iosched/timeout_sync ]; then
-			echo "4" > $i/queue/iosched/timeout_sync; # default: HZ / 8
 		fi;
 
 		if [ -e $i/queue/iosched/fifo_expire_async ]; then
@@ -200,12 +192,12 @@ IO_TWEAKS()
 	done;
 
 	if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-		echo "512" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+		echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 	fi;
 
 	SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 	for i in $SDCARDREADAHEAD; do
-		echo "1024" > $i/read_ahead_kb;
+		echo "2048" > $i/read_ahead_kb;
 	done;
 
 	echo "15" > /proc/sys/fs/lease-break-time;
@@ -538,14 +530,14 @@ MEMORY_TWEAKS()
 {
 	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-	echo "40" > /proc/sys/vm/dirty_background_ratio; # default: 10
+	echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
 	echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 	echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 	echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 	echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
-	echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+	echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
 	echo "3" > /proc/sys/vm/page-cluster; # default: 3
-	echo "8192" > /proc/sys/vm/min_free_kbytes
+	echo "4096" > /proc/sys/vm/min_free_kbytes
 	echo "65530" > /proc/sys/vm/max_map_count;
 	echo "250 32000 32 128" > /proc/sys/kernel/sem; # default: 250 32000 32 128
 
