@@ -6,6 +6,9 @@ chmod 777 /data/.siyah
 # first mod the partitions then boot.
 /sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
 
+# set critical dalvik permissions.
+/sbin/busybox chmod 777 /data/dalvik-cache/ -R
+
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	rm -f /data/.siyah/*.profile
