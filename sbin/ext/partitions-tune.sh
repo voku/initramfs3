@@ -15,12 +15,8 @@ for i in $DM; do
                 echo "0" > $i/queue/iostats;
         fi;
 
-        if [ -e $i/queue/rq_affinity ]; then
-                echo "1" > $i/queue/rq_affinity;
-        fi;
-
         if [ -e $i/queue/read_ahead_kb ]; then
-                echo "1024" >  $i/queue/read_ahead_kb;
+                echo "2048" >  $i/queue/read_ahead_kb;
         fi;
 
         if [ -e $i/queue/iosched/writes_starved ]; then
@@ -37,22 +33,15 @@ for i in $DM; do
 
 done;
 
-# =========
-# remount all partitions with noatime, nodiratime
-# =========
-PARTITIONS=`/sbin/busybox mount | /sbin/busybox grep -v /acct | /sbin/busybox grep -v /dev/cpuctl | cut -d " " -f3`
-for k in $PARTITIONS 
-do
-	/sbin/busybox mount -o remount,noatime,nodiratime $k;
-done;
-
 umount /preload
 /sbin/busybox mount -o remount,rw /system;
 
 if [ -e /data/.siyah/jb-installed ]; then
 	rm -f /data/.siyah/jb-installed
-	mount -o remount,utf8 /storage/sdcard1 
+	mount -o remount,utf8 /storage/sdcard1
+	mount -o remount,utf8 /storage/sdcard0 
 else
+	mount -o remount,utf8 /mnt/sdcard
 	mount -o remount,utf8 /mnt/emmc
 fi;
 

@@ -1,11 +1,10 @@
 #!/sbin/busybox sh
 
-/sbin/busybox rm /data/user.log
-exec >>/data/user.log
-exec 2>&1
-
 mkdir /data/.siyah
 chmod 777 /data/.siyah
+
+# first mod the partitions then boot.
+/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
 
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
@@ -96,7 +95,6 @@ chmod 777 /mnt/ntfs
 /sbin/fix_permissions -l -v -f ContactsProvider.apk
 /sbin/fix_permissions -l -v -f DrmProvider.apk
 /sbin/fix_permissions -l -v -f GoogleContactsSyncAdapter.apk
-/sbin/fix_permissions -l -v -f MediaProvider.apk
 /sbin/fix_permissions -l -v -f Mms.apk
 /sbin/fix_permissions -l -v -f NetworkLocation.apk
 /sbin/fix_permissions -l -v -f PackageInstaller.apk
@@ -114,13 +112,12 @@ chmod 766 /data/data/com.android.providers.*/databases/*
 )&
 
 #apply last soundgasm level on boot
+(
+sleep 5
 /res/uci.sh soundgasm_hp $soundgasm_hp
+)&
 
 ##### Early-init phase tweaks #####
-(
-sleep 20
-/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
-)&
 
 ##### EFS Backup #####
 (
