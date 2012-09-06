@@ -160,6 +160,12 @@ done
 ##### init scripts #####
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 /sbin/busybox sh /sbin/ext/partitions-tune.sh 
+# set lcd flash to off, if set to be off! 
+PROFILE=`cat /data/.siyah/.active.profile`;
+. /data/.siyah/$PROFILE.profile;
+if [ $tsp_flash_timeout == "off" ]; then
+	echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout;
+fi;
 )&
 
 # Change USB mode MTP or Mass Storage
