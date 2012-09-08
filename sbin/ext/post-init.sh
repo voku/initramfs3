@@ -16,9 +16,9 @@ if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	echo "$ccxmlsum" > /data/.siyah/.ccxmlsum
 fi;
 
-[ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah/
-[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah/
-[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah/
+[ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/
+[ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/
+[ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/
 
 . /res/customconfig/customconfig-helper
 read_defaults
