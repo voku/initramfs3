@@ -170,7 +170,7 @@ if [ "$S4A" == "1" ]; then
 	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2
 
 	# Start ROM!
-	PARTITION_TUNING
+	#PARTITION_TUNING
 	/sbin/busybox umount /system
 	exec /sbin/init.samsung
 fi;
@@ -185,7 +185,7 @@ if [ "$B2G" == "1" ]; then
         fi;
 
         # Start ROM!
-	PARTITION_TUNING
+	#PARTITION_TUNING
 	/sbin/busybox umount /system
         exec /sbin/init.samsung
 fi;
@@ -214,7 +214,7 @@ if [ "$JELLY" == "1" ]; then
         fi;
 
         # Start ROM!
-	PARTITION_TUNING
+	#PARTITION_TUNING
 	/sbin/busybox umount /system
         exec /sbin/init.samsung
 fi;
@@ -222,7 +222,7 @@ fi;
 if [ "$SLIM" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /
         echo 1 > /proc/sys/kernel/rom_feature_set
-        cp -a /res/misc/libsqlite.so /system/lib/
+        /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so
         chmod 755 /system/lib/libsqlite.so
         rm /init.rc.2
         
@@ -231,7 +231,7 @@ if [ "$SLIM" == "1" ]; then
         fi;
 
         # Start ROM!
-	PARTITION_TUNING
+	#PARTITION_TUNING
 	/sbin/busybox umount /system
         exec /sbin/init.samsung
 fi;
@@ -249,7 +249,7 @@ if [ "$AOSP" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	#PARTITION_TUNING
 	/sbin/busybox umount /system
 	exec /sbin/init.samsung
 fi;
@@ -264,7 +264,7 @@ if [ "$MIUI" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	#PARTITION_TUNING
 	/sbin/busybox umount /system
 	exec /sbin/init.samsung
 fi;
@@ -278,7 +278,7 @@ if [ "$SECONDROM" == "1" ]; then
 fi;
 
 # Start ROM
-PARTITION_TUNING
+#PARTITION_TUNING
 /sbin/busybox umount /system
 exec /sbin/init.samsung
 

@@ -1,33 +1,31 @@
 #!/sbin/busybox sh
 
-mkdir /data/.siyah
-chmod 777 /data/.siyah
-
 # first mod the partitions then boot.
 /sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
 
-# set critical dalvik permissions.
-/sbin/busybox chmod 777 /data/dalvik-cache/ -R
-
-ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
-if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
-	rm -f /data/.siyah/*.profile
-	echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
-fi
-
-[ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
-[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
-[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
-
 #For now static freq 1500->100
 echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+
+/sbin/busybox mkdir -p /data/.siyah
+/sbin/busybox chmod 777 /data/.siyah/ -R
+
+sleep 5
+ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
+if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
+	rm -f /data/.siyah/*.profile
+	echo "$ccxmlsum" > /data/.siyah/.ccxmlsum
+fi;
+
+[ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah/
+[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah/
+[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah/
 
 . /res/customconfig/customconfig-helper
 read_defaults
 read_config
 
 #cpu undervolting
-echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
+echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
 #change cpu step count
 case "${cpustepcount}" in
@@ -70,7 +68,7 @@ echo 0 > /proc/sys/kernel/kptr_restrict
 # for ntfs automounting
 mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
-chmod 777 /mnt/ntfs
+chmod 777 /mnt/ntfs/ -R
 
 /sbin/busybox sh /sbin/ext/properties.sh
 
@@ -81,12 +79,12 @@ chmod 777 /mnt/ntfs
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Critical Permissions fix #####
-/sbin/busybox chmod 766 /data/anr/*
-/sbin/busybox chmod 766 /data/data/com.android.providers.*/databases/*
-/sbin/busybox chmod 777 /data/system/inputmethod/* -R
-/sbin/busybox chmod 777 /data/local/* -R
-/sbin/busybox chmod 0777 /sys/devices/system/cpu/* -R
-/sbin/busybox chown root:system /sys/devices/system/cpu/* -R
+/sbin/busybox chmod 766 /data/anr/ -R
+/sbin/busybox chmod 777 /data/data/com.android.providers.*/databases/*
+/sbin/busybox chmod 777 /data/system/inputmethod/ -R
+/sbin/busybox chmod 777 /data/local/ -R
+/sbin/busybox chmod 0777 /sys/devices/system/cpu/ -R
+/sbin/busybox chown root:system /sys/devices/system/cpu/ -R
 
 ##### Critical OWNER Permissions fix #####
 (
@@ -111,12 +109,11 @@ chmod 777 /mnt/ntfs
 /sbin/fix_permissions -l -v -f SystemUI.apk
 /sbin/fix_permissions -l -v -f VpnDialogs.apk
 /sbin/fix_permissions -l -v -f VoiceDialer.apk
-chmod 766 /data/data/com.android.providers.*/databases/*
+chmod 777 /data/data/com.android.providers.*/databases/*
 )&
 
 #apply last soundgasm level on boot
 (
-sleep 5
 /res/uci.sh soundgasm_hp $soundgasm_hp
 )&
 
@@ -136,9 +133,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 /sbin/busybox mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
 (
-# apply ExTweaks defaults
-# in case we forgot to set permissions, fix them.
-/sbin/busybox chmod 755 /res/customconfig/actions/* -R
+# apply ExTweaks settings.
 echo "booting" > /data/.siyah/booting
 /sbin/busybox sh /res/uci.sh apply
 echo "uci done" > /data/.siyah/uci_loaded
@@ -185,4 +180,6 @@ for i in $PIDOFACORE; do
 	cat /proc/$i/oom_score_adj
 done;
 )&
+
+echo "done booting $date" > /data/dm-boot-check
 
