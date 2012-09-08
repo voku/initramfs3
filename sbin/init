@@ -36,6 +36,8 @@ mkdir /mnt/obb
 mkdir /mnt/secure
 mkdir /mnt/tmp
 chmod 777 /mnt/ -R
+# remove kernel vendor binary and let ROM use it's own included vendor binary.
+rm -rf /vendor
 # done.
 
 SECONDROM=1
@@ -204,8 +206,6 @@ if [ "$JELLY" == "1" ]; then
 		echo 0 > /proc/sys/kernel/rom_feature_set
 		cp /res/misc/JellyB-SAMMY/* /
 	fi;
-
-	rm -rf /vendor
 
         if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then
