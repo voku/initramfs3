@@ -27,6 +27,7 @@ case "${debug_to_sd}" in
 
 		# System
 		echo "ROM-Version:" >> /sdcard/dorimanx_debug;
+		cat init.rc | grep "# THIS INIT.RC is FOR" >> /sdcard/dorimanx_debug;
 		getprop ro.modversion >> /sdcard/dorimanx_debug;
 		getprop cm.version >> /sdcard/dorimanx_debug;
 		getprop ro.build.description >> /sdcard/dorimanx_debug;
