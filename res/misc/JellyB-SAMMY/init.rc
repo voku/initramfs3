@@ -4,6 +4,8 @@
 # This is a common source of Android security bugs.
 #
 
+# THIS INIT.RC is FOR SAMMY JB ROMS!
+
 import /init.smdk4210.rc
 import /init.usb.rc
 import /init.trace.rc
