@@ -73,7 +73,7 @@ fi;
 # check if rom has /system/vendor/firware/ if not copy my in.
 if [ ! -d /system/vendor/firmware ] || [ ! -d /system/vendor/firmware/mfc_fw.bin ]; then
         mkdir -p /system/vendor/firmware
-        /sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /res/misc/vendor/firmware/mfc_fw.bin
+        /sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /system/vendor/firmware/mfc_fw.bin
 fi;
 
 # fix permission to services.jar in case user did a mess, after using my MOD!
@@ -304,6 +304,9 @@ fi;
 
 # If not detected ROM / SAMMY ROM installed, then:
 echo 0 > /proc/sys/kernel/rom_feature_set
+
+# add fixed vendor binary for samsung stock ROMS
+/sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /system/vendor/firmware/mfc_fw.bin
 
 if [ "$SECONDROM" == "1" ]; then
 	mv /init.smdk4210.rc.2 /init.smdk4210.rc
