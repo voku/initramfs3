@@ -76,6 +76,9 @@ if [ ! -d /system/vendor/firmware ] || [ ! -d /system/vendor/firmware/mfc_fw.bin
         /sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /res/misc/vendor/firmware/mfc_fw.bin
 fi;
 
+# fix permission to services.jar in case user did a mess, after using my MOD!
+chmod 644 /system/framework/services.jar
+
 # copy new hosts-file only if user dont have custome ADBLOCKER file.
 CHECKHOSTS=`cat /system/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
 if [ "$CHECKHOSTS" != " www.link" ]; then
@@ -178,6 +181,14 @@ if [ "$S4A" == "1" ]; then
 	mv /res/misc/Sense4All-ROM/init.s4a /init.rc
 	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2
 
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		mv /init.rc.2 /init.rc
+	else
+		rm -f /init.smdk4210.rc.2
+		rm -f /init.rc.2
+	fi;
+
 	# Start ROM!
 	#PARTITION_TUNING
 	/sbin/busybox umount /system
@@ -191,6 +202,9 @@ if [ "$B2G" == "1" ]; then
         if [ "$SECONDROM" == "1" ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
                 mv /init.rc.2 /init.rc
+	else
+		rm -f /init.smdk4210.rc.2
+		rm -f /init.rc.2
         fi;
 
         # Start ROM!
@@ -200,7 +214,7 @@ if [ "$B2G" == "1" ]; then
 fi;
 
 if [ "$JELLY" == "1" ]; then
-	mv -f /sbin/adbd.jb /sbin/adbd
+	mv /sbin/adbd.jb /sbin/adbd
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
 	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so
 	chmod 755 /system/lib/libsqlite.so
@@ -208,15 +222,18 @@ if [ "$JELLY" == "1" ]; then
 	if [ "$CM10" == 1 ]; then
         	echo 1 > /proc/sys/kernel/rom_feature_set
 		cp -a /res/misc/JellyB-CM-AOKP/* /
-		rm -f init.rc.2
 	else
 		echo 0 > /proc/sys/kernel/rom_feature_set
-		cp /res/misc/JellyB-SAMMY/* /
+		cp -a /res/misc/JellyB-SAMMY/* /
 	fi;
 
         if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then
                 	mv /init.smdk4210.rc.2 /init.smdk4210.rc
+			rm -f /init.rc.2
+		else
+			rm -f /init.smdk4210.rc.2
+			rm -f /init.rc.2
 		fi;
         fi;
 
@@ -231,10 +248,13 @@ if [ "$SLIM" == "1" ]; then
         echo 1 > /proc/sys/kernel/rom_feature_set
         /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so
         chmod 755 /system/lib/libsqlite.so
-        rm /init.rc.2
         
         if [ "$SECONDROM" == "1" ]; then
                 mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		rm -f /init.rc.2
+	else
+		rm -f /init.smdk4210.rc.2
+		rm -f /init.rc.2
         fi;
 
         # Start ROM!
@@ -249,10 +269,13 @@ if [ "$AOSP" == "1" ]; then
         /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so
 	chmod 755 /system/lib/libsqlite.so
 	echo 1 > /proc/sys/kernel/rom_feature_set
-	rm /init.rc.2
 
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc
+		rm -f /init.rc.2
+	else
+		rm -f /init.smdk4210.rc.2
+		rm -f /init.rc.2
 	fi;
 
 	# Start ROM!
@@ -268,6 +291,9 @@ if [ "$MIUI" == "1" ]; then
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc
 		mv /init.rc.2 /init.rc
+	else
+		rm -f /init.smdk4210.rc.2
+		rm -f /init.rc.2
 	fi;
 
 	# Start ROM!
@@ -282,6 +308,9 @@ echo 0 > /proc/sys/kernel/rom_feature_set
 if [ "$SECONDROM" == "1" ]; then
 	mv /init.smdk4210.rc.2 /init.smdk4210.rc
 	mv /init.rc.2 /init.rc
+else
+	rm -f /init.smdk4210.rc.2
+	rm -f /init.rc.2
 fi;
 
 # Start ROM
