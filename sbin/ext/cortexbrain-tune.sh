@@ -744,10 +744,30 @@ fi;
 }
 
 # ==============================================================
+# Background android logger process control
+# ==============================================================
+
+ANDROID_LOG_OFF ()
+{
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
+	if [ $android_logger == "auto" ] || [ $android_logger == "disabled" ]; then
+		if [ -e /dev/log ]; then
+			mv /dev/log/ /dev/log-sleep/
+		fi;
+	fi;
+}
+
+
+# ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
 {
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
@@ -862,7 +882,18 @@ AWAKE_MODE()
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
 
 	# load logger if needed
-	ANDROID_LOG_ON;
+	if [ $android_logger == "auto" ] || [ $android_logger == "debug" ]; then
+		if [ -e /dev/log-sleep ] && [ ! -e /dev/log ]; then
+			mv /dev/log-sleep/ /dev/log/
+		fi;
+	fi;
+
+	# set swappiness in case that no root installed, and zram used.
+	if [ $zramtweaks != "4" ]; then
+		echo "60" > /proc/sys/vm/swappiness;
+	else
+		echo "0" > /proc/sys/vm/swappiness;
+	fi;
 }
 
 # ==============================================================
@@ -870,6 +901,9 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
 	# set CPU-Governor
 	echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
@@ -942,20 +976,14 @@ GESTURE_FUNCTION_OFF ()
 # Background android logger process control
 # ==============================================================
 
-ANDROID_LOG_ON ()
-{
-	if [ $android_logger == "auto" ] || [ $android_logger == "debug" ]; then
-		if [ -e /dev/log-sleep ] && [ ! -e /dev/log ]; then
-			mv -f /dev/log-sleep /dev/log
-		fi;
-	fi;
-}
-
 ANDROID_LOG_OFF ()
 {
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
 	if [ $android_logger == "auto" ] || [ $android_logger == "disabled" ]; then
 		if [ -e /dev/log ]; then
-			mv -f /dev/log /dev/log-sleep
+			mv /dev/log/ /dev/log-sleep/
 		fi;
 	fi;
 }
@@ -975,8 +1003,6 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 			echo "-600" > /proc/$i/oom_score_adj;
 		done;
 		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
-		PROFILE=`cat /data/.siyah/.active.profile`;
-		. /data/.siyah/$PROFILE.profile;
 		AWAKE_MODE;
 		sleep 15;
 
