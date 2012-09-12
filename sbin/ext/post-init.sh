@@ -65,6 +65,8 @@ fi;
 # enable kmem interface for everyone by GM.
 echo 0 > /proc/sys/kernel/kptr_restrict
 
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
+
 # for ntfs automounting
 mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
@@ -75,8 +77,6 @@ chmod 777 /mnt/ntfs/ -R
 (
 /sbin/busybox sh /sbin/ext/install.sh
 )&
-
-/sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ##### Critical Permissions fix #####
 /sbin/busybox chmod 766 /data/anr/ -R
