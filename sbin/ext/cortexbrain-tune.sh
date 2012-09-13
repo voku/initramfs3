@@ -372,7 +372,7 @@ CPU_GOV_TWEAKS()
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
@@ -520,26 +520,26 @@ CPU_GOV_TWEAKS()
 	if [ $EXTRA_BATTERY == 1 ]; then
 
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 			echo "98" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
 			echo "98" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+			echo "10" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "98" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			echo "10" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+			echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 			echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
@@ -552,11 +552,11 @@ CPU_GOV_TWEAKS()
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
 			echo "98" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
 			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
