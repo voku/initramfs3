@@ -89,4 +89,4 @@ cortexbrain_battery=on
 cortexbrain_system=on
 cortexbrain_kernel_tweaks=on
 cortexbrain_io=on
-
+EXTRA_BATTERY=0
