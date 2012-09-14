@@ -350,8 +350,10 @@ fi;
 CPU_GOV_TWEAKS()
 {
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
 
-	if [ $MORE_BATTERY == 1 ]; then
+	if [ $MORE_BATTERY == 1 ] && [ $cortexbrain_extra_battery != "on" ]; then
 
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
@@ -404,7 +406,7 @@ CPU_GOV_TWEAKS()
 			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 		fi;
 
-	elif [ $DEFAULT_SPEED == 1 ]; then
+	elif [ $DEFAULT_SPEED == 1 ] && [ $cortexbrain_extra_battery != "on" ]; then
 
 		if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 			echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
@@ -460,7 +462,7 @@ CPU_GOV_TWEAKS()
 			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 		fi;
 
-	elif [ $MORE_SPEED == 1 ]; then
+	elif [ $MORE_SPEED == 1 ] && [ $cortexbrain_extra_battery != "on" ]; then
 
 		if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
 			echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
@@ -517,7 +519,7 @@ CPU_GOV_TWEAKS()
 		fi;
 	fi;
 
-	if [ $EXTRA_BATTERY == 1 ]; then
+	if [ $cortexbrain_extra_battery == "on" ]; then
 
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
