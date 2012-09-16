@@ -12,16 +12,22 @@ fi;
 
 case "${bln_switch}" in
 	1)
+	if [ `cat /sys/class/misc/backlightnotification/enabled` == "1" ]; then
 		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
 		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
+	fi;
 		;;
 	2)
+	if [ `cat /sys/class/misc/backlightnotification/enabled` == "1" ]; then
 		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled
 		echo "1" > /sys/class/misc/backlightnotification/breathing_enabled
+	fi;
 		;;
 	3)
+	if [ `cat /sys/class/misc/backlightnotification/enabled` == "1" ]; then
 		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled
 		echo "1" > /sys/class/misc/backlightnotification/blinking_enabled
+	fi;
 		;;
 	*)
 		bln_switch=2

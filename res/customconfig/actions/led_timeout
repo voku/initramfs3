@@ -36,7 +36,7 @@ case "${led_timeout}" in
                 echo "-1" > /sys/class/misc/backlightnotification/led_timeout
         	;;
 	*)
-		led_timeout=5
+		led_timeout=3
 		;;
 esac;
 
@@ -45,7 +45,13 @@ TOUCH_SCREEN_KEYS=`cat /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeou
 
 if [ $TOUCH_SCREEN_KEYS != "0" ]; then
 	TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
-	echo "$TIMEOUT_SET" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
+	if [ $TIMEOUT_SET == "-2" ]; then
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
+	elif [ $TIMEOUT_SET == "-1" ]; then
+		echo "nothing to do here, touch led is always active"
+	else
+		echo "$TIMEOUT_SET" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
+	fi;
 fi;
 )&
 

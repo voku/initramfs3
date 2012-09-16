@@ -18,6 +18,7 @@ fi;
 
 case "${zramtweaks}" in
 	1)
+	if [ `cat /proc/swaps | grep 50000 |  wc -l` != "3" ]; then
 		if [ -e /dev/block/zram0 ]; then
 			# For on the fly changes we need to shutdown ZRAM first.
 			swapoff /dev/block/zram0 >/dev/null 2>&1;
@@ -44,8 +45,10 @@ case "${zramtweaks}" in
 			# Setting swappines
 			/sbin/busybox echo "30" > /proc/sys/vm/swappiness;
 		fi;
+	fi;
 		;;
 	2)
+	if [ `cat /proc/swaps | grep 100000 |  wc -l` != "3" ]; then
 		if [ -e /dev/block/zram0 ]; then
 			# For on the fly changes we need to shutdown ZRAM first.
 			swapoff /dev/block/zram0 >/dev/null 2>&1;
@@ -72,8 +75,10 @@ case "${zramtweaks}" in
 			# Setting swappines
 			/sbin/busybox echo "40" > /proc/sys/vm/swappiness;
 		fi;
+	fi;
 		;;
 	3)
+	if [ `cat /proc/swaps | grep 200000 |  wc -l` != "3" ]; then
 		if [ -e /dev/block/zram0 ]; then
 			# For on the fly changes we need to shutdown ZRAM first.
 			swapoff /dev/block/zram0 >/dev/null 2>&1;
@@ -100,6 +105,7 @@ case "${zramtweaks}" in
 			# Setting swappines
 			/sbin/busybox echo "60" > /proc/sys/vm/swappiness;
 		fi;
+	fi;
 		;;
 	4)
 		if [ -e /dev/block/zram0 ]; then
