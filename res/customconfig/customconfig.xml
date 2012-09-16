@@ -577,8 +577,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (reboot needed after change)"
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'extra Battery-Tweaks'. (reboot needed after change)"
-			name="Extra-Battery-Tweaks" action="generic_cortex /tmp/EXTRA_BATTERY" label="Extra-Battery-Tweaks"/>
+		<checkbox description="Enable or Disable the 'Extra Battery-Tweaks for gov tuning'. (depend on CPU-Tweaks and Background-Process, to make chose active do screen off/on)"
+			name="Extra-Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_extra_battery" label="Extra-Battery-Tweaks"/>
 
 		<checkbox description="Enable or Disable the 'System-Tweaks'. (reboot needed after change)"
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
