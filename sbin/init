@@ -29,6 +29,7 @@ fi;
 rm -rf /mnt
 rm -rf /sdcard
 rm -rf /emmc
+rm -rf /storage
 mkdir /mnt
 mkdir /mnt/asec
 mkdir /mnt/.lfs
@@ -36,6 +37,9 @@ mkdir /mnt/obb
 mkdir /mnt/secure
 mkdir /mnt/tmp
 chmod 777 /mnt/ -R
+mkdir /storage
+chmod 777 /storage -R
+
 # remove kernel vendor binary and let ROM use it's own included vendor binary.
 rm -rf /vendor
 # done.
