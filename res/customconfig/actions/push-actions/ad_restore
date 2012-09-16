@@ -1,0 +1,5 @@
+#!/sbin/busybox sh
+
+cp -a /res/misc/clean_hosts/hosts /system/etc/hosts;
+echo "New AD Blocker Installed to /system/etc/hosts"
+

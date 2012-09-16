@@ -616,9 +616,11 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<button description="Restore: extra_performance.profile" name="Settings - extra_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREM BATTERY"/>
 
-	<settingsPane description="Here you can add/restore AD Blocker! updated to last one by voku. if your ROM dont have any AD blocker then it's will be installed one time only!, then if we update the blocker, you need to push the UPDATE AD, to get the new one installed!" name="AD Blocker menu.">
+	<settingsPane description="Here you can Add/Update/Remove AD Blocker! `You need ROOT to do the tweak!` if we update the blocker, you can push the `UPDATE AD NOW`, to get the new one installed!, if you install new ROM, and want to use AD BLOCKER, then push `UPDATE AD NOW` and REBOOT, if you need to REMOVE AD-B use the REMOVE button and REBOOT" name="AD Blocker menu.">
 
-	<button description="Update the AD Blocker" name="AD UPDATE" action="push-actions/ad_update" label="UPDATE AD NOW"/>
+	<button description="ADD/UPDATE AD BLOCKER" name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
+
+	<button description="REMOVE AD Blocker" name="AD-B REMOVE" action="push-actions/ad_restore" label="REMOVE AD-B NOW"/>
 
 	</settingsPane>
 
