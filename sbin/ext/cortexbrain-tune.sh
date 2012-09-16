@@ -286,10 +286,14 @@ BATTERY_TWEAKS()
 		echo "1" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
 
-	if [ $lcd_power_reduce == "1" ]; then
+	if [ $power_reduce == "on" ]; then
 		# LCD Power-Reduce
 		if [ -e /sys/class/lcd/panel/power_reduce ]; then
 			echo "1" > /sys/class/lcd/panel/power_reduce;
+		fi;
+	else
+		if [ -e /sys/class/lcd/panel/power_reduce ]; then
+			echo "0" > /sys/class/lcd/panel/power_reduce;
 		fi;
 	fi;
 
