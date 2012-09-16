@@ -17,11 +17,17 @@ else
 	if [ -f $2 ]; then
 		case "$3" in
 			off)
-				echo 0 > $2;
+				echo "0" > $2;
 			;;
 			on)
 				TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
-				echo "$TIMEOUT_SET" > $2;
+				if [ $TIMEOUT_SET == "-2" ]; then
+					echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
+				elif [ $TIMEOUT_SET == "-1" ]; then
+					echo "nothing to do here, touch led is always active"
+				else
+					echo "$TIMEOUT_SET" > $2
+				fi;
 			;;
 		esac;
 	fi;

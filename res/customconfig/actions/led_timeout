@@ -40,7 +40,6 @@ case "${led_timeout}" in
 		;;
 esac;
 
-(
 TOUCH_SCREEN_KEYS=`cat /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout`
 
 if [ $TOUCH_SCREEN_KEYS != "0" ]; then
@@ -53,5 +52,4 @@ if [ $TOUCH_SCREEN_KEYS != "0" ]; then
 		echo "$TIMEOUT_SET" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
 	fi;
 fi;
-)&
 
