@@ -13,32 +13,27 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 case "${config_backup_restore}" in
 	3)
 		file2=/res/customconfig/battery.profile;
-		rm -f /data/.siyah/.active.profile;
 		echo "battery" > /data/.siyah/.active.profile;
 		config_backup_restore=2;
 	;;
 	4)
 		file2=/res/customconfig/default.profile;
-		rm -f /data/.siyah/.active.profile;
 		echo "default" > /data/.siyah/.active.profile;
 		config_backup_restore=2;
 	;;
 	5)
 		file2=/res/customconfig/performance.profile;
-		rm -f /data/.siyah/.active.profile;
 		echo "performance" > /data/.siyah/.active.profile;
 		config_backup_restore=2;
 	;;
 	6)
 		file2=/res/customconfig/extra_battery.profile;
-		rm -f /data/.siyah/.active.profile;
 		echo "battery" > /data/.siyah/.active.profile;
 		echo "extra_battery" > /data/.siyah/.extra_active.profile;
 		config_backup_restore=2;
 	;;
 	7)
 		file2=/res/customconfig/extra_performance.profile;
-		rm -f /data/.siyah/.active.profile;
 		echo "performance" > /data/.siyah/.active.profile;
 		echo "extra_performance" > /data/.siyah/.extra_active.profile;
 		config_backup_restore=2;
