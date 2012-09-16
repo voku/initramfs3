@@ -43,36 +43,6 @@ else
 	DEFAULT_SPEED=0;
 fi;
 
-# ==============================================================
-# Touch Screen tweaks
-# ==============================================================
-
-TOUCHSCREENTUNE() 
-{
-	# touch sensitivity settings. - by GokhanMoral
-	# not needed any more, we have extweaks interface for it! 
-	# -> so never enable it!
-	(
-	# offset 59: MXT224_THRESHOLD_BATT_INIT
-	kmemhelper -n mxt224_data -t char -o 59 50
-	# offset 60: MXT224_THRESHOLD_CHRG
-	kmemhelper -n mxt224_data -t char -o 60 55
-	# offset 61: MXT224_NOISE_THRESHOLD_BATT
-	kmemhelper -n mxt224_data -t char -o 61 30
-	# offset 62: MXT224_NOISE_THRESHOLD_CHRG
-	kmemhelper -n mxt224_data -t char -o 62 40
-	# offset 63: MXT224_MOVFILTER_BATT
-	kmemhelper -n mxt224_data -t char -o 63 11
-	# offset 64: MXT224_MOVFILTER_CHRG
-	kmemhelper -n mxt224_data -t char -o 64 46
-	# offset 67: MXT224E_THRESHOLD_BATT
-	kmemhelper -n mxt224_data -t char -o 67 50
-	# offset 77: MXT224E_MOVFILTER_BATT
-	kmemhelper -n mxt224_data -t char -o 77 46
-	)&
-}
-#TOUCHSCREENTUNE; #DISABLED for good, but it's good info. so no delete.
-
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
@@ -262,14 +232,19 @@ fi;
 # EXTWEAKS FIXING
 # ==============================================================
 
+BLN_TUNE ()
+{
 # apply BLN mods, that get changed by ROM on boot.
-/res/customconfig/actions/led_timeout led_timeout $led_timeout;
+/res/customconfig/actions/led_timeout led_timeout $led_timeout
 
-if [ $bln_switch == "off" ]; then
+if [ $enabled == "off" ]; then
 	echo "0" > /sys/class/misc/backlightnotification/enabled;
 	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
 	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
 fi;
+}
+# always trigger on script load, and then on each screen on/off
+BLN_TUNE
 
 # ==============================================================
 # CLEANING-TWEAKS
@@ -293,6 +268,9 @@ chown system:system /data/anr -R
 
 BATTERY_TWEAKS()
 {
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
 	# battery-calibration if battery is full
 	LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 	CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
@@ -308,7 +286,7 @@ BATTERY_TWEAKS()
 		echo "1" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
 
-	if [ $lcd_power_reduce == 1 ]; then
+	if [ $lcd_power_reduce == "1" ]; then
 		# LCD Power-Reduce
 		if [ -e /sys/class/lcd/panel/power_reduce ]; then
 			echo "1" > /sys/class/lcd/panel/power_reduce;
@@ -956,6 +934,9 @@ AWAKE_MODE()
 	else
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
+
+	# fix BLN and Touch keys led timeout + led on touch
+	BLN_TUNE
 }
 
 # ==============================================================
@@ -1029,9 +1010,11 @@ SLEEP_MODE()
 
 GESTURE_FUNCTION_OFF ()
 {
-	# shutdown gestures loop on screen off, we dont need it.
-	pkill -f "gesture_set.sh"
-	pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
+		# shutdown gestures loop on screen off, we dont need it.
+		pkill -f "/data/gesture_set.sh"
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
+	fi;
 }
 
 # ==============================================================
@@ -1057,7 +1040,7 @@ ANDROID_LOG_OFF ()
 # Dynamic Value do not change/delete
 cortexbrain_background_process=1
 
-if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrain-tune.sh" |  wc -l` \< 3 ]; then
+if [ $cortexbrain_background_process == "1" ] && [ `pgrep -f "/sbin/ext/cortexbrain-tune.sh" |  wc -l` \< 3 ]; then
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
 		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
@@ -1076,10 +1059,14 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "/sbin/ext/cortexbrai
 		# Install ROOT is requested!
 		ROOT_INSTALL_NOW
 		GESTURE_FUNCTION_OFF
+		# fix BLN and Touch keys led timeout + led on touch
+		BLN_TUNE
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-		if [ ! "$CHARGING" -ge "1" ]; then
+		if [ $CHARGING == "0" ]; then
 			ANDROID_LOG_OFF;
 			SLEEP_MODE;
+		else
+			echo "USB CABLE CONNECTED! No sleep Mode"
 		fi;
 		sleep 1;
 	done &);
