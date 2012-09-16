@@ -8,20 +8,43 @@ else
 	echo $config_backup_restore;
 fi;
 
+PROFILE=`cat /data/.siyah/.active.profile`;
+
+case "${config_backup_restore}" in
+	3)
+		file2=/res/customconfig/battery.profile;
+		config_backup_restore=2;
+	;;
+	4)
+		file2=/res/customconfig/default.profile;
+		config_backup_restore=2;
+	;;
+	5)
+		file2=/res/customconfig/performance.profile;
+		config_backup_restore=2;
+	;;
+	6)
+		file2=/res/customconfig/extra_battery.profile;
+		config_backup_restore=2;
+	;;
+	7)
+		file2=/res/customconfig/extra_performance.profile;
+		config_backup_restore=2;
+	;;
+	*)
+		file2=/data/.siyah/$PROFILE.profile_backup;
+	;;
+esac;
+
 case "${config_backup_restore}" in
 	1)
 		echo "Backup config file ...";
-		PROFILE=`cat /data/.siyah/.active.profile`;
 		cp /data/.siyah/$PROFILE.profile /data/.siyah/$PROFILE.profile_backup;
 		cp /data/.siyah/$PROFILE.profile /sdcard/$PROFILE.profile_backup;
 		echo "Backup Done!";
 	;;
 	2)
-
-		PROFILE=`cat /data/.siyah/.active.profile`;
-
 		file1=/data/.siyah/$PROFILE.profile;
-		file2=/data/.siyah/$PROFILE.profile_backup;
 
 		if [ ! -f $file1 ] || [ ! -f $file2 ]; then
 			echo "File not found!";
