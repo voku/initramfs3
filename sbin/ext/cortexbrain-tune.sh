@@ -262,8 +262,14 @@ fi;
 # EXTWEAKS FIXING
 # ==============================================================
 
-# apply last led_timeout set on boot to fix the timeout reset.
-/res/uci.sh led_timeout $led_timeout;
+# apply BLN mods, that get changed by ROM on boot.
+/res/customconfig/actions/led_timeout led_timeout $led_timeout;
+
+if [ $bln_switch == "off" ]; then
+	echo "0" > /sys/class/misc/backlightnotification/enabled;
+	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
+	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
+fi;
 
 # ==============================================================
 # CLEANING-TWEAKS
@@ -731,7 +737,6 @@ FIREWALL_TWEAKS()
 if [ $cortexbrain_firewall == on ]; then
 	FIREWALL_TWEAKS;
 fi;
-
 
 # ==============================================================
 # ROOT: Install function.

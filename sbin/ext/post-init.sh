@@ -158,7 +158,6 @@ done
 # set lcd flash to off, if set to be off! and correct the led timeout of soft keys! 
 PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
-/res/customconfig/actions/led_timeout $led_timeout
 if [ $tsp_flash_timeout == "off" ]; then
 	echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout;
 fi;
@@ -181,5 +180,6 @@ for i in $PIDOFACORE; do
 done;
 )&
 
-echo "done booting $date" > /data/dm-boot-check
+echo "Done Booting" > /data/dm-boot-check;
+date >> /data/dm-boot-check;
 
