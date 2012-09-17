@@ -29,13 +29,17 @@ case "${config_backup_restore}" in
 	6)
 		file2=/res/customconfig/extreme_battery.profile;
 		echo "battery" > /data/.siyah/.active.profile;
-		echo "extreme_battery" > /data/.siyah/.extreme_active.profile;
+		#echo "extreme_battery" > /data/.siyah/.extreme_active.profile;
 		config_backup_restore=2;
 	;;
 	7)
 		file2=/res/customconfig/extreme_performance.profile;
 		echo "performance" > /data/.siyah/.active.profile;
-		echo "extreme_performance" > /data/.siyah/.extreme_active.profile;
+		#echo "extreme_performance" > /data/.siyah/.extreme_active.profile;
+		config_backup_restore=2;
+	;;
+	8)
+		file2=/data/.siyah/.config.tmp
 		config_backup_restore=2;
 	;;
 	*)
@@ -69,7 +73,7 @@ case "${config_backup_restore}" in
 					line1_2=$(echo $line1 | cut -f 2 -d '=');
 
 					# grep the content from backup-file ...
-					line2=$(grep "^$line1_1\=" $file2)
+					line2=$(grep "^${line1_1}\=" $file2)
 					# ... and also split into variables
 					line2_1=$(echo $line2 | cut -f 1 -d '=');
 					line2_2=$(echo $line2 | cut -f 2 -d '=');
@@ -78,55 +82,46 @@ case "${config_backup_restore}" in
 					if [ "a${line1_1}" != "a${line2_1}" ]; then
 						# nothing to do -> continue the loop
 						continue;
+						echo "nothing to do 1:" $line1_2 " -> " $line2_2;
 					else
 						# if backup-file has different values, then restore it
 						if [ "a${line1_2}" != "a${line2_2}" ]; then
 							echo $line1_2 " -> " $line2_2;
 
 							if [ "${line2_2}" != "" ]; then
-								sed -i "s/$line1_1\=$line1_2/$line2_1\=$line2_2/g" $file1;
+								sed -i "s/${line1_1}\=${line1_2}/${line2_1}\=${line2_2}/g" $file1;
 							fi;
 						else
 							# nothing to do -> continue the loop
 							continue;
+							echo "nothing to do 2:" $line1_2 " -> " $line2_2;
 						fi;
 					fi;
 				done<$file1
 
-				# hiding all push action scripts from uci.sh
-				/sbin/busybox mount -o remount,rw rootfs
-				/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
-
 				# check if extreme profiles restored before load
-				if [ -e /data/.siyah/.extreme_active.profile ]; then
-					if [ `cat /data/.siyah/.extreme_active.profile` == "extreme_battery" ]; then
-						cp /res/customconfig/extreme_battery.profile /res/customconfig/battery.profile;
-						chmod 777 /res/customconfig/battery.profile;
-						rm -f /data/.siyah/.extreme_active.profile;
-					elif [ `cat /data/.siyah/.extreme_active.profile` == "extreme_performance" ]; then
-						cp /res/customconfig/extreme_performance.profile /res/customconfig/performance.profile;
-						chmod 777 /res/customconfig/performance.profile;
-						rm -f /data/.siyah/.extreme_active.profile;
-					fi;
-				fi;
+				#if [ -e /data/.siyah/.extreme_active.profile ]; then
+				#	if [ `cat /data/.siyah/.extreme_active.profile` == "extreme_battery" ]; then
+				#		cp /res/customconfig/extreme_battery.profile /res/customconfig/battery.profile;
+				#		chmod 777 /res/customconfig/battery.profile;
+				#		rm -f /data/.siyah/.extreme_active.profile;
+				#	elif [ `cat /data/.siyah/.extreme_active.profile` == "extreme_performance" ]; then
+				#		cp /res/customconfig/extreme_performance.profile /res/customconfig/performance.profile;
+				#		chmod 777 /res/customconfig/performance.profile;
+				#		rm -f /data/.siyah/.extreme_active.profile;
+				#	fi;
+				#fi;
+
+				# hiding all push action scripts from uci.sh
+				/sbin/busybox mount -o remount,rw rootfs;
+				/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 				# apply New ExTweaks settings
-				/res/uci.sh apply
-				# add trigger for push actions restore function
-				echo "uci done" > /data/.siyah/uci_loaded
-			)&
-
-			# starting loop to wait till uci.sh apply finish working
-			(
-				while [ ! -e /data/.siyah/uci_loaded ]; do
-					sleep 5;
-					echo "Still waiting till all DONE!";
-				done;
+				/res/uci.sh restore
 
 				# restore all the PUSH Button Actions back to there location
 				/sbin/busybox mount -o remount,rw rootfs;
 				/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-				/sbin/busybox rm -f /data/.siyah/uci_loaded;
 
 				# wait for full sync
 				sync;
