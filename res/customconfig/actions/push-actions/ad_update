@@ -1,19 +1,19 @@
 #!/sbin/busybox sh
 
+TMPFILE=$(mktemp -t)
+
 (
-	TESTCONNECTION=`wget http://www.google.com -O /tmp/lall &>/dev/null 2>&1`
+	TESTCONNECTION=`wget ://www.google.com -O $TMPFILE &>/dev/null 2>&1`
 	if [ $? != 0 ]; then
 		echo "Problem: no internet connection";
-		xzcat /res/misc/hosts.xz > /res/misc/hosts;
-		mv -f /res/misc/hosts /system/etc/hosts;
+		xzcat /res/misc/hosts.xz > $TMPFILE;
+		mv -f $TMPFILE /system/etc/hosts;
 	else
-		wget http://winhelp2002.mvps.org/hosts.zip -O /tmp/hosts.zip &>/dev/null 2>&1;
-		unzip /tmp/hosts.zip /tmp/HOSTS;
+		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE &>/dev/null 2>&1;
+		unzip $TMPFILE HOSTS;
 		mv -f /tmp/HOSTS /system/etc/hosts;
-		rm -f /tmp/hosts.zip;
 	fi;
 	chmod 622 /system/etc/hosts;
-	rm /tmp/lall;
 )&
 echo "New AD Blocker Installed to /system/etc/hosts"
 
