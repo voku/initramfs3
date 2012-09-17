@@ -29,6 +29,7 @@ fi;
 rm -rf /mnt
 rm -rf /sdcard
 rm -rf /emmc
+rm -rf /storage
 mkdir /mnt
 mkdir /mnt/asec
 mkdir /mnt/.lfs
@@ -36,6 +37,9 @@ mkdir /mnt/obb
 mkdir /mnt/secure
 mkdir /mnt/tmp
 chmod 777 /mnt/ -R
+mkdir /storage
+chmod 777 /storage -R
+
 # remove kernel vendor binary and let ROM use it's own included vendor binary.
 rm -rf /vendor
 # done.
@@ -78,26 +82,6 @@ fi;
 
 # fix permission to services.jar in case user did a mess, after using my MOD!
 chmod 644 /system/framework/services.jar
-
-# copy new hosts-file only if user dont have custome ADBLOCKER file.
-CHECKHOSTS=`cat /system/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
-if [ "$CHECKHOSTS" != " www.link" ]; then
-	/sbin/busybox xzcat /res/misc/hosts.xz > /res/misc/hosts
-	cp -a /res/misc/hosts /system/etc/
-	chmod 644 /system/etc/hosts
-else
-	echo "User has AD custom HOSTS file"
-fi;
-
-# copy new hosts-file only if user dont have custome ADBLOCKER file.
-CHECKHOSTS=`cat /preload/etc/hosts | grep "127.0.0.1 www.link" | cut -c 10-18 | tail -n 1`
-if [ "$CHECKHOSTS" != " www.link" ]; then
-	/sbin/busybox xzcat /res/misc/hosts.xz > /res/misc/hosts
-        cp -a /res/misc/hosts /preload/etc/
-        chmod 644 /preload/etc/hosts
-else
-	echo "User has AD custom HOSTS file"
-fi;
 
 # copy new Kernel modules to /system/lib/modules and to second rom system if exist.
 if [ ! -d /system/lib/modules ]; then
