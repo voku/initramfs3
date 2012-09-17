@@ -5,15 +5,14 @@
 	if [ $? != 0 ]; then
 		echo "Problem: no internet connection";
 		xzcat /res/misc/hosts.xz > /res/misc/hosts;
-		cp -a /res/misc/hosts /system/etc/hosts;
-		rm -f /res/misc/hosts;
+		mv -f /res/misc/hosts /system/etc/hosts;
 	else
 		wget http://winhelp2002.mvps.org/hosts.zip -O /tmp/hosts.zip &>/dev/null 2>&1;
 		unzip /tmp/hosts.zip /tmp/HOSTS;
 		mv -f /tmp/HOSTS /system/etc/hosts;
-		chmod 622 /system/etc/hosts;
-		rm hosts.zip;
+		rm -f /tmp/hosts.zip;
 	fi;
+	chmod 622 /system/etc/hosts;
 	rm /tmp/lall;
 )&
 echo "New AD Blocker Installed to /system/etc/hosts"
