@@ -10,7 +10,7 @@ TMPFILE=$(mktemp -t)
 		mv -f $TMPFILE /system/etc/hosts;
 	else
 		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE &>/dev/null 2>&1;
-		unzip $TMPFILE HOSTS;
+		unzip $TMPFILE HOSTS &>/dev/null 2>&1;
 		mv -f /tmp/HOSTS /system/etc/hosts;
 	fi;
 	chmod 622 /system/etc/hosts;
