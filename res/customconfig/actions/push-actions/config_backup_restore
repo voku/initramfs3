@@ -27,15 +27,15 @@ case "${config_backup_restore}" in
 		config_backup_restore=2;
 	;;
 	6)
-		file2=/res/customconfig/extra_battery.profile;
+		file2=/res/customconfig/extreme_battery.profile;
 		echo "battery" > /data/.siyah/.active.profile;
-		echo "extra_battery" > /data/.siyah/.extra_active.profile;
+		echo "extreme_battery" > /data/.siyah/.extreme_active.profile;
 		config_backup_restore=2;
 	;;
 	7)
-		file2=/res/customconfig/extra_performance.profile;
+		file2=/res/customconfig/extreme_performance.profile;
 		echo "performance" > /data/.siyah/.active.profile;
-		echo "extra_performance" > /data/.siyah/.extra_active.profile;
+		echo "extreme_performance" > /data/.siyah/.extreme_active.profile;
 		config_backup_restore=2;
 	;;
 	*)
@@ -97,16 +97,16 @@ case "${config_backup_restore}" in
 				/sbin/busybox mount -o remount,rw rootfs
 				/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/
 
-				# check if extra profiles restored before load
-				if [ -e /data/.siyah/.extra_active.profile ]; then
-					if [ `cat /data/.siyah/.extra_active.profile` == "extra_battery" ]; then
-						cp /res/customconfig/extra_battery.profile /res/customconfig/battery.profile;
+				# check if extreme profiles restored before load
+				if [ -e /data/.siyah/.extreme_active.profile ]; then
+					if [ `cat /data/.siyah/.extreme_active.profile` == "extreme_battery" ]; then
+						cp /res/customconfig/extreme_battery.profile /res/customconfig/battery.profile;
 						chmod 777 /res/customconfig/battery.profile;
-						rm -f /data/.siyah/.extra_active.profile;
-					elif [ `cat /data/.siyah/.extra_active.profile` == "extra_performance" ]; then
-						cp /res/customconfig/extra_performance.profile /res/customconfig/performance.profile;
+						rm -f /data/.siyah/.extreme_active.profile;
+					elif [ `cat /data/.siyah/.extreme_active.profile` == "extreme_performance" ]; then
+						cp /res/customconfig/extreme_performance.profile /res/customconfig/performance.profile;
 						chmod 777 /res/customconfig/performance.profile;
-						rm -f /data/.siyah/.extra_active.profile;
+						rm -f /data/.siyah/.extreme_active.profile;
 					fi;
 				fi;
 

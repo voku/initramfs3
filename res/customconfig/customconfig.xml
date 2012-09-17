@@ -612,9 +612,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<button description="Restore: performance.profile" name="Settings - performance.profile" action="push-actions/config_backup_restore 5" label="PERFORMANCE"/>
 
-	<button description="Restore: extra_battery.profile" name="Settings - extra_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREM BATTERY"/>
+	<button description="Restore: extreme_battery.profile" name="Settings - extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
 
-	<button description="Restore: extra_performance.profile" name="Settings - extra_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREM PERFORMANCE"/>
+	<button description="Restore: extreme_performance.profile" name="Settings - extreme_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREME PERFORMANCE"/>
 
 	</settingsPane>
 
