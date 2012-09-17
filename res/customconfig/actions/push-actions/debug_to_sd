@@ -106,7 +106,7 @@ case "${debug_to_sd}" in
 
 		# Processes
 		echo "Process-Info:" >> /sdcard/dorimanx_debug;
-		top -n 1 >> /sdcard/dorimanx_debug;
+		top -b -n 1 >> /sdcard/dorimanx_debug;
 		ps -wTl >> /sdcard/dorimanx_debug;
 		SEPARATOR;
 
