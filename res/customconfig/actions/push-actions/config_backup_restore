@@ -58,7 +58,7 @@ case "${config_backup_restore}" in
 		fi;
 
 		if [ ! -e $LOCK_FILE ]; then
-			echo "restore done" > $LOCK_FILE;
+			echo "restoring" > $LOCK_FILE;
 			echo "Restoring config file ...";
 			echo "Wait 90Sec till full restore, app will restart with new settings.";
 			(
