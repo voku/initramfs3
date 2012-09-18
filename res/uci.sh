@@ -35,6 +35,5 @@ case "${1}" in
 	;;
 	*)
 		. ${ACTION_SCRIPTS}/${1} ${1} ${2} ${3} ${4} ${5} ${6};
-		write_config;
 	;;
 esac;

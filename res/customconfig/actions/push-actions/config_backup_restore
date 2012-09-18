@@ -9,7 +9,8 @@ else
 fi;
 
 LOCK_FILE="/data/.siyah/restore_running";
-PROFILE=`cat /data/.siyah/.active.profile`;
+
+
 
 case "${config_backup_restore}" in
 	3)
@@ -42,6 +43,8 @@ case "${config_backup_restore}" in
 	;;
 esac;
 
+PROFILE=`cat /data/.siyah/.active.profile`;
+
 case "${config_backup_restore}" in
 	1)
 		echo "Backup config file ...";
@@ -50,7 +53,7 @@ case "${config_backup_restore}" in
 		echo "Backup Done!";
 	;;
 	2)
-		file1=/data/.siyah/$PROFILE.profile;
+		file1="/data/.siyah/${PROFILE}.profile";
 
 		if [ ! -f $file1 ] || [ ! -f $file2 ]; then
 			echo "File not found!";
@@ -102,9 +105,8 @@ case "${config_backup_restore}" in
 				/sbin/busybox mount -o remount,rw rootfs;
 				/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 
-				# wait for full sync with timer ...
+				# wait for full sync ...
 				sync;
-				sleep 20;
 
 				# Killing extweaks, if was open it's will restart!
 				EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;

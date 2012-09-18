@@ -12,12 +12,6 @@ ACTIVE_PROFILE="${PROFILE_PATH}/${LAST_SELECTED}";
 
 apply_config()
 {
-	# first, read defaults
-	read_defaults;
-
-	# read the config from the active profile
-	read_config;
-
 	# read the xml-config and ... 
 	while IFS=\> read -r key value; do
 		action=$(echo "$key" |  grep -v "\<button" | sed -e 's/action=/\naction=/g' | grep "action" | awk -F '"' '{print $2}');
