@@ -22,9 +22,6 @@ apply_config()
 			eval /res/uci_for_loop.sh $action $actionval;
 		fi;
 	done < $CONFIG_XML;
-
-	# write config when done
-	write_config;
 }
 
 print_config()
