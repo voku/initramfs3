@@ -78,19 +78,15 @@ case "${config_backup_restore}" in
 					if [ "a${line1_1}" != "a${line2_1}" ]; then
 						# nothing to do -> continue the loop
 						continue;
-						echo "nothing to do 1:" $line1_2 " -> " $line2_2;
 					else
 						# if backup-file has different values, then restore it
 						if [ "a${line1_2}" != "a${line2_2}" ]; then
-							echo $line1_2 " -> " $line2_2;
-
 							if [ "${line2_2}" != "" ]; then
 								sed -i "s/${line1_1}\=${line1_2}/${line2_1}\=${line2_2}/g" $file1;
 							fi;
 						else
 							# nothing to do -> continue the loop
 							continue;
-							echo "nothing to do 2:" $line1_2 " -> " $line2_2;
 						fi;
 					fi;
 				done<$file1
