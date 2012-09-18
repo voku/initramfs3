@@ -77,11 +77,11 @@
 
 		<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
 
-		<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." 
-			name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
+			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." 
+				name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
 
-		<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
-			name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
+			<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
+				name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
 
 		</settingsPane>
 
@@ -138,7 +138,7 @@
 
 	</settingsPane>
 
-	</settingsTab>
+</settingsTab>
 
 <settingsTab name="GPU">
 	<settingsPane description="GPU Frequency Settings. Defaults frequencies are 100, 160, 200 and 267. Voltage defaults are 900mV, 950mV, 1000mV and 1050mV." name="GPUFreq">
@@ -199,40 +199,40 @@
 
 	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 1000 and 1050." name="GPU Voltage Levels">
 
-	<seekBar description="GPU Voltage for the first step" 
-		name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+		<seekBar description="GPU Voltage for the first step" 
+			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="25" max="1400"/>
 
-	<seekBar description="GPU Voltage for the second step" 
-		name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+		<seekBar description="GPU Voltage for the second step" 
+			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="25" max="1400"/>
 
-	<seekBar description="GPU Voltage for the third step" 
-		name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+		<seekBar description="GPU Voltage for the third step" 
+			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="25" max="1400"/>
 
-	<seekBar description="GPU Voltage for the fourth step" 
-		name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+		<seekBar description="GPU Voltage for the fourth step" 
+			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="25" max="1400"/>
 
 	</settingsPane>
 
-	<settingsPane description="GPU load thresholds to change between frequency steps. The third step is disabled as default by having the second to third threshold 100." 
-		name="GPU Thresholds">
+		<settingsPane description="GPU load thresholds to change between frequency steps. The third step is disabled as default by having the second to third threshold 100." 
+			name="GPU Thresholds">
 
-	<seekBar description="GPU threshold to jump up from first to second step" 
-		name="GPU Threshold 1-UP" action="gpu-thresh 1UP" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="GPU threshold to jump up from first to second step" 
+			name="GPU Threshold 1-UP" action="gpu-thresh 1UP" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-	<seekBar description="GPU threshold to jump down from second to first step" 
-		name="GPU Threshold 2-DOWN" action="gpu-thresh 2DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="GPU threshold to jump down from second to first step" 
+			name="GPU Threshold 2-DOWN" action="gpu-thresh 2DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-	<seekBar description="GPU threshold to jump up from second to third step" 
-		name="GPU Threshold 2-UP" action="gpu-thresh 2UP" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="GPU threshold to jump up from second to third step" 
+			name="GPU Threshold 2-UP" action="gpu-thresh 2UP" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-	<seekBar description="GPU threshold to jump down from third to second step" 
-		name="GPU Threshold 3-DOWN" action="gpu-thresh 3DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="GPU threshold to jump down from third to second step" 
+			name="GPU Threshold 3-DOWN" action="gpu-thresh 3DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-	<seekBar description="GPU threshold to jump up from third to fourth step" 
-		name="GPU Threshold 3-UP" action="gpu-thresh 3UP" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="GPU threshold to jump up from third to fourth step" 
+			name="GPU Threshold 3-UP" action="gpu-thresh 3UP" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-	<seekBar description="GPU threshold to jump down from fourth to third step" 
-		name="GPU Threshold 4-DOWN" action="gpu-thresh 4DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="GPU threshold to jump down from fourth to third step" 
+			name="GPU Threshold 4-DOWN" action="gpu-thresh 4DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
 
 	</settingsPane>
 
@@ -242,85 +242,85 @@
 
 	<settingsPane description="Brightness Curve settings which modify auto-brightness behavior." name="Brightness Curve">
 
-	<seekBar description="Sets touch screen move sensitivity (vitalij value)." 
-		name="TouchMove Sensitivity" action="generic /sys/bus/i2c/devices/3-004a/mov_hysti" 
-		unit=" pixel" min="0" reversed="false" step="1" max="20"/>
+		<seekBar description="Sets touch screen move sensitivity (vitalij value)." 
+			name="TouchMove Sensitivity" action="generic /sys/bus/i2c/devices/3-004a/mov_hysti" 
+			unit=" pixel" min="0" reversed="false" step="1" max="20"/>
 
-	<seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions (default 30)" 
-		name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
+		<seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions (default 30)" 
+			name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
 
-	<seekBar description="Minimum brightness level (default 0)" 
-		name="min_gamma" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
+		<seekBar description="Minimum brightness level (default 0)" 
+			name="min_gamma" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
 
-	<seekBar description="Maximum brightness level (default 24)" 
-		name="max_gamma" action="generic /sys/class/misc/brightness_curve/max_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
+		<seekBar description="Maximum brightness level (default 24)" 
+			name="max_gamma" action="generic /sys/class/misc/brightness_curve/max_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
 
-	<checkbox description="LCD Power Reduce for backlight, default ON, if you like more brighter screen, in cost of battery drain, then turn it off"
-		name="LCD POWER" action="generic01 /sys/class/lcd/panel/power_reduce" label="LCD POWER REDUCE"/>
+		<checkbox description="LCD Power Reduce for backlight, default ON, if you like more brighter screen, in cost of battery drain, then turn it off"
+			name="LCD POWER" action="generic01 /sys/class/lcd/panel/power_reduce" label="LCD POWER REDUCE"/>
 
 	</settingsPane>
 
 	<settingsPane description="Settings for screen color by user manual input" name="Screen Color Menu">
 
-	<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
+		<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
-	<seekBar description="Sets screen BLUE color scale (Default is 135)" 
-		name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
-		unit="BLUE" min="0" reversed="false" step="1" max="244"/>
+		<seekBar description="Sets screen BLUE color scale (Default is 135)" 
+			name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
+			unit="BLUE" min="0" reversed="false" step="1" max="244"/>
 
-	<seekBar description="Sets screen RED color scale (Default is 120)" 
-		name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
-		unit="RED" min="0" reversed="false" step="1" max="244"/>
+		<seekBar description="Sets screen RED color scale (Default is 120)" 
+			name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
+			unit="RED" min="0" reversed="false" step="1" max="244"/>
 
 	</settingsPane>
 
 	<settingsPane description="Other Settings" name="Other Settings">
 
-	<seekBar description="User adjustable gamma shift." 
-		name="Gamma Shift" action="generic /sys/class/lcd/panel/user_gamma_adjust" 
-		unit="" min="-50" reversed="false" step="5" max="50"/>
+		<seekBar description="User adjustable gamma shift." 
+			name="Gamma Shift" action="generic /sys/class/lcd/panel/user_gamma_adjust" 
+			unit="" min="-50" reversed="false" step="5" max="50"/>
 
-	<seekBar description="Vibration force level (default 75)" 
-		name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
+		<seekBar description="Vibration force level (default 75)" 
+			name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
 
-	<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)" 
-		name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
-		unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
+		<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)" 
+			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
+			unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
-	<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" 
-		name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
+		<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" 
+			name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
 
-	<spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
-		name="Negative Screen Mod tuning." action="negative_tweak">
-		<spinnerItem name="Set 4 Clicks (default)" value="1"/> 
-		<spinnerItem name="Set 6 Clicks" value="2"/> 
-	</spinner>
+		<spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
+			name="Negative Screen Mod tuning." action="negative_tweak">
+			<spinnerItem name="Set 4 Clicks (default)" value="1"/> 
+			<spinnerItem name="Set 6 Clicks" value="2"/> 
+		</spinner>
 
 	</settingsPane>
 
-        <settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong set will disable touch screen! 
+	<settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong set will disable touch screen! 
 and you will have too reset profiles in recovery! Also settings for Battery VS Charger are different! 
 do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
-                <seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)" 
-                        name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="2" max="70"/>
+		<seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)" 
+			name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="2" max="70"/>
 
-                <seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
-                        name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="2" max="70"/>
+		<seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
+			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="2" max="70"/>
 
-                <seekBar description="Touch Screen on BATTERY (Move Filter) (default=14)" 
-                        name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="2" max="30"/>
+		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=14)" 
+			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="2" max="30"/>
 
-                <seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
-                        name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="2" max="70"/>
+		<seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
+			name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="2" max="70"/>
 
-                <seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
-                        name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="2" max="60"/>
+		<seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
+			name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="2" max="60"/>
 
-                <seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=46)" 
-                        name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="2" max="60"/>
+		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=46)" 
+			name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="2" max="60"/>
 
-        </settingsPane>
+    </settingsPane>
 
 </settingsTab>
 
@@ -328,18 +328,17 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Headphone Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
-	<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
-                name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+		<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
+			name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
 
 	</settingsPane>
 
 	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more will be added later, this tweak depend on cortex background service ON" name="Gestures Panel">
 
-	<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum." 
-		name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="GESTURES SWITCH"/>
+		<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum." 
+			name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="GESTURES SWITCH"/>
 
-
-	<button description="Click to reset gestures to default, or update with new one from dev, gesture file will be added to `/data/` only once if was missing." name="RESET GESTURES" action="push-actions/reset_gestures" label="Reset Gestures"/>
+		<button description="Click to reset gestures to default, or update with new one from dev, gesture file will be added to `/data/` only once if was missing." name="RESET GESTURES" action="push-actions/reset_gestures" label="Reset Gestures"/>
 
 	</settingsPane>
 
@@ -401,10 +400,10 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
-		</settingsPane>
+	</settingsPane>
 
-		<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
-			name="Touch Keys Lights Settings">
+	<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
+		name="Touch Keys Lights Settings">
 
 		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
 			name="Keys led timeout" action="led_timeout">
@@ -428,7 +427,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
 			unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
 
-		</settingsPane>
+	</settingsPane>
 
 </settingsTab>
 
@@ -598,31 +597,35 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 	<settingsPane description="Here you can Backup / Restore your EXTWEAKS settings after installing new kernel, when you restore EXTWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till EXTWEAKS restart with new settings! restore will take 2MIN, you can lightly use your phone." 
 			name="Extweaks Settings Backup / Restore.">
 
-	<button description="Backup Extweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
+		<button description="Backup Extweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
 
-	<button description="Restore Extweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
-
-	</settingsPane>
-
-	<settingsPane description="Here you can choose some profiles ..." name="Extweaks Profiles.">
-
-	<button description="Restore: battery.profile" name="Settings - battery.profile" action="push-actions/config_backup_restore 3" label="BATTERY"/>
-
-	<button description="Restore: default.profile" name="Settings - default.profile" action="push-actions/config_backup_restore 4" label="DEFAULT"/>
-
-	<button description="Restore: performance.profile" name="Settings - performance.profile" action="push-actions/config_backup_restore 5" label="PERFORMANCE"/>
-
-	<button description="Restore: extreme_battery.profile" name="Settings - extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
-
-	<button description="Restore: extreme_performance.profile" name="Settings - extreme_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREME PERFORMANCE"/>
+		<button description="Restore Extweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
 
 	</settingsPane>
 
 	<settingsPane description="Here you can Add/Update/Remove AD Blocker! `You need ROOT to do the tweak!` if we update the blocker, you can push the `UPDATE AD NOW`, to get the new one installed!, if you install new ROM, and want to use AD BLOCKER, then push `UPDATE AD NOW` and REBOOT, if you need to REMOVE AD-B use the REMOVE button and REBOOT" name="AD Blocker menu.">
 
-	<button description="ADD/UPDATE AD BLOCKER" name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
+		<button description="ADD/UPDATE AD BLOCKER" name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
 
-	<button description="REMOVE AD Blocker" name="AD-B REMOVE" action="push-actions/ad_restore" label="REMOVE AD-B NOW"/>
+		<button description="REMOVE AD Blocker" name="AD-B REMOVE" action="push-actions/ad_restore" label="REMOVE AD-B NOW"/>
+
+	</settingsPane>
+
+</settingsTab>
+
+<settingsTab name="PROFILES">
+
+	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="Extweaks Profiles.">
+
+		<button description="battery.profile" name="battery.profile" action="push-actions/config_backup_restore 3" label="BATTERY"/>
+
+		<button description="extreme_battery.profile" name="extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
+
+		<button description="default.profile" name="default.profile" action="push-actions/config_backup_restore 4" label="DEFAULT"/>
+
+		<button description="performance.profile" name="performance.profile" action="push-actions/config_backup_restore 5" label="PERFORMANCE"/>
+
+		<button description="extreme_performance.profile" name="extreme_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREME PERFORMANCE"/>
 
 	</settingsPane>
 
@@ -633,9 +636,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 	<settingsPane description="Debug to SD-Card (/sdcard) ..." 
 			name="Bug-Report">
 
-	<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
+		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
 
-	<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
+		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
 
 	</settingsPane>
 
