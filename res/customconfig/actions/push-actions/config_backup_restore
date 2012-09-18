@@ -8,6 +8,7 @@ else
 	echo $config_backup_restore;
 fi;
 
+LOCK_FILE="/data/.siyah/restore_running";
 PROFILE=`cat /data/.siyah/.active.profile`;
 
 case "${config_backup_restore}" in
@@ -56,7 +57,8 @@ case "${config_backup_restore}" in
 			exit;
 		fi;
 
-		if [ `pgrep -f push-actions/config_backup_restore |  wc -l` \< 3 ]; then
+		if [ ! -e $LOCK_FILE ]; then
+			echo "restore done" > $LOCK_FILE;
 			echo "Restoring config file ...";
 			echo "Wait 90Sec till full restore, app will restart with new settings.";
 			(
@@ -106,15 +108,13 @@ case "${config_backup_restore}" in
 
 				# wait for full sync with timer ...
 				sync;
-				for i in `seq 1 20`; do
-					echo "wait for 20sec.";
-					echo "$i sec.";
-					sleep 1;
-				done;
+				sleep 20;
 
 				# Killing extweaks, if was open it's will restart!
 				EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
 				kill $EXTWEAKSAPP;
+
+				rm -f $LOCK_FILE;
 			)&
 		else
 			# Anti smart user protection! multi run of this script will bring HELL!
