@@ -8,10 +8,6 @@ else
 	echo $config_backup_restore;
 fi;
 
-LOCK_FILE="/data/.siyah/restore_running";
-
-
-
 case "${config_backup_restore}" in
 	3)
 		file2=/res/customconfig/battery.profile;
@@ -43,6 +39,7 @@ case "${config_backup_restore}" in
 	;;
 esac;
 
+LOCK_FILE="/data/.siyah/restore_running";
 PROFILE=`cat /data/.siyah/.active.profile`;
 
 case "${config_backup_restore}" in
