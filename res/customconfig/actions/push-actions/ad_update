@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-TMPFILE=$(mktemp -t)
+TMPFILE=$(mktemp -t);
 
 (
 	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE &>/dev/null 2>&1`
@@ -15,5 +15,6 @@ TMPFILE=$(mktemp -t)
 	fi;
 	chmod 622 /system/etc/hosts;
 )&
-echo "New AD Blocker Installed to /system/etc/hosts"
+
+echo "AD Blocker: installed to /system/etc/hosts";
 

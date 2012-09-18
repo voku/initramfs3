@@ -1,5 +1,6 @@
 #!/sbin/busybox sh
 
 cp -a /res/misc/clean_hosts/hosts /system/etc/hosts;
-echo "AD Blocker REMOVED"
+chmod 622 /system/etc/hosts;
+echo "AD Blocker: REMOVED";
 

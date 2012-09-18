@@ -29,17 +29,11 @@ case "${config_backup_restore}" in
 	6)
 		file2=/res/customconfig/extreme_battery.profile;
 		echo "battery" > /data/.siyah/.active.profile;
-		#echo "extreme_battery" > /data/.siyah/.extreme_active.profile;
 		config_backup_restore=2;
 	;;
 	7)
 		file2=/res/customconfig/extreme_performance.profile;
 		echo "performance" > /data/.siyah/.active.profile;
-		#echo "extreme_performance" > /data/.siyah/.extreme_active.profile;
-		config_backup_restore=2;
-	;;
-	8)
-		file2=/data/.siyah/.config.tmp
 		config_backup_restore=2;
 	;;
 	*)
@@ -99,33 +93,24 @@ case "${config_backup_restore}" in
 					fi;
 				done<$file1
 
-				# check if extreme profiles restored before load
-				#if [ -e /data/.siyah/.extreme_active.profile ]; then
-				#	if [ `cat /data/.siyah/.extreme_active.profile` == "extreme_battery" ]; then
-				#		cp /res/customconfig/extreme_battery.profile /res/customconfig/battery.profile;
-				#		chmod 777 /res/customconfig/battery.profile;
-				#		rm -f /data/.siyah/.extreme_active.profile;
-				#	elif [ `cat /data/.siyah/.extreme_active.profile` == "extreme_performance" ]; then
-				#		cp /res/customconfig/extreme_performance.profile /res/customconfig/performance.profile;
-				#		chmod 777 /res/customconfig/performance.profile;
-				#		rm -f /data/.siyah/.extreme_active.profile;
-				#	fi;
-				#fi;
-
 				# hiding all push action scripts from uci.sh
 				/sbin/busybox mount -o remount,rw rootfs;
 				/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 				# apply New ExTweaks settings
-				/res/uci.sh restore
+				/res/uci.sh apply;
 
 				# restore all the PUSH Button Actions back to there location
 				/sbin/busybox mount -o remount,rw rootfs;
 				/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 
-				# wait for full sync
+				# wait for full sync with timer ...
 				sync;
-				sleep 20;
+				for i in `seq 1 20`; do
+					echo "wait for 20sec.";
+					echo "$i sec.";
+					sleep 1;
+				done;
 
 				# Killing extweaks, if was open it's will restart!
 				EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
