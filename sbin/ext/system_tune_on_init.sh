@@ -24,6 +24,7 @@ stop
 /sbin/busybox chmod 0777 /sys/devices/system/cpu/ -R
 /sbin/busybox chown root:system /sys/devices/system/cpu/ -R
 
+(
 ##### Critical OWNER Permissions fix #####
 /sbin/fix_permissions -l -v -f ApplicationsProvider.apk
 /sbin/fix_permissions -l -v -f Bluetooth.apk
@@ -43,6 +44,7 @@ stop
 /sbin/fix_permissions -l -v -f Superuser.apk
 /sbin/fix_permissions -l -v -f SystemUI.apk
 /sbin/fix_permissions -l -v -f VpnDialogs.apk
+)&
 
 # Run my modules
 /sbin/busybox sh /sbin/ext/modules.sh

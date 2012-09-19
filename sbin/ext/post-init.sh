@@ -8,10 +8,10 @@ for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;
 done;
 
-/sbin/busybox mkdir -p /data/.siyah
-/sbin/busybox chmod 0777 /data/.siyah/ -R
+if [ ! -d /data/.siyah ]; then
+	/sbin/busybox mkdir -p /data/.siyah
+fi;
 
-sleep 5
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	rm -f /data/.siyah/*.profile
@@ -21,6 +21,8 @@ fi;
 [ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/
 [ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/
 [ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/
+
+/sbin/busybox chmod 0777 /data/.siyah/ -R
 
 . /res/customconfig/customconfig-helper
 read_defaults
@@ -70,11 +72,6 @@ chmod 777 /mnt/ntfs/ -R
 
 (
 /sbin/busybox sh /sbin/ext/install.sh
-)&
-
-#apply last soundgasm level on boot
-(
-/res/uci.sh soundgasm_hp $soundgasm_hp
 )&
 
 ##### EFS Backup #####
