@@ -214,6 +214,29 @@ if [ $cortexbrain_system == on ]; then
 fi;
 
 # ==============================================================
+# EXTWEAKS FIXING
+# ==============================================================
+
+BLN_TUNE ()
+{
+# apply BLN mods, that get changed by ROM on boot.
+if [ $enabled == "off" ]; then
+	echo "0" > /sys/class/misc/backlightnotification/enabled;
+	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
+	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
+fi;
+}
+# always trigger on script load, and then on each screen on/off
+BLN_TUNE
+
+TOUCH_LEDS ()
+{
+# apply touch led time out and led on touch, this is done if changed by ROM.
+/res/customconfig/actions/led_timeout led_timeout $led_timeout
+}
+TOUCH_LEDS
+
+# ==============================================================
 # CLEANING-TWEAKS
 # ==============================================================
 rm -rf /cache/lost+found/* 2> /dev/null;
@@ -820,6 +843,10 @@ AWAKE_MODE()
 	else
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
+
+	# fix BLN and Touch keys led timeout + led on touch
+	BLN_TUNE
+	TOUCH_LEDS
 }
 
 # ==============================================================
