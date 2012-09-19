@@ -366,7 +366,7 @@ CPU_GOV_TWEAKS()
 	else
 
 		# battery-settings
-		if [ $PROFILE == "battery" ] || ; then
+		if [ $PROFILE == "battery" ] || [ $1 == "battery" ]; then
 
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
@@ -740,6 +740,7 @@ AWAKE_MODE()
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
 	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
+	# set CPU-Tweak
 	if [ $cortexbrain_cpu == on ]; then
 		CPU_GOV_TWEAKS;
 	fi;
@@ -846,6 +847,12 @@ SLEEP_MODE()
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+		# set CPU-Tweak
+		if [ $cortexbrain_cpu == on ]; then
+			CPU_GOV_TWEAKS "battery";
+		fi;
+
 
 		# set disk I/O sched to noop simple and battery saving.
 		echo "noop" > /sys/block/mmcblk0/queue/scheduler;
