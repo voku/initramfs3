@@ -1,29 +1,31 @@
 #!/sbin/busybox sh
+export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-        # shutdown gestures loop.
-	pkill -f "gesture_set.sh"
-	pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
+	# shutdown gestures loop.
+	pkill -f "gesture_set.sh";
+	pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 
 	# Backup the old one.
 	if [ -e /data/gesture_set.sh ]; then
-		cp -a /data/gesture_set.sh /data/gesture_set.sh.bkp
+		cp -a /data/gesture_set.sh /data/gesture_set.sh.bkp;
 
 		# if user pushed twice and then remember that he had some custom stuff, he can find it in /data/gesture_set.sh.bkp_sec
 		if [ ! -e /data/gesture_set.sh.bkp_sec ]; then
-			cp -a /data/gesture_set.sh.bkp /data/gesture_set.sh.bkp_sec
+			cp -a /data/gesture_set.sh.bkp /data/gesture_set.sh.bkp_sec;
 		fi;
 	fi;
 
 	# Copy fresh gestures to data.
-	cp -a /res/misc/gesture_set.sh /data/
+	cp -a /res/misc/gesture_set.sh /data/;
 
 	if [ $gesture_tweak == "on" ]; then
-		/sbin/busybox sh /data/gesture_set.sh
+		/sbin/busybox sh /data/gesture_set.sh;
 	fi;
 )&
-echo "Gestures reset DONE! your old file can be found in /data/gesture_set.sh.bkp or bkp_sec"
+
+echo "Gestures reset DONE! your old file can be found in /data/gesture_set.sh.bkp or bkp_sec";
 

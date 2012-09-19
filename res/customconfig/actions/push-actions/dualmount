@@ -1,10 +1,13 @@
 #!/sbin/busybox sh
-(
-/sbin/busybox echo /dev/block/vold/259:3 > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file
+export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
-if [ -e /dev/block/vold/179:25 ]; then 
-	/sbin/busybox echo /dev/block/vold/179:25 > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file
-fi;
+(
+	echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
+
+	if [ -e /dev/block/vold/179:25 ]; then 
+		echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
+	fi;
 )&
-/sbin/busybox echo Try now to open usb drive/s.
+
+echo "Try now to open usb drive/s.";
 

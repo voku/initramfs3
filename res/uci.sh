@@ -32,9 +32,13 @@ case "${1}" in
     ;;
 	apply)
 		apply_config;
+		write_config;
+	;;
+	restore)
+		apply_config;
 	;;
 	*)
-    	. ${ACTION_SCRIPTS}/${1} ${1} ${2} ${3} ${4} ${5} ${6};
+		. ${ACTION_SCRIPTS}/${1} ${1} ${2} ${3} ${4} ${5} ${6};
 		write_config;
 	;;
 esac;

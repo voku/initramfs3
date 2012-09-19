@@ -28,21 +28,6 @@ dirty_writeback_centisecs_default=1000;
 dirty_expire_centisecs_battery=0;
 dirty_writeback_centisecs_battery=0;
 
-# static sets for functions, they will be changes by other functions later
-if [[ "$PROFILE" == "performance" ]]; then
-	MORE_SPEED=1;
-	MORE_BATTERY=0;
-	DEFAULT_SPEED=0;
-elif [[ "$PROFILE" == "default" ]]; then
-	MORE_SPEED=0;
-	DEFAULT_SPEED=1;
-	MORE_BATTERY=0;
-else
-	MORE_BATTERY=1;
-	MORE_SPEED=0;
-	DEFAULT_SPEED=0;
-fi;
-
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
@@ -264,12 +249,12 @@ rm -rf /data/anr/* 2> /dev/null;
 
 # block access to debugger memory dumps writes, 
 # save power and safe flash drive
-chmod 400 /data/tombstones -R
-chown drm:drm /data/tombstones -R
+chmod 400 /data/tombstones -R;
+chown drm:drm /data/tombstones -R;
 
 # allow writing to critical folders
-chmod 777 /data/anr -R
-chown system:system /data/anr -R
+chmod 777 /data/anr -R;
+chown system:system /data/anr -R;
 
 BATTERY_TWEAKS()
 {
@@ -346,174 +331,10 @@ CPU_GOV_TWEAKS()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	if [ $MORE_BATTERY == 1 ] && [ $cortexbrain_extra_battery != "on" ]; then
-
-		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
-			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "90" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
-			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-			echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "90" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-			echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-			echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-			echo "90" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
-			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
-			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
-			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
-			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-			echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-			echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-		fi;
-
-	elif [ $DEFAULT_SPEED == 1 ] && [ $cortexbrain_extra_battery != "on" ]; then
-
-		if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-			echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "80" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
-			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-			echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-			echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-			echo "30" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-			echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "80" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
-			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
-			echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
-			echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
-			echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-			echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-			echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-			echo "80" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-		fi;
-
-	elif [ $MORE_SPEED == 1 ] && [ $cortexbrain_extra_battery != "on" ]; then
-
-		if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-			echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-			echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "50" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
-			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-			echo "300000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-			echo "50000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
-			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
-			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-			echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
-			echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-			echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-			echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
-		fi;
-
-		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-			echo "50000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
-			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
-			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
-			echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
-			echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
-			echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-			echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-			echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-			echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
-			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-		fi;
-	fi;
-
-	if [ $cortexbrain_extra_battery == "on" ]; then
-
+	# extra battery-settings ... but only if not charging
+	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+	if [ $cortexbrain_extra_battery == "on" ] && [ $CHARGING == "0" ]; then
+		
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 			echo "98" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
@@ -565,6 +386,176 @@ CPU_GOV_TWEAKS()
 			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 		fi;
 
+	else
+
+		# battery-settings
+		if [ $PROFILE == "battery" ] || [ $1 == "battery" ]; then
+
+			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
+				echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+				echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+				echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
+				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
+				echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+				echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+				echo "90" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+				echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+				echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+				echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+				echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+				echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+				echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+				echo "90" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
+				echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+				echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+				echo "90" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+				echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+				echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+				echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
+				echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
+				echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+				echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
+				echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
+				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
+				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
+				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
+				echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
+			fi;
+
+		# default-settings
+		elif [ $PROFILE == "default" ]; then
+
+			if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+				echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
+				echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+				echo "80" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+				echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
+				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
+				echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+				echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+				echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+				echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+				echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+				echo "30" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+				echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+				echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+				echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
+				echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+				echo "30" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+				echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+				echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+				echo "80" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+				echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
+				echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
+				echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+				echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
+				echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
+				echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
+				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
+				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
+				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
+				echo "80" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
+			fi;
+
+		# performance-settings		
+		elif [ $PROFILE == "performance" ]; then
+
+			if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
+				echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
+				echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+				echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+				echo "50" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
+				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
+				echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+				echo "300000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
+				echo "50000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+				echo "60" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+				echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
+				echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
+				echo "40" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+				echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
+				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
+				echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+				echo "60" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
+				echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
+				echo "20" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+				echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+			fi;
+
+			if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
+				echo "50000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+				echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+				echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
+				echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
+				echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+				echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
+				echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
+				echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
+				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
+				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
+				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
+				echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
+				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
+			fi;
+		fi;
 	fi;
 
 	log -p i -t $FILE_NAME "*** cpu gov tweaks ***: enabled";
@@ -726,90 +717,6 @@ if [ $cortexbrain_firewall == on ]; then
 fi;
 
 # ==============================================================
-# ROOT: Install function.
-# ==============================================================
-
-ROOT_INSTALL_NOW ()
-{
-
-if [ -e /data/.siyah/root_install ] && [ ! -e /system/xbin/su ]; then
-
-	# Extract Payload with root files.
-	/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
-	/sbin/busybox mount -t rootfs -o remount,rw rootfs
-	/sbin/busybox chmod 755 /sbin/read_boot_headers
-	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
-	load_offset=$boot_offset
-	load_len=$boot_len
-	cd /
-	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x
-
-	# Clean su traces.
-	/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1
-	/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1
-	/sbin/busybox mkdir /system/xbin > /dev/null 2>&1
-	/sbin/busybox chmod 755 /system/xbin
-
-	# Extract SU binary.
-	/sbin/busybox xzcat /res/misc/payload/su.xz > /system/xbin/su
-	/sbin/busybox chown root:root /system/xbin/su
-	/sbin/busybox chmod 6755 /system/xbin/su
-
-	# Clean super user old apps.
-	/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
-	/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1
-	/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1
-	/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
-	/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1
-	/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1
-	/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
-	/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1
-
-	# extract super user app.
-	/sbin/busybox xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
-	/sbin/busybox chown root:root /system/app/Superuser.apk
-	/sbin/busybox chmod 644 /system/app/Superuser.apk
-
-	# Restore witch if exist
-	if [ -e /system/xbin/waswhich-bkp ]; then
-		/sbin/busybox rm -f /system/xbin/which > /dev/null 2>&1
-		/sbin/busybox cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1
-		/sbin/busybox chmod 755 /system/xbin/which > /dev/null 2>&1
-	fi;
-
-	if [ -e /system/xbin/boxman ]; then
-		/sbin/busybox rm -f /system/xbin/busybox > /dev/null 2>&1
-		/sbin/busybox mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1
-		/sbin/busybox chmod 755 /system/xbin/busybox > /dev/null 2>&1
-		/sbin/busybox mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1
-		/sbin/busybox chmod 755 /system/bin/busybox > /dev/null 2>&1
-	fi;
-
-	# Delete payload and kill superuser pid.
-	/sbin/busybox rm -rf /res/misc/payload
-	/sbin/busybox rm -f /data/.siyah/root_install
-	pkill -f "com.noshufou.android.su" > /dev/null 2>&1
-fi;
-}
-
-# ==============================================================
-# Background android logger process control
-# ==============================================================
-
-ANDROID_LOG_OFF ()
-{
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
-	if [ $android_logger == "auto" ] || [ $android_logger == "disabled" ]; then
-		if [ -e /dev/log ]; then
-			mv /dev/log/ /dev/log-sleep/
-		fi;
-	fi;
-}
-
-
-# ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
@@ -856,25 +763,18 @@ AWAKE_MODE()
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
 	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
-	if [[ "$PROFILE" == "performance" ]]; then
-		MORE_SPEED=1;
-		MORE_BATTERY=0;
-		DEFAULT_SPEED=0;
-	elif [[ "$PROFILE" == "default" ]]; then
-		MORE_SPEED=0;
-		DEFAULT_SPEED=1;
-		MORE_BATTERY=0;
-	else
-		MORE_BATTERY=1;
-		MORE_SPEED=0;
-		DEFAULT_SPEED=0;
-	fi;
-
+	# set CPU-Tweak
 	if [ $cortexbrain_cpu == on ]; then
 		CPU_GOV_TWEAKS;
 	fi;
 
 	sleep 6;
+
+	# please don't kill "cortexbrain"
+	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
+	for i in $PIDOFCORTEX; do
+		echo "-600" > /proc/$i/oom_score_adj;
+	done;
 
 	# if lulzactive > set lock screen freq to max scalling freq, or use the extweaks setting.
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
@@ -957,131 +857,103 @@ SLEEP_MODE()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	# set CPU-Governor
-	echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-
-	# reduce deepsleep CPU speed, SUSPEND mode
-	echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-
-	# set disk I/O sched to noop simple and battery saving.
-	echo "noop" > /sys/block/mmcblk0/queue/scheduler;
-	echo "noop" > /sys/block/mmcblk1/queue/scheduler;
-
-	if [ $cortexbrain_cpu == on ]; then
-		MORE_BATTERY=1;
-		MORE_SPEED=0;
-		DEFAULT_SPEED=0;
-		CPU_GOV_TWEAKS;
+	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
+		# shutdown gestures loop on screen off, we dont need it
+		pkill -f "/data/gesture_set.sh";
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
 
-	# set wifi.supplicant_scan_interval
-	if [ $supplicant_scan_interval -lt 180 ]; then
-		setprop wifi.supplicant_scan_interval 360;
-	fi;
+	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+	if [ $CHARGING == "0" ]; then
 
-	# Bus Freq for deep sleep
-	echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		# set CPU-Governor
+		echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-	# set settings for battery -> don't wake up "pdflush daemon"
-	echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
+		# reduce deepsleep CPU speed, SUSPEND mode
+		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
-	# disable NMI Watchdog to detect hangs
-	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
-		echo "0" > /proc/sys/kernel/nmi_watchdog;
-	fi;
+		# set CPU-Tweak
+		if [ $cortexbrain_cpu == on ]; then
+			CPU_GOV_TWEAKS "battery";
+		fi;
 
-	# set battery value
-	echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
-	# disable WIFI-driver if screen is off
-	wifiOFF=`cat /sys/module/dhd/initstate`;
-	if [ "a$wifiOFF" != "a" ]; then
-		if [ $cortexbrain_auto_tweak_wifi == on ]; then
-			svc wifi disable;
-			wifiON=1;
+		# set disk I/O sched to noop simple and battery saving.
+		echo "noop" > /sys/block/mmcblk0/queue/scheduler;
+		echo "noop" > /sys/block/mmcblk1/queue/scheduler;
+
+		# set wifi.supplicant_scan_interval
+		if [ $supplicant_scan_interval -lt 180 ]; then
+			setprop wifi.supplicant_scan_interval 360;
+		fi;
+
+		# Bus Freq for deep sleep
+		echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
+		# set settings for battery -> don't wake up "pdflush daemon"
+		echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
+		echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
+
+		# disable NMI Watchdog to detect hangs
+		if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+			echo "0" > /proc/sys/kernel/nmi_watchdog;
+		fi;
+
+		# set battery value
+		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+
+		# android logger process control
+		if [ $android_logger == "auto" ] || [ $android_logger == "disabled" ]; then
+			if [ -e /dev/log ]; then
+				mv /dev/log/ /dev/log-sleep/;
+			fi;
+		fi;
+
+		# disable WIFI-driver if screen is off
+		wifiOFF=`cat /sys/module/dhd/initstate`;
+		if [ "a$wifiOFF" != "a" ]; then
+			if [ $cortexbrain_auto_tweak_wifi == on ]; then
+				svc wifi disable;
+				wifiON=1;
+			fi;
+		else
+			wifiON=0;
+		fi;
+
+		if [ $cortexbrain_battery == on ]; then
+			BATTERY_TWEAKS;
 		fi;
 	else
-		wifiON=0;
-	fi;
-
-	if [ $cortexbrain_battery == on ]; then
-		BATTERY_TWEAKS;
+		echo "USB CABLE CONNECTED! No real sleep mode!"
 	fi;
 
 	log -p i -t $FILE_NAME "*** SLEEP mode ***";
 }
 
 # ==============================================================
-# Background gesture process control
-# ==============================================================
-
-GESTURE_FUNCTION_OFF ()
-{
-	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
-		# shutdown gestures loop on screen off, we dont need it.
-		pkill -f "/data/gesture_set.sh"
-		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture"
-	fi;
-}
-
-# ==============================================================
-# Background android logger process control
-# ==============================================================
-
-ANDROID_LOG_OFF ()
-{
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
-	if [ $android_logger == "auto" ] || [ $android_logger == "disabled" ]; then
-		if [ -e /dev/log ]; then
-			mv /dev/log/ /dev/log-sleep/
-		fi;
-	fi;
-}
-
-# ==============================================================
 # Background process to check screen state
 # ==============================================================
 
-# Dynamic Value do not change/delete
-cortexbrain_background_process=1
+# Dynamic value do not change/delete
+cortexbrain_background_process=1;
 
 if [ $cortexbrain_background_process == "1" ] && [ `pgrep -f "/sbin/ext/cortexbrain-tune.sh" |  wc -l` \< 3 ]; then
 	(while [ 1 ]; do
 		# AWAKE State! all system ON!
-		PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
-		for i in $PIDOFCORTEX; do
-			echo "-600" > /proc/$i/oom_score_adj;
-		done;
 		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		AWAKE_MODE;
 		sleep 15;
 
 		# SLEEP state! All system to power save!
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
-		PROFILE=`cat /data/.siyah/.active.profile`;
-		. /data/.siyah/$PROFILE.profile;
-		echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		# Install ROOT is requested!
-		ROOT_INSTALL_NOW
-		GESTURE_FUNCTION_OFF
-		# fix BLN and Touch keys led timeout + led on touch
-		BLN_TUNE
-		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-		if [ $CHARGING == "0" ]; then
-			ANDROID_LOG_OFF;
-			SLEEP_MODE;
-		else
-			echo "USB CABLE CONNECTED! No sleep Mode"
-		fi;
+		SLEEP_MODE;
 		sleep 1;
 	done &);
 else
-	echo "Cortex background process already running";
+	echo "Cortex background process already running!";
 fi;
 
 

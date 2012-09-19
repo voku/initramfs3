@@ -16,15 +16,12 @@ apply_config()
 	while IFS=\> read -r key value; do
 		action=$(echo "$key" |  grep -v "\<button" | sed -e 's/action=/\naction=/g' | grep "action" | awk -F '"' '{print $2}');
 		if [ "a$action" != "a" ]; then
-			actionval=`/res/uci.sh $action`;
-			echo "applying: /res/uci.sh $action $actionval";
+			actionval=`/res/uci_for_loop.sh $action`;
+			echo "applying: /res/uci_for_loop.sh $action $actionval";
 			# ... start all scripts
-			eval /res/uci.sh $action $actionval;
+			eval /res/uci_for_loop.sh $action $actionval;
 		fi;
 	done < $CONFIG_XML;
-
-	# write config when done
-	write_config;
 }
 
 print_config()

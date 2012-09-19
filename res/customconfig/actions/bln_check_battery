@@ -4,10 +4,10 @@
 # $2 - value=
 
 if [ "a$2" == "a" ]; then
-	echo $bln_check_battery;
+	echo "$bln_check_battery";
 else
 	bln_check_battery=$2;
-	echo $bln_check_battery;
+	echo "$bln_check_battery";
 fi;
 
 case "${bln_check_battery}" in

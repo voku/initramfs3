@@ -7,10 +7,10 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
 if [ "a$2" == "a" ]; then
-	echo $bln_charging_notification;
+	echo "$bln_charging_notification";
 else
 	bln_charging_notification=$2;
-	echo $bln_charging_notification;
+	echo "$bln_charging_notification";
 fi;
 
 case "${bln_charging_notification}" in
