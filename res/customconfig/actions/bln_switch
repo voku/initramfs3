@@ -4,10 +4,10 @@
 # $2 - value=
 
 if [ "a$2" == "a" ]; then
-	echo $bln_switch;
+	echo "$bln_switch";
 else
 	bln_switch=$2;
-	echo $bln_switch;
+	echo "$bln_switch";
 fi;
 
 case "${bln_switch}" in

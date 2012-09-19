@@ -1,32 +1,32 @@
 #!/sbin/busybox sh
 
 if [ "a$2" == "a" ]; then
-	exit
+	exit;
 fi
 
-filename=$(basename $2)
+filename=$(basename $2);
 
 if [ "a$3" == "a" ]; then
-	evalcmd='eval "echo \$$filename"'
-	eval $evalcmd
+	evalcmd='eval "echo \$$filename"';
+	eval $evalcmd;
 else
-	evalcmd='eval "$filename=$3"'
-	eval $evalcmd
-	evalcmd='eval "echo \$$filename"'
-	eval $evalcmd
+	evalcmd='eval "$filename=$3"';
+	eval $evalcmd;
+	evalcmd='eval "echo \$$filename"';
+	eval $evalcmd;
 	if [ -f $2 ]; then
 		case "$3" in
 			off)
 				echo "0" > $2;
 			;;
 			on)
-				TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`
+				TIMEOUT_SET=`cat /sys/class/misc/backlightnotification/led_timeout`;
 				if [ $TIMEOUT_SET == "-2" ]; then
-					echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout
+					echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout;
 				elif [ $TIMEOUT_SET == "-1" ]; then
-					echo "nothing to do here, touch led is always active"
+					echo "nothing to do here, touch led is always active";
 				else
-					echo "$TIMEOUT_SET" > $2
+					echo "$TIMEOUT_SET" > $2;
 				fi;
 			;;
 		esac;

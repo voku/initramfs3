@@ -1,11 +1,13 @@
 #!/sbin/busybox sh
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
+LOCK_FILE="/data/.siyah/restore_running";
+
 if [ "a$2" == "a" ]; then
-	echo $config_backup_restore;
+	echo "$config_backup_restore";
 else
 	config_backup_restore=$2;
-	echo $config_backup_restore;
+	echo "$config_backup_restore";
 fi;
 
 case "${config_backup_restore}" in
@@ -35,11 +37,16 @@ case "${config_backup_restore}" in
 		config_backup_restore=2;
 	;;
 	*)
+		PROFILE=`cat /data/.siyah/.active.profile`;
 		file2="/data/.siyah/$PROFILE.profile_backup";
+		# if someone full wipe the system, then use the profile_backup from sd-card
+		if [ ! -f $file2 ]; then
+			file2="/sdcard/$PROFILE.profile_backup";
+		fi;
 	;;
 esac;
 
-LOCK_FILE="/data/.siyah/restore_running";
+# check again for profile, maybe we have changed it ...
 PROFILE=`cat /data/.siyah/.active.profile`;
 
 case "${config_backup_restore}" in
@@ -120,6 +127,8 @@ case "${config_backup_restore}" in
 				EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
 				kill $EXTWEAKSAPP;
 			)&
+
+			exit 0;
 		else
 			# Anti smart user protection! multi run of this script will bring HELL!
 			echo "you are running RESTORE already! please wait!";

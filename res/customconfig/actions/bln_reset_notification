@@ -7,10 +7,10 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
 if [ "a$2" == "a" ]; then
-	echo $bln_reset_notification;
+	echo "$bln_reset_notification";
 else
 	bln_reset_notification=$2;
-	echo $bln_reset_notification;
+	echo "$bln_reset_notification";
 fi;
 
 case "${bln_reset_notification}" in
@@ -21,7 +21,7 @@ case "${bln_reset_notification}" in
 		echo "$notification_timeout $bln_charging_notification 0" > /sys/class/misc/backlightnotification/notification_timeout;
 	;;
 	*)
-		bln_reset_notification=0
+		bln_reset_notification=0;
 	;;
 esac;
 

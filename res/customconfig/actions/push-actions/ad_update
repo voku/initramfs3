@@ -3,7 +3,7 @@
 TMPFILE=$(mktemp -t);
 
 (
-	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE &>/dev/null 2>&1`
+	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE &>/dev/null 2>&1`;
 	if [ $? != 0 ]; then
 		echo "Problem: no internet connection";
 		xzcat /res/misc/hosts.xz > $TMPFILE;
