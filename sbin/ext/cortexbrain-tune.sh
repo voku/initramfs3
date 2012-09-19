@@ -235,8 +235,6 @@ fi;
 BLN_TUNE ()
 {
 # apply BLN mods, that get changed by ROM on boot.
-/res/customconfig/actions/led_timeout led_timeout $led_timeout
-
 if [ $enabled == "off" ]; then
 	echo "0" > /sys/class/misc/backlightnotification/enabled;
 	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
@@ -245,6 +243,13 @@ fi;
 }
 # always trigger on script load, and then on each screen on/off
 BLN_TUNE
+
+TOUCH_LEDS ()
+{
+# apply touch led time out and led on touch, this is done if changed by ROM.
+/res/customconfig/actions/led_timeout led_timeout $led_timeout
+}
+TOUCH_LEDS
 
 # ==============================================================
 # CLEANING-TWEAKS
@@ -941,6 +946,7 @@ AWAKE_MODE()
 
 	# fix BLN and Touch keys led timeout + led on touch
 	BLN_TUNE
+	TOUCH_LEDS
 }
 
 # ==============================================================

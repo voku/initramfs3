@@ -1,13 +1,15 @@
 #!/sbin/busybox sh
 
 # first mod the partitions then boot.
-/sbin/busybox sh /sbin/ext/partitions-tune_on_init.sh
+/sbin/busybox sh /sbin/ext/system_tune_on_init.sh
 
-#For now static freq 1500->100
-echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
+for i in $PIDOFINIT; do
+	echo "-600" > /proc/$i/oom_score_adj;
+done;
 
 /sbin/busybox mkdir -p /data/.siyah
-/sbin/busybox chmod 777 /data/.siyah/ -R
+/sbin/busybox chmod 0777 /data/.siyah/ -R
 
 sleep 5
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
@@ -30,20 +32,20 @@ echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 #change cpu step count
 case "${cpustepcount}" in
 	6)
-    	echo 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    	;;
-  	7)
-    	echo 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    	;;
-  	8)
-    	echo 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    	;;
-  	9)
-    	echo 1500 1400 1200 1000 800 500 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    	;;
-  	15)
-    	echo 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-    	;;
+	echo 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+	;;
+	7)
+	echo 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+	;;
+	8)
+	echo 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+	;;
+	9)
+	echo 1500 1400 1200 1000 800 500 300 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+	;;
+	15)
+	echo "15 levels already set by default"
+	;;
 esac;
 
 # disable debugging on some modules
@@ -59,14 +61,6 @@ if [ "$logger" == "off" ]; then
 	echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
 fi;
 
-# Run my modules
-/sbin/busybox sh /sbin/ext/modules.sh
-
-# enable kmem interface for everyone by GM.
-echo 0 > /proc/sys/kernel/kptr_restrict
-
-/sbin/busybox mount -t rootfs -o remount,rw rootfs
-
 # for ntfs automounting
 mkdir /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
@@ -78,54 +72,15 @@ chmod 777 /mnt/ntfs/ -R
 /sbin/busybox sh /sbin/ext/install.sh
 )&
 
-##### Critical Permissions fix #####
-/sbin/busybox chmod 766 /data/anr/ -R
-/sbin/busybox chmod 777 /data/data/com.android.providers.*/databases/*
-/sbin/busybox chmod 777 /data/system/inputmethod/ -R
-/sbin/busybox chmod 777 /data/local/ -R
-/sbin/busybox chmod 0777 /sys/devices/system/cpu/ -R
-/sbin/busybox chown root:system /sys/devices/system/cpu/ -R
-
-##### Critical OWNER Permissions fix #####
-(
-/sbin/fix_permissions -l -v -f ApplicationsProvider.apk
-/sbin/fix_permissions -l -v -f Bluetooth.apk
-/sbin/fix_permissions -l -v -f Browser.apk
-/sbin/fix_permissions -l -v -f Camera.apk
-/sbin/fix_permissions -l -v -f Contacts.apk
-/sbin/fix_permissions -l -v -f ContactsProvider.apk
-/sbin/fix_permissions -l -v -f DrmProvider.apk
-/sbin/fix_permissions -l -v -f GoogleContactsSyncAdapter.apk
-/sbin/fix_permissions -l -v -f Mms.apk
-/sbin/fix_permissions -l -v -f NetworkLocation.apk
-/sbin/fix_permissions -l -v -f PackageInstaller.apk
-/sbin/fix_permissions -l -v -f Phone.apk
-/sbin/fix_permissions -l -v -f Phonesky.apk
-/sbin/fix_permissions -l -v -f ROMControl.apk
-/sbin/fix_permissions -l -v -f Settings.apk
-/sbin/fix_permissions -l -v -f SettingsProvider.apk
-/sbin/fix_permissions -l -v -f SharedStorageBackup.apk
-/sbin/fix_permissions -l -v -f Superuser.apk
-/sbin/fix_permissions -l -v -f SystemUI.apk
-/sbin/fix_permissions -l -v -f VpnDialogs.apk
-/sbin/fix_permissions -l -v -f VoiceDialer.apk
-chmod 777 /data/data/com.android.providers.*/databases/*
-)&
-
 #apply last soundgasm level on boot
 (
 /res/uci.sh soundgasm_hp $soundgasm_hp
 )&
 
-##### Early-init phase tweaks #####
-
 ##### EFS Backup #####
 (
 /sbin/busybox sh /sbin/ext/efs-backup.sh
 )&
-
-# Set color mode to user mode
-echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
 
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 /sbin/busybox mount -o remount,rw rootfs
@@ -154,29 +109,21 @@ done
 /sbin/busybox rm -f /data/.siyah/booting
 ##### init scripts #####
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
-/sbin/busybox sh /sbin/ext/partitions-tune.sh 
-# set lcd flash to off, if set to be off! and correct the led timeout of soft keys! 
-PROFILE=`cat /data/.siyah/.active.profile`;
-. /data/.siyah/$PROFILE.profile;
-if [ $tsp_flash_timeout == "off" ]; then
-	echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout;
-fi;
 )&
 
 # Change USB mode MTP or Mass Storage
 /res/customconfig/actions/usb-mode ${usb_mode}
 
-PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
-for i in $PIDOFINIT; do
-	echo "-600" > /proc/$i/oom_score_adj;
-done;
+# set fre permission to all system DB. so apps can write there. less problem with perms. and FC.
+chmod 0777 /data/data/com.android.providers.*/databases/*
 
 (
-sleep 20
+sleep 60
 PIDOFACORE=`pgrep -f "android.process.acore"`;
 for i in $PIDOFACORE; do
         echo "-600" > /proc/$i/oom_score_adj;
-	cat /proc/$i/oom_score_adj
+	renice $i -15;
+/sbin/busybox sh /sbin/ext/partitions-tune.sh
 done;
 )&
 

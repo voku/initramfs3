@@ -75,10 +75,10 @@ fi;
 /sbin/busybox mount -t ext4 /res/dev/system /system
 
 # check if rom has /system/vendor/firware/ if not copy my in.
-if [ ! -d /system/vendor/firmware ] || [ ! -d /system/vendor/firmware/mfc_fw.bin ]; then
+#if [ ! -d /system/vendor/firmware ] || [ ! -d /system/vendor/firmware/mfc_fw.bin ]; then
         mkdir -p /system/vendor/firmware
         /sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /system/vendor/firmware/mfc_fw.bin
-fi;
+#fi;
 
 # fix permission to services.jar in case user did a mess, after using my MOD!
 chmod 644 /system/framework/services.jar
