@@ -62,7 +62,6 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 			# delete payload and kill superuser pid
 			/sbin/busybox rm -rf /res/misc/payload;
-			/sbin/busybox rm -f /data/.siyah/root_install;
 			pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
 		fi;
 
