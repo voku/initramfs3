@@ -147,7 +147,7 @@ IO_TWEAKS()
 	done;
 
 	if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-		echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+		echo "2048" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 	fi;
 
 	SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
@@ -237,25 +237,8 @@ TOUCH_LEDS ()
 TOUCH_LEDS
 
 # ==============================================================
-# CLEANING-TWEAKS
-# ==============================================================
-rm -rf /cache/lost+found/* 2> /dev/null;
-rm -rf /data/tombstones/* 2> /dev/null;
-rm -rf /data/anr/* 2> /dev/null;
-
-# ==============================================================
 # BATTERY-TWEAKS
 # ==============================================================
-
-# block access to debugger memory dumps writes, 
-# save power and safe flash drive
-chmod 400 /data/tombstones -R;
-chown drm:drm /data/tombstones -R;
-
-# allow writing to critical folders
-chmod 777 /data/anr -R;
-chown system:system /data/anr -R;
-
 BATTERY_TWEAKS()
 {
 	PROFILE=`cat /data/.siyah/.active.profile`;
@@ -313,15 +296,6 @@ if [ $cortexbrain_battery == on ]; then
 fi;
 
 # ==============================================================
-# CPU-LUZACTIVE FIX
-# ==============================================================
-
-SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-	echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-fi;
-
-# ==============================================================
 # CPU-TWEAKS
 # ==============================================================
 
@@ -337,8 +311,8 @@ CPU_GOV_TWEAKS()
 		
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "98" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "98" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+			echo "95" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+			echo "95" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 			echo "10" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
@@ -347,7 +321,7 @@ CPU_GOV_TWEAKS()
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "98" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "10" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
@@ -358,18 +332,18 @@ CPU_GOV_TWEAKS()
 			echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "98" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 			echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 			echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-			echo "98" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+			echo "95" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "98" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+			echo "95" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
@@ -445,10 +419,6 @@ CPU_GOV_TWEAKS()
 		# default-settings
 		elif [ $PROFILE == "default" ]; then
 
-			if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-				echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-			fi;
-
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 				echo "80" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
@@ -501,10 +471,6 @@ CPU_GOV_TWEAKS()
 
 		# performance-settings		
 		elif [ $PROFILE == "performance" ]; then
-
-			if [ $SYSTEM_GOVERNOR == "lulzactive" ]; then
-				echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-			fi;
 
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
@@ -576,7 +542,7 @@ MEMORY_TWEAKS()
 	echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 	echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 	echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
-	echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
+	echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 	echo "3" > /proc/sys/vm/page-cluster; # default: 3
 	echo "4096" > /proc/sys/vm/min_free_kbytes
 	echo "65530" > /proc/sys/vm/max_map_count;
@@ -730,7 +696,6 @@ AWAKE_MODE()
 	# boost wakeup!
 	if [ $scaling_max_freq \> 1100000 ]; then
 		# Powering MAX FREQ
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		# Powering MIN FREQ
 		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -752,9 +717,6 @@ AWAKE_MODE()
 		fi;
 	fi;
 
-	# Bus-Freq for awake state
-	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-
 	# cpu-settings for second core
 	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -770,23 +732,19 @@ AWAKE_MODE()
 
 	sleep 6;
 
+	# Bus-Freq for awake state
+	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
 	# please don't kill "cortexbrain"
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 	for i in $PIDOFCORTEX; do
 		echo "-600" > /proc/$i/oom_score_adj;
 	done;
 
-	# if lulzactive > set lock screen freq to max scalling freq, or use the extweaks setting.
-	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
-	if [ $SYSTEM_GOVERNOR == lulzactive ]; then
-		echo "${scaling_max_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-	else
-		echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-	fi;
-
 	# set CPU speed
 	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 
 	# set wifi.supplicant_scan_interval
 	setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
@@ -828,8 +786,6 @@ AWAKE_MODE()
 		BATTERY_TWEAKS;
 	fi;
 
-	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
-
 	# load logger if needed
 	if [ $android_logger == "auto" ] || [ $android_logger == "debug" ]; then
 		if [ -e /dev/log-sleep ] && [ ! -e /dev/log ]; then
@@ -847,6 +803,8 @@ AWAKE_MODE()
 	# fix BLN and Touch keys led timeout + led on touch
 	BLN_TUNE
 	TOUCH_LEDS
+
+	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
 }
 
 # ==============================================================
@@ -879,7 +837,6 @@ SLEEP_MODE()
 		if [ $cortexbrain_cpu == on ]; then
 			CPU_GOV_TWEAKS "battery";
 		fi;
-
 
 		# set disk I/O sched to noop simple and battery saving.
 		echo "noop" > /sys/block/mmcblk0/queue/scheduler;
