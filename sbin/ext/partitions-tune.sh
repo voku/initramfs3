@@ -33,15 +33,15 @@ for i in $DM; do
 
 done;
 
-umount /preload
+umount /preload;
 /sbin/busybox mount -o remount,rw /system;
 
 if [ -e /data/.siyah/jb-installed ]; then
-	rm -f /data/.siyah/jb-installed
-	mount -o remount,utf8 /storage/sdcard1
-	mount -o remount,utf8 /storage/sdcard0 
+	rm -f /data/.siyah/jb-installed;
+	mount -o remount,utf8 /storage/sdcard1;
+	mount -o remount,utf8 /storage/sdcard0;
 else
-	mount -o remount,utf8 /mnt/sdcard
-	mount -o remount,utf8 /mnt/emmc
+	mount -o remount,utf8 /mnt/sdcard;
+	mount -o remount,utf8 /mnt/emmc;
 fi;
 
