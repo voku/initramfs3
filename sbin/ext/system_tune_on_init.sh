@@ -1,4 +1,4 @@
-#!$BB sh
+#!/sbin/busybox sh
 
 # stop ROM VM from booting!
 stop
