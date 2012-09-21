@@ -241,9 +241,6 @@ TOUCH_LEDS
 # ==============================================================
 BATTERY_TWEAKS()
 {
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
 	# battery-calibration if battery is full
 	LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 	CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
@@ -302,8 +299,6 @@ fi;
 CPU_GOV_TWEAKS()
 {
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
 
 	# extra battery-settings ... but only if not charging
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -367,8 +362,8 @@ CPU_GOV_TWEAKS()
 
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-				echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-				echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "85" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+				echo "85" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
@@ -377,7 +372,7 @@ CPU_GOV_TWEAKS()
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 				echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-				echo "90" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+				echo "85" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 				echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 				echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 				echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
@@ -388,18 +383,18 @@ CPU_GOV_TWEAKS()
 				echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 				echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-				echo "90" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+				echo "85" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 				echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 				echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-				echo "90" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+				echo "85" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
 				echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-				echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+				echo "85" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 				echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
 				echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
@@ -409,7 +404,7 @@ CPU_GOV_TWEAKS()
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+				echo "85" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
@@ -422,11 +417,11 @@ CPU_GOV_TWEAKS()
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 				echo "80" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-				echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "50" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-				echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+				echo "400000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
@@ -475,11 +470,11 @@ CPU_GOV_TWEAKS()
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 				echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-				echo "50" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-				echo "300000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+				echo "500000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
@@ -542,7 +537,7 @@ MEMORY_TWEAKS()
 	echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 	echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 	echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
-	echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
+	echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 	echo "3" > /proc/sys/vm/page-cluster; # default: 3
 	echo "4096" > /proc/sys/vm/min_free_kbytes
 	echo "65530" > /proc/sys/vm/max_map_count;
@@ -690,8 +685,17 @@ AWAKE_MODE()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
+	# set I/O-Scheduler
+	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
+	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
+
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+	# set CPU-Tweak
+	if [ $cortexbrain_cpu == on ]; then
+		CPU_GOV_TWEAKS;
+	fi;
 
 	# boost wakeup!
 	if [ $scaling_max_freq \> 1100000 ]; then
@@ -710,24 +714,15 @@ AWAKE_MODE()
 		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
+	# cpu-settings for second core
+	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
+
 	if [ $gesture_tweak == "on" ]; then
 		# check if running already
 		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
 			/sbin/busybox sh /data/gesture_set.sh
 		fi;
-	fi;
-
-	# cpu-settings for second core
-	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
-
-	# set I/O-Scheduler
-	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
-	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
-
-	# set CPU-Tweak
-	if [ $cortexbrain_cpu == on ]; then
-		CPU_GOV_TWEAKS;
 	fi;
 
 	sleep 6;
@@ -907,12 +902,11 @@ if [ $cortexbrain_background_process == "1" ] && [ `pgrep -f "/sbin/ext/cortexbr
 		# SLEEP state! All system to power save!
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
 		SLEEP_MODE;
-		sleep 1;
+		sleep 2;
 	done &);
 else
 	echo "Cortex background process already running!";
 fi;
-
 
 # ==============================================================
 # Logic Explanations

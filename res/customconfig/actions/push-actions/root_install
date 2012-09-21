@@ -3,11 +3,6 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
 	if [ ! -e /system/xbin/su ]; then
-		echo "Please turn your screen off to ~10sec to install root.";
-
-		# waiting for screen-off, then ...
-		STATE=$(cat /sys/power/wait_for_fb_sleep);
-
 		if [ ! -e /system/xbin/su ]; then
 			# extract Payload with root files
 			/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1;
