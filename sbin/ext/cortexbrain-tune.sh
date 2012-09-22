@@ -216,6 +216,7 @@ fi;
 # ==============================================================
 # EXTWEAKS FIXING
 # ==============================================================
+# always trigger on script load, and then on each screen on/off
 
 BLN_TUNE ()
 {
@@ -226,13 +227,12 @@ if [ $enabled == "off" ]; then
 	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
 fi;
 }
-# always trigger on script load, and then on each screen on/off
-BLN_TUNE
+BLN_TUNE;
 
 TOUCH_LEDS ()
 {
-# apply touch led time out and led on touch, this is done if changed by ROM.
-/res/customconfig/actions/led_timeout led_timeout $led_timeout
+	# apply touch led time out and led on touch, this is done if changed by ROM.
+	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
 }
 TOUCH_LEDS
 
@@ -298,7 +298,7 @@ fi;
 
 CPU_GOV_TWEAKS()
 {
-	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 	# extra battery-settings ... but only if not charging
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -433,6 +433,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+				echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 				echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 				echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
@@ -486,6 +487,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "conservative" ]; then
+				echo "50000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 				echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 				echo "20" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
@@ -721,7 +723,7 @@ AWAKE_MODE()
 	if [ $gesture_tweak == "on" ]; then
 		# check if running already
 		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
-			/sbin/busybox sh /data/gesture_set.sh
+			/sbin/busybox sh /data/gesture_set.sh;
 		fi;
 	fi;
 
@@ -733,7 +735,7 @@ AWAKE_MODE()
 	# please don't kill "cortexbrain"
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 	for i in $PIDOFCORTEX; do
-		echo "-600" > /proc/$i/oom_score_adj;
+		echo "-600" > /proc/${i}/oom_score_adj;
 	done;
 
 	# set CPU speed
@@ -788,7 +790,7 @@ AWAKE_MODE()
 		fi;
 	fi;
 
-	# set swappiness in case that no root installed, and zram used.
+	# set swappiness in case that no root installed, and zram used
 	if [ $zramtweaks != "4" ]; then
 		echo "60" > /proc/sys/vm/swappiness;
 	else
@@ -796,8 +798,8 @@ AWAKE_MODE()
 	fi;
 
 	# fix BLN and Touch keys led timeout + led on touch
-	BLN_TUNE
-	TOUCH_LEDS
+	BLN_TUNE;
+	TOUCH_LEDS;
 
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
 }
