@@ -108,8 +108,8 @@ $BB mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 	$BB rm -f /data/.siyah/uci_loaded;
 	$BB rm -f /data/.siyah/booting;
 	# root for root_install
-	$BB chmod +s /res/customconfig/actions/push-actions/root_install;
-	$BB chown root:root /res/customconfig/actions/push-actions/root_install;
+	$BB chmod +s /res/customconfig/actions/push-actions/root_*;
+	$BB chown root:root /res/customconfig/actions/push-actions/root_*;
 	##### init scripts #####
 	$BB sh /sbin/ext/run-init-scripts.sh;
 )&
