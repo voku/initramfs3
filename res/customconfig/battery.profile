@@ -14,6 +14,7 @@ GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
 cpu_undervolting=0
 enable_mask=3
+sched_mc_power_savings=0
 busfreq_up_threshold=30
 scaling_max_suspend_freq=600000
 scaling_min_suspend_freq=200000
