@@ -224,6 +224,8 @@ if [ $enabled == "off" ]; then
 	echo "0" > /sys/class/misc/backlightnotification/enabled;
 	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
 	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
+else
+	/res/customconfig/actions/bln_switch bln_switch $bln_switch
 fi;
 }
 # always trigger on script load, and then on each screen on/off
@@ -796,7 +798,6 @@ AWAKE_MODE()
 	fi;
 
 	# fix BLN and Touch keys led timeout + led on touch
-	BLN_TUNE
 	TOUCH_LEDS
 
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
@@ -816,6 +817,9 @@ SLEEP_MODE()
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
+
+	# activate/diactivate BLN as set in extweaks.
+	BLN_TUNE
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == "0" ]; then

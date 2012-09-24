@@ -2,6 +2,12 @@
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
+	# load BLN config state.
+	/res/customconfig/actions/bln_switch bln_switch $bln_switch
+
 	# waiting for screen-off, then ...
 	STATE=$(cat /sys/power/wait_for_fb_sleep);
 
