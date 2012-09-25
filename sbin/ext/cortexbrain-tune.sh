@@ -799,8 +799,10 @@ AWAKE_MODE()
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
 
-	# fix BLN and Touch keys led timeout + led on touch
+	# fix BLN and Touch keys led timeout + led on touch, 
+	# if we do that on screen off! we brake LED Light! till next reboot!
 	TOUCH_LEDS;
+	BLN_TUNE;
 
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
 }
@@ -819,9 +821,6 @@ SLEEP_MODE()
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
-
-	# activate/diactivate BLN as set in extweaks.
-	BLN_TUNE
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == "0" ]; then
