@@ -225,6 +225,8 @@ if [ $enabled == "off" ]; then
 	echo "0" > /sys/class/misc/backlightnotification/enabled;
 	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
 	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
+else
+	/res/customconfig/actions/bln_switch bln_switch $bln_switch
 fi;
 }
 BLN_TUNE;
@@ -421,7 +423,7 @@ CPU_GOV_TWEAKS()
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-				echo "400000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
@@ -475,7 +477,7 @@ CPU_GOV_TWEAKS()
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
-				echo "500000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
@@ -513,7 +515,7 @@ CPU_GOV_TWEAKS()
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
 				echo "60" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
-				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
+				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
@@ -695,7 +697,7 @@ AWAKE_MODE()
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 	# set CPU-Tweak
-	if [ $cortexbrain_cpu == on ]; then
+	if [ $cortexbrain_cpu == "on" ]; then
 		CPU_GOV_TWEAKS;
 	fi;
 
@@ -798,7 +800,6 @@ AWAKE_MODE()
 	fi;
 
 	# fix BLN and Touch keys led timeout + led on touch
-	BLN_TUNE;
 	TOUCH_LEDS;
 
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
@@ -818,6 +819,9 @@ SLEEP_MODE()
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
+
+	# activate/diactivate BLN as set in extweaks.
+	BLN_TUNE
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == "0" ]; then
@@ -880,11 +884,12 @@ SLEEP_MODE()
 		if [ $cortexbrain_battery == on ]; then
 			BATTERY_TWEAKS;
 		fi;
+
+		log -p i -t $FILE_NAME "*** SLEEP mode ***";
 	else
 		echo "USB CABLE CONNECTED! No real sleep mode!"
+		log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
 	fi;
-
-	log -p i -t $FILE_NAME "*** SLEEP mode ***";
 }
 
 # ==============================================================
