@@ -5,9 +5,7 @@ TMPFILE=$(mktemp -t);
 (
 	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE &>/dev/null 2>&1`;
 	if [ $? != 0 ]; then
-		echo "Problem: no internet connection";
-		xzcat /res/misc/hosts.xz > $TMPFILE;
-		mv -f $TMPFILE /system/etc/hosts;
+		echo "Problem: no internet connection! connect and try again";
 	else
 		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE &>/dev/null 2>&1;
 		unzip $TMPFILE HOSTS &>/dev/null 2>&1;
