@@ -110,6 +110,21 @@ $BB mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 	# root for root_install
 	$BB chmod +s /res/customconfig/actions/push-actions/root_*;
 	$BB chown root:root /res/customconfig/actions/push-actions/root_*;
+	# ==============================================================
+	# EXTWEAKS FIXING
+	# ==============================================================
+
+	# apply BLN mods, that get changed by ROM on boot.
+	if [ $enabled == "off" ]; then
+		echo "0" > /sys/class/misc/backlightnotification/enabled;
+		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
+		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
+	else
+		/res/customconfig/actions/bln_switch bln_switch $bln_switch
+	fi;
+
+	# apply touch led time out and led on touch, this is done if changed by ROM.
+	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
 	##### init scripts #####
 	$BB sh /sbin/ext/run-init-scripts.sh;
 )&
