@@ -31,8 +31,8 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 15 `pidof kswapd0`;
-renice 15 `pgrep logcat`;
+renice 15 -p `pidof kswapd0`;
+renice 15 -p `pgrep logcat`;
 
 # ==============================================================
 # I/O-TWEAKS 

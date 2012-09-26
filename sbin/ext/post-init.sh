@@ -140,7 +140,7 @@ chmod 0777 /data/data/com.android.providers.*/databases/*;
 	PIDOFACORE=`pgrep -f "android.process.acore"`;
 	for i in $PIDOFACORE; do
 		echo "-600" > /proc/${i}/oom_score_adj;
-		renice $i -15;
+		renice -15 -p $i;
 		$BB sh /sbin/ext/partitions-tune.sh;
 	done;
 )&
