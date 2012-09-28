@@ -6,12 +6,8 @@
 
 #Video Quality
     setprop ro.media.enc.jpeg.quality 100,100,100
-#   setprop ro.media.dec.jpeg.memcap 20000000
+    setprop ro.media.dec.jpeg.memcap 20000000
     setprop ro.media.enc.hprof.vid.bps 20000000
 
 #Disable Google OTA Update checkin
     setprop ro.config.nocheckin 1
-
-#Fast Dormancy disable
-   setprop ro.ril.fast.dormancy.rule 0
- 
