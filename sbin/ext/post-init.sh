@@ -23,6 +23,8 @@ fi;
 [ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/;
 [ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/;
 [ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/;
+[ ! -f /data/.siyah/extreme_performance.profile ] && cp -a /res/customconfig/extreme_performance.profile /data/.siyah/;
+[ ! -f /data/.siyah/extreme_battery.profile ] && cp -a /res/customconfig/extreme_battery.profile /data/.siyah/;
 
 $BB chmod 0777 /data/.siyah/ -R;
 
