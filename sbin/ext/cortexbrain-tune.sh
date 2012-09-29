@@ -283,8 +283,8 @@ CPU_GOV_TWEAKS()
 		
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
-			echo "95" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-			echo "95" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 			echo "10" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
@@ -293,7 +293,7 @@ CPU_GOV_TWEAKS()
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
-			echo "95" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
 			echo "10" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
@@ -304,18 +304,18 @@ CPU_GOV_TWEAKS()
 			echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
 			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
-			echo "95" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 			echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
 			echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
-			echo "95" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "95" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
