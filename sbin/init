@@ -142,7 +142,7 @@ PARTITION_TUNING()
 	LOG_SYSTEM="/log-system";
 
 	DEVICE_PRELOAD="/dev/block/mmcblk0p12";
-    DIR_PRELOAD="/preload";
+	DIR_PRELOAD="/preload";
 	LOG_PRELOAD="log-preload";
 
 	# new empty log
