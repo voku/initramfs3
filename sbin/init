@@ -136,7 +136,7 @@ PARTITION_TUNING () {
 	/sbin/busybox umount -l /preload
 
 	# setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/tune2fs -O ^has_journal /res/dev/cache >> /dm-log # Removed journal
+	/sbin/tune2fs -O has_journal /res/dev/cache >> /dm-log # Removed journal
 	/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
 	/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log # Restore journal / check if ok.
 	/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
