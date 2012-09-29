@@ -1,11 +1,5 @@
 #!/sbin/busybox sh
 
-# Android logger, (logcat + dmesg)
-LOGGER="/lib/modules/logger.ko";
-if [ -e $LOGGER ]; then
-	insmod $LOGGER;
-fi;
-
 # FM radio, I have no idea why it isn't loaded in init -gm
 Si4709="/lib/modules/Si4709_driver.ko";
 if [ -e $Si4709 ]; then
