@@ -308,7 +308,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
 			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="2" max="70"/>
 
-		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=14)" 
+		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=12)" 
 			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="2" max="30"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
@@ -317,7 +317,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
 			name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="2" max="60"/>
 
-		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=46)" 
+		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=44)" 
 			name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="2" max="60"/>
 
     </settingsPane>
