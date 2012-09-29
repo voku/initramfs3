@@ -81,6 +81,9 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
+# enable kmem interface for everyone by GM
+echo "0" > /proc/sys/kernel/kptr_restrict;
+
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 $BB mount -o remount,rw rootfs;
 $BB chmod 755 /res/customconfig/actions/ -R;
@@ -114,6 +117,10 @@ $BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 	# ==============================================================
 	# EXTWEAKS FIXING
 	# ==============================================================
+
+	# apply volume tweaks. 
+	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
+	/res/uci.sh soundgasm_hp $soundgasm_hp;
 
 	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
