@@ -31,8 +31,8 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 15 `pidof kswapd0`;
-renice 15 `pgrep logcat`;
+renice 15 -p `pidof kswapd0`;
+renice 15 -p `pgrep logcat`;
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -212,31 +212,6 @@ SYSTEM_TWEAKS()
 if [ $cortexbrain_system == on ]; then
 	SYSTEM_TWEAKS;
 fi;
-
-# ==============================================================
-# EXTWEAKS FIXING
-# ==============================================================
-# always trigger on script load, and then on each screen on/off
-
-BLN_TUNE ()
-{
-# apply BLN mods, that get changed by ROM on boot.
-if [ $enabled == "off" ]; then
-	echo "0" > /sys/class/misc/backlightnotification/enabled;
-	echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
-	echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
-else
-	/res/customconfig/actions/bln_switch bln_switch $bln_switch
-fi;
-}
-BLN_TUNE;
-
-TOUCH_LEDS ()
-{
-	# apply touch led time out and led on touch, this is done if changed by ROM.
-	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
-}
-TOUCH_LEDS
 
 # ==============================================================
 # BATTERY-TWEAKS
@@ -799,9 +774,6 @@ AWAKE_MODE()
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
 
-	# fix BLN and Touch keys led timeout + led on touch
-	TOUCH_LEDS;
-
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
 }
 
@@ -819,9 +791,6 @@ SLEEP_MODE()
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
-
-	# activate/diactivate BLN as set in extweaks.
-	BLN_TUNE
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == "0" ]; then

@@ -5,6 +5,8 @@
 
 /sbin/busybox mount -o remount,rw /system;
 
+var_gps="/system/etc/gps.conf";
+
 # Backup original gps.conf in case of user revert by using 7 case.
 if [ ! -e $var_gps.bkp ]; then
 	cp -a $var_gps $var_gps.bkp;
@@ -16,8 +18,6 @@ else
 	gpsregion=$2;
 	echo "$gpsregion";
 fi;
-
-var_gps="/system/etc/gps.conf";
 
 case "${gpsregion}" in
 	No_GPS_Zone_changes)
