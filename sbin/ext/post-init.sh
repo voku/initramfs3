@@ -84,11 +84,12 @@ $BB sh /sbin/ext/properties.sh;
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 $BB mount -o remount,rw rootfs;
 $BB chmod 755 /res/customconfig/actions/ -R;
-$BB mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 (
 	# apply ExTweaks settings
 	echo "booting" > /data/.siyah/booting;
+	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 	$BB sh /res/uci.sh restore;
 	echo "uci done" > /data/.siyah/uci_loaded;
 )&

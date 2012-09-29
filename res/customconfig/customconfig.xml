@@ -264,13 +264,13 @@
 
 		<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
-		<seekBar description="Sets screen BLUE color scale (Default is 135)" 
+		<seekBar description="Sets screen BLUE color scale (Default is 130)" 
 			name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
-			unit="BLUE" min="0" reversed="false" step="1" max="244"/>
+			unit="BLUE" min="78" reversed="false" step="1" max="178"/>
 
-		<seekBar description="Sets screen RED color scale (Default is 120)" 
+		<seekBar description="Sets screen RED color scale (Default is 133)" 
 			name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
-			unit="RED" min="0" reversed="false" step="1" max="244"/>
+			unit="RED" min="78" reversed="false" step="1" max="178"/>
 
 	</settingsPane>
 
