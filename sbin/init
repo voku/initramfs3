@@ -182,6 +182,8 @@ PARTITION_TUNING()
 	/sbin/e2fsck -fy $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
 	/sbin/e2fsck -fy $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
 	/sbin/e2fsck -fy $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
+
+	sync;
 }
 
 ######################################
