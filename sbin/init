@@ -1,157 +1,156 @@
 #!/sbin/busybox sh
-cd /
+cd /;
 
-busybox mount -t proc proc /proc
-busybox mount -t sysfs sysfs /sys
-tar xvf /res/misc/dev.tar
+busybox mount -t proc proc /proc;
+busybox mount -t sysfs sysfs /sys;
+tar xvf /res/misc/dev.tar;
 
-# Set / rw
-/sbin/busybox mount -t rootfs -o remount,rw rootfs
+# set "/" rw
+/sbin/busybox mount -t rootfs -o remount,rw rootfs;
 
-if grep -q bootmode=2 /proc/cmdline ; then
-	# Recovery mode
-	echo 0 > /proc/sys/kernel/rom_feature_set
-	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png
-	cp -a /recovery.rc /init.rc
-	exec /sbin/init.recovery
+if grep -q bootmode=2 /proc/cmdline; then
+	# recovery mode
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
+	cp -a /recovery.rc /init.rc;
+	exec /sbin/init.recovery;
 fi;
 
-if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
+if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
 	# low power mode
-	echo 0 > /proc/sys/kernel/rom_feature_set
-	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png
-	cp -a lpm.rc init.rc
-	rm init.smdk4210.rc
-	exec /sbin/init.recovery
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
+	cp -a lpm.rc init.rc;
+	rm init.smdk4210.rc;
+	exec /sbin/init.recovery;
 fi;
 
-# Cleaning and rebuilding the /mnt and sdcards mounts folders.
-rm -rf /mnt
-rm -rf /sdcard
-rm -rf /emmc
-rm -rf /storage
-mkdir /mnt
-mkdir /mnt/asec
-mkdir /mnt/.lfs
-mkdir /mnt/obb
-mkdir /mnt/secure
-mkdir /mnt/tmp
-chmod 777 /mnt/ -R
-mkdir /storage
-chmod 777 /storage -R
+# cleaning and rebuilding the /mnt and sdcards mounts folders
+rm -rf /mnt;
+rm -rf /sdcard;
+rm -rf /emmc;
+rm -rf /storage;
+mkdir -p /mnt/asec;
+mkdir -p /mnt/.lfs;
+mkdir -p /mnt/obb;
+mkdir -p /mnt/secure;
+mkdir -p /mnt/tmp;
+chmod -R 777 /mnt/;
+mkdir /storage;
+chmod -R 777 /storage;
 
-# remove kernel vendor binary and let ROM use it's own included vendor binary.
-rm -rf /vendor
-# done.
+# remove kernel vendor binary and let ROM use it's own included vendor binary
+rm -rf /vendor;
 
-SECONDROM=1
-NOBOOTLOGO=0
-mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia )
-sync
-umount -l /mnt/tmp
-mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia )
-[ -f /preload/build.prop ] || SECONDROM=0
-[ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0
-[ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0
-[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0
-sync
-umount /preload
-umount -l /mnt/tmp
+SECONDROM=1;
+NOBOOTLOGO=0;
+mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
+mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+sync;
+umount -l /mnt/tmp;
+mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+[ -f /preload/build.prop ] || SECONDROM=0;
+[ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
+[ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
+[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0;
+sync;
+umount /preload;
+umount -l /mnt/tmp;
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
-	/sbin/choose_rom
+	/sbin/choose_rom;
 else
-	/sbin/choose_rom $SECONDROM
+	/sbin/choose_rom $SECONDROM;
 fi;
 
 if [ "$?" == "1" ]; then
-	SECONDROM=1
+	SECONDROM=1;
 else
-	SECONDROM=0
+	SECONDROM=0;
 fi;
 
 # mounting system!
-/sbin/busybox mount -t ext4 /res/dev/system /system
+/sbin/busybox mount -t ext4 /res/dev/system /system;
 
-# adding latest vendor binary from 3.6.RC6 kernel for all! tested working great.
-mkdir -p /system/vendor/firmware
-/sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /system/vendor/firmware/mfc_fw.bin
+# adding latest vendor binary from 3.6.RC6 kernel for all! tested working great
+mkdir -p /system/vendor/firmware;
+/sbin/busybox xzcat /res/misc/vendor/firmware/mfc_fw.bin.xz > /system/vendor/firmware/mfc_fw.bin;
 
 # fix permission to services.jar in case user did a mess, after using my MOD!
-chmod 644 /system/framework/services.jar
+chmod 644 /system/framework/services.jar;
 
-# copy new Kernel modules to /system/lib/modules and to second rom system if exist.
+# copy new Kernel modules to /system/lib/modules and to second rom system if exist
 if [ ! -d /system/lib/modules ]; then
-	mkdir /system/lib/modules
-	chmod 755 /system/lib/modules/
+	mkdir /system/lib/modules;
+	chmod 755 /system/lib/modules/;
 fi;
-rm -f /system/lib/modules/*.ko
-cp /lib/modules/*.ko /system/lib/modules/
-chmod 755 /system/lib/modules/*.ko
+rm -f /system/lib/modules/*.ko;
+cp /lib/modules/*.ko /system/lib/modules/;
+chmod 755 /system/lib/modules/*.ko;
 
-mount -o remount,rw /preload
+mount -o remount,rw /preload;
 if [ -d /preload/lib/ ]; then
 	if [ ! -d /preload/lib/modules ]; then
-		mkdir /preload/lib/modules
-		chmod 755 /preload/lib/modules
+		mkdir /preload/lib/modules;
+		chmod 755 /preload/lib/modules;
 	fi;
-	rm -f /preload/lib/modules/*.ko
-	cp /lib/modules/*.ko /preload/lib/modules/
-	chmod 755 /preload/lib/modules/*.ko
+	rm -f /preload/lib/modules/*.ko;
+	cp /lib/modules/*.ko /preload/lib/modules/;
+	chmod 755 /preload/lib/modules/*.ko;
 fi;
 
 if [ -f /system/recovery.cpio.gz ]; then
-	mount -o remount,rw /
-	zcat /system/recovery.cpio.gz | cpio -idmu
+	mount -o remount,rw /;
+	zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
 
-AOSP=0
-MIUI=0
-B2G=0
-JELLY=0
-CM10=0
-S4A=0
+AOSP=0;
+MIUI=0;
+B2G=0;
+JELLY=0;
+CM10=0;
+S4A=0;
 
-[ -d /system/b2g ] && B2G=1
-[ -f /system/framework/framework-miui.jar ] && MIUI=1
-[ -f /system/framework/miui-framework.jar ] && MIUI=1
-[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
-[ -f /system/framework/seccamera.jar ] || CM10=1
-[ -f /system/framework/framework2.jar ] || AOSP=1
-[ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1
-[ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1
+[ -d /system/b2g ] && B2G=1;
+[ -f /system/framework/framework-miui.jar ] && MIUI=1;
+[ -f /system/framework/miui-framework.jar ] && MIUI=1;
+[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
+[ -f /system/framework/seccamera.jar ] || CM10=1;
+[ -f /system/framework/framework2.jar ] || AOSP=1;
+[ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
+[ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1;
 
-# One more time set / rw just for good sleep.
-/sbin/busybox mount -t rootfs -o remount,rw rootfs
+# one more time set "/" rw just for good sleep
+/sbin/busybox mount -t rootfs -o remount,rw rootfs;
 
 #############################
 # Partition global tuning!
 #############################
 
-PARTITION_TUNING () {
+PARTITION_TUNING()
+{
 	# unmounting DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/busybox umount -l /data
-	/sbin/busybox umount -l /cache
-	/sbin/busybox umount -l /preload
+	/sbin/busybox umount -l /data;
+	/sbin/busybox umount -l /cache;
+	/sbin/busybox umount -l /preload;
 
 	# setting journal_data_ordered to DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/tune2fs -O has_journal /res/dev/cache >> /dm-log # Removed journal
-	/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log # Restore journal / check if ok.
-	/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log # Restore journal / check if ok.
-	/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log #DATA
-	/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log #CACHE
-	/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p12 > /preload-log #PRELOAD
-	/sbin/tune2fs -I 256 /res/dev/data >> /dm-log
-	/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log
-	/sbin/tune2fs -I 256 /res/dev/system >> /dm-log
-	/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log # SEC-SYSTEM /preload
+	/sbin/tune2fs -O has_journal /res/dev/cache >> /dm-log; # Removed journal
+	/sbin/tune2fs -O has_journal /res/dev/data >> /dm-log; # Restore journal / check if ok.
+	/sbin/tune2fs -O has_journal /dev/block/mmcblk0p12 >> /dm-log; # Restore journal / check if ok.
+	/sbin/tune2fs -o journal_data_ordered /res/dev/data >> /data-log; #DATA
+	/sbin/tune2fs -o journal_data_ordered /res/dev/cache >> /cache-log; #CACHE
+	/sbin/tune2fs -o journal_data_ordered /dev/block/mmcblk0p12 > /preload-log; #PRELOAD
+	/sbin/tune2fs -I 256 /res/dev/data >> /dm-log;
+	/sbin/tune2fs -I 256 /res/dev/cache >> /dm-log;
+	/sbin/tune2fs -I 256 /res/dev/system >> /dm-log;
+	/sbin/tune2fs -I 256 /dev/block/mmcblk0p12 >> /dm-log; # SEC-SYSTEM /preload
 
 	# checking Partitions X2! needed for clean flag
-	/sbin/e2fsck -p /res/dev/data
-	/sbin/e2fsck -p /res/dev/data > /data-log
-	/sbin/e2fsck -p /res/dev/cache
-	/sbin/e2fsck -p /res/dev/cache > /cache-log
+	/sbin/e2fsck -p /res/dev/data;
+	/sbin/e2fsck -p /res/dev/data > /data-log;
+	/sbin/e2fsck -p /res/dev/cache;
+	/sbin/e2fsck -p /res/dev/cache > /cache-log;
 }
 
 ######################################
@@ -159,144 +158,144 @@ PARTITION_TUNING () {
 ######################################
 
 if [ "$S4A" == "1" ]; then
-	echo 0 > /proc/sys/kernel/rom_feature_set
-	mv /res/misc/Sense4All-ROM/init.s4a /init.rc
-	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+	mv /res/misc/Sense4All-ROM/init.s4a /init.rc;
+	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2;
 
 	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc
-		mv /init.rc.2 /init.rc
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		mv /init.rc.2 /init.rc;
 	else
-		rm -f /init.smdk4210.rc.2
-		rm -f /init.rc.2
+		rm -f /init.smdk4210.rc.2;
+		rm -f /init.rc.2;
 	fi;
 
 	# Start ROM!
 	#PARTITION_TUNING
-	/sbin/busybox umount /system
-	exec /sbin/init.samsung
+	/sbin/busybox umount /system;
+	exec /sbin/init.samsung;
 fi;
 
 if [ "$B2G" == "1" ]; then
-        echo 0 > /proc/sys/kernel/rom_feature_set
-	cp -a /res/misc/B2G-ROM/* /	
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+	cp -a /res/misc/B2G-ROM/* /;
 
-        if [ "$SECONDROM" == "1" ]; then
-                mv /init.smdk4210.rc.2 /init.smdk4210.rc
-                mv /init.rc.2 /init.rc
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		mv /init.rc.2 /init.rc;
 	else
-		rm -f /init.smdk4210.rc.2
-		rm -f /init.rc.2
-        fi;
+		rm -f /init.smdk4210.rc.2;
+		rm -f /init.rc.2;
+	fi;
 
-        # Start ROM!
+	# Start ROM!
 	#PARTITION_TUNING
-	/sbin/busybox umount /system
-        exec /sbin/init.samsung
+	/sbin/busybox umount /system;
+	exec /sbin/init.samsung;
 fi;
 
 if [ "$JELLY" == "1" ]; then
-	mv /sbin/adbd.jb /sbin/adbd
+	mv /sbin/adbd.jb /sbin/adbd;
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
-	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so
-	chmod 755 /system/lib/libsqlite.so
+	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
+	chmod 755 /system/lib/libsqlite.so;
 	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 	if [ "$CM10" == 1 ]; then
-        	echo 1 > /proc/sys/kernel/rom_feature_set
-		cp -a /res/misc/JellyB-CM-AOKP/* /
+		echo "1" > /proc/sys/kernel/rom_feature_set;
+		cp -a /res/misc/JellyB-CM-AOKP/* /;
 	else
-		echo 0 > /proc/sys/kernel/rom_feature_set
-		cp -a /res/misc/JellyB-SAMMY/* /
+		echo "0" > /proc/sys/kernel/rom_feature_set;
+		cp -a /res/misc/JellyB-SAMMY/* /;
 	fi;
 
-        if [ "$SECONDROM" == "1" ]; then
+	if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then
-                	mv /init.smdk4210.rc.2 /init.smdk4210.rc
-			rm -f /init.rc.2
+			mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+			rm -f /init.rc.2;
 		else
-			rm -f /init.smdk4210.rc.2
-			rm -f /init.rc.2
+			rm -f /init.smdk4210.rc.2;
+			rm -f /init.rc.2;
 		fi;
-        fi;
+	fi;
 
-        # Start ROM!
+	# Start ROM!
 	#PARTITION_TUNING
-	/sbin/busybox umount /system
-        exec /sbin/init.samsung
+	/sbin/busybox umount /system;
+	exec /sbin/init.samsung;
 fi;
 
 if [ "$SLIM" == "1" ]; then
-	cp -a /res/misc/CM-ROM/* /
-        echo 1 > /proc/sys/kernel/rom_feature_set
-        /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so
-        chmod 755 /system/lib/libsqlite.so
+	cp -a /res/misc/CM-ROM/* /;
+	echo 1 > /proc/sys/kernel/rom_feature_set;
+	/sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so;
+	chmod 755 /system/lib/libsqlite.so;
         
-        if [ "$SECONDROM" == "1" ]; then
-                mv /init.smdk4210.rc.2 /init.smdk4210.rc
-		rm -f /init.rc.2
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		rm -f /init.rc.2;
 	else
-		rm -f /init.smdk4210.rc.2
-		rm -f /init.rc.2
-        fi;
+		rm -f /init.smdk4210.rc.2;
+		rm -f /init.rc.2;
+	fi;
 
-        # Start ROM!
+	# Start ROM!
 	#PARTITION_TUNING
-	/sbin/busybox umount /system
-        exec /sbin/init.samsung
+	/sbin/busybox umount /system;
+	exec /sbin/init.samsung;
 fi;
 
 if [ "$AOSP" == "1" ]; then
-	cp -a /res/misc/CM-ROM/* /
-        # Injecting ICS Modded by Dorimanx, SUPER libsqlite!
-        /sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so
-	chmod 755 /system/lib/libsqlite.so
-	echo 1 > /proc/sys/kernel/rom_feature_set
+	cp -a /res/misc/CM-ROM/* /;
+	# Injecting ICS Modded by Dorimanx, SUPER libsqlite!
+	/sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so;
+	chmod 755 /system/lib/libsqlite.so;
+	echo "1" > /proc/sys/kernel/rom_feature_set;
 
 	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc
-		rm -f /init.rc.2
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		rm -f /init.rc.2;
 	else
-		rm -f /init.smdk4210.rc.2
-		rm -f /init.rc.2
+		rm -f /init.smdk4210.rc.2;
+		rm -f /init.rc.2;
 	fi;
 
 	# Start ROM!
 	#PARTITION_TUNING
-	/sbin/busybox umount /system
-	exec /sbin/init.samsung
+	/sbin/busybox umount /system;
+	exec /sbin/init.samsung;
 fi;
 
 if [ "$MIUI" == "1" ]; then
-	cp -a /res/misc/Miui-ROM/* /
-	echo 0 > /proc/sys/kernel/rom_feature_set
+	cp -a /res/misc/Miui-ROM/* /;
+	echo "0" > /proc/sys/kernel/rom_feature_set;
 
 	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc
-		mv /init.rc.2 /init.rc
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		mv /init.rc.2 /init.rc;
 	else
-		rm -f /init.smdk4210.rc.2
-		rm -f /init.rc.2
+		rm -f /init.smdk4210.rc.2;
+		rm -f /init.rc.2;
 	fi;
 
 	# Start ROM!
 	#PARTITION_TUNING
-	/sbin/busybox umount /system
-	exec /sbin/init.samsung
+	/sbin/busybox umount /system;
+	exec /sbin/init.samsung;
 fi;
 
 # If not detected ROM / SAMMY ROM installed, then:
-echo 0 > /proc/sys/kernel/rom_feature_set
+echo "0" > /proc/sys/kernel/rom_feature_set;
 
 if [ "$SECONDROM" == "1" ]; then
-	mv /init.smdk4210.rc.2 /init.smdk4210.rc
-	mv /init.rc.2 /init.rc
+	mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+	mv /init.rc.2 /init.rc;
 else
-	rm -f /init.smdk4210.rc.2
-	rm -f /init.rc.2
+	rm -f /init.smdk4210.rc.2;
+	rm -f /init.rc.2;
 fi;
 
 # Start ROM
 #PARTITION_TUNING
-/sbin/busybox umount /system
-exec /sbin/init.samsung
+/sbin/busybox umount /system;
+exec /sbin/init.samsung;
 
