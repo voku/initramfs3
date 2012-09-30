@@ -160,7 +160,10 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	# checking partitions
-	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+
+	# for now i will not force DATA check. many cant boot there ROMS. no matter what... :(
+#	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+
 	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	sync;
