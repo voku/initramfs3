@@ -137,53 +137,36 @@ PARTITION_TUNING()
 	DIR_CACHE="/cache";
 	LOG_CACHE="/log-cache";
 
-	DEVICE_SYSTEM="/res/dev/system";
-	DIR_SYSTEM="/system";
-	LOG_SYSTEM="/log-system";
-
-	DEVICE_PRELOAD="/dev/block/mmcblk0p12";
-	DIR_PRELOAD="/preload";
-	LOG_PRELOAD="log-preload";
-
 	# new empty log
 	echo "" > $LOG_DATA;
 	echo "" > $LOG_CACHE;
-	echo "" > $LOG_SYSTEM;
-	echo "" > $LOG_PRELOAD;
 
 	# unmounting DATA, CACHE, and PAYLOAD-SEC-ROM
 	umount -l $DIR_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
-	umount -l $DIR_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
-	umount -l $DIR_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
 	umount -l $DIR_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
 
 	# enable journal
 	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
-	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
 
 	# disable journal
 	/sbin/busybox sh -c "/sbin/tune2fs -O ^has_journal $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	# set mount option -> [^]journal_data_ordered
 	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
-	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
 	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 	
 	# set inode size
 	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
-	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
 	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	# checking partitions
 	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
-	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
 	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	sync;
+
+	# now we can unmount system.
+	umount -l $DIR_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
 }
 
 ######################################
@@ -204,7 +187,7 @@ if [ "$S4A" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	PARTITION_TUNING;
 	exec /sbin/init.samsung;
 fi;
 
@@ -221,7 +204,7 @@ if [ "$B2G" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	PARTITION_TUNING;
 	exec /sbin/init.samsung;
 fi;
 
@@ -250,7 +233,7 @@ if [ "$JELLY" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	PARTITION_TUNING;
 	exec /sbin/init.samsung;
 fi;
 
@@ -269,7 +252,7 @@ if [ "$SLIM" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	PARTITION_TUNING;
 	exec /sbin/init.samsung;
 fi;
 
@@ -289,7 +272,7 @@ if [ "$AOSP" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	PARTITION_TUNING;
 	exec /sbin/init.samsung;
 fi;
 
@@ -306,7 +289,7 @@ if [ "$MIUI" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING
+	PARTITION_TUNING;
 	exec /sbin/init.samsung;
 fi;
 
@@ -322,6 +305,6 @@ else
 fi;
 
 # Start ROM
-PARTITION_TUNING
+PARTITION_TUNING;
 exec /sbin/init.samsung;
 

@@ -6,7 +6,7 @@
 
 # THIS INIT.RC is FOR B2G ROMS!
 
-import /dm_kernel.rc
+import init.smdk4210.dm_kernel.rc
 
 on early-init
 # Set init and its forked children's oom_adj.

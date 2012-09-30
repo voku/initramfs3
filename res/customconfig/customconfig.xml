@@ -339,10 +339,10 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			name="Analog Headphone" action="sound_volume 1" unit="DB" min="-10" reversed="false" step="1" max="20"/>
 
 		<seekBar description="Analog MIC GAIN Level"
-			name="MIC Gain Level" action="sound_volume 2" unit="DB" min="-10" reversed="false" step="1" max="20"/>
+			name="MIC Gain Level" action="sound_volume 2" unit="DB" min="-10" reversed="false" step="1" max="10"/>
 
 		<seekBar description="Analog Speaker Level"
-			name="Speaker Level" action="sound_volume 3" unit="DB" min="-10" reversed="false" step="1" max="20"/>
+			name="Speaker Level" action="sound_volume 3" unit="DB" min="-10" reversed="false" step="1" max="10"/>
 
 	</settingsPane>
 

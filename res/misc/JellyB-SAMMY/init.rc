@@ -6,10 +6,10 @@
 
 # THIS INIT.RC is FOR SAMMY JB ROMS!
 
-import /init.smdk4210.rc
-import /init.usb.rc
-import /init.trace.rc
-import /dm_kernel.rc
+import init.smdk4210.rc
+import init.usb.rc
+import init.trace.rc
+import init.smdk4210.dm_kernel.rc
 
 on early-init
 # Set init and its forked children's oom_adj.
