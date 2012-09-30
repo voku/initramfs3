@@ -152,36 +152,36 @@ PARTITION_TUNING()
 	echo "" > $LOG_PRELOAD;
 
 	# unmounting DATA, CACHE, and PAYLOAD-SEC-ROM
-	/sbin/busybox umount -l $DIR_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
-	/sbin/busybox umount -l $DIR_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
-	/sbin/busybox umount -l $DIR_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
-	/sbin/busybox umount -l $DIR_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
+	umount -l $DIR_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
+	umount -l $DIR_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
+	umount -l $DIR_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
+	umount -l $DIR_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
 
 	# enable journal
-	/sbin/tune2fs -O has_journal $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
-	/sbin/tune2fs -O has_journal $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
-	/sbin/tune2fs -O has_journal $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
+	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
+	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
 
 	# disable journal
-	/sbin/tune2fs -O ^has_journal $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
+	/sbin/busybox sh -c "/sbin/tune2fs -O ^has_journal $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	# set mount option -> [^]journal_data_ordered
-	/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
-	/sbin/tune2fs -o journal_data_ordered $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
-	/sbin/tune2fs -o journal_data_ordered $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
-	/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
+	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
+	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
+	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 	
 	# set inode size
-	/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
-	/sbin/tune2fs -I 256 $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
-	/sbin/tune2fs -I 256 $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
-	/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
+	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
+	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
+	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	# checking partitions
-	/sbin/e2fsck -fy $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA;
-	/sbin/e2fsck -fy $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
-	/sbin/e2fsck -fy $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD;
-	/sbin/e2fsck -fy $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE;
+	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM";
+	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_PRELOAD 1>> $LOG_PRELOAD 2>> $LOG_PRELOAD";
+	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 
 	sync;
 }
