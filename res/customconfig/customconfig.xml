@@ -533,6 +533,11 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
+		<spinner description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any king of backup! if you have lots of damage in your DATA, after fix and repair ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery and clear profiles! use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect." name="FIX Filesystem on BOOT" action="fix_fs_on_boot">
+			<spinnerItem name="Function OFF!" value="off"/> 
+			<spinnerItem name="Fix ON! Read All Above!" value="on"/> 
+		</spinner>
+
 	</settingsPane>
 
 	<settingsPane description="Remove OR Reinstall ROOT, You can have ROOTED or not ROOTED phone." name="Remove OR Reinstall Root">
@@ -630,9 +635,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="Extweaks Profiles.">
 
-		<button description="battery.profile" name="battery.profile" action="push-actions/config_backup_restore 3" label="BATTERY"/>
-
 		<button description="extreme_battery.profile" name="extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
+
+		<button description="battery.profile" name="battery.profile" action="push-actions/config_backup_restore 3" label="BATTERY"/>
 
 		<button description="default.profile" name="default.profile" action="push-actions/config_backup_restore 4" label="DEFAULT"/>
 

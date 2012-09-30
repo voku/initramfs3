@@ -155,16 +155,13 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
 	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
 	
-	# set inode size
-	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
-
-	# checking partitions
-
-	# for now i will not force DATA check. many cant boot there ROMS. no matter what... :(
-#	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-
-	/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
+	# checking partitions + inode set 
+	if [ -e /system/run_fs_check ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+		/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
+		/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
+	fi;
 
 	sync;
 
