@@ -200,16 +200,16 @@
 	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 1000 and 1050." name="GPU Voltage Levels">
 
 		<seekBar description="GPU Voltage for the first step" 
-			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="50" max="1400"/>
 
 		<seekBar description="GPU Voltage for the second step" 
-			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="50" max="1400"/>
 
 		<seekBar description="GPU Voltage for the third step" 
-			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="50" max="1400"/>
 
 		<seekBar description="GPU Voltage for the fourth step" 
-			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="25" max="1400"/>
+			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="50" max="1400"/>
 
 	</settingsPane>
 
@@ -264,13 +264,13 @@
 
 		<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
-		<seekBar description="Sets screen BLUE color scale (Default is 135)" 
+		<seekBar description="Sets screen BLUE color scale (Default is 130)" 
 			name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
-			unit="BLUE" min="0" reversed="false" step="1" max="244"/>
+			unit="BLUE" min="78" reversed="false" step="1" max="178"/>
 
-		<seekBar description="Sets screen RED color scale (Default is 120)" 
+		<seekBar description="Sets screen RED color scale (Default is 133)" 
 			name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
-			unit="RED" min="0" reversed="false" step="1" max="244"/>
+			unit="RED" min="78" reversed="false" step="1" max="178"/>
 
 	</settingsPane>
 
@@ -326,10 +326,23 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 <settingsTab name="Audio+Swipes">
 
-	<settingsPane description="Headphone Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
+	<settingsPane description="Master Headphone Gain Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
 		<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
 			name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+
+	</settingsPane>
+
+	<settingsPane description="More Headphone Amplification + Speaker Amplification + MIC Gain" name="Volume Levels and Gain Control">
+
+		<seekBar description="Headphone Amplification Level"
+			name="Analog Headphone" action="sound_volume 1" unit="DB" min="-10" reversed="false" step="1" max="20"/>
+
+		<seekBar description="Analog MIC GAIN Level"
+			name="MIC Gain Level" action="sound_volume 2" unit="DB" min="-10" reversed="false" step="1" max="20"/>
+
+		<seekBar description="Analog Speaker Level"
+			name="Speaker Level" action="sound_volume 3" unit="DB" min="-10" reversed="false" step="1" max="20"/>
 
 	</settingsPane>
 

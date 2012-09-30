@@ -204,7 +204,7 @@ if [ "$S4A" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING;
+	PARTITION_TUNING
 	exec /sbin/init.samsung;
 fi;
 
@@ -221,7 +221,7 @@ if [ "$B2G" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING;
+	PARTITION_TUNING
 	exec /sbin/init.samsung;
 fi;
 
@@ -250,7 +250,7 @@ if [ "$JELLY" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING;
+	PARTITION_TUNING
 	exec /sbin/init.samsung;
 fi;
 
@@ -269,7 +269,7 @@ if [ "$SLIM" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING;
+	PARTITION_TUNING
 	exec /sbin/init.samsung;
 fi;
 
@@ -289,7 +289,7 @@ if [ "$AOSP" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING;
+	PARTITION_TUNING
 	exec /sbin/init.samsung;
 fi;
 
@@ -306,7 +306,7 @@ if [ "$MIUI" == "1" ]; then
 	fi;
 
 	# Start ROM!
-	PARTITION_TUNING;
+	PARTITION_TUNING
 	exec /sbin/init.samsung;
 fi;
 
@@ -322,6 +322,6 @@ else
 fi;
 
 # Start ROM
-PARTITION_TUNING;
+PARTITION_TUNING
 exec /sbin/init.samsung;
 

@@ -23,6 +23,8 @@ fi;
 [ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/;
 [ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/;
 [ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/;
+[ ! -f /data/.siyah/extreme_performance.profile ] && cp -a /res/customconfig/extreme_performance.profile /data/.siyah/;
+[ ! -f /data/.siyah/extreme_battery.profile ] && cp -a /res/customconfig/extreme_battery.profile /data/.siyah/;
 
 $BB chmod 0777 /data/.siyah/ -R;
 
@@ -81,14 +83,18 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
+# enable kmem interface for everyone by GM
+echo "0" > /proc/sys/kernel/kptr_restrict;
+
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 $BB mount -o remount,rw rootfs;
 $BB chmod 755 /res/customconfig/actions/ -R;
-$BB mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 (
 	# apply ExTweaks settings
 	echo "booting" > /data/.siyah/booting;
+	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 	$BB sh /res/uci.sh restore;
 	echo "uci done" > /data/.siyah/uci_loaded;
 )&
@@ -113,6 +119,10 @@ $BB mv -f /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 	# ==============================================================
 	# EXTWEAKS FIXING
 	# ==============================================================
+
+	# apply volume tweaks. 
+	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
+	/res/uci.sh soundgasm_hp $soundgasm_hp;
 
 	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
