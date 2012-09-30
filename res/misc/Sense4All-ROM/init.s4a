@@ -118,10 +118,10 @@ on fs
     mount ext4 /res/dev/system /system noatime wait rw nodelalloc
 
     Mount Data as we are symlinking our Apps folder
-    exec sfsck /res/dev/data ext4
+#   exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
-    exec sfsck /res/dev/cache ext4
+#   exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
@@ -146,7 +146,7 @@ on fs
 on post-fs
 
     # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
+    mount rootfs rootfs / rw remount
 
     insmod /lib/modules/j4fs.ko
     mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs

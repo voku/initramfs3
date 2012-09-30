@@ -119,7 +119,7 @@ on fs
 # make sure sdcard is mounted because we may have our data and cache partitions on it
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
-    exec sfsck /res/dev/cache ext4
+#   exec sfsck /res/dev/cache ext4
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
@@ -142,11 +142,11 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on post-fs
-    exec sfsck /res/dev/data ext4
+#   exec sfsck /res/dev/data ext4
     mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
 # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
+    mount rootfs rootfs / rw remount
 
     insmod /lib/modules/j4fs.ko
     mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs

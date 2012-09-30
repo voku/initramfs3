@@ -46,11 +46,11 @@ on fs
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
 # Check and mount /cache
-    exec sfsck /res/dev/cache ext4
+#   exec sfsck /res/dev/cache ext4
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait rw
 
 # Check and mount /data
-    exec sfsck /res/dev/data ext4
+#   exec sfsck /res/dev/data ext4
     mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
