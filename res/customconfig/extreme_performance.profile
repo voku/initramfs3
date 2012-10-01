@@ -79,7 +79,6 @@ scheduler=sio
 usb_mode=default
 default_stats=off
 chargecurrent=2
-fix_fs_on_boot=off
 install_root=on
 cortexbrain_background_process=1
 cortexbrain_auto_tweak_brightness=off

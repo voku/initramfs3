@@ -157,6 +157,7 @@ PARTITION_TUNING()
 
 	# check data partition + inode set if asked by user via extweaks.
 	if [ -e /system/run_fs_check ]; then
+		rm -f /system/run_fs_check
 		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
 		/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
 	fi;

@@ -281,7 +281,7 @@
 			unit="" min="-50" reversed="false" step="5" max="50"/>
 
 		<seekBar description="Vibration force level (default 75)" 
-			name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="25" reversed="false" step="25" max="100"/>
+			name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="0" reversed="false" step="5" max="100"/>
 
 		<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)" 
 			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
@@ -533,10 +533,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
-		<spinner description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any kind of backup! if you have lots of damage in your DATA, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery and clear profiles! use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect." name="FIX Filesystem on BOOT" action="fix_fs_on_boot">
-			<spinnerItem name="Function OFF!" value="off"/> 
-			<spinnerItem name="Fix ON! Read All Above!" value="on"/> 
-		</spinner>
+		<button description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any kind of backup! if you have lots of damage in your DATA, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery, use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect, by default its OFF, it's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem On BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
 
 	</settingsPane>
 
