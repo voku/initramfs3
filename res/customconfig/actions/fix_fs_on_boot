@@ -3,6 +3,8 @@
 # $1 - "fix_fs_on_boot"
 # $2 - value=
 
+
+
 if [ "a$2" == "a" ]; then
 	echo "$fix_fs_on_boot";
 else
@@ -10,21 +12,22 @@ else
 	echo "$fix_fs_on_boot";
 fi;
 
-mount -o remount,rw /system
-
 case "${fix_fs_on_boot}" in
         off)
 		if [ -e /system/run_fs_check ]; then
-			rm -f /system/run_fs_check
+			mount -o remount,rw /system
+			rm -f /system/run_fs_check;
 		fi;
         ;;
         on)
-		echo "fix fs" > /system/run_fs_check
+		mount -o remount,rw /system
+		echo "fix fs" > /system/run_fs_check;
         ;;
         *)
 		fix_fs_on_boot=off;
         ;;
 esac;
+
 sync;
 
 echo "You need to REBOOT, for function to work. do titanium backup before boot just in case!"
