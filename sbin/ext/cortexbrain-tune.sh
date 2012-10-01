@@ -228,11 +228,6 @@ BATTERY_TWEAKS()
 		echo "battery-calibration done ...";
 	fi;
 
-	# WIFI PM-FAST support
-	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-		echo "1" > /sys/module/dhd/parameters/wifi_pm;
-	fi;
-
 	if [ $power_reduce == "on" ]; then
 		# LCD Power-Reduce
 		if [ -e /sys/class/lcd/panel/power_reduce ]; then
@@ -661,6 +656,12 @@ fi;
 # ==============================================================
 AWAKE_MODE()
 {
+
+	# WIFI PM-MAX support
+	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+		echo "0" > /sys/module/dhd/parameters/wifi_pm;
+	fi;
+
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
@@ -782,6 +783,11 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
+	# WIFI PM-FAST support
+	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+		echo "1" > /sys/module/dhd/parameters/wifi_pm;
+	fi;
+
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
