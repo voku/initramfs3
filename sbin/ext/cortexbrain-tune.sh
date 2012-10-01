@@ -662,6 +662,12 @@ AWAKE_MODE()
 		echo "0" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
 
+	# enable KSM on screen ON.
+	KSM="/sys/kernel/mm/ksm/run";
+	if [ -e $KSM ]; then
+        	echo "1" > $KSM;
+	fi;
+
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
@@ -786,6 +792,12 @@ SLEEP_MODE()
 	# WIFI PM-FAST support
 	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 		echo "1" > /sys/module/dhd/parameters/wifi_pm;
+	fi;
+
+	# disable KSM on screen OFF
+	KSM="/sys/kernel/mm/ksm/run";
+	if [ -e $KSM ]; then
+        	echo "0" > $KSM;
 	fi;
 
 	PROFILE=`cat /data/.siyah/.active.profile`;
