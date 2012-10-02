@@ -6,7 +6,7 @@
 
 # THIS INIT.RC is FOR CM9/AOKP ICS ROMS!
 
-import /dm_kernel.rc
+import init.smdk4210.dm_kernel.rc
 
 on early-init
 # Set init and its forked children's oom_adj.
@@ -121,7 +121,7 @@ on fs
 
 on post-fs
 # once everything is setup, no need to modify /
-    mount rootfs rootfs / ro remount
+    mount rootfs rootfs / rw remount
 
     insmod /lib/modules/j4fs.ko
     mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs

@@ -228,11 +228,6 @@ BATTERY_TWEAKS()
 		echo "battery-calibration done ...";
 	fi;
 
-	# WIFI PM-FAST support
-	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-		echo "1" > /sys/module/dhd/parameters/wifi_pm;
-	fi;
-
 	if [ $power_reduce == "on" ]; then
 		# LCD Power-Reduce
 		if [ -e /sys/class/lcd/panel/power_reduce ]; then
@@ -282,43 +277,43 @@ CPU_GOV_TWEAKS()
 	if [ $cortexbrain_extra_battery == "on" ] && [ $CHARGING == "0" ]; then
 		
 		if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
 			echo "90" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 			echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
-			echo "10" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
 			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/freq_responsiveness;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 			echo "90" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 			echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 			echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
-			echo "10" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/ondemand/freq_step;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 			echo "10" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-			echo "80" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+			echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 			echo "90" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 			echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-			echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+			echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 			echo "90" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-			echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
 			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+			echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate;
 			echo "10" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate;
 			echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -338,7 +333,7 @@ CPU_GOV_TWEAKS()
 		if [ $PROFILE == "battery" ] || [ $1 == "battery" ]; then
 
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-				echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+				echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 				echo "85" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
 				echo "85" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
@@ -348,7 +343,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-				echo "100000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+				echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 				echo "85" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 				echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 				echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
@@ -356,21 +351,21 @@ CPU_GOV_TWEAKS()
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "conservative" ]; then
-				echo "100000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
+				echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 				echo "20" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-				echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+				echo "60" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 				echo "85" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 				echo "1" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-				echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+				echo "60" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 				echo "85" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-				echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+				echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
 				echo "85" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 				echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
@@ -392,9 +387,9 @@ CPU_GOV_TWEAKS()
 		elif [ $PROFILE == "default" ]; then
 
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
-				echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
+				echo "70000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 				echo "80" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-				echo "50" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "70" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "30" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
@@ -402,7 +397,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "ondemand" ]; then
-				echo "80000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
+				echo "70000" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate;
 				echo "80" > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold;
 				echo "5" > /sys/devices/system/cpu/cpufreq/ondemand/down_differential;
 				echo "1" > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor;
@@ -413,13 +408,13 @@ CPU_GOV_TWEAKS()
 				echo "80000" > /sys/devices/system/cpu/cpufreq/conservative/sampling_rate;
 				echo "30" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 				echo "1" > /sys/devices/system/cpu/cpufreq/conservative/sampling_down_factor;
-				echo "30" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
+				echo "40" > /sys/devices/system/cpu/cpufreq/conservative/down_threshold;
 				echo "80" > /sys/devices/system/cpu/cpufreq/conservative/up_threshold;
 			fi;
 
 			if [ $SYSTEM_GOVERNOR == "abyssplug" ]; then
 				echo "5" > /sys/devices/system/cpu/cpufreq/abyssplug/down_differential;
-				echo "30" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
+				echo "40" > /sys/devices/system/cpu/cpufreq/abyssplug/down_threshold;
 				echo "80" > /sys/devices/system/cpu/cpufreq/abyssplug/up_threshold;
 			fi;
 
@@ -428,7 +423,7 @@ CPU_GOV_TWEAKS()
 				echo "80" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 				echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
-				echo "40" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
+				echo "30" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
 				echo "${load_l1}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_down_rate
 				echo "${load_h0}" > /sys/devices/system/cpu/cpufreq/pegasusq/cpu_up_rate
 				echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -448,7 +443,7 @@ CPU_GOV_TWEAKS()
 			if [ $SYSTEM_GOVERNOR == "HYPER" ]; then
 				echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 				echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
-				echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
+				echo "60" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold_min_freq;
 				echo "1" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_down_factor;
 				echo "5" > /sys/devices/system/cpu/cpufreq/HYPER/down_differential;
 				echo "40" > /sys/devices/system/cpu/cpufreq/HYPER/freq_step;
@@ -661,6 +656,18 @@ fi;
 # ==============================================================
 AWAKE_MODE()
 {
+
+	# WIFI PM-MAX support
+	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+		echo "0" > /sys/module/dhd/parameters/wifi_pm;
+	fi;
+
+	# enable KSM on screen ON.
+	KSM="/sys/kernel/mm/ksm/run";
+	if [ -e $KSM ]; then
+        	echo "1" > $KSM;
+	fi;
+
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
@@ -782,6 +789,17 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
+	# WIFI PM-FAST support
+	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+		echo "1" > /sys/module/dhd/parameters/wifi_pm;
+	fi;
+
+	# disable KSM on screen OFF
+	KSM="/sys/kernel/mm/ksm/run";
+	if [ -e $KSM ]; then
+        	echo "0" > $KSM;
+	fi;
+
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 

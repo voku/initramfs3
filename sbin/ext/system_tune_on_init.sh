@@ -21,9 +21,12 @@ $BB mount -o remount,rw,noatime,nodiratime,barrier=0,commit=30,noauto_da_alloc,d
 $BB mount -o remount,rw,noatime,nodiratime,barrier=0,commit=30,noauto_da_alloc,delalloc /preload;
 
 $BB mount -t rootfs -o remount,rw rootfs;
+$BB mount -o remount,rw /data
+$BB mount -o remount,rw /cache
 
 # cleaning
 $BB rm -rf /cache/lost+found/* 2> /dev/null;
+$BB rm -rf /data/lost+found/* 2> /dev/null;
 $BB rm -rf /data/tombstones/* 2> /dev/null;
 $BB rm -rf /data/anr/* 2> /dev/null;
 $BB chmod 400 /data/tombstones -R;
