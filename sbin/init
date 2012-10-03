@@ -142,30 +142,27 @@ PARTITION_TUNING()
 	echo "" > $LOG_CACHE;
 
 	# enable journal
-	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA >> $LOG_DATA 2>&1";
 
 	# disable journal
-	/sbin/busybox sh -c "/sbin/tune2fs -O ^has_journal $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
+	/sbin/busybox sh -c "/sbin/tune2fs -O ^has_journal $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 
 	# set mount option -> [^]journal_data_ordered
-	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
+	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA >> $LOG_DATA 2>&1";
+	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 
 	# check cache + inode set
-	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
-	/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_CACHE 1>> $LOG_CACHE 2>> $LOG_CACHE";
+	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 
-	# check data partition + inode set if asked by user via extweaks.
+	# check data partition + inode set if asked by user via extweaks
 	if [ -e /system/run_fs_check ]; then
 		rm -f /system/run_fs_check
-		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
-		/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_DATA 1>> $LOG_DATA 2>> $LOG_DATA";
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
+		/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_DATA >> $LOG_DATA 2>&1";
 	fi;
 
 	sync;
-
-	# now we can unmount system.
-	umount -l $DIR_SYSTEM 1>> $LOG_SYSTEM 2>> $LOG_SYSTEM;
 }
 
 ######################################
