@@ -473,6 +473,7 @@ service netd /system/bin/netd
     class main
     socket netd stream 0660 root system
     socket dnsproxyd stream 0660 root inet
+    socket mdns stream 0660 root system
 
 service debuggerd /system/bin/debuggerd
     class main
@@ -482,7 +483,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 0660 root radio
     socket rild-debug stream 0660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc diag log
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag diag log
 
 service surfaceflinger /system/bin/surfaceflinger
     class main
@@ -501,7 +502,7 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
 service drm /system/bin/drmserver
     class main
     user drm
-    group system inet drmrpc
+    group drm system inet drmrpc sdcard_rw media_rw radio sdcard_r
 
 service media /system/bin/mediaserver
     class main
@@ -561,6 +562,14 @@ service keystore /system/bin/keystore /data/misc/keystore
 service dumpstate /system/bin/dumpstate -s
     class main
     socket dumpstate stream 0660 shell log
+    disabled
+    oneshot
+
+service mdnsd /system/bin/mdnsd
+    class main
+    user mdnsr
+    group inet net_raw
+    socket mdnsd stream 0660 mdnsr inet
     disabled
     oneshot
 
