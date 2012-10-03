@@ -31,10 +31,13 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 			/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu.apk* > /dev/null 2>&1;
 			/sbin/busybox rm -rf /data/dalvik-cache/?uper?u* > /dev/null 2>&1;
 
+			/sbin/busybox rm -f /system/app/Superuser.apk > /dev/null 2>&1;
+			/sbin/busybox rm -f /system/app/SuperSU.apk > /dev/null 2>&1;
 			/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
 			/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
 			/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
 
+			/sbin/busybox rm -f /data/app/Superuse*.apk > /dev/null 2>&1;
 			/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
 			/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
 			/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
@@ -46,6 +49,7 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 			/sbin/busybox mount -t rootfs -o remount,ro rootfs > /dev/null 2>&1;
 	fi;
 	pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
+	pkill -f "eu.chinfire.supersu" > /dev/null 2>&1;
 )&
 
 sleep 3;
