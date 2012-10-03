@@ -100,8 +100,8 @@ if [ -d /preload/lib/ ]; then
 fi;
 
 if [ -f /system/recovery.cpio.gz ]; then
-	mount -o remount,rw /;
-	zcat /system/recovery.cpio.gz | cpio -idmu;
+	/sbin/busybox mount -o remount,rw /;
+	/sbin/busybox zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
 
 AOSP=0;
@@ -132,34 +132,41 @@ PARTITION_TUNING()
 	DEVICE_DATA="/res/dev/data";
 	DIR_DATA="/data";
 	LOG_DATA="/log-data";
+	LOG_DATA_TMP="/log-data-tmp";
 
 	DEVICE_CACHE="/res/dev/cache";
 	DIR_CACHE="/cache";
 	LOG_CACHE="/log-cache";
+	LOG_CACHE_TMP="/log-cache-tmp";
 
 	# new empty log
 	echo "" > $LOG_DATA;
 	echo "" > $LOG_CACHE;
 
-	# enable journal
+	# enable / disable journal
 	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA >> $LOG_DATA 2>&1";
-
-	# disable journal
 	/sbin/busybox sh -c "/sbin/tune2fs -O ^has_journal $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 
 	# set mount option -> [^]journal_data_ordered
 	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA >> $LOG_DATA 2>&1";
 	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 
-	# check cache + inode set
+	# set inode for cache
 	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-	/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	# check cache
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | cut -f 11 -d ' '" != "clean" > $LOG_CACHE_TMP;
+	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
+	if [ "$LOG_CACHE_TMP" != "clean" ]; then
+		/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	else
+		echo "cache: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;	
+	fi;
 
 	# check data partition + inode set if asked by user via extweaks
 	if [ -e /system/run_fs_check ]; then
 		rm -f /system/run_fs_check
 		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
-		/sbin/busybox sh -c "/sbin/e2fsck -fy $DEVICE_DATA >> $LOG_DATA 2>&1";
+		/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA >> $LOG_DATA 2>&1";
 	fi;
 
 	sync;
