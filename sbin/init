@@ -157,7 +157,11 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | cut -f 11 -d ' '" != "clean" > $LOG_CACHE_TMP;
 	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
 	if [ "$LOG_CACHE_TMP" != "clean" ]; then
+		echo "=============Start Of Check Run 1=============" >> $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 		/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+		echo "=============End Of Check Run 1 and Start Check run 2=============" >> $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+		echo "=============End Of Check Run 2=============" >> $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 	else
 		echo "cache: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;	
 	fi;
@@ -165,8 +169,18 @@ PARTITION_TUNING()
 	# check data partition + inode set if asked by user via extweaks
 	if [ -e /system/run_fs_check ]; then
 		rm -f /system/run_fs_check
-		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
-		/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA >> $LOG_DATA 2>&1";
+		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | cut -f 11 -d ' '" != "clean" > $LOG_DATA_TMP;
+		LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
+		if [ "$LOG_DATA_TMP" != "clean" ]; then
+			/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
+			echo "=============Start Of Check Run 1=============" >> $DEVICE_DATA >> $LOG_DATA 2>&1";
+			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA >> $LOG_DATA 2>&1";
+			echo "=============End Of Check Run 1 and Start Check run 2=============" >> $DEVICE_DATA >> $LOG_DATA 2>&1";
+			/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
+			echo "=============End Of Check Run 2=============" >> $DEVICE_DATA >> $LOG_DATA 2>&1";
+		else
+			echo "cache: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
+		fi;
 	fi;
 
 	sync;
