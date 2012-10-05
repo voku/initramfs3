@@ -239,9 +239,6 @@ on post-fs-data
     chown system system /sys/class/android_usb/android0/f_rndis/ethaddr
     chmod 0660 /sys/class/android_usb/android0/f_rndis/ethaddr
 
-# Include extra init file
-    import /system/etc/init.local.rc
-
 on boot
 # basic network init
     ifup lo
@@ -581,6 +578,9 @@ on property:service.adb.tcp.port=5555
 on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
+
+# Include extra init file, this file is not used in most roms.
+    import /system/etc/init.local.rc
 
 service postinit /sbin/ext/post-init.sh
     class core
