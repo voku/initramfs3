@@ -6,13 +6,14 @@
 
 # THIS INIT.RC is FOR B2G ROMS!
 
-import /dm_kernel.rc
+import init.smdk4210.dm_kernel.rc
 
 on early-init
 # Set init and its forked children's oom_adj.
     write /proc/1/oom_score_adj -1000
 
     start ueventd
+    import /init.b2g.rc
 
 # create mountpoints
     mkdir /mnt 0775 root system
@@ -40,6 +41,9 @@ loglevel 3
     export LOOP_MOUNTPOINT /mnt/obb
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 
+# Disable CFQ slice idle delay
+    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
@@ -58,7 +62,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0777 system cache
+    mkdir /cache 0770 system cache
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
@@ -116,6 +120,7 @@ on fs
 # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait rw nodelalloc
     chmod 0755 /system/b2g/b2g
+    chmod 0755 /system/b2g/plugin-container
     chmod 0755 /system/b2g/updater
 
     # verify filesystem (UMS)
@@ -127,7 +132,7 @@ on fs
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
-# mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
+    #mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
     exec sfsck /dev/block/mmcblk0p1 ext4
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
     chown radio system /efs
@@ -154,7 +159,7 @@ on post-fs
 
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0777 /cache
+    chmod 0770 /cache
 
 # This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
@@ -176,7 +181,7 @@ on post-fs
 
 # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
-    chmod 0777 /cache/lost+found
+    chmod 0770 /cache/lost+found
 
 on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
@@ -225,7 +230,7 @@ on post-fs-data
     mkdir /data/misc/radio 0775 radio system
 # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0777 /data/misc/wifi
+    chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0771 root shell
 
@@ -596,7 +601,6 @@ on boot
 
     class_start core
     class_start main
-    class_start b2g
 
 on nonencrypted
     class_start late_start
@@ -900,22 +904,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 service fakeperm /system/bin/fakeperm
     class b2g
     user root
-
-service b2g /system/b2g/b2g
-    class b2g
-    user root
-    onrestart restart media
-
-service rilproxy /system/bin/rilproxy
-    class b2g
-    socket rilproxy stream 660 root system
-    socket rilproxyd stream 660 root system
-    user root
-    group radio
-
-service mount-sdcard /system/bin/mountvol.sh sdcard
-    class b2g
-    oneshot
 
 on property:sys.boot_completed=1
     stop samsungani
