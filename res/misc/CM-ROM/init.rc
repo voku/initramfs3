@@ -80,8 +80,6 @@ loglevel 3
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
     write /proc/sys/kernel/randomize_va_space 2
-    write /proc/sys/kernel/sched_rt_runtime_us 950000
-    write /proc/sys/kernel/sched_rt_period_us 1000000
 
 # Create cgroup mount points for process groups
     mkdir /dev/cpuctl
@@ -90,15 +88,11 @@ loglevel 3
     chown system system /dev/cpuctl/tasks
     chmod 0777 /dev/cpuctl/tasks
     write /dev/cpuctl/cpu.shares 1024
-    write /dev/cpuctl/cpu.rt_runtime_us 950000
-    write /dev/cpuctl/cpu.rt_period_us 1000000
 
     mkdir /dev/cpuctl/apps
     chown system system /dev/cpuctl/apps/tasks
     chmod 0777 /dev/cpuctl/apps/tasks
     write /dev/cpuctl/apps/cpu.shares 1024
-    write /dev/cpuctl/apps/cpu.rt_runtime_us 800000
-    write /dev/cpuctl/apps/cpu.rt_period_us 1000000
 
     mkdir /dev/cpuctl/fg_boost
     chown system system /dev/cpuctl/fg_boost/tasks
@@ -110,8 +104,6 @@ loglevel 3
     chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
     # 5.0 %
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
-    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_runtime_us 700000
-    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_period_us 1000000
 
 # Allow everybody to read the xt_qtaguid resource tracking misc dev.
 # This is needed by any process that uses socket tagging.
@@ -123,12 +115,9 @@ on post-fs
 # once everything is setup, no need to modify /
     mount rootfs rootfs / rw remount
 
-    insmod /lib/modules/j4fs.ko
-    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0777 /cache
+    chmod 0771 /cache
 
 # This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
@@ -146,19 +135,16 @@ on post-fs
     chmod 0220 /proc/sysrq-trigger
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /cache/lost+found 0777 root cache
+    mkdir /cache/lost+found 0770 root cache
 
 # double check the perms, in case lost+found already exists, and set owner
     chown root root /cache/lost+found
-    chmod 0777 /cache/lost+found
+    chmod 0771 /cache/lost+found
 
 on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
-    mkdir /data/system
-    chown system system /data/system
-    chmod 0771 /data/system
 
 # Create dump dir and collect dumps.
 # Do this before we mount cache so eventually we can use cache for
@@ -185,23 +171,16 @@ on post-fs-data
     mkdir /data/misc/keychain 0771 system system
     mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
-    mkdir /data/misc/vpn/profiles 0770 system system
-    mkdir /data/misc/radio 0775 radio system
 # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0770 wifi wifi
-    chmod 0777 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0771 root shell
-
-# For security reasons, /data/local/tmp should always be empty.
-# Do not place files or directories in /data/local/tmp
+    mkdir /data/local 0751 root root
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
-    mkdir /cache/download 0777 system cache
-    mkdir /data/radio 0777 radio radio
+    mkdir /data/radio 0770 radio radio
 
 # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -218,15 +197,11 @@ on post-fs-data
     chmod 0771 /data/resource-cache
 
 # create the lost+found directories, so as to enforce our permissions
-    mkdir /data/lost+found 0770
-
-# double check the perms, in case lost+found already exists, and set owner
-    chown root system /data/lost+found
-    chmod 0770 /data/lost+found
+    mkdir /data/lost+found 0770 root root
 
 # create directory for DRM plug-ins - give drm the read/write access to
 # the following directory.
-    mkdir /data/drm 0774 drm drm
+    mkdir /data/drm 0770 drm drm
 
 # If there is no fs-post-data action in the init.<device>.rc file, you
 # must uncomment this line, otherwise encrypted filesystems
@@ -559,14 +534,6 @@ service keystore /system/bin/keystore /data/misc/keystore
 service dumpstate /system/bin/dumpstate -s
     class main
     socket dumpstate stream 0660 shell log
-    disabled
-    oneshot
-
-service mdnsd /system/bin/mdnsd
-    class main
-    user mdnsr
-    group inet net_raw
-    socket mdnsd stream 0660 mdnsr inet
     disabled
     oneshot
 
