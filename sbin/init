@@ -40,7 +40,7 @@ chmod -R 777 /mnt/;
 mkdir /storage;
 chmod -R 777 /storage;
 
-# dual boot check and run.
+# dual boot check and run
 SECONDROM=1;
 NOBOOTLOGO=0;
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
@@ -139,8 +139,8 @@ PARTITION_TUNING()
 	LOG_CACHE_TMP="/log-cache-tmp";
 
 	# new empty log
-	echo "" > $LOG_DATA;
-	echo "" > $LOG_CACHE;
+	/sbin/busybox sh -c "/sbin/date" > $LOG_DATA;
+	/sbin/busybox sh -c "/sbin/date" > $LOG_CACHE;
 
 	# enable / disable journal
 	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA >> $LOG_DATA 2>&1";
@@ -151,32 +151,40 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 
 	# set inode for cache
-	/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256' | cut -f 12 -d ' '" > $LOG_CACHE_TMP;
+	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;	
+	if [ "$LOG_CACHE_TMP" != "256" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	fi;
+
 	# check cache
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | cut -f 11 -d ' '" != "clean" > $LOG_CACHE_TMP;
+	/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | cut -f 11 -d ' '" > $LOG_CACHE_TMP;
 	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
 	if [ "$LOG_CACHE_TMP" != "clean" ]; then
-		echo "=============Start Of Check Run 1=============" >> $DEVICE_CACHE >> $LOG_CACHE 2>&1;
 		/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-		echo "=============End Of Check Run 1 and Start Check run 2=============" >> $DEVICE_CACHE >> $LOG_CACHE 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-		echo "=============End Of Check Run 2=============" >> $DEVICE_CACHE >> $LOG_CACHE 2>&1;
 	else
 		echo "cache: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;	
 	fi;
 
-	# check data partition + inode set if asked by user via extweaks
+	# only if asked by user via extweaks
 	if [ -e /system/run_fs_check ]; then
+		# reset the lock-file
 		rm -f /system/run_fs_check
-		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | cut -f 11 -d ' '" != "clean" > $LOG_DATA_TMP;
+
+		# set inode for data
+		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256' | cut -f 12 -d ' '" > $LOG_DATA_TMP;
+		LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
+		if [ "$LOG_DATA_TMP" != "256" ]; then
+			/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
+		fi;
+
+		# check data
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
+		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | cut -f 11 -d ' '" > $LOG_DATA_TMP;
 		LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
 		if [ "$LOG_DATA_TMP" != "clean" ]; then
-			/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
-			echo "=============Start Of Check Run 1=============" >> $DEVICE_DATA >> $LOG_DATA 2>&1;
 			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA >> $LOG_DATA 2>&1";
-			echo "=============End Of Check Run 1 and Start Check run 2=============" >> $DEVICE_DATA >> $LOG_DATA 2>&1;
-			/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
-			echo "=============End Of Check Run 2=============" >> $DEVICE_DATA >> $LOG_DATA 2>&1;
 		else
 			echo "cache: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
 		fi;
