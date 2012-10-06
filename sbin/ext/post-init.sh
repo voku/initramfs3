@@ -155,6 +155,19 @@ chmod 0777 /data/data/com.android.providers.*/databases/*;
 	done;
 )&
 
+# little function to wait for sdcard mount and load to do some jobs that need sdcard mounted.
+while [ ! -e /mnt/sdcard/android ]
+do
+	echo "waiting till sdcard is mounted and folder android exist";
+	sleep 5;
+done
+
+if [ $bootmenu_enabled == "1" ]; then
+	if [ -e /mnt/sdcard/.nobootlogo ]; then
+		rm -f /mnt/sdcard/.nobootlogo;
+	fi;
+fi;
+
 echo "Done Booting" > /data/dm-boot-check;
 date >> /data/dm-boot-check;
 

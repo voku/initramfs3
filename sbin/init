@@ -30,6 +30,7 @@ rm -rf /mnt;
 rm -rf /sdcard;
 rm -rf /emmc;
 rm -rf /storage;
+rm -rf /vendor;
 mkdir -p /mnt/asec;
 mkdir -p /mnt/.lfs;
 mkdir -p /mnt/obb;
@@ -39,16 +40,14 @@ chmod -R 777 /mnt/;
 mkdir /storage;
 chmod -R 777 /storage;
 
-# remove kernel vendor binary and let ROM use it's own included vendor binary
-rm -rf /vendor;
-
+# dual boot check and run.
 SECONDROM=1;
 NOBOOTLOGO=0;
 mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
-mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 sync;
 umount -l /mnt/tmp;
-mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 [ -f /preload/build.prop ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;

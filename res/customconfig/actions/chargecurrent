@@ -1,11 +1,11 @@
 #!/sbin/busybox sh
 
-if [ "a$2" == "a" ];then
+if [ "a$2" == "a" ]; then
 	echo "$chargecurrent";
 else
-	chargecurrent=$2
+	chargecurrent=$2;
 	echo "$chargecurrent";
-fi
+fi;
 
 if [ -f /sys/devices/virtual/misc/charge_current/charge_current ]; then
 	case "${chargecurrent}" in
@@ -13,10 +13,10 @@ if [ -f /sys/devices/virtual/misc/charge_current/charge_current ]; then
 			echo "650 450 450" > /sys/devices/virtual/misc/charge_current/charge_current;
 		;;
 		2)
-			echo "700 600 500" > /sys/devices/virtual/misc/charge_current/charge_current;
+			echo "750 700 500" > /sys/devices/virtual/misc/charge_current/charge_current;
 		;;
 		3)
-			echo "700 700 500" > /sys/devices/virtual/misc/charge_current/charge_current;
+			echo "750 750 650" > /sys/devices/virtual/misc/charge_current/charge_current;
 		;;
 		*)
 			chargecurrent=1;

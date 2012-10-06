@@ -303,22 +303,22 @@ and you will have too reset profiles in recovery! Also settings for Battery VS C
 do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)" 
-			name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="2" max="70"/>
+			name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="1" max="70"/>
 
 		<seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
-			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="2" max="70"/>
+			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="1" max="70"/>
 
 		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=12)" 
-			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="2" max="30"/>
+			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="1" max="30"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
-			name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="2" max="70"/>
+			name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="1" max="70"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
-			name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="2" max="60"/>
+			name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="1" max="60"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=44)" 
-			name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="2" max="60"/>
+			name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="1" max="60"/>
 
     </settingsPane>
 
@@ -527,8 +527,8 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
-			<spinnerItem name="AC:700mA, Misc:600mA, USB:500mA" value="2"/> 
-			<spinnerItem name="AC/Misc:700mA, USB:500mA(risky, may overheat if phone used)" value="3"/> 
+			<spinnerItem name="AC:750mA, Misc:700mA, USB:500mA" value="2"/> 
+			<spinnerItem name="AC/Misc:750mA, USB:650mA(risky, may overheat if phone used)" value="3"/> 
 		</spinner>
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
