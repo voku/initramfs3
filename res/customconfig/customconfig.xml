@@ -90,9 +90,9 @@
 
 		<spinner description="Sets the CPU undervolting value which will be set during boot time only. 'ALERT -100 and -75 can brake the boot or stuck the CPU, i have UV the CPU already by default! so dont post about it if you stuck!' It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
-			<spinnerItem name=" +50 mV" value="50"/> 
-			<spinnerItem name=" +25 mV" value="25"/> 
-			<spinnerItem name="No UV/OV" value="0"/> 
+			<spinnerItem name=" +50 mV" value="+50"/> 
+			<spinnerItem name=" +25 mV" value="+25"/> 
+			<spinnerItem name="No UV/OV" value="+0"/> 
 			<spinnerItem name=" -25 mV" value="-25"/> 
 			<spinnerItem name=" -50 mV" value="-50"/> 
 			<spinnerItem name=" -75 mV" value="-75"/> 
