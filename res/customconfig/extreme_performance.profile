@@ -46,6 +46,7 @@ user_cr=133
 user_gamma_adjust=0
 pwm_val=75
 tsp_touch_freq=800000
+tsp_slide2wake=on
 mdnie_shortcut_enabled=off
 negative_tweak=1
 TOUCHSCREEN1=50

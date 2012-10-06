@@ -287,6 +287,9 @@
 			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
 			unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
+		<checkbox description="Slide2Wake By Fluxi@xda, when screen is OFF swipe from left side of screen to right side of screen, and screen will be turned ON!"
+			name="Slide2Wake ON/OFF Switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
+
 		<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" 
 			name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
 
