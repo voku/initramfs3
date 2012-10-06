@@ -8,8 +8,8 @@ if [ "a$2" != "a" ]; then
 			touch /mnt/sdcard/.nobootlogo;
 		;;
 		1)
-			if /sbin/busybox [ -f /mnt/sdcard/.nobootlogo ]; then
-				rm /mnt/sdcard/.nobootlogo;
+			if [ -e /mnt/sdcard/.nobootlogo ]; then
+				rm -f /mnt/sdcard/.nobootlogo;
 			fi;
 		;;
 	esac;
