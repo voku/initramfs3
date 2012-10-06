@@ -309,8 +309,8 @@ CPU_GOV_TWEAKS()
 		fi;
 
 		if [ $SYSTEM_GOVERNOR == "pegasusq" ]; then
-			echo "100000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
-			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_rate;
+			echo "85" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold;
 			echo "2" > /sys/devices/system/cpu/cpufreq/pegasusq/sampling_down_factor;
 			echo "5" > /sys/devices/system/cpu/cpufreq/pegasusq/down_differential;
 			echo "20" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_step;
@@ -320,7 +320,7 @@ CPU_GOV_TWEAKS()
 			echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 			echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 			echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-			echo "90" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
+			echo "85" > /sys/devices/system/cpu/cpufreq/pegasusq/up_threshold_at_min_freq;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/freq_for_responsiveness;
 			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 			echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
@@ -675,6 +675,9 @@ AWAKE_MODE()
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
 	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
+	# Bus-Freq for awake state
+	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
@@ -711,10 +714,7 @@ AWAKE_MODE()
 		fi;
 	fi;
 
-	sleep 6;
-
-	# Bus-Freq for awake state
-	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	sleep 8;
 
 	# please don't kill "cortexbrain"
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
@@ -775,9 +775,7 @@ AWAKE_MODE()
 	fi;
 
 	# set swappiness in case that no root installed, and zram used
-	if [ $zramtweaks != "4" ]; then
-		echo "60" > /proc/sys/vm/swappiness;
-	else
+	if [ $zramtweaks == "4" ]; then
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
 
