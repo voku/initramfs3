@@ -90,7 +90,9 @@
 
 		<spinner description="Sets the CPU undervolting value which will be set during boot time only. 'ALERT -100 and -75 can brake the boot or stuck the CPU, i have UV the CPU already by default! so dont post about it if you stuck!' It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
-			<spinnerItem name="No Undervolting" value="0"/> 
+			<spinnerItem name=" +50 mV" value="+50"/> 
+			<spinnerItem name=" +25 mV" value="+25"/> 
+			<spinnerItem name="No UV/OV" value="+0"/> 
 			<spinnerItem name=" -25 mV" value="-25"/> 
 			<spinnerItem name=" -50 mV" value="-50"/> 
 			<spinnerItem name=" -75 mV" value="-75"/> 
@@ -286,6 +288,9 @@
 		<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)" 
 			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
 			unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
+
+		<checkbox description="Slide2Wake By Fluxi@xda, when screen is OFF swipe from left side of screen to right side of screen, and screen will be turned ON!"
+			name="Slide2Wake ON/OFF Switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
 
 		<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" 
 			name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
@@ -609,7 +614,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 <settingsTab name="BACKUP/RESTORE">
 
-	<settingsPane description="Here you can Backup / Restore your EXTWEAKS settings after installing new kernel, when you restore EXTWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till EXTWEAKS restart with new settings! restore will take 2MIN, you can lightly use your phone." 
+	<settingsPane description="Here you can Backup / Restore your EXTWEAKS settings after installing new kernel, when you restore EXTWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till EXTWEAKS restart with new settings! restore will take 30sec, just wait here!"
 			name="Extweaks Settings Backup / Restore.">
 
 		<button description="Backup Extweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>

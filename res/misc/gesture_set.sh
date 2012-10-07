@@ -182,9 +182,9 @@ do
 	fi;
 
 	# Small vibration to provide feedback
-	service call vibrator 2 i32 100 i32 0
+	service call vibrator 2 i32 50 i32 0
 
-	sleep 2
+	sleep 3
 
 done &) > /dev/null 2>&1;
 
