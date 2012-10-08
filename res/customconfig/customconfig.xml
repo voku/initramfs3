@@ -531,8 +531,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			name="Discrete Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wakelock Stats"/> 
 
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
+			<spinnerItem name="AC/MISC:550mA, USB:450mA" value="0"/> 
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
-			<spinnerItem name="AC:750mA, Misc:700mA, USB:500mA" value="2"/> 
+			<spinnerItem name="AC/MISC:700mA, USB:500mA" value="2"/> 
 			<spinnerItem name="AC/Misc:750mA, USB:650mA(risky, may overheat if phone used)" value="3"/> 
 		</spinner>
 

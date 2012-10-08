@@ -9,11 +9,14 @@ fi;
 
 if [ -f /sys/devices/virtual/misc/charge_current/charge_current ]; then
 	case "${chargecurrent}" in
+		0)
+			echo "550 550 450" > /sys/devices/virtual/misc/charge_current/charge_current;
+		;;
 		1)
 			echo "650 450 450" > /sys/devices/virtual/misc/charge_current/charge_current;
 		;;
 		2)
-			echo "750 700 500" > /sys/devices/virtual/misc/charge_current/charge_current;
+			echo "700 700 500" > /sys/devices/virtual/misc/charge_current/charge_current;
 		;;
 		3)
 			echo "750 750 650" > /sys/devices/virtual/misc/charge_current/charge_current;
