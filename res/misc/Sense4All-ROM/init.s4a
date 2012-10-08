@@ -118,7 +118,7 @@ on fs
     mount ext4 /res/dev/system /system noatime wait rw nodelalloc
 
     Mount Data as we are symlinking our Apps folder
-#   exec sfsck /res/dev/data ext4
+    exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
 #   exec sfsck /res/dev/cache ext4
