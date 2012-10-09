@@ -9,8 +9,8 @@
 	else
 		mount -o remount,rw /system
 		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE &>/dev/null 2>&1;
-		unzip $TMPFILE HOSTS &>/dev/null 2>&1;
-		mv /tmp/HOSTS /system/etc/hosts;
+		unzip $TMPFILE /tmp/hosts &>/dev/null 2>&1;
+		mv /tmp/hosts /system/etc/hosts;
 		chmod 622 /system/etc/hosts;
 		echo "AD Blocker: installed to /system/etc/hosts, reboot to use.";
 	fi;
