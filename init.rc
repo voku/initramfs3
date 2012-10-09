@@ -115,12 +115,10 @@ on fs
 # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait rw nodelalloc
 
-#   exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
 # mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
-    exec sfsck /dev/block/mmcblk0p1 ext4
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
     chown radio system /efs
     chmod 0771 /efs
@@ -138,7 +136,6 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on post-fs
-    exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
 # once everything is setup, no need to modify /

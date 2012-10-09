@@ -133,7 +133,6 @@ on fs
 
     mkdir /efs
 # mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
-    exec sfsck /dev/block/mmcblk0p1 ext4
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
     chown radio system /efs
     chmod 0771 /efs
