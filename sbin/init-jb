@@ -55,7 +55,7 @@ sync;
 umount /preload;
 umount -l /mnt/tmp;
 
-NOBOOTLOGO=1;
+NOBOOTLOGO=1
 
 /sbin/choose_rom;
 
@@ -140,17 +140,11 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/date" > $LOG_DATA;
 	/sbin/busybox sh -c "/sbin/date" > $LOG_CACHE;
 
-	# enable / disable journal
-	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA >> $LOG_DATA 2>&1";
-	/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-
-	# set mount option -> [^]journal_data_ordered
-	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA >> $LOG_DATA 2>&1";
-	/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-
 	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | cut -f 7 -d ' '" > $LOG_CACHE_TMP;
 	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
 	if [ "$LOG_CACHE_TMP" != "journal_data_ordered" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE >> $LOG_CACHE 2>&1";	
 		echo "found missing journal_data_ordered, check partition now." >> $LOG_CACHE 2>&1;
 		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 	fi;
@@ -158,6 +152,8 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | cut -f 7 -d ' '" > $LOG_DATA_TMP;
 	LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
 	if [ "$LOG_DATA_TMP" != "journal_data_ordered" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA >> $LOG_DATA 2>&1";
+		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA >> $LOG_DATA 2>&1";
 		echo "found missing journal_data_ordered, check partition now." >> $LOG_DATA 2>&1;
 		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
 	fi;
@@ -245,7 +241,7 @@ if [ "$B2G" == "1" ]; then
 fi;
 
 if [ "$JELLY" == "1" ]; then
-	mv /sbin/adbd.jb /sbin/adbd;
+#	mv /sbin/adbd.jb /sbin/adbd;
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
 	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
 	chmod 755 /system/lib/libsqlite.so;
