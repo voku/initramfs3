@@ -180,7 +180,7 @@ PARTITION_TUNING()
 		if [ "$LOG_CACHE_TMP" != "clean" ]; then
 			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 		else
-			echo "cache: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
+			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
 		fi;
 
 		# set inode for data
@@ -197,7 +197,7 @@ PARTITION_TUNING()
 		if [ "$LOG_DATA_TMP" != "clean" ]; then
 			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA >> $LOG_DATA 2>&1";
 		else
-			echo "cache: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
+			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
 		fi;
 	fi;
 
