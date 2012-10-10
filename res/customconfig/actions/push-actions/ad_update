@@ -11,7 +11,7 @@
 		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE &>/dev/null 2>&1;
 		unzip -p $TMPFILE > /tmp/hosts &>/dev/null 2>&1;
 		mv /tmp/hosts /system/etc/hosts;
-		chmod 622 /system/etc/hosts;
+		chmod 644 /system/etc/hosts;
 		echo "AD Blocker: installed to /system/etc/hosts, reboot to use.";
 	fi;
 )&
