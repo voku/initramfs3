@@ -51,16 +51,13 @@ mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod
 [ -f /preload/build.prop ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
-[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0;
 sync;
 umount /preload;
 umount -l /mnt/tmp;
 
-if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
-	/sbin/choose_rom;
-else
-	/sbin/choose_rom $SECONDROM;
-fi;
+NOBOOTLOGO=1
+
+/sbin/choose_rom;
 
 if [ "$?" == "1" ]; then
 	SECONDROM=1;

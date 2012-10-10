@@ -1,7 +1,7 @@
 on boot
 
 # Tweaks For ROM
-    setprop ro.kernel.android.checkjni 0
+#   setprop ro.kernel.android.checkjni 0
     setprop ro.telephony.call_ring.delay 0
     setprop ro.ril.disable.power.collapse 0
     setprop ro.lge.proximity.delay 15
