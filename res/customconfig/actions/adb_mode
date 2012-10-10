@@ -1,0 +1,34 @@
+#!/sbin/busybox sh
+
+# $1 - "adb_mode"
+# $2 - value=
+
+if [ "a$2" == "a" ]; then
+	echo "$adb_mode";
+else
+	adb_mode=$2;
+	echo "$adb_mode";
+fi;
+
+case "${adb_mode}" in
+	0)
+		# tmp is cleaned on boot before this check.
+		if [ -e /tmp/adbd.bkp ]; then
+			cp -a /tmp/adbd.bkp /sbin/adbd;
+			chmod 755 /sbin/adbd;
+		else
+			# nothing to do! Normal ADB already used.
+		fi;
+	;;
+	1)
+		if [ ! -e /tmp/adbd.bkp ]; then
+			cp -a /sbin/adbd /tmp/adbd.bkp
+		fi;
+		xzcat /sbin/adbd.jb.xz > /sbin/adbd;
+		chmod 755 /sbin/adbd;
+	;;
+	*)
+		adb_mode=0;
+	;;
+esac;
+

@@ -72,6 +72,7 @@ tsp_flash_timeout=off
 led_fadeout=on
 touchkey_brightness=3000
 logger=off
+adb_mode=0
 bootmenu_enabled=1
 supplicant_scan_interval=360
 zramtweaks=4
