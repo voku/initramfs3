@@ -31,6 +31,7 @@ rm -rf /sdcard;
 rm -rf /emmc;
 rm -rf /storage;
 rm -rf /vendor;
+rm -rf /tmp/*;
 mkdir -p /mnt/asec;
 mkdir -p /mnt/.lfs;
 mkdir -p /mnt/obb;
@@ -51,11 +52,12 @@ mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod
 [ -f /preload/build.prop ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
+[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0;
 sync;
 umount /preload;
 umount -l /mnt/tmp;
 
-NOBOOTLOGO=1
+NOBOOTLOGO=1;
 
 /sbin/choose_rom;
 
@@ -163,7 +165,16 @@ PARTITION_TUNING()
 	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;	
 	if [ "$LOG_CACHE_TMP" != "256" ]; then
 		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 	fi;
+
+	# set inode for data
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256' | cut -f 12 -d ' '" > $LOG_DATA_TMP;
+	LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
+	if [ "$LOG_DATA_TMP" != "256" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
+	fi;	
 
 	# only if asked by user via extweaks
 	if [ -e /system/run_fs_check ]; then
@@ -178,13 +189,6 @@ PARTITION_TUNING()
 			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE >> $LOG_CACHE 2>&1";
 		else
 			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
-		fi;
-
-		# set inode for data
-		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256' | cut -f 12 -d ' '" > $LOG_DATA_TMP;
-		LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
-		if [ "$LOG_DATA_TMP" != "256" ]; then
-			/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
 		fi;
 
 		# check data

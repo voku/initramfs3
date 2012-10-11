@@ -478,6 +478,12 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
+		<spinner description="This setting change normal full root ADB to DEV hacked not rooted ADB! that allow to use external apps to upload files and mod them inside the phone!, normal user not need it! DEV ADB is for developers only."
+			name="ADB BINARY MODE" action="adb_mode">
+			<spinnerItem name="Normal ADB" value="0"/> 
+			<spinnerItem name="Development ADB" value="1"/> 
+		</spinner>
+
 		<checkbox description="Enable or Disable Android Logger (needs restart)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
