@@ -17,7 +17,7 @@ case "${adb_mode}" in
 			cp -a /tmp/adbd.bkp /sbin/adbd;
 			chmod 755 /sbin/adbd;
 		else
-			# nothing to do! Normal ADB already used.
+			echo "nothing to do! Normal ADB already used"
 		fi;
 	;;
 	1)

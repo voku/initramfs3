@@ -1,6 +1,5 @@
 #!/sbin/busybox sh
 
-(
 	TMPFILE=$(mktemp -t);
 
 	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE &>/dev/null 2>&1`;
@@ -14,5 +13,3 @@
 		chmod 644 /system/etc/hosts;
 		echo "AD Blocker: installed to /system/etc/hosts, reboot to use.";
 	fi;
-)&
-
