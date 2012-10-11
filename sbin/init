@@ -140,39 +140,55 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/date" > $LOG_DATA;
 	/sbin/busybox sh -c "/sbin/date" > $LOG_CACHE;
 
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | cut -f 7 -d ' '" > $LOG_CACHE_TMP;
+	# set fs-feature -> [^]has_journal
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
 	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
-	if [ "$LOG_CACHE_TMP" != "journal_data_ordered" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE >> $LOG_CACHE 2>&1";	
-		echo "found missing journal_data_ordered, check partition now." >> $LOG_CACHE 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	if [ "$LOG_CACHE_TMP" != "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -O ^has_journal $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 	fi;
-
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | cut -f 7 -d ' '" > $LOG_DATA_TMP;
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal'" > $LOG_DATA_TMP;
 	LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
-	if [ "$LOG_DATA_TMP" != "journal_data_ordered" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA >> $LOG_DATA 2>&1";
-		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA >> $LOG_DATA 2>&1";
-		echo "found missing journal_data_ordered, check partition now." >> $LOG_DATA 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
+	if [ "$LOG_DATA_TMP" == "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
 
-	# set inode for cache
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256' | cut -f 12 -d ' '" > $LOG_CACHE_TMP;
+	# set fs-feature -> [^]dir_index
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index'" > $LOG_CACHE_TMP;
+	LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
+	if [ "$LOG_CACHE_TMP" == "" ]; then	
+		/sbin/busybox sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+	fi;
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index'" > $LOG_DATA_TMP;
+	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
+	if [ "$LOG_DATA_TMP" == "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA 2>&1;
+	fi;
+
+	# set mount option -> [^]journal_data_ordered
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_CACHE_TMP;
+	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
+	if [ "$LOG_CACHE_TMP" != "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -o ^journal_data_ordered $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+	fi;
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_DATA_TMP;
+	LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
+	if [ "$LOG_DATA_TMP" == "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA" >> $LOG_DATA 2>&1;
+	fi;
+
+	# set inode to 256
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
 	LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;	
-	if [ "$LOG_CACHE_TMP" != "256" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+	if [ "$LOG_CACHE_TMP" == "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 	fi;
-
-	# set inode for data
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256' | cut -f 12 -d ' '" > $LOG_DATA_TMP;
+	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
 	LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
-	if [ "$LOG_DATA_TMP" != "256" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA >> $LOG_DATA 2>&1";
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
-	fi;	
+	if [ "$LOG_DATA_TMP" == "" ]; then
+		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+	fi;
 
 	# only if asked by user via extweaks
 	if [ -e /system/run_fs_check ]; then
@@ -180,21 +196,21 @@ PARTITION_TUNING()
 		rm -f /system/run_fs_check
 
 		# check cache
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE >> $LOG_CACHE 2>&1";
-		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | cut -f 11 -d ' '" > $LOG_CACHE_TMP;
+		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | grep 'clean'" > $LOG_CACHE_TMP;
 		LOG_CACHE_TMP=`/sbin/busybox cat $LOG_CACHE_TMP`;
-		if [ "$LOG_CACHE_TMP" != "clean" ]; then
-			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE >> $LOG_CACHE 2>&1";
+		if [ "$LOG_CACHE_TMP" == "" ]; then
+			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 		else
 			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
 		fi;
 
 		# check data
 		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
-		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | cut -f 11 -d ' '" > $LOG_DATA_TMP;
+		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | grep 'clean'" > $LOG_DATA_TMP;
 		LOG_DATA_TMP=`/sbin/busybox cat $LOG_DATA_TMP`;
-		if [ "$LOG_DATA_TMP" != "clean" ]; then
-			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA >> $LOG_DATA 2>&1";
+		if [ "$LOG_DATA_TMP" == "" ]; then
+			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA 2>&1;
 		else
 			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
 		fi;
