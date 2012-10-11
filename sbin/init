@@ -57,11 +57,7 @@ sync;
 umount /preload;
 umount -l /mnt/tmp;
 
-if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then
-	/sbin/choose_rom;
-else
-	/sbin/choose_rom $SECONDROM;
-fi;
+if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]]; then /sbin/choose_rom; else /sbin/choose_rom $SECONDROM; fi;
 
 if [ "$?" == "1" ]; then
 	SECONDROM=1;
