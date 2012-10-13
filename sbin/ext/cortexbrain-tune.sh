@@ -721,7 +721,10 @@ AWAKE_MODE()
 		fi;
 	fi;
 
-	sleep 10;
+	# check if ROM booting now, if yes, dont wait. creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
+	if [ ! -e /data/.siyah/booting ]; then
+		sleep 10;
+	fi;
 
         # set CPU-Tweak
 	if [ $cortexbrain_cpu == on ]; then
