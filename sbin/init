@@ -263,12 +263,11 @@ if [ "$B2G" == "1" ]; then
 fi;
 
 if [ "$JELLY" == "1" ]; then
-#	mv /sbin/adbd.jb /sbin/adbd;
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
 	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
 	chmod 755 /system/lib/libsqlite.so;
 	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
-	if [ "$CM10" == 1 ]; then
+	if [ "$CM10" == "1" ]; then
 		echo "1" > /proc/sys/kernel/rom_feature_set;
 		cp -a /res/misc/JellyB-CM-AOKP/* /;
 	else
