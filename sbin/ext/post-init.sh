@@ -88,7 +88,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 # Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
 $BB mount -o remount,rw rootfs;
-$BB chmod 755 /res/customconfig/actions/ -R;
+$BB chmod 6755 /res/customconfig/actions/ -R;
 $BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 (

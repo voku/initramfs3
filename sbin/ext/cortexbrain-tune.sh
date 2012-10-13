@@ -268,6 +268,19 @@ fi;
 # CPU-TWEAKS
 # ==============================================================
 
+MEGA_BOOST_CPU_GOV_TWEAKS()
+{
+	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+
+	# boost CPU power for fast and no lag wakeup!
+	echo "20000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
+	echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold > /dev/null 2>&1;
+	echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold > /dev/null 2>&1;
+	echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq > /dev/null 2>&1;
+	echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
+	echo "1000000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
+}
+
 CPU_GOV_TWEAKS()
 {
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
@@ -662,12 +675,6 @@ AWAKE_MODE()
 		echo "0" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
 
-	# enable KSM on screen ON.
-	KSM="/sys/kernel/mm/ksm/run";
-	if [ -e $KSM ]; then
-        	echo "1" > $KSM;
-	fi;
-
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
@@ -675,15 +682,12 @@ AWAKE_MODE()
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
 	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
-	# Bus-Freq for awake state
-	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-	# set CPU-Tweak
-	if [ $cortexbrain_cpu == "on" ]; then
-		CPU_GOV_TWEAKS;
+	if [ $cortexbrain_cpu == on ]; then
+		# set BOOST CPU-Tweak
+		MEGA_BOOST_CPU_GOV_TWEAKS;
 	fi;
 
 	# boost wakeup!
@@ -708,13 +712,23 @@ AWAKE_MODE()
 	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	if [ $gesture_tweak == "on" ]; then
+		# enable gestures code
+		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
 		# check if running already
 		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
 			/sbin/busybox sh /data/gesture_set.sh;
 		fi;
 	fi;
 
-	sleep 8;
+	sleep 10;
+
+        # set CPU-Tweak
+	if [ $cortexbrain_cpu == "on" ]; then
+		CPU_GOV_TWEAKS;
+	fi;
+
+	# Bus-Freq for awake state
+	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 	# please don't kill "cortexbrain"
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
@@ -741,6 +755,12 @@ AWAKE_MODE()
 
 	# fs settings 
 	echo "25" > /proc/sys/vm/vfs_cache_pressure;
+
+	# enable KSM on screen ON.
+	KSM="/sys/kernel/mm/ksm/run";
+	if [ -e $KSM ]; then
+		echo "1" > $KSM;
+	fi;
 
 	# enable WIFI-driver if screen is on
 	if [ $wifiON == 1 ]; then
@@ -802,6 +822,12 @@ SLEEP_MODE()
 	. /data/.siyah/$PROFILE.profile;
 
 	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
+	if [ $gesture_tweak == "off" ]; then
+		# disable gestures code
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
+	fi;
+
 	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
 		# shutdown gestures loop on screen off, we dont need it
 		pkill -f "/data/gesture_set.sh";
