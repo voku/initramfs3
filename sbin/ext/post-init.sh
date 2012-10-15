@@ -35,6 +35,11 @@ $BB chmod 0777 /data/.siyah/ -R;
 read_defaults;
 read_config;
 
+(
+##### init.d scripts early, so my tweaks will fix the mess.#####
+$BB sh /sbin/ext/run-init-scripts.sh;
+)&
+
 #cpu undervolting
 echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 
@@ -86,46 +91,36 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
+# sound reset on boot.
+/res/uci.sh soundgasm_hp $soundgasm_hp;
+
 # enable kmem interface for everyone by GM
 echo "0" > /proc/sys/kernel/kptr_restrict;
 
-# Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
-$BB mount -o remount,rw rootfs;
-$BB chmod 6755 /res/customconfig/actions/ -R;
-$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
-
 (
+	# Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
+	$BB mount -o remount,rw rootfs;
+	$BB chmod 6755 /res/customconfig/actions/ -R;
+	$BB chown root:system /res/customconfig/actions/ -R;
+	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+
 	# apply ExTweaks settings
 	echo "booting" > /data/.siyah/booting;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
+	pkill -f "com.darekxan.extweaks.app";
 	$BB sh /res/uci.sh restore;
-	echo "uci done" > /data/.siyah/uci_loaded;
-)&
-
-(
-	while [ ! -e /data/.siyah/uci_loaded ]
-	do
-		echo "Killing extweaks app proccess till all tweaks are loaded.";
-		pkill -f "com.darekxan.extweaks.app";
-		sleep 5;
-		echo "Waiting till UCI finish his work!";
-	done
 
 	# Restore all the PUSH Button Actions back to there location.
 	$BB mount -o remount,rw rootfs;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-	$BB rm -f /data/.siyah/uci_loaded;
+	pkill -f "com.darekxan.extweaks.app";
 	$BB rm -f /data/.siyah/booting;
-	# root for root_install
-	$BB chmod +s /res/customconfig/actions/push-actions/root_*;
-	$BB chown root:root /res/customconfig/actions/push-actions/root_*;
 	# ==============================================================
 	# EXTWEAKS FIXING
 	# ==============================================================
 
 	# apply volume tweaks. 
 	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
-	/res/uci.sh soundgasm_hp $soundgasm_hp;
 
 	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
@@ -138,15 +133,10 @@ $BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 	# apply touch led time out and led on touch, this is done if changed by ROM.
 	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
-	##### init scripts #####
-	$BB sh /sbin/ext/run-init-scripts.sh;
+
+	# change USB mode MTP or Mass Storage
+	/res/customconfig/actions/usb-mode ${usb_mode};
 )&
-
-# change USB mode MTP or Mass Storage
-/res/customconfig/actions/usb-mode ${usb_mode};
-
-# set free permission to all system DB. so apps can write there. less problem with perms. and FC
-chmod 0777 /data/data/com.android.providers.*/databases/*;
 
 (
 	sleep 60;
@@ -166,7 +156,7 @@ do
 done
 
 if [ $bootmenu_enabled == "1" ]; then
-	if [ -e /mnt/sdcard/.nobootlogo ]; then
+	if [ -e /sdcard/.nobootlogo ]; then
 		rm -f /mnt/sdcard/.nobootlogo;
 	fi;
 fi;
