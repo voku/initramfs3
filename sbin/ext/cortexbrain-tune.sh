@@ -670,6 +670,9 @@ fi;
 # ==============================================================
 AWAKE_MODE()
 {
+	# cpu-settings for second core online at booster time.
+	echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# WIFI PM-MAX support
 	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
@@ -708,10 +711,6 @@ AWAKE_MODE()
 		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
-	# cpu-settings for second core
-	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
-
 	if [ $gesture_tweak == on ]; then
 		# enable gestures code
 		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
@@ -731,6 +730,10 @@ AWAKE_MODE()
 		sleep_power_save=0
 		CPU_GOV_TWEAKS;
 	fi;
+
+	# cpu-settings for second core
+	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# Bus-Freq for awake state
 	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -859,6 +862,10 @@ SLEEP_MODE()
 		# set disk I/O sched to noop simple and battery saving.
 		echo "noop" > /sys/block/mmcblk0/queue/scheduler;
 		echo "noop" > /sys/block/mmcblk1/queue/scheduler;
+
+		# cpu-settings for second core
+		echo "40" > /sys/module/stand_hotplug/parameters/load_h0;
+		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
 		# set wifi.supplicant_scan_interval
 		if [ $supplicant_scan_interval -lt 180 ]; then
