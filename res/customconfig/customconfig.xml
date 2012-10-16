@@ -54,11 +54,11 @@
 				<spinnerItem name="sleepy" value="sleepy"/>
 			</spinner>
 
-			<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
-				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="70"/>
+			<seekBar description="second core will be enabled when the load goes above this threshold, if you set above 28 second core will not turn ON. (default is 20)" 
+				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
-			<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)" 
-				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="70"/>
+			<seekBar description="second core will be disabled when the load goes below this threshold (default is 30)" 
+				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="50"/>
 
 			<seekBar description="(default is 2)" 
 				name="min_rq" action="generic /sys/module/stand_hotplug/parameters/min_rq" unit="" min="0" reversed="false" step="1" max="2"/>
