@@ -682,10 +682,6 @@ AWAKE_MODE()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	# set I/O-Scheduler
-	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
-	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
-
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
@@ -722,12 +718,16 @@ AWAKE_MODE()
 
 	# check if ROM booting now, if yes, dont wait. creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
 	if [ ! -e /data/.siyah/booting ]; then
-		sleep 10;
+		sleep 7;
 	fi;
+
+	# set I/O-Scheduler
+	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
+	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
         # set CPU-Tweak
 	if [ $cortexbrain_cpu == on ]; then
-		sleep_power_save=0
+		sleep_power_save=0;
 		CPU_GOV_TWEAKS;
 	fi;
 
@@ -845,6 +845,10 @@ SLEEP_MODE()
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
 
+		if [ ! -e /data/.siyah/booting ]; then
+			sleep 5;
+		fi;
+
 		# set CPU-Governor
 		echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
@@ -855,7 +859,7 @@ SLEEP_MODE()
 
 		# set CPU-Tweak
 		if [ $cortexbrain_cpu == on ]; then
-			sleep_power_save=1
+			sleep_power_save=1;
 			CPU_GOV_TWEAKS;
 		fi;
 
