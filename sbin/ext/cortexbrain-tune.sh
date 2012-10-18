@@ -671,8 +671,8 @@ fi;
 AWAKE_MODE()
 {
 	# cpu-settings for second core online at booster time.
-	echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
+	echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# WIFI PM-MAX support
 	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
