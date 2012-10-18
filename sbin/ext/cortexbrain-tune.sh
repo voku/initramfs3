@@ -735,8 +735,8 @@ AWAKE_MODE()
 	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# Bus-Freq for awake state
-	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	# disable slide2wake on screen ON, it's not needed.
+	echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
 
 	# please don't kill "cortexbrain"
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
@@ -815,6 +815,11 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
+
+	if [ ! -e /data/.siyah/booting ]; then
+		sleep 5;
+	fi;
+
 	# WIFI PM-FAST support
 	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 		echo "1" > /sys/module/dhd/parameters/wifi_pm;
@@ -833,7 +838,15 @@ SLEEP_MODE()
 
 	if [ $gesture_tweak == off ]; then
 		# disable gestures code
-		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
+	fi;
+
+	if [ $tsp_slide2wake == off ]; then
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
+	else
+		# reload the code to make it work 100% all the time.
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
+		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
 	fi;
 
 	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
@@ -844,10 +857,6 @@ SLEEP_MODE()
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
-
-		if [ ! -e /data/.siyah/booting ]; then
-			sleep 5;
-		fi;
 
 		# set CPU-Governor
 		echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -868,16 +877,13 @@ SLEEP_MODE()
 		echo "noop" > /sys/block/mmcblk1/queue/scheduler;
 
 		# cpu-settings for second core
-		echo "40" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
+		echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
+		echo "30" > /sys/module/stand_hotplug/parameters/load_l1;
 
 		# set wifi.supplicant_scan_interval
 		if [ $supplicant_scan_interval -lt 180 ]; then
 			setprop wifi.supplicant_scan_interval 360;
 		fi;
-
-		# Bus Freq for deep sleep
-		echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 		# set settings for battery -> don't wake up "pdflush daemon"
 		echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
