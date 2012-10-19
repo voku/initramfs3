@@ -707,6 +707,12 @@ AWAKE_MODE()
 		echo "1000000" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
 	fi;
 
+	echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
+
+	if [ -e /dev/block/vold/179:25 ]; then
+		echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
+	fi;
+
 	if [ $gesture_tweak == on ]; then
 		# enable gestures code
 		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
