@@ -75,6 +75,9 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/xt_qtaguid/parameters/debug_mask;
 fi;
 
+# disable IPv6 on all interfaces!
+sysctl -w net.ipv6.conf.all.disable_ipv6=1
+
 # for ntfs automounting
 mkdir /mnt/ntfs;
 mount -t tmpfs tmpfs /mnt/ntfs;
