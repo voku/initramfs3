@@ -755,6 +755,9 @@ AWAKE_MODE()
 	# set wifi.supplicant_scan_interval
 	setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 
+	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
+	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6
+
 	# set default values
 	echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 	echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
