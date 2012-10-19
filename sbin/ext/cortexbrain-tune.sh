@@ -735,9 +735,6 @@ AWAKE_MODE()
 	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# disable slide2wake on screen ON, it's not needed.
-	echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
-
 	# please don't kill "cortexbrain"
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 	for i in $PIDOFCORTEX; do
@@ -839,14 +836,6 @@ SLEEP_MODE()
 	if [ $gesture_tweak == off ]; then
 		# disable gestures code
 		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
-	fi;
-
-	if [ $tsp_slide2wake == off ]; then
-		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
-	else
-		# reload the code to make it work 100% all the time.
-		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
-		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake;
 	fi;
 
 	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
