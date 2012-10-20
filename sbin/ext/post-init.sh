@@ -36,14 +36,14 @@ read_defaults;
 read_config;
 
 (
-##### init.d scripts early, so my tweaks will fix the mess.#####
-$BB sh /sbin/ext/run-init-scripts.sh;
+	##### init.d scripts early, so my tweaks will fix the mess.#####
+	$BB sh /sbin/ext/run-init-scripts.sh;
 )&
 
-#cpu undervolting
+# cpu undervolting
 echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 
-#change cpu step count
+# change cpu step count
 case "${cpustepcount}" in
 	6)
 		echo "1200 1000 800 500 200 100" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies;
@@ -156,7 +156,7 @@ while [ ! -e /mnt/sdcard/android ]
 do
 	echo "waiting till sdcard is mounted and folder android exist";
 	sleep 5;
-done
+done;
 
 if [ $bootmenu_enabled == "1" ]; then
 	if [ -e /sdcard/.nobootlogo ]; then
