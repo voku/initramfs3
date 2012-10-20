@@ -21,9 +21,9 @@ else
 				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 			;;
 			on)
-				if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
-					/sbin/busybox sh /data/gesture_set.sh;
-				fi;
+				pkill -f "gesture_set.sh";
+				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
+				/sbin/busybox sh /data/gesture_set.sh;
 			;;
 		esac;
 	fi;

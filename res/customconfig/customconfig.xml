@@ -54,11 +54,11 @@
 				<spinnerItem name="sleepy" value="sleepy"/>
 			</spinner>
 
-			<seekBar description="second core will be enabled when the load goes above this threshold (default is 30)" 
-				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="70"/>
+			<seekBar description="second core will be enabled when the load goes above this threshold, if you set above 24, and you have 800Mhz as MAX, second core will not turn ON!. if you set freq lower than 800Mhz Second core is DISABLED! (default is 23)" 
+				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
-			<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)" 
-				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="70"/>
+			<seekBar description="second core will be disabled when the load goes below this threshold (default is 30)" 
+				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="50"/>
 
 			<seekBar description="(default is 2)" 
 				name="min_rq" action="generic /sys/module/stand_hotplug/parameters/min_rq" unit="" min="0" reversed="false" step="1" max="2"/>
@@ -158,7 +158,6 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/> 
@@ -169,7 +168,6 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/> 
@@ -180,7 +178,6 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/> 
@@ -191,7 +188,6 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/>
@@ -518,6 +514,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
 			name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
 			<spinnerItem name="deadline" value="deadline"/> 

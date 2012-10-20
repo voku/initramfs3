@@ -18,19 +18,19 @@ echo "
 2:3:(0|480,0|200)2:3:(0|480,600|800)
 
 # Gesture 3 - draw a Z with one finger while another is pressed on the middle left
-3:1:(0|150,0|150)
-3:1:(330|480,0|150)
-3:1:(0|150,650|800)
-3:1:(330|480,650|800)
+3:1:(0|150,0|200)
+3:1:(330|480,0|200)
+3:1:(0|150,600|800)
+3:1:(330|480,600|800)
 
 3:2:(0|150,300|500)
 
 # Gesture 4 draw a heart starting at middle lower part of the screen
-4:1:(200|280,699|799)
+4:1:(200|280,700|800)
 4:1:(0|150,300|500)
 4:1:(200|280,300|500)
 4:1:(330|480,300|500)
-4:1:(200|280,699|799)
+4:1:(200|280,700|800)
 
 # Gesture 5 swipe 3 fingers from near the bottom to the top
 5:1:(0|480,600|800)5:1:(0|480,0|200)
@@ -38,28 +38,28 @@ echo "
 5:3:(0|480,600|800)5:3:(0|480,0|200)
 
 # Gesture 6 - one finger on bottom right while another goes from top-left to middle and back
-6:1:(0|240,0|320)      6:1:(180|300,340|460)  6:1:(0|240,0|320) # top-left, middle, top-left
-6:2:(530|800,960|1280)  # 2nd finger on the bottom right
+6:1:(0|150,0|200)      6:1:(180|300,340|460)  6:1:(0|150,0|200) # top-left, middle, top-left
+6:2:(330|480,600|800)  # 2nd finger on the bottom right
 
 # Gesture 7 - one finger on bottom left while another goes from top-right to middle and back
-7:1:(530|800,0|320)    7:1:(180|300,340|460)  7:1:(530|800,0|320) # top-right, middle, top-right
-7:2:(0|240,960|1280)    # 2nd finger on the bottom left
+7:1:(330|480,0|200)    7:1:(180|300,340|460)  7:1:(330|480,0|200) # top-right, middle, top-right
+7:2:(0|150,600|800)    # 2nd finger on the bottom left
 
 # Gesture 8 - 2 fingers start from the top-left and bottom-left corners and end in the middle right, like an arrow
-8:1:(0|240,0|320)     8:1:(300|800,300|500)  # top-left to middle-right
-8:2:(0|240,960|1280)   8:2:(300|800,300|500)  # bottom-left to middle-right
+8:1:(0|150,0|200)     8:1:(300|480,300|500)  # top-left to middle-right
+8:2:(0|150,600|800)   8:2:(300|480,300|500)  # bottom-left to middle-right
 
 # Gesture 9 - 1 finger draws an X starting at the top left
-9:1:(0|240,0|320)     # top left
-9:1:(530|800,960|1280) # bottom right
-9:1:(530|800,0|320)   # top right
-9:1:(0|240,960|1280)   # bottom left
+9:1:(0|150,0|200)     # top left
+9:1:(330|480,600|800) # bottom right
+9:1:(330|480,0|200)   # top right
+9:1:(0|150,600|800)   # bottom left
 
 # Gesture 10 - 1 finger from bottom-left, bottom-right, bottom-left, bottom-right
-10:1:(0|240,960|1280)   # bottom left
-10:1:(530|800,960|1280) # bottom right
-10:1:(0|240,960|1280)   # bottom left
-10:1:(530|800,960|1280) # bottom right
+10:1:(0|150,600|800)   # bottom left
+10:1:(330|480,600|800) # bottom right
+10:1:(0|150,600|800)   # bottom left
+10:1:(330|480,600|800) # bottom right
 
 " > /sys/devices/virtual/misc/touch_gestures/gesture_patterns
 )&
@@ -77,12 +77,9 @@ do
 	
 	if [ "$GESTURE" -eq "1" ]; then
 	
-	mdnie_status=`cat /sys/class/mdnie/mdnie/negative`
-	if [ "$mdnie_status" -eq "0" ]; then
-		echo 1 > /sys/class/mdnie/mdnie/negative
-	else
-		echo 0 > /sys/class/mdnie/mdnie/negative
-	fi;
+	 	mdnie_status=`cat /sys/class/mdnie/mdnie/negative`
+		[ "$mdnie_status" == "0" ] && echo 1 > /sys/class/mdnie/mdnie/negative
+		[ "$mdnie_status" != "0" ] && echo 0 > /sys/class/mdnie/mdnie/negative
 
 	elif [ "$GESTURE" -eq "2" ]; then
 
@@ -113,9 +110,8 @@ do
 		result=`am start $launch_flags com.sec.android.app.camera/.Camera 2>&1 | grep Error`
 		[ "$result" != "" ] && result=`am start $launch_flags com.android.camera/.Camera 2>&1 | grep Error`
 		[ "$result" != "" ] && result=`am start $launch_flags com.android.gallery3d/com.android.camera.CameraLauncher 2>&1 | grep Error`
-		[ "$result" != "" ] && result=`am start $launch_flags com.android.camera/.Camera 2>&1 | grep Error`
 
-	elif [ "$GESTURE" == "6" ]; then
+	elif [ "$GESTURE" -eq "6" ]; then
 
 		# Toggle bluetooth on/off
 		service call bluetooth 1 | grep "0 00000000" > /dev/null
@@ -125,8 +121,8 @@ do
 			[ "$is_jb" -eq "1" ] && service call bluetooth 5 > /dev/null
 			[ "$is_jb" -ne "1" ] && service call bluetooth 4 > /dev/null
 		fi;
-        
-	elif [ "$GESTURE" == "7" ]; then
+
+	elif [ "$GESTURE" -eq "7" ]; then
 
 		# Toggle WiFi on/off
 		service call wifi 14 | grep "0 00000001" > /dev/null
@@ -135,8 +131,8 @@ do
 		else
 			service call wifi 13 i32 0 > /dev/null
 		fi;
-        
-	elif [ "$GESTURE" == "8" ]; then
+
+	elif [ "$GESTURE" -eq "8" ]; then
 
 		# Simulate key press - Play/Pause
 
@@ -149,8 +145,8 @@ do
 		# 164 = Volume mute / unmute
 
 		input keyevent 85
-    
-	elif [ "$GESTURE" == "9" ]; then
+
+	elif [ "$GESTURE" -eq "9" ]; then
 
 		# Simulate key press - Volume mute / unmute
 
@@ -165,10 +161,10 @@ do
 
 		input keyevent 164
 
-	elif [ "$GESTURE" == "10" ]; then
+	elif [ "$GESTURE" -eq "10" ]; then
 
 		# Simulate key press - Home
-        
+
 		# 26 = Power
 		# 3 = Home
 		# 24/25 = Volume up/down
@@ -184,7 +180,6 @@ do
 	# Small vibration to provide feedback
 	service call vibrator 2 i32 50 i32 0
 
-	sleep 3
+	sleep 1
 
 done &) > /dev/null 2>&1;
-
