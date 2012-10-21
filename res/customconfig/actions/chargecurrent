@@ -21,6 +21,9 @@ if [ -f /sys/devices/virtual/misc/charge_current/charge_current ]; then
 		3)
 			echo "750 750 650" > /sys/devices/virtual/misc/charge_current/charge_current;
 		;;
+		4)
+			echo "0 0 0" > /sys/devices/virtual/misc/charge_current/charge_current;
+		;;
 		*)
 			chargecurrent=1;
 		;;

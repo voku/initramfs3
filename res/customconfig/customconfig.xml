@@ -340,10 +340,10 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			name="Analog Headphone" action="sound_volume 1" unit="DB" min="-10" reversed="false" step="2" max="20"/>
 
 		<seekBar description="Analog MIC GAIN Level"
-			name="MIC Gain Level" action="sound_volume 2" unit="DB" min="-10" reversed="false" step="2" max="10"/>
+			name="MIC Gain Level" action="sound_volume 2" unit="DB" min="-12" reversed="false" step="4" max="12"/>
 
 		<seekBar description="Analog Speaker Level"
-			name="Speaker Level" action="sound_volume 3" unit="DB" min="-10" reversed="false" step="2" max="10"/>
+			name="Speaker Level" action="sound_volume 3" unit="DB" min="-12" reversed="false" step="4" max="12"/>
 
 	</settingsPane>
 
@@ -474,6 +474,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
+		<checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
+			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/>
+
 		<spinner description="This setting change normal full root ADB to DEV hacked not rooted ADB! that allow to use external apps to upload files and mod them inside the phone!, normal user not need it! DEV ADB is for developers only."
 			name="ADB BINARY MODE" action="adb_mode">
 			<spinnerItem name="Normal ADB" value="0"/> 
@@ -538,6 +541,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
 			<spinnerItem name="AC/MISC:700mA, USB:500mA" value="2"/> 
 			<spinnerItem name="AC/Misc:750mA, USB:650mA(risky, may overheat if phone used)" value="3"/> 
+			<spinnerItem name="AC/MISC/USB NO Charge(debug battery)" value="4"/> 
 		</spinner>
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>

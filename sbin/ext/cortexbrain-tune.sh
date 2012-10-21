@@ -826,9 +826,11 @@ SLEEP_MODE()
 		sleep 5;
 	fi;
 
-	# WIFI PM-FAST support
-	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-		echo "1" > /sys/module/dhd/parameters/wifi_pm;
+	if [ $wifi_pwr == on ]; then
+		# WIFI PM-FAST support
+		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+			echo "1" > /sys/module/dhd/parameters/wifi_pm;
+		fi;
 	fi;
 
 	# disable KSM on screen OFF
