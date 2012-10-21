@@ -75,6 +75,7 @@ logger=off
 adb_mode=0
 bootmenu_enabled=1
 supplicant_scan_interval=360
+wifi_pwr=on
 zramtweaks=4
 gpsregion=No_GPS_Zone_changes
 scheduler=fiops
