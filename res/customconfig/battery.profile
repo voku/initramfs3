@@ -20,6 +20,7 @@ scaling_max_suspend_freq=600000
 scaling_min_suspend_freq=200000
 deep_sleep=ondemand
 standby_freq=200000
+wakeup_delay=0
 mali_touch_boost_level=2
 GPUFREQ1=100
 GPUFREQ2=160

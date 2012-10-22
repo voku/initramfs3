@@ -670,6 +670,15 @@ fi;
 # ==============================================================
 AWAKE_MODE()
 {
+	# load all extweaks user settings.
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
+	# set wakeup booster delay to prevent mp3 music shattering when screen turned ON.
+	if [ $wakeup_delay != 0 ] && [ ! -e /data/.siyah/booting ]; then
+		sleep $wakeup_delay
+	fi;
+
 	# cpu-settings for second core online at booster time.
 	echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -678,9 +687,6 @@ AWAKE_MODE()
 	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 		echo "0" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
-
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
 
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -715,11 +721,10 @@ AWAKE_MODE()
 
 	if [ $gesture_tweak == on ]; then
 		# enable gestures code
-		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
-		# check if running already
-		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
-			/sbin/busybox sh /data/gesture_set.sh;
-		fi;
+		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
+		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
+		/sbin/busybox sh /data/gesture_set.sh;
 	fi;
 
 	# check if ROM booting now, if yes, dont wait. creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
@@ -821,17 +826,8 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-
-	if [ ! -e /data/.siyah/booting ]; then
-		sleep 5;
-	fi;
-
-	if [ $wifi_pwr == on ]; then
-		# WIFI PM-FAST support
-		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-			echo "1" > /sys/module/dhd/parameters/wifi_pm;
-		fi;
-	fi;
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
 
 	# disable KSM on screen OFF
 	KSM="/sys/kernel/mm/ksm/run";
@@ -839,27 +835,32 @@ SLEEP_MODE()
         	echo "0" > $KSM;
 	fi;
 
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
 	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
-	if [ $gesture_tweak == off ]; then
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ $gesture_tweak == off ]; then
+		# shutdown gestures loop on screen off, we dont need it
+		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
 		# disable gestures code
 		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
-	fi;
-
-	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
-		# shutdown gestures loop on screen off, we dont need it
-		pkill -f "/data/gesture_set.sh";
-		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
 
 	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
 	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 
+	if [ $wakeup_delay != 0 ] && [ ! -e /data/.siyah/booting ]; then
+		sleep $wakeup_delay;
+	fi;
+
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
+
+		if [ $wifi_pwr == on ]; then
+			# WIFI PM-FAST support
+			if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+				echo "1" > /sys/module/dhd/parameters/wifi_pm;
+			fi;
+		fi;
 
 		# set CPU-Governor
 		echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;

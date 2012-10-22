@@ -19,8 +19,10 @@ else
 			off)
 				pkill -f "gesture_set.sh";
 				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
+				echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
 			;;
 			on)
+				echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
 				pkill -f "gesture_set.sh";
 				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 				/sbin/busybox sh /data/gesture_set.sh;

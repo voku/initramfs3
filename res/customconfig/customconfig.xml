@@ -126,6 +126,10 @@
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
+		<seekBar description="If your music player get music shattering on screen ON, you can add small delay to cortex wakeup script, to allow more gentle wakeup, that will prevent music shatter, but may slow down the screen wakeup time." 
+			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
+			unit="Sec" min="0" reversed="false" step="1" max="5"/>
+
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
 			<spinnerItem name="ondemand" value="ondemand"/> 
