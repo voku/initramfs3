@@ -182,13 +182,6 @@ fi;
 # ==============================================================
 SYSTEM_TWEAKS()
 {
-	# enable Hardware Rendering
-	#setprop video.accelerate.hw 1;
-	#setprop debug.performance.tuning 1;
-	#setprop debug.sf.hw 1;
-	setprop persist.sys.use_dithering 1;
-	#setprop persist.sys.ui.hw true; # ->reported as problem maker in some roms.
-
 	# render UI with GPU
 	setprop hwui.render_dirty_regions false;
 	setprop windowsmgr.max_events_per_sec 120;
@@ -197,11 +190,6 @@ SYSTEM_TWEAKS()
 
 	# Proximity tweak
 	setprop mot.proximity.delay 15;
-
-	# more Tweaks
-	setprop dalvik.vm.execution-mode int:jit;
-	setprop persist.adb.notify 0;
-	setprop pm.sleep_mode 1;
 
 	if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 120 ]; then
 		setprop dalvik.vm.heapsize 128m
@@ -553,22 +541,20 @@ TCP_TWEAKS()
 	echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 	echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 	echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-	echo "256960" > /proc/sys/net/core/wmem_max;
-	echo "563200" > /proc/sys/net/core/rmem_max;
-	echo "256960" > /proc/sys/net/core/rmem_default;
-	echo "256960" > /proc/sys/net/core/wmem_default;
+	echo "262144" > /proc/sys/net/core/wmem_max;
+	echo "524288" > /proc/sys/net/core/rmem_max;
+	echo "262144" > /proc/sys/net/core/rmem_default;
+	echo "262144" > /proc/sys/net/core/wmem_default;
 	echo "20480" > /proc/sys/net/core/optmem_max;
-	echo "4096 16384 110208" > /proc/sys/net/ipv4/tcp_wmem;
-	echo "4096 87380 563200" > /proc/sys/net/ipv4/tcp_rmem;
+	echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
+	echo "4096 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
 	echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 	echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-	setprop net.tcp.buffersize.default 4096,87380,563200,4096,16384,110208;
-	setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208;
-	setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208;
-	setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040;
-	setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680;
-	setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
-	setprop net.tcp.buffersize.hspa    4092,87380,563200,4096,16384,110208;
+
+	# ping/icmp protection
+	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
+	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
+	echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
 
 	log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 }
@@ -581,11 +567,6 @@ fi;
 # ==============================================================
 FIREWALL_TWEAKS()
 {
-	# ping/icmp protection
-	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
-	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
-	echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
-
 	if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts ]; then
 		echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts;
 	fi;
@@ -679,6 +660,10 @@ AWAKE_MODE()
 		sleep $wakeup_delay
 	fi;
 
+        # set I/O-Scheduler
+	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
+	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
+
 	# cpu-settings for second core online at booster time.
 	echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -731,10 +716,6 @@ AWAKE_MODE()
 	if [ ! -e /data/.siyah/booting ]; then
 		sleep 7;
 	fi;
-
-	# set I/O-Scheduler
-	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
-	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
         # set CPU-Tweak
 	if [ $cortexbrain_cpu == on ]; then

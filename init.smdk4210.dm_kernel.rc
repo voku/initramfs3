@@ -1,16 +1,54 @@
-on boot
+on fs
 
 # Tweaks For ROM
-#   setprop ro.kernel.android.checkjni 0
     setprop ro.telephony.call_ring.delay 0
-    setprop ro.ril.disable.power.collapse 0
-    setprop ro.lge.proximity.delay 15
+    setprop ro.lge.proximity.delay 25
+    setprop mot.proximity.delay 25
+    setprop dalvik.vm.execution-mode int:jit
+    setprop persist.adb.notify 0
+    setprop pm.sleep_mode 1
+    setprop ro.kernel.android.checkjni 0
+    setprop ro.kernel.checkjni 0
 
-#Video Quality
+# Video Tuning
     setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 20000000
-    setprop ro.media.enc.hprof.vid.bps 20000000
+    setprop ro.media.dec.jpeg.memcap 8000000
+    setprop ro.media.enc.hprof.vid.bps 8000000
+    setprop ro.config.hw_quickpoweron true
+    setprop persist.sys.use_dithering 1
+    setprop video.accelerate.hw 1
+    setprop debug.performance.tuning 1
+    setprop debug.sf.hw 1
 
-#Disable Google OTA Update checkin
+# Network Tuning
+    # Enable HSUPA
+    setprop ro.ril.hsxpa 3
+    setprop ro.ril.gprsclass 12
+    setprop ro.ril.enable.dtm 1
+    setprop ro.ril.hsdpa.category 10
+    setprop ro.ril.enable.a53 1
+    setprop ro.ril.hsupa.category 5
+    setprop media.stagefright.enable-player true
+    setprop media.stagefright.enable-meta true
+    setprop media.stagefright.enable-scan false
+    setprop media.stagefright.enable-http true
+    setprop ro.mot.eri.losalert.delay 1000
+    setprop ro.ril.disable.power.collapse 0
+
+# Define TCP buffer sizes for various networks
+#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
+    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.hspa    4094,87380,524288,4096,16384,262144
+    setprop net.tcp.buffersize.hsupa   4094,87380,524288,4096,16384,262144
+    setprop net.tcp.buffersize.hsdpa   4094,87380,524288,4096,16384,262144
+    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
+    setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+    setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
+
+# Disable Google OTA Update checkin
     setprop ro.config.nocheckin 1
 

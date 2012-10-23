@@ -115,7 +115,7 @@ S4A=0;
 [ -f /system/framework/seccamera.jar ] || CM10=1;
 [ -f /system/framework/framework2.jar ] || AOSP=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
-[ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1;
+[ "`/sbin/busybox grep Slim /system/build.prop`" ] && AOSP=1;
 
 # one more time set "/" rw just for good sleep
 /sbin/busybox mount -t rootfs -o remount,rw rootfs;
@@ -252,6 +252,23 @@ if [ "$B2G" == "1" ]; then
 	exec /sbin/init.samsung;
 fi;
 
+if [ "$MIUI" == "1" ]; then
+	cp -a /res/misc/Miui-ROM/* /;
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+
+	if [ "$SECONDROM" == "1" ]; then
+		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		mv /init.rc.2 /init.rc;
+	else
+		rm -f /init.smdk4210.rc.2;
+		rm -f /init.rc.2;
+	fi;
+
+	# Start ROM!
+	PARTITION_TUNING;
+	exec /sbin/init.samsung;
+fi;
+
 if [ "$JELLY" == "1" ]; then
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
 	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
@@ -283,25 +300,6 @@ if [ "$JELLY" == "1" ]; then
 	exec /sbin/init.samsung;
 fi;
 
-if [ "$SLIM" == "1" ]; then
-	cp -a /res/misc/CM-ROM/* /;
-	echo "1" > /proc/sys/kernel/rom_feature_set;
-	/sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so;
-	chmod 755 /system/lib/libsqlite.so;
-	sync;
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		rm -f /init.rc.2;
-	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
-	fi;
-
-	# Start ROM!
-	PARTITION_TUNING;
-	exec /sbin/init.samsung;
-fi;
-
 if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /;
 	# Injecting ICS Modded by Dorimanx, SUPER libsqlite!
@@ -312,23 +310,6 @@ if [ "$AOSP" == "1" ]; then
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		rm -f /init.rc.2;
-	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
-	fi;
-
-	# Start ROM!
-	PARTITION_TUNING;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$MIUI" == "1" ]; then
-	cp -a /res/misc/Miui-ROM/* /;
-	echo "0" > /proc/sys/kernel/rom_feature_set;
-
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		mv /init.rc.2 /init.rc;
 	else
 		rm -f /init.smdk4210.rc.2;
 		rm -f /init.rc.2;
