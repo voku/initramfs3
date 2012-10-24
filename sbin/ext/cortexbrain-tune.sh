@@ -706,7 +706,7 @@ AWAKE_MODE()
 
 	if [ $gesture_tweak == on ]; then
 		# enable gestures code
-		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
+		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
 		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
 		/sbin/busybox sh /data/gesture_set.sh;
@@ -823,7 +823,7 @@ SLEEP_MODE()
 		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
 		# disable gestures code
-		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
 	fi;
 
 	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
