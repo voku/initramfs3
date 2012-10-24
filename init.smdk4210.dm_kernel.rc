@@ -16,9 +16,9 @@ on fs
     setprop ro.media.enc.hprof.vid.bps 8000000
     setprop ro.config.hw_quickpoweron true
     setprop persist.sys.use_dithering 1
-    setprop video.accelerate.hw 1
-    setprop debug.performance.tuning 1
-    setprop debug.sf.hw 1
+#   setprop video.accelerate.hw 1
+#   setprop debug.performance.tuning 1
+#   setprop debug.sf.hw 1
 
 # Network Tuning
     # Enable HSUPA
