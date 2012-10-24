@@ -22,7 +22,6 @@ on fs
 
 # Network Tuning
     # Enable HSUPA
-    setprop ro.ril.hsxpa 3
     setprop ro.ril.gprsclass 12
     setprop ro.ril.enable.dtm 1
     setprop ro.ril.hsdpa.category 10

@@ -213,6 +213,9 @@ PARTITION_TUNING()
 	sync;
 }
 
+# network tuning reset to allow real ROM control over H/H+/3G/G signal.
+sed -i "s/setprop ro.ril.hsxpa=[0-10]*//g" /system/build.prop
+
 ######################################
 # Starting ROM choose and INIT config.
 ######################################
