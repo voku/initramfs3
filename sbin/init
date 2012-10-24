@@ -103,6 +103,7 @@ fi;
 
 AOSP=0;
 MIUI=0;
+MIUI_JB=0;
 B2G=0;
 JELLY=0;
 CM10=0;
@@ -111,6 +112,7 @@ S4A=0;
 [ -d /system/b2g ] && B2G=1;
 [ -f /system/framework/framework-miui.jar ] && MIUI=1;
 [ -f /system/framework/miui-framework.jar ] && MIUI=1;
+[ "`/sbin/busybox grep -i ro.build.display.id=cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 [ -f /system/framework/seccamera.jar ] || CM10=1;
 [ -f /system/framework/framework2.jar ] || AOSP=1;
@@ -255,6 +257,32 @@ if [ "$B2G" == "1" ]; then
 	exec /sbin/init.samsung;
 fi;
 
+if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
+	# Injecting JB Modded by VOKU, SUPER libsqlite!
+	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
+	/sbin/busybox xzcat /res/misc/sql/jb/sqlite3.xz > /system/xbin/sqlite3;
+	chmod 755 /system/lib/libsqlite.so;
+	chmod 755 /system/xbin/sqlite3;
+	sync;
+	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
+	echo "1" > /proc/sys/kernel/rom_feature_set;
+	cp -a /res/misc/JellyB-CM-AOKP/* /;
+
+	if [ "$SECONDROM" == "1" ]; then
+		if [ -e /init.smdk4210.rc.2 ]; then
+			mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+			rm -f /init.rc.2;
+		else
+			rm -f /init.smdk4210.rc.2;
+			rm -f /init.rc.2;
+		fi;
+	fi;
+
+	# Start ROM!
+	PARTITION_TUNING;
+	exec /sbin/init.samsung;
+fi;
+
 if [ "$MIUI" == "1" ]; then
 	cp -a /res/misc/Miui-ROM/* /;
 	echo "0" > /proc/sys/kernel/rom_feature_set;
@@ -265,37 +293,6 @@ if [ "$MIUI" == "1" ]; then
 	else
 		rm -f /init.smdk4210.rc.2;
 		rm -f /init.rc.2;
-	fi;
-
-	# Start ROM!
-	PARTITION_TUNING;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$JELLY" == "1" ]; then
-	# Injecting JB Modded by VOKU, SUPER libsqlite!
-	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
-	/sbin/busybox xzcat /res/misc/sql/jb/sqlite3.xz > /system/xbin/sqlite3;
-	chmod 755 /system/lib/libsqlite.so;
-	chmod 755 /system/xbin/sqlite3;
-	sync;
-	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
-	if [ "$CM10" == "1" ]; then
-		echo "1" > /proc/sys/kernel/rom_feature_set;
-		cp -a /res/misc/JellyB-CM-AOKP/* /;
-	else
-		echo "0" > /proc/sys/kernel/rom_feature_set;
-		cp -a /res/misc/JellyB-SAMMY/* /;
-	fi;
-
-	if [ "$SECONDROM" == "1" ]; then
-		if [ -e /init.smdk4210.rc.2 ]; then
-			mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-			rm -f /init.rc.2;
-		else
-			rm -f /init.smdk4210.rc.2;
-			rm -f /init.rc.2;
-		fi;
 	fi;
 
 	# Start ROM!

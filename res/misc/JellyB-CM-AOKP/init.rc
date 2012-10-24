@@ -4,7 +4,7 @@
 # This is a common source of Android security bugs.
 #
 
-# THIS INIT.RC is FOR CM10/AOKP JB ROMS!
+# THIS INIT.RC is FOR CM10/AOKP/cMIUI JB ROMS!
 
 import /init.smdk4210.rc
 import /init.usb.rc
