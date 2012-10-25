@@ -182,13 +182,6 @@ fi;
 # ==============================================================
 SYSTEM_TWEAKS()
 {
-	# enable Hardware Rendering
-	#setprop video.accelerate.hw 1;
-	#setprop debug.performance.tuning 1;
-	#setprop debug.sf.hw 1;
-	setprop persist.sys.use_dithering 1;
-	#setprop persist.sys.ui.hw true; # ->reported as problem maker in some roms.
-
 	# render UI with GPU
 	setprop hwui.render_dirty_regions false;
 	setprop windowsmgr.max_events_per_sec 120;
@@ -197,11 +190,6 @@ SYSTEM_TWEAKS()
 
 	# Proximity tweak
 	setprop mot.proximity.delay 15;
-
-	# more Tweaks
-	setprop dalvik.vm.execution-mode int:jit;
-	setprop persist.adb.notify 0;
-	setprop pm.sleep_mode 1;
 
 	if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 120 ]; then
 		setprop dalvik.vm.heapsize 128m
@@ -553,22 +541,20 @@ TCP_TWEAKS()
 	echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 	echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 	echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-	echo "256960" > /proc/sys/net/core/wmem_max;
-	echo "563200" > /proc/sys/net/core/rmem_max;
-	echo "256960" > /proc/sys/net/core/rmem_default;
-	echo "256960" > /proc/sys/net/core/wmem_default;
+	echo "262144" > /proc/sys/net/core/wmem_max;
+	echo "524288" > /proc/sys/net/core/rmem_max;
+	echo "262144" > /proc/sys/net/core/rmem_default;
+	echo "262144" > /proc/sys/net/core/wmem_default;
 	echo "20480" > /proc/sys/net/core/optmem_max;
-	echo "4096 16384 110208" > /proc/sys/net/ipv4/tcp_wmem;
-	echo "4096 87380 563200" > /proc/sys/net/ipv4/tcp_rmem;
+	echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
+	echo "4096 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
 	echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 	echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
-	setprop net.tcp.buffersize.default 4096,87380,563200,4096,16384,110208;
-	setprop net.tcp.buffersize.wifi    4095,87380,563200,4096,16384,110208;
-	setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208;
-	setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040;
-	setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680;
-	setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144;
-	setprop net.tcp.buffersize.hspa    4092,87380,563200,4096,16384,110208;
+
+	# ping/icmp protection
+	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
+	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
+	echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
 
 	log -p i -t $FILE_NAME "*** tcp tweaks ***: enabled";
 }
@@ -581,11 +567,6 @@ fi;
 # ==============================================================
 FIREWALL_TWEAKS()
 {
-	# ping/icmp protection
-	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
-	echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
-	echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
-
 	if [ -e /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts ]; then
 		echo "1" > /proc/sys/net/ipv6/icmp_echo_ignore_broadcasts;
 	fi;
@@ -670,6 +651,19 @@ fi;
 # ==============================================================
 AWAKE_MODE()
 {
+	# load all extweaks user settings.
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
+	# set wakeup booster delay to prevent mp3 music shattering when screen turned ON.
+	if [ $wakeup_delay != 0 ] && [ ! -e /data/.siyah/booting ]; then
+		sleep $wakeup_delay
+	fi;
+
+        # set I/O-Scheduler
+	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
+	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
+
 	# cpu-settings for second core online at booster time.
 	echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -678,9 +672,6 @@ AWAKE_MODE()
 	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 		echo "0" > /sys/module/dhd/parameters/wifi_pm;
 	fi;
-
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
 
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
@@ -715,21 +706,16 @@ AWAKE_MODE()
 
 	if [ $gesture_tweak == on ]; then
 		# enable gestures code
-		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures
-		# check if running already
-		if [ `pgrep -f "gesture_set.sh" |  wc -l` \< 1 ]; then
-			/sbin/busybox sh /data/gesture_set.sh;
-		fi;
+		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
+		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
+		/sbin/busybox sh /data/gesture_set.sh;
 	fi;
 
 	# check if ROM booting now, if yes, dont wait. creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
 	if [ ! -e /data/.siyah/booting ]; then
 		sleep 7;
 	fi;
-
-	# set I/O-Scheduler
-	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
-	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
         # set CPU-Tweak
 	if [ $cortexbrain_cpu == on ]; then
@@ -821,17 +807,8 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-
-	if [ ! -e /data/.siyah/booting ]; then
-		sleep 5;
-	fi;
-
-	if [ $wifi_pwr == on ]; then
-		# WIFI PM-FAST support
-		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-			echo "1" > /sys/module/dhd/parameters/wifi_pm;
-		fi;
-	fi;
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
 
 	# disable KSM on screen OFF
 	KSM="/sys/kernel/mm/ksm/run";
@@ -839,27 +816,32 @@ SLEEP_MODE()
         	echo "0" > $KSM;
 	fi;
 
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
 	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
-	if [ $gesture_tweak == off ]; then
-		# disable gestures code
-		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_gestures;
-	fi;
-
-	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ]; then
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ $gesture_tweak == off ]; then
 		# shutdown gestures loop on screen off, we dont need it
-		pkill -f "/data/gesture_set.sh";
-		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
+		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
+		# disable gestures code
+		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
 	fi;
 
 	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
 	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 
+	if [ $wakeup_delay != 0 ] && [ ! -e /data/.siyah/booting ]; then
+		sleep $wakeup_delay;
+	fi;
+
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
+
+		if [ $wifi_pwr == on ]; then
+			# WIFI PM-FAST support
+			if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+				echo "1" > /sys/module/dhd/parameters/wifi_pm;
+			fi;
+		fi;
 
 		# set CPU-Governor
 		echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;

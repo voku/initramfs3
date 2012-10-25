@@ -103,6 +103,7 @@ fi;
 
 AOSP=0;
 MIUI=0;
+MIUI_JB=0;
 B2G=0;
 JELLY=0;
 CM10=0;
@@ -111,11 +112,12 @@ S4A=0;
 [ -d /system/b2g ] && B2G=1;
 [ -f /system/framework/framework-miui.jar ] && MIUI=1;
 [ -f /system/framework/miui-framework.jar ] && MIUI=1;
+[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 [ -f /system/framework/seccamera.jar ] || CM10=1;
 [ -f /system/framework/framework2.jar ] || AOSP=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
-[ "`/sbin/busybox grep Slim /system/build.prop`" ] && SLIM=1;
+[ "`/sbin/busybox grep -i Slim /system/build.prop`" ] && AOSP=1;
 
 # one more time set "/" rw just for good sleep
 /sbin/busybox mount -t rootfs -o remount,rw rootfs;
@@ -213,6 +215,9 @@ PARTITION_TUNING()
 	sync;
 }
 
+# network tuning reset to allow real ROM control over H/H+/3G/G signal.
+sed -i "s/setprop ro.ril.hsxpa=[0-10]*//g" /system/build.prop
+
 ######################################
 # Starting ROM choose and INIT config.
 ######################################
@@ -252,7 +257,7 @@ if [ "$B2G" == "1" ]; then
 	exec /sbin/init.samsung;
 fi;
 
-if [ "$JELLY" == "1" ]; then
+if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
 	/sbin/busybox xzcat /res/misc/sql/jb/libsqlite.so.xz > /system/lib/libsqlite.so;
 	/sbin/busybox xzcat /res/misc/sql/jb/sqlite3.xz > /system/xbin/sqlite3;
@@ -260,13 +265,8 @@ if [ "$JELLY" == "1" ]; then
 	chmod 755 /system/xbin/sqlite3;
 	sync;
 	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
-	if [ "$CM10" == "1" ]; then
-		echo "1" > /proc/sys/kernel/rom_feature_set;
-		cp -a /res/misc/JellyB-CM-AOKP/* /;
-	else
-		echo "0" > /proc/sys/kernel/rom_feature_set;
-		cp -a /res/misc/JellyB-SAMMY/* /;
-	fi;
+	echo "1" > /proc/sys/kernel/rom_feature_set;
+	cp -a /res/misc/JellyB-CM-AOKP/* /;
 
 	if [ "$SECONDROM" == "1" ]; then
 		if [ -e /init.smdk4210.rc.2 ]; then
@@ -283,15 +283,13 @@ if [ "$JELLY" == "1" ]; then
 	exec /sbin/init.samsung;
 fi;
 
-if [ "$SLIM" == "1" ]; then
-	cp -a /res/misc/CM-ROM/* /;
-	echo "1" > /proc/sys/kernel/rom_feature_set;
-	/sbin/busybox xzcat /res/misc/sql/ics/libsqlite.so.xz > /system/lib/libsqlite.so;
-	chmod 755 /system/lib/libsqlite.so;
-	sync;
+if [ "$MIUI" == "1" ]; then
+	cp -a /res/misc/Miui-ROM/* /;
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		rm -f /init.rc.2;
+		mv /init.rc.2 /init.rc;
 	else
 		rm -f /init.smdk4210.rc.2;
 		rm -f /init.rc.2;
@@ -312,23 +310,6 @@ if [ "$AOSP" == "1" ]; then
 	if [ "$SECONDROM" == "1" ]; then
 		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		rm -f /init.rc.2;
-	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
-	fi;
-
-	# Start ROM!
-	PARTITION_TUNING;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$MIUI" == "1" ]; then
-	cp -a /res/misc/Miui-ROM/* /;
-	echo "0" > /proc/sys/kernel/rom_feature_set;
-
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		mv /init.rc.2 /init.rc;
 	else
 		rm -f /init.smdk4210.rc.2;
 		rm -f /init.rc.2;
