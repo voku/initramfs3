@@ -19,9 +19,13 @@ case "${debug_to_sd}" in
 				echo " ---------------------------- " >> $DEBUG_FILE;
 				echo "" >> $DEBUG_FILE;
 			}
+
+			echo "" > $DEBUG_FILE;
+			echo " --- DEBUG from "`date`" --- " >> $DEBUG_FILE;
+			echo "" >> $DEBUG_FILE;
 	
 			# Kernel-Info
-			echo "Kernel-Version:" > $DEBUG_FILE;
+			echo "Kernel-Version:" >> $DEBUG_FILE;
 			cat /proc/version >> $DEBUG_FILE;
 			SEPARATOR;
 
@@ -98,6 +102,7 @@ case "${debug_to_sd}" in
 			echo "NET-Info:" >> $DEBUG_FILE;
 			ifconfig pdp0 >> $DEBUG_FILE;
 			ifconfig wlan0 >> $DEBUG_FILE;
+			SEPARATOR;
 
 			# USB
 			echo "USB-Info:" >> $DEBUG_FILE;
