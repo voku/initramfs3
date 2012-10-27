@@ -142,6 +142,10 @@ PARTITION_TUNING()
 	/sbin/busybox sh -c "/sbin/date" > $LOG_DATA;
 	/sbin/busybox sh -c "/sbin/date" > $LOG_CACHE;
 
+	# umount 
+	umount -l $DIR_DATA >> $LOG_DATA 2>&1;
+	umount -l $DIR_CACHE >> $LOG_CACHE 2>&1;
+
 	# set fs-feature -> [^]has_journal
 	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
@@ -264,7 +268,12 @@ if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 	chmod 755 /system/lib/libsqlite.so;
 	chmod 755 /system/xbin/sqlite3;
 	sync;
+
+	/sbin/busybox mount -t ext4 /res/dev/data /data;
 	echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
+	sync;
+	umount -l /data;
+
 	echo "1" > /proc/sys/kernel/rom_feature_set;
 	cp -a /res/misc/JellyB-CM-AOKP/* /;
 

@@ -2,11 +2,13 @@
 
 mount -o remount,rw /system;
 
-if [ ! -e /system/run_fs_check ]; then
-	echo "fix fs" > /system/run_fs_check;
-	echo "Activated! ,Do Titanium Backup Before Reboot Just In Case!";
+fixFS="/system/run_fs_check";
+
+if [ ! -e $fixFS ]; then
+	echo "fix fs" > $fixFS;
+	echo "Activated! Do Titanium-Backup before reboot, just in case!";
 else
-	rm -f /system/run_fs_check;
+	rm -f $fixFS;
 	echo "ABORT, ABORT, ABORT :)"
 fi;
 
