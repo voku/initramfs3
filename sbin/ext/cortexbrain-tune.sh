@@ -646,6 +646,32 @@ if [ $cortexbrain_firewall == on ]; then
 	FIREWALL_TWEAKS;
 fi;
 
+REMOVE_MEDIA_CACHE()
+{
+	# only if asked by user via extweaks
+	if [ -e /system/run_fix_media ] && [ -e /sdcard/Android/data/ ]; then
+		rm -f /system/run_fix_media;
+		rm -rf /sdcard/Android/data/com.cooliris.media;
+		rm -rf /sdcard/Android/data/com.android.gallery3d;
+		rm -rf /sdcard/Android/data/com.google.android.gallery3d;
+		rm -rf /sdcard/Android/data/com.android.providers.media;
+		rm -rf /sdcard/Android/data/com.google.android.music;
+		rm -rf /data/data/com.android.providers.media/databases/*;
+		sync;
+	fi;
+}
+
+REMOVE_DHCP_LEASE()
+{
+	# only if asked by user via extweaks
+	if [ -e /system/run_fix_wifi ]; then
+		rm -f /system/run_fix_wifi;
+		rm -f /data/misc/dhcp/dhcpcd*;
+		sync;
+	fi;
+}
+
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
@@ -798,6 +824,11 @@ AWAKE_MODE()
 	if [ $zramtweaks == 4 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
+
+	# remove mess media cache if requested ...
+	REMOVE_MEDIA_CACHE;
+	# remove wifi leases if requested ...
+	REMOVE_DHCP_LEASE;
 
 	log -p i -t $FILE_NAME "*** AWAKE Mode ***";
 }

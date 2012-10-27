@@ -550,7 +550,11 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
-		<button description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any kind of backup! if you have lots of damage in your DATA, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery, use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect, by default its OFF, it's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem On BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
+		<button description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any kind of backup! if you have lots of damage in your DATA, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery, use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect and by default it's OFF, it's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
+
+		<button description="Do clean the media cache on your sdcard, push again to Abort, this function depend on CORTEX Process Enabled! After you have switch the screen off-on, you have to reboot once!!!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
+
+		<button description="Do clean the wifi lease, push the botton to Activate, push again to Abort, this function depend on CORTEX Process Enabled!" name="Clean wifi-lease" action="push-actions/fix_wifi" label="FIX WIFI ON/OFF"/>
 
 	</settingsPane>
 
@@ -580,10 +584,10 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not" name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. [depends on 'cortexbrain_background_process']"
+		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. [depend on 'cortexbrain_background_process']"
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. [depends on 'cortexbrain_background_process']" 
+		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. [depend on 'cortexbrain_background_process']" 
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
 
 		<spinner description="Here you can control android logger `logcat and dmesg` you can set it to auto, then you will have logs on screen ON, when screen will be off, module will be unloaded to save battery, if you set debug it will be working non stop! if disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using auto mode, logger will not be unloaded so we can debug."
@@ -599,7 +603,7 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (reboot needed after change)"
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune its depends on 'cortexbrain_background_process'] (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune it depend on 'cortexbrain_background_process'] (reboot needed after change)"
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
 		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (reboot needed after change)"

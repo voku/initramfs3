@@ -1,0 +1,14 @@
+#!/sbin/busybox sh
+
+mount -o remount,rw /system;
+
+fixMedia="/system/run_fix_media";
+
+if [ ! -e $fixMedia ]; then
+	echo "fix media" > $fixMedia;
+	echo "Activated! You have to reboot now!";
+else
+	rm -f $fixMedia;
+	echo "ABORT, ABORT, ABORT :)"
+fi;
+
