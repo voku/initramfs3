@@ -49,6 +49,7 @@
 				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
 				<spinnerItem name="ondemand" value="ondemand"/> 
+				<spinnerItem name="intellidemand" value="intellidemand"/>
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="scary" value="scary"/> 
 				<spinnerItem name="sleepy" value="sleepy"/>
@@ -133,6 +134,7 @@
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
 			<spinnerItem name="ondemand" value="ondemand"/> 
+			<spinnerItem name="intellidemand" value="intellidemand"/>
 			<spinnerItem name="scary" value="scary"/>
 			<spinnerItem name="sleepy" value="sleepy"/>
 			<spinnerItem name="conservative" value="conservative"/> 
