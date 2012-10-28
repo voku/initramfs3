@@ -261,6 +261,14 @@ CPU_GOV_TWEAKS()
 	# extreme_battery-settings
 	if [ $PROFILE == extreme_battery ]
 	|| [[ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ]]; then
+
+		echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+		echo "90" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold;
+		echo "90" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold_min_freq;
+		echo "1" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/down_differential;
+		echo "20" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_step;
+		echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_responsiveness;
 		
 		if [ $SYSTEM_GOVERNOR == HYPER ]; then
 			echo "100000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
@@ -316,6 +324,14 @@ CPU_GOV_TWEAKS()
 	# battery-settings
 	elif [ $PROFILE == battery ] || [ $sleep_power_save == 1 ]; then
 
+		echo "80000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+		echo "85" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold;
+		echo "85" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold_min_freq;
+		echo "1" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/down_differential;
+		echo "20" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_responsiveness;	
+
 		if [ $SYSTEM_GOVERNOR == HYPER ]; then
 			echo "80000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 			echo "85" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
@@ -370,6 +386,14 @@ CPU_GOV_TWEAKS()
 	# default-settings
 	elif [ $PROFILE == default ]; then
 
+		echo "70000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+		echo "80" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold;
+		echo "70" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold_min_freq;
+		echo "1" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/down_differential;
+		echo "30" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_responsiveness;
+
 		if [ $SYSTEM_GOVERNOR == HYPER ]; then
 			echo "70000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
 			echo "80" > /sys/devices/system/cpu/cpufreq/HYPER/up_threshold;
@@ -423,6 +447,14 @@ CPU_GOV_TWEAKS()
 
 	# performance-settings		
 	elif [ $PROFILE == performance ] || [ $PROFILE == extreme_performance ]; then
+
+		echo "50000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
+		echo "60" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold;
+		echo "60" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold_min_freq;
+		echo "1" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_down_factor;
+		echo "5" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/down_differential;
+		echo "40" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_step;
+		echo "200000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/freq_responsiveness;
 
 		if [ $SYSTEM_GOVERNOR == HYPER ]; then
 			echo "50000" > /sys/devices/system/cpu/cpufreq/HYPER/sampling_rate;
