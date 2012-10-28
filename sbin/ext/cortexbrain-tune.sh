@@ -259,8 +259,7 @@ CPU_GOV_TWEAKS()
 	SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 	# extreme_battery-settings
-	if [ $PROFILE == extreme_battery ]
-	|| [[ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ]]; then
+	if (( $PROFILE == extreme_battery || (( $PROFILE == extreme_battery && $sleep_power_save == 1 )))); then
 
 		echo "100000" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/sampling_rate;
 		echo "90" > /sys/devices/system/cpu/cpufreq/${SYSTEM_GOVERNOR}/up_threshold;
@@ -705,9 +704,7 @@ DISABLE_KSM()
 DISABLE_GESTURES()
 {
 	# shutdown gestures loop on screen off, we dont need it
-	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] 
-	|| [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] 
-	|| [ $gesture_tweak == off ]; then
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ $gesture_tweak == off ]; then
 		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
 		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
