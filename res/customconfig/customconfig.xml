@@ -127,10 +127,6 @@
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="For dev debug only! you can add small delay to cortex wakeup/sleep script, normally say 0 here." 
-			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
-			unit="Sec" min="0" reversed="false" step="1" max="5"/>
-
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
 			<spinnerItem name="ondemand" value="ondemand"/> 
