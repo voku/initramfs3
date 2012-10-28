@@ -44,12 +44,9 @@
 
 			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
-				<spinnerItem name="HYPER" value="HYPER"/> 
-				<spinnerItem name="pegasusq" value="pegasusq"/> 
-				<spinnerItem name="abyssplug" value="abyssplug"/> 
 				<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
-				<spinnerItem name="ondemand" value="ondemand"/> 
 				<spinnerItem name="intellidemand" value="intellidemand"/>
+				<spinnerItem name="ondemand" value="ondemand"/> 
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="scary" value="scary"/> 
 				<spinnerItem name="sleepy" value="sleepy"/>
@@ -129,15 +126,12 @@
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
-			<spinnerItem name="ondemand" value="ondemand"/> 
+			<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
 			<spinnerItem name="intellidemand" value="intellidemand"/>
+			<spinnerItem name="ondemand" value="ondemand"/> 
+			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="scary" value="scary"/>
 			<spinnerItem name="sleepy" value="sleepy"/>
-			<spinnerItem name="conservative" value="conservative"/> 
-			<spinnerItem name="pegasusq" value="pegasusq"/> 
-			<spinnerItem name="abyssplug" value="abyssplug"/> 
-			<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
-			<spinnerItem name="HYPER" value="HYPER"/> 
 		</spinner>
 
 	</settingsPane>
