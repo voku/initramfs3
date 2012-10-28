@@ -46,12 +46,12 @@
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 				<spinnerItem name="HYPER" value="HYPER"/> 
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
-				<spinnerItem name="abyssplug" value="abyssplug"/> 
-				<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
+				<spinnerItem name="intellidemand" value="intellidemand"/> 
+				<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
 				<spinnerItem name="ondemand" value="ondemand"/> 
 				<spinnerItem name="conservative" value="conservative"/> 
 				<spinnerItem name="scary" value="scary"/> 
-				<spinnerItem name="sleepy" value="sleepy"/>
+				<spinnerItem name="sleepy" value="sleepy"/> 
 			</spinner>
 
 			<seekBar description="second core will be enabled when the load goes above this threshold, if you set above 24, and you have 800Mhz as MAX, second core will not turn ON!. if you set freq lower than 800Mhz Second core is DISABLED! (default is 23)" 
@@ -77,7 +77,7 @@
 
 		<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
 
-			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." 
+			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness. so NOT checked is GOOD!" 
 				name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
 
 			<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
@@ -126,19 +126,23 @@
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="For dev debug only! you can add small delay to cortex wakeup/sleep script, normally say 0 here." 
+		<seekBar description="For dev debug only! you can add small delay to cortex wakeup/sleep script, this will delay all function changesand the wakeup! normally say 0 here." 
 			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
 			unit="Sec" min="0" reversed="false" step="1" max="5"/>
+
+		<seekBar description="Here you can change Cortex Wakeup Boost, it's give you full power of CPU and System but only for time that set, then all back to normal, by default say 7 here."
+			name="Cortex Wakeup Boost" action="generic /tmp/wakeup_boost"
+			unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
 		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
 			<spinnerItem name="ondemand" value="ondemand"/> 
-			<spinnerItem name="scary" value="scary"/>
-			<spinnerItem name="sleepy" value="sleepy"/>
+			<spinnerItem name="scary" value="scary"/> 
+			<spinnerItem name="sleepy" value="sleepy"/> 
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
-			<spinnerItem name="abyssplug" value="abyssplug"/> 
-			<spinnerItem name="lulzactiveq" value="lulzactiveq"/>
+			<spinnerItem name="intellidemand" value="intellidemand"/> 
+			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 		</spinner>
 
@@ -552,9 +556,9 @@ do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
 
 		<button description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any kind of backup! if you have lots of damage in your DATA, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery, use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect and by default it's OFF, it's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
 
-		<button description="Do clean the media cache on your sdcard, push again to Abort, this function depend on CORTEX Process Enabled! After you have switch the screen off-on, you have to reboot once!!!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
+		<button description="Do clean the media cache on your sdcard, push again to Abort, You have to reboot for action to work!!!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
 
-		<button description="Do clean the wifi lease, push the botton to Activate, push again to Abort, this function depend on CORTEX Process Enabled!" name="Clean wifi-lease" action="push-actions/fix_wifi" label="FIX WIFI ON/OFF"/>
+		<button description="Do clean WIFI DHCP IP Lease, push the botton to Activate!" name="Clean WIFI Lease" action="push-actions/fix_wifi" label="Clean WIFI Lease"/>
 
 	</settingsPane>
 

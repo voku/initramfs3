@@ -1,14 +1,8 @@
 #!/sbin/busybox sh
 
-mount -o remount,rw /system;
+svc wifi disable;
+rm -f /data/misc/dhcp/dhcpcd*;
+svc wifi enable;
 
-fixWifi="/system/run_fix_wifi";
-
-if [ ! -e $fixWifi ]; then
-	echo "fix wifi" > $fixWifi;
-	echo "Activated! You have to reboot now!";
-else
-	rm -f $fixWifi;
-	echo "ABORT, ABORT, ABORT :)";
-fi;
+echo "WIFI Release Renew is DONE"
 
