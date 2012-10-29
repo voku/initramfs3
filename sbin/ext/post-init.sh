@@ -35,8 +35,8 @@ $BB chmod 0777 /data/.siyah/ -R;
 read_defaults;
 read_config;
 
-# init.d scripts early, so my tweaks will fix the mess
 (
+	##### init.d scripts early, so my tweaks will fix the mess.#####
 	$BB sh /sbin/ext/run-init-scripts.sh;
 )&
 
@@ -94,7 +94,7 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
-# sound reset on boot
+# sound reset on boot.
 /res/uci.sh soundgasm_hp $soundgasm_hp;
 
 # enable kmem interface for everyone by GM
@@ -118,15 +118,14 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 	pkill -f "com.darekxan.extweaks.app";
 	$BB rm -f /data/.siyah/booting;
-
 	# ==============================================================
 	# EXTWEAKS FIXING
 	# ==============================================================
 
-	# apply volume tweaks
+	# apply volume tweaks. 
 	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 
-	# apply BLN mods, that get changed by ROM on boot
+	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
 		echo "0" > /sys/class/misc/backlightnotification/enabled;
 		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
@@ -135,7 +134,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		/res/customconfig/actions/bln_switch bln_switch $bln_switch
 	fi;
 
-	# apply touch led time out and led on touch, this is done if changed by ROM
+	# apply touch led time out and led on touch, this is done if changed by ROM.
 	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
 
 	# change USB mode MTP or Mass Storage
@@ -152,7 +151,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	done;
 )&
 
-# little function to wait for sdcard mount and load to do some jobs that need sdcard mounted
+# little function to wait for sdcard mount and load to do some jobs that need sdcard mounted.
 while [ ! -e /mnt/sdcard/android ]
 do
 	echo "waiting till sdcard is mounted and folder android exist";
