@@ -98,7 +98,6 @@ cortexbrain_tcp=on
 cortexbrain_cpu=on
 cortexbrain_memory=on
 cortexbrain_battery=on
-cortexbrain_extra_battery=on
 cortexbrain_system=on
 cortexbrain_kernel_tweaks=on
 cortexbrain_io=on
