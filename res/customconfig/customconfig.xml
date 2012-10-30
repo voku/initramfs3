@@ -150,7 +150,7 @@
 
 	<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="160MHz" value="133"/> 
+		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/> 
@@ -160,7 +160,7 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="160MHz" value="133"/> 
+		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/> 
@@ -171,7 +171,7 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="160MHz" value="133"/> 
+		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/> 
@@ -182,7 +182,7 @@
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="160MHz" value="133"/> 
+		<spinnerItem name="133MHz" value="133"/> 
 		<spinnerItem name="100MHz" value="100"/> 
 		<spinnerItem name="62MHz" value="62"/> 
 		<spinnerItem name="50MHz" value="50"/>
