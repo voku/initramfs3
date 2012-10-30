@@ -140,13 +140,13 @@
 <settingsTab name="GPU">
 	<settingsPane description="GPU Frequency Settings. Defaults frequencies are 100, 133, 160, 200 and 267. Voltage defaults are 900mV, 950mV, 1000mV and 1050mV." name="GPUFreq">
 
-	<!--spinner description="Select the level to be used to boost GPU frequency when you touch the screen." 
+	<spinner description="Select the level to be used to boost GPU frequency when you touch the screen." 
 		name="Mali Touch Boost Level" action="generic /sys/module/mali/parameters/mali_touch_boost_level">
-		<spinnerItem name="Disabled" value="0"/> 
+		<spinnerItem name="OFF OR Step1" value="0"/> 
 		<spinnerItem name="Step2" value="1"/> 
 		<spinnerItem name="Step3" value="2"/> 
 		<spinnerItem name="Step4" value="3"/> 
-	</spinner-->
+	</spinner>
 
 	<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
 		<spinnerItem name="160MHz" value="160"/> 
