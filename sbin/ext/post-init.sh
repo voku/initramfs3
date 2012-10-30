@@ -23,17 +23,22 @@ if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	echo "$ccxmlsum" > /data/.siyah/.ccxmlsum;
 fi;
 
-[ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/;
-[ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/;
-[ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/;
-[ ! -f /data/.siyah/extreme_performance.profile ] && cp -a /res/customconfig/extreme_performance.profile /data/.siyah/;
-[ ! -f /data/.siyah/extreme_battery.profile ] && cp -a /res/customconfig/extreme_battery.profile /data/.siyah/;
+[ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/default.profile;
+[ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/battery.profile;
+[ ! -f /data/.siyah/performance.profile ] && cp -a /res/customconfig/performance.profile /data/.siyah/performance.profile;
+[ ! -f /data/.siyah/extreme_performance.profile ] && cp -a /res/customconfig/extreme_performance.profile /data/.siyah/extreme_performance.profile;
+[ ! -f /data/.siyah/extreme_battery.profile ] && cp -a /res/customconfig/extreme_battery.profile /data/.siyah/extreme_battery.profile;
 
 $BB chmod 0777 /data/.siyah/ -R;
 
 . /res/customconfig/customconfig-helper;
 read_defaults;
 read_config;
+
+#mdnie sharpness tweak
+if [ "$mdniemod" == "on" ]; then
+	. /sbin/ext/mdnie-sharpness-tweak.sh
+fi;
 
 (
 	##### init.d scripts early, so my tweaks will fix the mess.#####
@@ -42,25 +47,6 @@ read_config;
 
 # cpu undervolting
 echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-
-# change cpu step count
-case "${cpustepcount}" in
-	6)
-		echo "1200 1000 800 500 200 100" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies;
-	;;
-	7)
-		echo "1400 1200 1000 800 500 200 100" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies;
-	;;
-	8)
-		echo "1500 1400 1200 1000 800 500 200 100" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies;
-	;;
-	9)
-		echo "1500 1400 1200 1000 800 500 300 200 100" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies;
-	;;
-	15)
-		echo "15 levels already set by default";
-	;;
-esac;
 
 # disable debugging on some modules
 if [ "$logger" == "off" ]; then
@@ -80,8 +66,8 @@ sysctl -w net.ipv6.conf.all.disable_ipv6=1
 
 # for ntfs automounting
 mkdir /mnt/ntfs;
-mount -t tmpfs tmpfs /mnt/ntfs;
 chmod 777 /mnt/ntfs/ -R;
+mount -o mode=0777,gid=1000 -t tmpfs tmpfs /mnt/ntfs
 
 $BB sh /sbin/ext/properties.sh;
 
@@ -150,19 +136,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		$BB sh /sbin/ext/partitions-tune.sh;
 	done;
 )&
-
-# little function to wait for sdcard mount and load to do some jobs that need sdcard mounted.
-while [ ! -e /mnt/sdcard/android ]
-do
-	echo "waiting till sdcard is mounted and folder android exist";
-	sleep 5;
-done;
-
-if [ $bootmenu_enabled == "1" ]; then
-	if [ -e /sdcard/.nobootlogo ]; then
-		rm -f /mnt/sdcard/.nobootlogo;
-	fi;
-fi;
 
 echo "Done Booting" > /data/dm-boot-check;
 date >> /data/dm-boot-check;
