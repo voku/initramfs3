@@ -259,7 +259,7 @@ CPU_GOV_TWEAKS()
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 		# extra battery-settings
-		if (( $PROFILE == extreme_battery || (( $PROFILE == extreme_battery && $sleep_power_save == 1 )))); then
+		if [ $PROFILE == extreme_battery ] || [ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ]; then
 
 			echo "100000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
@@ -281,7 +281,7 @@ CPU_GOV_TWEAKS()
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 			fi;
@@ -309,7 +309,7 @@ CPU_GOV_TWEAKS()
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 			fi;
@@ -337,7 +337,7 @@ CPU_GOV_TWEAKS()
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 			fi;
@@ -369,7 +369,7 @@ CPU_GOV_TWEAKS()
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
 				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
+				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
 				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
 			fi;
@@ -567,6 +567,16 @@ ENABLE_LOGGER()
 	fi;
 }
 
+DISABLE_LOGGER()
+{
+	# android logger process control
+	if [ $android_logger == auto ] || [ $android_logger == disabled ]; then
+		if [ -e /dev/log ]; then
+			mv /dev/log/ /dev/log-sleep/;
+		fi;
+	fi;
+}
+
 ENABLE_GESTURE()
 {
 	if [ $gesture_tweak == on ]; then
@@ -586,16 +596,6 @@ DISABLE_GESTURE()
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
 		# disable gestures code
 		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
-	fi;
-}
-
-DISABLE_LOGGER()
-{
-	# android logger process control
-	if [ $android_logger == auto ] || [ $android_logger == disabled ]; then
-		if [ -e /dev/log ]; then
-			mv /dev/log/ /dev/log-sleep/;
-		fi;
 	fi;
 }
 
