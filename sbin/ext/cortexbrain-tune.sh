@@ -510,14 +510,14 @@ AWAKE_MODE()
 		sleep $wakeup_delay
 	fi;
 
-        # set default values
+	# set default values
 	echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
 	echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
 
-        # fs settings
-        echo "300" > /proc/sys/vm/vfs_cache_pressure;
+	# fs settings
+	echo "300" > /proc/sys/vm/vfs_cache_pressure;
 
-        # set I/O-Scheduler
+	# set I/O-Scheduler
 	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
 	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
@@ -685,6 +685,10 @@ SLEEP_MODE()
 		sleep 2;
 	fi;
 
+	if [ $cortexbrain_battery == on ]; then
+		BATTERY_TWEAKS;
+	fi;
+
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
 
@@ -750,10 +754,6 @@ SLEEP_MODE()
 			fi;
 		else
 			wifiON=0;
-		fi;
-
-		if [ $cortexbrain_battery == on ]; then
-			BATTERY_TWEAKS;
 		fi;
 
 		log -p i -t $FILE_NAME "*** SLEEP mode ***";
