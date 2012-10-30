@@ -105,7 +105,7 @@ GMTWEAKS()
 		$BB rm /data/app/com.gokhanmoral.STweaks*.apk;
 		$BB rm /data/dalvik-cache/*STweaks.apk*;
 
-		$BB cat /res/STweaks.apk > /system/app/STweaks.apk;
+		$BB xzcat /res/STweaks.apk.xz > /system/app/STweaks.apk;
 		$BB chown 0.0 /system/app/STweaks.apk;
 		$BB chmod 644 /system/app/STweaks.apk;
 		$BB mkdir /system/.siyah;
@@ -113,7 +113,7 @@ GMTWEAKS()
 		$BB echo "1" > /system/.siyah/stweaks-installed;
 	fi;
 }
-#GMTWEAKS # Disabled for now.
+GMTWEAKS
 
 if [ ! -s /system/xbin/ntfs-3g ]; then
 	if [ "$payload_extracted" == "0" ]; then

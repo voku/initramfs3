@@ -34,6 +34,12 @@ dirty_writeback_centisecs_battery=0;
 renice 10 -p `pidof kswapd0`;
 renice 15 -p `pgrep logcat`;
 
+#disable cpuidle log
+echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
+
+# replace kernel version info for repacked kernels
+cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
+
 # ==============================================================
 # I/O-TWEAKS 
 # ==============================================================

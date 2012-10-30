@@ -40,9 +40,6 @@ $BB chown root:system /sys/devices/system/cpu/ -R;
 $BB chmod 0777 /data/anr -R;
 $BB chown system:system /data/anr -R;
 
-# run my modules
-$BB sh /sbin/ext/modules.sh;
-
 # for now static freq 1500->100
 echo "1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies;
 
