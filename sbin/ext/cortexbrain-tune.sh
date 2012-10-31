@@ -144,7 +144,7 @@ SYSTEM_TWEAKS()
 	if [ $cortexbrain_system == on ]; then
 		# render UI with GPU
 		setprop hwui.render_dirty_regions false;
-		setprop windowsmgr.max_events_per_sec 240;
+		setprop windowsmgr.max_events_per_sec 120;
 		setprop profiler.force_disable_err_rpt 1;
 		setprop profiler.force_disable_ulog 1;
 
@@ -393,7 +393,7 @@ MEMORY_TWEAKS()
 		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** memory tweaks ***: enabled";
 	fi;
@@ -766,8 +766,8 @@ SLEEP_MODE()
 		CPU_GOV_TWEAKS;
 
 		# set disk I/O sched to noop simple and battery saving.
-		echo "noop" > /sys/block/mmcblk0/queue/scheduler;
-		echo "noop" > /sys/block/mmcblk1/queue/scheduler;
+		echo "${sleep_scheduler}" > /sys/block/mmcblk0/queue/scheduler;
+		echo "${sleep_scheduler}" > /sys/block/mmcblk1/queue/scheduler;
 
 		# cpu-settings for second core
 		echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
