@@ -41,7 +41,7 @@ if [ "$mdniemod" == "on" ]; then
 fi;
 
 (
-	##### init.d scripts early, so my tweaks will fix the mess.#####
+	##### init.d scripts early, so my tweaks will fix the mess #####
 	$BB sh /sbin/ext/run-init-scripts.sh;
 )&
 
@@ -53,13 +53,16 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/ump/parameters/ump_debug_level;
 	echo "0" > /sys/module/mali/parameters/mali_debug_level;
 	echo "0" > /sys/module/kernel/parameters/initcall_debug;
-	echo "0" > /sys//module/lowmemorykiller/parameters/debug_level;
+	echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
 	echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
 	echo "0" > /sys/module/alarm/parameters/debug_mask;
 	echo "0" > /sys/module/alarm_dev/parameters/debug_mask;
 	echo "0" > /sys/module/binder/parameters/debug_mask;
 	echo "0" > /sys/module/xt_qtaguid/parameters/debug_mask;
 fi;
+
+# disable cpuidle log
+echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 
 # disable IPv6 on all interfaces!
 sysctl -w net.ipv6.conf.all.disable_ipv6=1
@@ -99,7 +102,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	pkill -f "com.darekxan.extweaks.app";
 	$BB sh /res/uci.sh restore;
 
-	# Restore all the PUSH Button Actions back to there location.
+	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 	pkill -f "com.darekxan.extweaks.app";
@@ -108,7 +111,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# EXTWEAKS FIXING
 	# ==============================================================
 
-	# apply volume tweaks. 
+	# apply volume tweaks
 	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 
 	# apply BLN mods, that get changed by ROM on boot.
@@ -120,7 +123,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		/res/customconfig/actions/bln_switch bln_switch $bln_switch
 	fi;
 
-	# apply touch led time out and led on touch, this is done if changed by ROM.
+	# apply touch led time out and led on touch, this is done if changed by ROM
 	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
 
 	# change USB mode MTP or Mass Storage
@@ -128,13 +131,22 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 )&
 
 (
-	sleep 60;
-	PIDOFACORE=`pgrep -f "android.process.acore"`;
-	for i in $PIDOFACORE; do
-		echo "-600" > /proc/${i}/oom_score_adj;
-		renice -15 -p $i;
-		$BB sh /sbin/ext/partitions-tune.sh;
-	done;
+	(while [ 1 ]; do
+		sleep 10;
+
+		PIDOFACORE=`pgrep -f "android.process.acore"`;
+		if [ $PIDOFACORE ]; then
+
+			for i in $PIDOFACORE; do	
+				echo "-600" > /proc/${i}/oom_score_adj;
+				renice -15 -p $i;
+				log -p i -t boot "*** do not kill -> android.process.acore ***";
+			done;
+
+			exit;
+		fi;
+
+	done &);
 )&
 
 echo "Done Booting" > /data/dm-boot-check;
