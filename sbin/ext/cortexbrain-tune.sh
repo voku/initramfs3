@@ -625,6 +625,26 @@ DISABLE_SWAPPINESS()
 	fi;
 }
 
+DISABLE_IPV6()
+{
+	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
+	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
+}
+
+KERNEL_SCHED_AWAKE()
+{
+	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
+}
+
+KERNEL_SCHED_SLEEP()
+{
+	echo "20000000" > /proc/sys/kernel/sched_latency_ns;
+	echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+}
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
@@ -649,6 +669,8 @@ AWAKE_MODE()
 
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+	KERNEL_SCHED_AWAKE;
 
 	MEGA_BOOST_CPU_TWEAKS;
 
@@ -680,8 +702,7 @@ AWAKE_MODE()
 	# set wifi.supplicant_scan_interval
 	setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 
-	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
-	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
+	DISABLE_IPV6;
 
 	# enable NMI Watchdog to detect hangs
 	echo "1" > /proc/sys/kernel/nmi_watchdog; 
@@ -713,14 +734,15 @@ SLEEP_MODE()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	DISABLE_KSM;	
-
 	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
+	KERNEL_SCHED_SLEEP;
+
+	DISABLE_KSM;	
 
 	DISABLE_GESTURE;
 
-	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
-	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
+	DISABLE_IPV6;
 
 	WAKEUP_DELAY_SLEEP;
 
