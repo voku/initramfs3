@@ -530,8 +530,19 @@
 
 		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
 
-		<spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
-			name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+		<spinner description="This will set the default Awake I/O scheduler. for internal, system, data and external sdcard, default is FIOPS" 
+			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+			<spinnerItem name="fiops" value="fiops"/> 
+			<spinnerItem name="sio" value="sio"/> 
+			<spinnerItem name="noop" value="noop"/> 
+			<spinnerItem name="deadline" value="deadline"/> 
+			<spinnerItem name="vr" value="vr"/> 
+			<spinnerItem name="cfq" value="cfq"/> 
+			<spinnerItem name="bfq" value="bfq"/> 
+		</spinner>
+
+		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler. for internal, system, data and external sdcard, default is NOOP"
+			name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
 			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
