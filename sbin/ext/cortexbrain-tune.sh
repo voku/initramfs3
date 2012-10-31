@@ -259,7 +259,7 @@ CPU_GOV_TWEAKS()
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 		# extra battery-settings
-		if [ $PROFILE == extreme_battery ] || [ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ]; then
+		if [ $PROFILE == extreme_battery ] || [[ [ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ] ]]; then
 
 			echo "100000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
@@ -343,7 +343,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 		# performance-settings		
-		elif [ $PROFILE == performance ]; then
+		elif [ $PROFILE == performance ] || [ $PROFILE == extreme_performance ]; then
 
 			echo "50000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
