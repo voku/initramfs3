@@ -30,6 +30,7 @@ if [ "$install_root" == "on" ]; then
 		if [ "$payload_extracted" == "0" ]; then
 			extract_payload;
 		fi;
+		payload_extracted=1
 
 		# clean su traces
 		$BB rm -f /system/bin/su > /dev/null 2>&1;
@@ -72,12 +73,11 @@ if [ "$install_root" == "on" ]; then
 			$BB chmod 755 /system/bin/busybox > /dev/null 2>&1;
 		fi;
 
-		# delete payload and kill superuser pid
-		$BB rm -rf /res/misc/payload;
+		# kill superuser pid
 		pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
+		pkill -f "eu.chinfire.supersu" > /dev/null 2>&1;
 	fi;
 fi;
-
 
 # liblights install by force to allow BLN
 if [ ! -e /system/lib/hw/lights.exynos4.so.BAK ]; then
@@ -96,24 +96,29 @@ fi;
 # New GM EXTWEAKS, Still not fully ready, lets wait for great app.
 GMTWEAKS()
 {
-	echo "Checking if STweaks is installed"
-	if [ ! -f /system/.siyah/stweaks-installed ]; then
-		#  if [ "$payload_extracted" == "0" ];then
-		#    extract_payload
-		#  fi
-		$BB rm /system/app/STweaks.apk;
-		$BB rm /data/app/com.gokhanmoral.STweaks*.apk;
-		$BB rm /data/dalvik-cache/*STweaks.apk*;
-
+	echo "Checking if STweaks is installed";
+	if [ ! -f /system/app/STweaks.apk ] && [ ! -f /data/app/com.gokhanmoral.STweaks*.apk ]; then
 		$BB xzcat /res/STweaks.apk.xz > /system/app/STweaks.apk;
 		$BB chown 0.0 /system/app/STweaks.apk;
 		$BB chmod 644 /system/app/STweaks.apk;
-		$BB mkdir /system/.siyah;
-		$BB chmod 755 /system/.siyah;
-		$BB echo "1" > /system/.siyah/stweaks-installed;
 	fi;
 }
-GMTWEAKS
+#GMTWEAKS #For now lets use extweaks.
+
+EXTWEAKS()
+{
+	echo "Checking if ExTweaks is installed";
+	if [ ! -f /system/app/Extweaks.apk ] && [ ! -f /data/app/com.darekxan.extweaks*.apk ]; then
+		if [ "$payload_extracted" == "0" ]; then
+			extract_payload;
+		fi;
+		$BB xzcat /res/misc/payload/Extweaks.apk.xz > /system/app/Extweaks.apk;
+		$BB chown 0.0 /system/app/Extweaks.apk;
+		$BB chmod 644 /system/app/Extweaks.apk;
+		payload_extracted=1
+	fi;
+}
+EXTWEAKS;
 
 if [ ! -s /system/xbin/ntfs-3g ]; then
 	if [ "$payload_extracted" == "0" ]; then
