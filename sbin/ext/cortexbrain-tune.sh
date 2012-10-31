@@ -641,8 +641,8 @@ KERNEL_SCHED_AWAKE()
 KERNEL_SCHED_SLEEP()
 {
 	echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+	echo "1000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
 }
 
 # ==============================================================
