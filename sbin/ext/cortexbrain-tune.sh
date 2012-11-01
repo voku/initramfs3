@@ -227,6 +227,9 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
 		echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
 
+		# bus freq to 400MHZ in low load
+		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
 		# cpu-settings for second core online at booster time.
 		echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -684,6 +687,9 @@ AWAKE_MODE()
 
 	WAKEUP_BOOST;
 
+	# bus freq back to normal
+	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
 	# set CPU-Tweak
 	sleep_power_save=0;
 	CPU_GOV_TWEAKS;
@@ -760,6 +766,9 @@ SLEEP_MODE()
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+		# bus freq to min 133Mhz
+		echo "60" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 		# set CPU-Tweak
 		sleep_power_save=1;
