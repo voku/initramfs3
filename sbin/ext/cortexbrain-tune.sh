@@ -227,6 +227,9 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
 		echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
 
+		# bus freq to 400MHZ in low load
+		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
 		# cpu-settings for second core online at booster time.
 		echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -641,8 +644,8 @@ KERNEL_SCHED_AWAKE()
 KERNEL_SCHED_SLEEP()
 {
 	echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "5000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "4000000" > /proc/sys/kernel/sched_min_granularity_ns;
+	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
 }
 
 # ==============================================================
@@ -683,6 +686,9 @@ AWAKE_MODE()
 	ENABLE_WIFI;
 
 	WAKEUP_BOOST;
+
+	# bus freq back to normal
+	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 	# set CPU-Tweak
 	sleep_power_save=0;
@@ -760,6 +766,9 @@ SLEEP_MODE()
 		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+		# bus freq to min 133Mhz
+		echo "60" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 		# set CPU-Tweak
 		sleep_power_save=1;
