@@ -2,9 +2,15 @@
 
 if [ "a$2" != "a" ]; then
 	if [ "$2" == "0" ]; then
-		reboot recovery
+		reboot recovery;
 	else
-		echo $2 > $EXTERNAL_STORAGE/.nextboot
-		reboot
+		echo $2 > /sdcard/.nextboot;
+		sync;
+		(
+			echo "Reboot in 3Sec";
+			sleep 4;
+		)&
+		reboot;
 	fi;
 fi;
+

@@ -84,7 +84,14 @@ $BB sh /sbin/ext/properties.sh;
 )&
 
 # sound reset on boot.
-/res/uci.sh soundgasm_hp $soundgasm_hp;
+kmemhelper -t short -n mc1n2_vol_hpgain -o 0 1536;
+kmemhelper -t short -n mc1n2_vol_hpgain -o 2 1536;
+kmemhelper -t short -n mc1n2_vol_hpgain -o 4 1536;
+kmemhelper -t short -n mc1n2_vol_hpgain -o 6 1536;
+echo "1e 1" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+echo "1e 0" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+echo "-4" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_SP;
+echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 
 # enable kmem interface for everyone by GM
 echo "0" > /proc/sys/kernel/kptr_restrict;
@@ -111,9 +118,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# EXTWEAKS FIXING
 	# ==============================================================
 
-	# apply volume tweaks
-	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
-
 	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
 		echo "0" > /sys/class/misc/backlightnotification/enabled;
@@ -132,7 +136,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 (
 	(while [ 1 ]; do
-		sleep 10;
+		sleep 50;
 
 		PIDOFACORE=`pgrep -f "android.process.acore"`;
 		if [ $PIDOFACORE ]; then

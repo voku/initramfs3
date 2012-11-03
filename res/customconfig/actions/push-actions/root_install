@@ -5,7 +5,7 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 	if [ ! -e /system/xbin/su ]; then
 		if [ ! -e /system/xbin/su ]; then
 			# extract Payload with root files
-			/sbin/busybox mount -o remount,rw /system > /dev/null 2>&1;
+			/sbin/busybox mount -o remount,rw /system;
 			/sbin/busybox mount -o remount,rw /;
 			/sbin/busybox chmod 755 /sbin/read_boot_headers;
 			eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
@@ -17,7 +17,7 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 			# clean su traces
 			/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1;
 			if [ ! -d /system/xbin ]; then
-				/sbin/busybox mkdir /system/xbin > /dev/null 2>&1;
+				/sbin/busybox mkdir /system/xbin;
 				/sbin/busybox chmod 755 /system/xbin;
 			fi;
 
@@ -67,8 +67,8 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 			# delete payload and kill superuser pid
 			/sbin/busybox rm -rf /res/misc/payload;
-			pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
-			pkill -f "eu.chinfire.supersu" > /dev/null 2>&1;
+			pkill -f "com.noshufou.android.su";
+			pkill -f "eu.chinfire.supersu";
 		fi;
 
 	else
