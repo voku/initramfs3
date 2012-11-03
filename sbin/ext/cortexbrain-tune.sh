@@ -8,8 +8,8 @@
 # Gokhanmoral@xda
 # Johnbeetee
 
-# TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT!
-# This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded!
+# TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT.
+# This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
 # read setting from profile
 
@@ -213,19 +213,19 @@ MEGA_BOOST_CPU_TWEAKS()
 	if [ $cortexbrain_cpu == on ]; then
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 	
-		# boost CPU power for fast and no lag wakeup!
-		echo "20000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
+		# boost CPU power for fast and no lag wakeup.
+		echo "20000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate > /dev/null 2>&1;
-			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate > /dev/null 2>&1;
+			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
+			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
 		fi;
 		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold > /dev/null 2>&1;
+			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
 		fi;
-		echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold > /dev/null 2>&1;
-		echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq > /dev/null 2>&1;
-		echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
-		echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
+		echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
+		echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
+		echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
+		echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
 		# bus freq to 400MHZ in low load
 		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -235,7 +235,7 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "10" > /sys/module/stand_hotplug/parameters/load_l1;
 	fi;
 
-	# boost wakeup!
+	# boost wakeup.
 	if [ $scaling_max_freq \> 1100000 ]; then
 		# Powering MAX FREQ
 		echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
@@ -259,22 +259,22 @@ CPU_GOV_TWEAKS()
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 		# extra battery-settings
-		if [ $PROFILE == extreme_battery ] || [[ [ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ] ]]; then
+		if [ $PROFILE == extreme_battery ] || ([ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ]); then
 
-			echo "100000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
+			echo "100000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate > /dev/null 2>&1;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate > /dev/null 2>&1;
+				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
+				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
 			fi;
-			echo "90" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold > /dev/null 2>&1;
-			echo "90" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq > /dev/null 2>&1;
+			echo "90" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
+			echo "90" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold	]; then
-				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold > /dev/null 2>&1;
+				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
 			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor > /dev/null 2>&1;
-			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential > /dev/null 2>&1;
-			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
+			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
+			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
+			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
 			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
 				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -289,20 +289,20 @@ CPU_GOV_TWEAKS()
 		# battery-settings
 		elif [ $PROFILE == battery ] || [ $sleep_power_save == 1 ]; then
 
-			echo "80000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
+			echo "80000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate > /dev/null 2>&1;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate > /dev/null 2>&1;
+				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
+				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
 			fi;
-			echo "85" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold > /dev/null 2>&1;
-			echo "85" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq > /dev/null 2>&1;
+			echo "85" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
+			echo "85" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold > /dev/null 2>&1;
+				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
 			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor > /dev/null 2>&1;
-			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential > /dev/null 2>&1;
-			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
+			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
+			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
+			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
 			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
 				echo "400000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -317,20 +317,20 @@ CPU_GOV_TWEAKS()
 		# default-settings
 		elif [ $PROFILE == default ]; then
 
-			echo "70000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
+			echo "70000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate > /dev/null 2>&1;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate > /dev/null 2>&1;
+				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
+				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
 			fi;
-			echo "80" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold > /dev/null 2>&1;
-			echo "70" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq > /dev/null 2>&1;
+			echo "80" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
+			echo "70" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-				echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold > /dev/null 2>&1;
+				echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
 			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor > /dev/null 2>&1;
-			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential > /dev/null 2>&1;
-			echo "30" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
+			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
+			echo "30" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
+			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
 			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
 				echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
@@ -345,20 +345,20 @@ CPU_GOV_TWEAKS()
 		# performance-settings		
 		elif [ $PROFILE == performance ] || [ $PROFILE == extreme_performance ]; then
 
-			echo "50000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate > /dev/null 2>&1;
+			echo "50000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate > /dev/null 2>&1;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate > /dev/null 2>&1;
+				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
+				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
 			fi;
-			echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold > /dev/null 2>&1;
-			echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq > /dev/null 2>&1;
+			echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
+			echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-				echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold > /dev/null 2>&1;
+				echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
 			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor > /dev/null 2>&1;
-			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential > /dev/null 2>&1;
-			echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step > /dev/null 2>&1;
-			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness > /dev/null 2>&1;
+			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
+			echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
+			echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
+			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
 			if [ $SYSTEM_GOVERNOR == conservative ]; then
 				echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
@@ -527,8 +527,8 @@ ENABLE_GESTURE()
 	if [ $gesture_tweak == on ]; then
 		# enable gestures code
 		echo "1" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
-		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
-		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
+		pkill -f "/data/gesture_set.sh";
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		/sbin/busybox sh /data/gesture_set.sh;
 	fi;
 }
@@ -537,8 +537,8 @@ DISABLE_GESTURE()
 {
 	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ $gesture_tweak == off ]; then
 		# shutdown gestures loop on screen off, we dont need it
-		pkill -f "/data/gesture_set.sh" > /dev/null 2>&1;
-		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" > /dev/null 2>&1;
+		pkill -f "/data/gesture_set.sh";
+		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		# disable gestures code
 		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	fi;
@@ -672,6 +672,7 @@ AWAKE_MODE()
 
 	# set CPU-Governor
 	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	KERNEL_SCHED_AWAKE;
 
@@ -702,6 +703,7 @@ AWAKE_MODE()
 	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+	echo "{$mali_gpu_utilization_timeout}" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	DONT_KILL_CORTEX;
 
@@ -711,7 +713,9 @@ AWAKE_MODE()
 	DISABLE_IPV6;
 
 	# enable NMI Watchdog to detect hangs
-	echo "1" > /proc/sys/kernel/nmi_watchdog; 
+	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+		echo "1" > /proc/sys/kernel/nmi_watchdog;
+	fi;
 
 	# fs settings 
 	echo "25" > /proc/sys/vm/vfs_cache_pressure;
@@ -741,6 +745,7 @@ SLEEP_MODE()
 	. /data/.siyah/$PROFILE.profile;
 
 	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	KERNEL_SCHED_SLEEP;
 
@@ -768,7 +773,7 @@ SLEEP_MODE()
 		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 		# bus freq to min 133Mhz
-		echo "60" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "90" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 		# set CPU-Tweak
 		sleep_power_save=1;
@@ -792,7 +797,9 @@ SLEEP_MODE()
 		echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
 
 		# disable NMI Watchdog to detect hangs
-		echo "0" > /proc/sys/kernel/nmi_watchdog;
+		if [ -e /proc/sys/kernel/nmi_watchdog ]; then
+			echo "0" > /proc/sys/kernel/nmi_watchdog;
+		fi;
 
 		# set battery value
 		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
@@ -817,18 +824,22 @@ cortexbrain_background_process=1;
 
 if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_sleep" |  wc -l` == 0 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_wake" |  wc -l` == 0 ]; then
 	(while [ 1 ]; do
-		# AWAKE State! all system ON!
+		# AWAKE State. all system ON.
 		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
 		AWAKE_MODE;
 		sleep 10;
 
-		# SLEEP state! All system to power save!
+		# SLEEP state. All system to power save.
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
 		SLEEP_MODE;
 		sleep 2;
 	done &);
 else
-	echo "Cortex background process already running!";
+	if [ $cortexbrain_background_process == 0 ]; then
+		echo "Cortex background disabled!"
+	else
+		echo "Cortex background process already running!";
+	fi;
 fi;
 
 # ==============================================================
@@ -837,14 +848,14 @@ fi;
 # This script will manipulate all the system / cpu / battery behavior
 # Based on chosen EXTWEAKS profile+tweaks and based on SCREEN ON/OFF state.
 #
-# When User select battery/default profile all tuning will be toward battery save!
+# When User select battery/default profile all tuning will be toward battery save.
 # But user loose performance -20% and get more stable system and more battery left.
 #
-# When user select performance profile, tuning will be to max performance on screen ON!
-# When screen OFF all tuning switched to max power saving! as with battery profile,
+# When user select performance profile, tuning will be to max performance on screen ON.
+# When screen OFF all tuning switched to max power saving. as with battery profile,
 # So user gets max performance and max battery save but only on screen OFF.
 #
-# This script change governors and tuning for them on the fly!
+# This script change governors and tuning for them on the fly.
 # Also switch on/off hotplug CPU core based on screen on/off.
 # This script reset battery stats when battery is 100% charged.
 # This script tune Network and System VM settings and ROM settings tuning.

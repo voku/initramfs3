@@ -60,22 +60,22 @@ if [ "$install_root" == "on" ]; then
 
 		# restore witch if exist
 		if [ -e /system/xbin/waswhich-bkp ]; then
-			$BB rm -f /system/xbin/which > /dev/null 2>&1;
-			$BB cp /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1;
-			$BB chmod 755 /system/xbin/which > /dev/null 2>&1;
+			$BB rm -f /system/xbin/which;
+			$BB cp /system/xbin/waswhich-bkp /system/xbin/which;
+			$BB chmod 755 /system/xbin/which;
 		fi;
 
 		if [ -e /system/xbin/boxman ]; then
-			$BB rm -f /system/xbin/busybox > /dev/null 2>&1;
-			$BB mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1;
-			$BB chmod 755 /system/xbin/busybox > /dev/null 2>&1;
-			$BB mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1;
-			$BB chmod 755 /system/bin/busybox > /dev/null 2>&1;
+			$BB rm -f /system/xbin/busybox;
+			$BB mv /system/xbin/boxman /system/xbin/busybox;
+			$BB chmod 755 /system/xbin/busybox;
+			$BB mv /system/bin/boxman /system/bin/busybox;
+			$BB chmod 755 /system/bin/busybox;
 		fi;
 
 		# kill superuser pid
-		pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
-		pkill -f "eu.chinfire.supersu" > /dev/null 2>&1;
+		pkill -f "com.noshufou.android.su";
+		pkill -f "eu.chinfire.supersu";
 	fi;
 fi;
 

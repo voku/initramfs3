@@ -4,15 +4,15 @@
 		<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-			<seekBar description="Maximum CPU Speed (default is 1200000)" 
+			<seekBar description="Maximum CPU Speed ALERT 1.5Ghz and 1.6Ghz can be unstable for your personal device! so try it, if stuck(SOD), then your CPU will not work on such high OC, nothing can be done! for others it's working fine. (default is 1200000)" 
 				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" 
-					unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
+					unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 			<seekBar description="Minimum CPU Speed (default is 200000)" 
 				name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" 
-					unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
+					unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." 
+			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and pegasusq governors." 
 				name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 				<spinnerItem name="Disabled" value="0"/> 
 				<spinnerItem name="1200MHz" value="4"/> 
@@ -97,9 +97,9 @@
 		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=23%" 
+		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=80%" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
-			unit="%" min="20" reversed="false" step="1" max="50"/>
+			unit="%" min="20" reversed="false" step="1" max="90"/>
 
 		<seekBar description="Maximum DEEP SLEEP CPU Speed default is Kernel default 600000, Samsung Default 800000! too low freq will stuck your device!)" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
@@ -107,9 +107,9 @@
 
 		<seekBar description="Minimum DEEP SLEEP CPU Speed (default is 200000)" 
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed, (default is 100000kHz) if music still shutter, rise to 200000/300000kHz"
+		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed, (default is 200000kHz) if music still shutter, rise to 300000/400000kHz"
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
@@ -138,7 +138,7 @@
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency Settings. Defaults frequencies are 100, 133, 160, 200 and 267. Voltage defaults are 900mV, 950mV, 1000mV and 1050mV." name="GPUFreq">
+	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 100, 133, 160, 200 and 267. Voltage defaults are 900mV, 950mV, 1000mV and 1050mV." name="GPU Control">
 
 	<!--spinner description="Select the level to be used to boost GPU frequency when you touch the screen." 
 		name="Mali Touch Boost Level" action="generic /sys/module/mali/parameters/mali_touch_boost_level">
@@ -147,6 +147,10 @@
 		<spinnerItem name="Step3" value="2"/> 
 		<spinnerItem name="Step4" value="3"/> 
 	</spinner-->
+
+	<seekBar description="Here you can change GPU utilization timeout! as close to 100(1sec) you get faster GPU response in steps jump on load. but more battery drained, CM10 default 250(2.5Sec)"
+		name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
+		unit="MSec" min="100" reversed="false" step="50" max="500"/>
 
 	<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
 		<spinnerItem name="160MHz" value="160"/> 
@@ -316,7 +320,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more will be added later, this tweak depend on cortex background service ON" 
+	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more can be added by user, this tweak depend on cortex background service ON" 
 			name="Gestures Panel">
 
 		<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum."
@@ -459,7 +463,7 @@
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
 			unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
 
-		<checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/>
+		<!--checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/-->
 
 	</settingsPane>
 
@@ -467,7 +471,7 @@
 
 <settingsTab name="Misc">
 
-	<settingsPane description="Dual Mount-SDCARD and MMC via USB after USB disconnected Dual Mount Disabled!" name="DUAL MOUNT USB">
+	<settingsPane description="Dual Mount-SDCARD and MMC via USB after USB disconnected Dual Mount Disabled! this tweak is working by AUTO, plug USB. turn off the screen and then turn ON, and you get working mounts, to scan your new MEDIA files, use some app to force Media Scan." name="DUAL MOUNT USB">
 
 		<button description="Dual Mount USB Switch" name="DUAL MOUNT" action="push-actions/dualmount" label="Dual Mount"/>
 
@@ -495,8 +499,8 @@
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
-		<checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
-			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/>
+		<!--checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
+			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/-->
 
 		<spinner description="This setting change normal full root ADB to DEV hacked not rooted ADB! that allow to use external apps to upload files and mod them inside the phone!, normal user not need it! DEV ADB is for developers only."
 			name="ADB BINARY MODE" action="adb_mode">
@@ -504,7 +508,7 @@
 			<spinnerItem name="Development ADB" value="1"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable Android Logger (needs reboot)" 
+		<checkbox description="Enable or Disable Android Additional Logs (needs reboot)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
 		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
@@ -542,7 +546,7 @@
 		</spinner>
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler. for internal, system, data and external sdcard, default is NOOP"
-			name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
+			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
 			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
@@ -619,7 +623,7 @@
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-		<spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it the cpu-governor will not change automatically for deep-sleep. Battery will not get statistics reset when full/100%, CPU tweaks will not be dynamically changed, use it in your own will/risk. After Enable wait 3sec, then push the `CHECK SERVICE` to see if service is online."
+		<spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it! well you loose kernel AI that maintain your device. After Enable wait 2sec, then push the `CHECK SERVICE` to see if service is online."
 			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
 				<spinnerItem name="Enable" value="1"/> 
 				<spinnerItem name="Disable" value="0"/> 
@@ -646,7 +650,7 @@
 		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (reboot needed after change)"
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune it depend on 'cortexbrain_background_process'] (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune it depend on 'cortexbrain_background_process']"
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
 		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (reboot needed after change)"

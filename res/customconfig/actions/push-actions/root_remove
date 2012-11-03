@@ -3,27 +3,27 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
 	if [ -f /system/xbin/su ]; then
-			/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1;
+			/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system;
 			/sbin/busybox mount -t rootfs -o remount,rw rootfs;
 			/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1;
 			/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1;
 			# some roms have a busybox with su applet
 			if [ -e /system/xbin/busybox ]; then
-				/sbin/busybox mv /system/xbin/busybox /system/xbin/boxman > /dev/null 2>&1;
-				/sbin/busybox rm -f /system/xbin/busybox > /dev/null 2>&1;
+				/sbin/busybox mv /system/xbin/busybox /system/xbin/boxman;
+				/sbin/busybox rm -f /system/xbin/busybox;
 			fi
 
 			if [ -e /system/bin/busybox ]; then
-				/sbin/busybox mv /system/bin/busybox /system/bin/boxman > /dev/null 2>&1;
-				/sbin/busybox rm -f /system/bin/busybox > /dev/null 2>&1;
+				/sbin/busybox mv /system/bin/busybox /system/bin/boxman;
+				/sbin/busybox rm -f /system/bin/busybox;
 			fi
 
-			/sbin/busybox ln -s /sbin/busybox /system/xbin/busybox > /dev/null 2>&1;
+			/sbin/busybox ln -s /sbin/busybox /system/xbin/busybox;
 
 			# I need to remove this as well for Garanti CepBank app
 			if [ -e /system/xbin/which ]; then
-				/sbin/busybox mv /system/xbin/which /system/xbin/waswhich-bkp > /dev/null 2>&1;
-				/sbin/busybox rm -f /system/xbin/which > /dev/null 2>&1;
+				/sbin/busybox mv /system/xbin/which /system/xbin/waswhich-bkp;
+				/sbin/busybox rm -f /system/xbin/which;
 			fi
 
 			# SuperUser, superuser Superuser SuperUser whatever...
@@ -48,8 +48,8 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 			/sbin/busybox mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1;
 			/sbin/busybox mount -t rootfs -o remount,ro rootfs > /dev/null 2>&1;
 	fi;
-	pkill -f "com.noshufou.android.su" > /dev/null 2>&1;
-	pkill -f "eu.chinfire.supersu" > /dev/null 2>&1;
+	pkill -f "com.noshufou.android.su";
+	pkill -f "eu.chinfire.supersu";
 )&
 
 sleep 3;

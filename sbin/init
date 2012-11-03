@@ -24,8 +24,6 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
 	exec /sbin/init.recovery;
 fi;
 
-SECONDROM=1;
-NOBOOTLOGO=0;
 # cleaning and rebuilding the /mnt and sdcards mounts folders
 rm -rf /mnt;
 rm -rf /sdcard;
@@ -66,26 +64,26 @@ sync;
 umount -l /mnt/tmp;
 mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
-if [ -e /mnt/.nextboot ]; then
-	NEXTBOOT=`cat /mnt/.nextboot`;
-	rm -f /mnt/.nextboot;
+if [ -e /mnt/tmp/.nextboot ]; then
+	NEXTBOOT=`cat /mnt/tmp/.nextboot`;
+	rm -f /mnt/tmp/.nextboot;
 fi;
-if [ -e /mnt/.defaultrom ]; then
-	DEFAULTROM=`cat /mnt/.defaultrom`;
+if [ -e /mnt/tmp/.defaultrom ]; then
+	DEFAULTROM=`cat /mnt/tmp/.defaultrom`;
 fi;
 SECONDROM=1;
 NOBOOTLOGO=0;
 [ -f /preload/build.prop ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
-[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1 && SECONDROM=0;
+[ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
 sync;
 umount /preload;
 umount -l /mnt/tmp;
 
 if [ "$SECONDROM" == "0" ]; then
 	if [ "$NOBOOTLOGO" == "0" ]; then
-		/sbin/choose_rom $SECONDROM;
+		/sbin/choose_rom 0;
 	fi;
 else
 	if [ "$NEXTBOOT" == "1" ]; then
