@@ -113,9 +113,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# EXTWEAKS FIXING
 	# ==============================================================
 
-	# HeadPhones boost
-	/res/uci.sh soundgasm_hp $soundgasm_hp;
-
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
 	MIUI_JB=0;
 	JELLY=0;
