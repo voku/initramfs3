@@ -117,13 +117,19 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	/res/uci.sh soundgasm_hp $soundgasm_hp;
 
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
-	input keyevent 25
-	input keyevent 25
-	input keyevent 25
-	input keyevent 24
-	input keyevent 24
-	input keyevent 24
-	input keyevent 24
+	MIUI_JB=0;
+	JELLY=0;
+	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+	[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
+	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
+		input keyevent 25
+		input keyevent 25
+		input keyevent 25
+		input keyevent 24
+		input keyevent 24
+		input keyevent 24
+		input keyevent 24
+	fi;
 
 	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
