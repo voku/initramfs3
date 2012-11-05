@@ -42,7 +42,7 @@ cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 
 # ==============================================================
 IO_TWEAKS()
 {
-	if [ $cortexbrain_io == on ]; then
+	if [ "$cortexbrain_io" == on ]; then
 		MMC=`ls -d /sys/block/mmc*`;
 		ZRM=`ls -d /sys/block/zram*`;
 
@@ -127,7 +127,7 @@ IO_TWEAKS;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-	if [ $cortexbrain_kernel_tweaks == on ]; then
+	if [ "$cortexbrain_kernel_tweaks" == on ]; then
 		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 		sysctl -w vm.panic_on_oom=0;
 	
@@ -141,7 +141,7 @@ KERNEL_TWEAKS;
 # ==============================================================
 SYSTEM_TWEAKS()
 {
-	if [ $cortexbrain_system == on ]; then
+	if [ "$cortexbrain_system" == on ]; then
 		# render UI with GPU
 		setprop hwui.render_dirty_regions false;
 		setprop windowsmgr.max_events_per_sec 120;
@@ -158,18 +158,18 @@ SYSTEM_TWEAKS;
 # ==============================================================
 BATTERY_TWEAKS()
 {
-	if [ $cortexbrain_battery == on ]; then
+	if [ "$cortexbrain_battery" == on ]; then
 		# battery-calibration if battery is full
 		LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
 		BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
 		echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
-		if [ $LEVEL == 100 ] && [ $BATTFULL == 1 ]; then
+		if [ "$LEVEL" == 100 ] && [ "$BATTFULL" == 1 ]; then
 			rm -f /data/system/batterystats.bin;
 			echo "battery-calibration done ...";
 		fi;
 
-		if [ $power_reduce == on ]; then
+		if [ "$power_reduce" == on ]; then
 			# LCD Power-Reduce
 			if [ -e /sys/class/lcd/panel/power_reduce ]; then
 				echo "1" > /sys/class/lcd/panel/power_reduce;
@@ -210,7 +210,7 @@ BATTERY_TWEAKS;
 
 MEGA_BOOST_CPU_TWEAKS()
 {
-	if [ $cortexbrain_cpu == on ]; then
+	if [ "$cortexbrain_cpu" == on ]; then
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 	
 		# boost CPU power for fast and no lag wakeup.
@@ -228,7 +228,10 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
 		# bus freq to 400MHZ in low load
-		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
+		# GPU utilization to min delay
+		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 		# cpu-settings for second core online at booster time.
 		echo "10" > /sys/module/stand_hotplug/parameters/load_h0;
@@ -236,9 +239,9 @@ MEGA_BOOST_CPU_TWEAKS()
 	fi;
 
 	# boost wakeup.
-	if [ $scaling_max_freq \> 1100000 ]; then
+	if [ "$scaling_max_freq" \> 1100000 ]; then
 		# Powering MAX FREQ
-		echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		# Powering MIN FREQ
 		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		# Powering SCREEN TOUCH FREQ
@@ -255,11 +258,11 @@ MEGA_BOOST_CPU_TWEAKS()
 
 CPU_GOV_TWEAKS()
 {
-	if [ $cortexbrain_cpu == on ]; then
+	if [ "$cortexbrain_cpu" == on ]; then
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
 		# extra battery-settings
-		if [ $PROFILE == extreme_battery ] || ([ $PROFILE == extreme_battery ] && [ $sleep_power_save == 1 ]); then
+		if [ "$PROFILE" == extreme_battery ] || ([ "$PROFILE" == extreme_battery ] && [ "$sleep_power_save" == 1 ]); then
 
 			echo "100000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
@@ -276,7 +279,7 @@ CPU_GOV_TWEAKS()
 			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
-			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
+			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
 				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
@@ -287,7 +290,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 		# battery-settings
-		elif [ $PROFILE == battery ] || [ $sleep_power_save == 1 ]; then
+		elif [ "$PROFILE" == battery ] || [ "$sleep_power_save" == 1 ]; then
 
 			echo "80000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
@@ -304,7 +307,7 @@ CPU_GOV_TWEAKS()
 			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
-			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
+			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
 				echo "400000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
@@ -315,7 +318,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 		# default-settings
-		elif [ $PROFILE == default ]; then
+		elif [ "$PROFILE" == default ]; then
 
 			echo "70000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
@@ -332,7 +335,7 @@ CPU_GOV_TWEAKS()
 			echo "30" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
-			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
+			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
 				echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
@@ -343,7 +346,7 @@ CPU_GOV_TWEAKS()
 			fi;
 
 		# performance-settings		
-		elif [ $PROFILE == performance ] || [ $PROFILE == extreme_performance ]; then
+		elif [ "$PROFILE" == performance ] || [ "$PROFILE" == extreme_performance ]; then
 
 			echo "50000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
@@ -360,11 +363,11 @@ CPU_GOV_TWEAKS()
 			echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
 			echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
 
-			if [ $SYSTEM_GOVERNOR == conservative ]; then
+			if [ "$SYSTEM_GOVERNOR" == conservative ]; then
 				echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
 			fi;
 
-			if [ $SYSTEM_GOVERNOR == pegasusq ]; then
+			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
 				echo "600000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
 				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
 				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
@@ -386,15 +389,15 @@ CPU_GOV_TWEAKS;
 # ==============================================================
 MEMORY_TWEAKS()
 {
-	if [ $cortexbrain_memory == on ]; then
+	if [ "$cortexbrain_memory" == on ]; then
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "25" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
@@ -408,7 +411,7 @@ MEMORY_TWEAKS;
 # ==============================================================
 TCP_TWEAKS()
 {
-	if [ $cortexbrain_tcp == on ]; then
+	if [ "$cortexbrain_tcp" == on ]; then
 		echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
 		echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
 		echo "1" > /proc/sys/net/ipv4/tcp_sack;
@@ -440,7 +443,7 @@ TCP_TWEAKS;
 # ==============================================================
 FIREWALL_TWEAKS()
 {
-	if [ $cortexbrain_firewall == on ]; then
+	if [ "$cortexbrain_firewall" == on ]; then
 		# ping/icmp protection
 		echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts;
 		echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
@@ -463,8 +466,8 @@ FIREWALL_TWEAKS;
 ENABLE_WIFI()
 {
 	# enable WIFI-driver if screen is on
-	if [ $wifiON == 1 ]; then
-		if [ $cortexbrain_auto_tweak_wifi == on ]; then
+	if [ "$wifiON" == 1 ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			svc wifi enable;
 		fi;
 	fi;
@@ -475,7 +478,7 @@ DISABLE_WIFI()
 	# disable WIFI-driver if screen is off
 	wifiOFF=`cat /sys/module/dhd/initstate`;
 	if [ "a$wifiOFF" != "a" ]; then
-		if [ $cortexbrain_auto_tweak_wifi == on ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			svc wifi disable;
 			wifiON=1;
 		fi;
@@ -486,7 +489,7 @@ DISABLE_WIFI()
 
 ENABLE_WIFI_PM()
 {
-	if [ $wifi_pwr == on ]; then
+	if [ "$wifi_pwr" == on ]; then
 		# WIFI PM-FAST support
 		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 			echo "1" > /sys/module/dhd/parameters/wifi_pm;
@@ -505,7 +508,7 @@ DISABLE_WIFI_PM()
 ENABLE_LOGGER()
 {
 	# load logger if needed
-	if [ $android_logger == auto ] || [ $android_logger == debug ]; then
+	if [ "$android_logger" == auto ] || [ "$android_logger" == debug ]; then
 		if [ -e /dev/log-sleep ] && [ ! -e /dev/log ]; then
 			mv /dev/log-sleep/ /dev/log/
 		fi;
@@ -515,7 +518,7 @@ ENABLE_LOGGER()
 DISABLE_LOGGER()
 {
 	# android logger process control
-	if [ $android_logger == auto ] || [ $android_logger == disabled ]; then
+	if [ "$android_logger" == auto ] || [ "$android_logger" == disabled ]; then
 		if [ -e /dev/log ]; then
 			mv /dev/log/ /dev/log-sleep/;
 		fi;
@@ -524,7 +527,7 @@ DISABLE_LOGGER()
 
 ENABLE_GESTURE()
 {
-	if [ $gesture_tweak == on ]; then
+	if [ "$gesture_tweak" == on ]; then
 		# enable gestures code
 		echo "1" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 		pkill -f "/data/gesture_set.sh";
@@ -535,11 +538,13 @@ ENABLE_GESTURE()
 
 DISABLE_GESTURE()
 {
-	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ $gesture_tweak == off ]; then
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ "$gesture_tweak" == off ]; then
 		# shutdown gestures loop on screen off, we dont need it
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		# disable gestures code
+		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
+	else
 		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	fi;
 }
@@ -548,7 +553,7 @@ ENABLE_KSM()
 {
 	# enable KSM on screen ON.
 	KSM="/sys/kernel/mm/ksm/run";
-	if [ -e $KSM ]; then
+	if [ -e "$KSM" ]; then
 		echo "1" > $KSM;
 	fi;
 }
@@ -557,7 +562,7 @@ DISABLE_KSM()
 {
 	# disable KSM on screen OFF
 	KSM="/sys/kernel/mm/ksm/run";
-	if [ -e $KSM ]; then
+	if [ -e "$KSM" ]; then
 		echo "0" > $KSM;
 	fi;
 }
@@ -584,7 +589,7 @@ MOUNT_SD_CARD()
 WAKEUP_BOOST()
 {
 	# check if ROM booting now, if yes, dont wait. creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
-	if [ ! -e /data/.siyah/booting ] && [ $wakeup_boost != 0 ]; then
+	if [ ! -e /data/.siyah/booting ] && [ "$wakeup_boost" != 0 ]; then
 		sleep $wakeup_boost;
 	fi;
 }
@@ -592,29 +597,29 @@ WAKEUP_BOOST()
 WAKEUP_DELAY()
 {
 	# set wakeup booster delay to prevent mp3 music shattering when screen turned ON.
-	if [ $wakeup_delay != 0 ] && [ ! -e /data/.siyah/booting ]; then
+	if [ "$wakeup_delay" != 0 ] && [ ! -e /data/.siyah/booting ]; then
 		sleep $wakeup_delay
 	fi;
 }
 
 WAKEUP_DELAY_SLEEP()
 {
-	if [ $wakeup_delay != 0 ] && [ ! -e /data/.siyah/booting ]; then
+	if [ "$wakeup_delay" != 0 ] && [ ! -e /data/.siyah/booting ]; then
 		sleep $wakeup_delay;
 	else
-		sleep 2;
+		sleep 3;
 	fi;
 }
 
 AUTO_BRIGHTNESS()
 {
 	# auto set brightness
-	if [ $cortexbrain_auto_tweak_brightness == on ]; then
+	if [ "$cortexbrain_auto_tweak_brightness" == on ]; then
 		LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
 		NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS*LEVEL/100 ))`;
-		if [ $NEW_BRIGHTNESS -le $OLD_BRIGHTNESS ]; then	
+		if [ "$NEW_BRIGHTNESS" -le "$OLD_BRIGHTNESS" ]; then
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
 	fi;
@@ -623,7 +628,7 @@ AUTO_BRIGHTNESS()
 DISABLE_SWAPPINESS()
 {
 	# set swappiness in case that no root installed, and zram used
-	if [ $zramtweaks == 4 ]; then
+	if [ "$zramtweaks" == 4 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
 	fi;
 }
@@ -644,8 +649,8 @@ KERNEL_SCHED_AWAKE()
 KERNEL_SCHED_SLEEP()
 {
 	echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
+	echo "3000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "2500000" > /proc/sys/kernel/sched_min_granularity_ns;
 }
 
 # ==============================================================
@@ -660,19 +665,17 @@ AWAKE_MODE()
 	WAKEUP_DELAY;
 
 	# set default values
-	echo "${dirty_expire_centisecs_default}" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "${dirty_writeback_centisecs_default}" > /proc/sys/vm/dirty_writeback_centisecs;
-
-	# fs settings
-	echo "300" > /proc/sys/vm/vfs_cache_pressure;
+	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
+	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 
 	# set I/O-Scheduler
-	echo "${scheduler}" > /sys/block/mmcblk0/queue/scheduler;
-	echo "${scheduler}" > /sys/block/mmcblk1/queue/scheduler;
+	echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
+	echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
 
 	# set CPU-Governor
-	echo "${scaling_governor}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-	echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+
+	echo "300" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 	KERNEL_SCHED_AWAKE;
 
@@ -689,21 +692,21 @@ AWAKE_MODE()
 	WAKEUP_BOOST;
 
 	# bus freq back to normal
-	echo "${busfreq_up_threshold}" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 	# set CPU-Tweak
 	sleep_power_save=0;
 	CPU_GOV_TWEAKS;
 
 	# cpu-settings for second core
-	echo "${load_h0}" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "${load_l1}" > /sys/module/stand_hotplug/parameters/load_l1;
+	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
+	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
 
 	# set CPU speed
-	echo "${scaling_min_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	echo "${scaling_max_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	echo "${tsp_touch_freq}" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-	echo "{$mali_gpu_utilization_timeout}" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "$tsp_touch_freq" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+	echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	DONT_KILL_CORTEX;
 
@@ -723,7 +726,7 @@ AWAKE_MODE()
 	ENABLE_KSM;
 
 	# set the vibrator - force in case it's has been reseted
-	echo "${pwm_val}" > /sys/vibrator/pwm_val;
+	echo "$pwm_val" > /sys/vibrator/pwm_val;
 
 	AUTO_BRIGHTNESS;
 
@@ -744,8 +747,10 @@ SLEEP_MODE()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	echo "${standby_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	WAKEUP_DELAY_SLEEP;
+
+	echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	KERNEL_SCHED_SLEEP;
 
@@ -755,8 +760,6 @@ SLEEP_MODE()
 
 	DISABLE_IPV6;
 
-	WAKEUP_DELAY_SLEEP;
-
 	BATTERY_TWEAKS;
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
@@ -765,12 +768,12 @@ SLEEP_MODE()
 		ENABLE_WIFI_PM;
 
 		# set CPU-Governor
-		echo "${deep_sleep}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 		# reduce deepsleep CPU speed, SUSPEND mode
-		echo "${scaling_min_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		echo "${scaling_max_suspend_freq}" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
 		# bus freq to min 133Mhz
 		echo "90" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -780,21 +783,21 @@ SLEEP_MODE()
 		CPU_GOV_TWEAKS;
 
 		# set disk I/O sched to noop simple and battery saving.
-		echo "${sleep_scheduler}" > /sys/block/mmcblk0/queue/scheduler;
-		echo "${sleep_scheduler}" > /sys/block/mmcblk1/queue/scheduler;
+		echo "$sleep_scheduler" > /sys/block/mmcblk0/queue/scheduler;
+		echo "$sleep_scheduler" > /sys/block/mmcblk1/queue/scheduler;
 
 		# cpu-settings for second core
-		echo "30" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "30" > /sys/module/stand_hotplug/parameters/load_l1;
+		echo "50" > /sys/module/stand_hotplug/parameters/load_h0;
+		echo "50" > /sys/module/stand_hotplug/parameters/load_l1;
 
 		# set wifi.supplicant_scan_interval
-		if [ $supplicant_scan_interval -lt 180 ]; then
+		if [ "$supplicant_scan_interval" -lt 180 ]; then
 			setprop wifi.supplicant_scan_interval 360;
 		fi;
 
 		# set settings for battery -> don't wake up "pdflush daemon"
-		echo "${dirty_expire_centisecs_battery}" > /proc/sys/vm/dirty_expire_centisecs;
-		echo "${dirty_writeback_centisecs_battery}" > /proc/sys/vm/dirty_writeback_centisecs;
+		echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
+		echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
 
 		# disable NMI Watchdog to detect hangs
 		if [ -e /proc/sys/kernel/nmi_watchdog ]; then
@@ -822,7 +825,7 @@ SLEEP_MODE()
 # Dynamic value do not change/delete
 cortexbrain_background_process=1;
 
-if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_sleep" |  wc -l` == 0 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_wake" |  wc -l` == 0 ]; then
+if [ "$cortexbrain_background_process" == 1 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_sleep" |  wc -l` == 0 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_wake" |  wc -l` == 0 ]; then
 	(while [ 1 ]; do
 		# AWAKE State. all system ON.
 		STATE=`$(cat /sys/power/wait_for_fb_wake)`;
@@ -832,10 +835,9 @@ if [ $cortexbrain_background_process == 1 ] && [ `pgrep -f "cat /sys/power/wait_
 		# SLEEP state. All system to power save.
 		STATE=`$(cat /sys/power/wait_for_fb_sleep)`;
 		SLEEP_MODE;
-		sleep 2;
 	done &);
 else
-	if [ $cortexbrain_background_process == 0 ]; then
+	if [ "$cortexbrain_background_process" == 0 ]; then
 		echo "Cortex background disabled!"
 	else
 		echo "Cortex background process already running!";

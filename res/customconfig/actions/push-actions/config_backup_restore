@@ -126,6 +126,7 @@ case "${config_backup_restore}" in
 				# Killing extweaks, if was open it's will restart!
 				EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
 				kill $EXTWEAKSAPP;
+				am start -a android.intent.action.MAIN -n com.darekxan.extweaks.app/.ExTweaksActivity;
 			)&
 
 			exit 0;

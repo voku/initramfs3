@@ -108,7 +108,7 @@ GMTWEAKS()
 EXTWEAKS()
 {
 	echo "Checking if ExTweaks is installed";
-	if [ ! -f /system/app/Extweaks.apk ] && [ ! -f /data/app/com.darekxan.extweaks*.apk ]; then
+	if [ ! -f /system/app/Extweaks.apk ] && [ ! -f /data/app/com.darekxan.extweaks.ap*.apk ]; then
 		if [ "$payload_extracted" == "0" ]; then
 			extract_payload;
 		fi;

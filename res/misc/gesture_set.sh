@@ -77,7 +77,7 @@ do
 	
 	if [ "$GESTURE" -eq "1" ]; then
 	
-	 	mdnie_status=`cat /sys/class/mdnie/mdnie/negative`
+		mdnie_status=`cat /sys/class/mdnie/mdnie/negative | head -n 1`
 		[ "$mdnie_status" == "0" ] && echo 1 > /sys/class/mdnie/mdnie/negative
 		[ "$mdnie_status" != "0" ] && echo 0 > /sys/class/mdnie/mdnie/negative
 

@@ -64,11 +64,11 @@
 
 		<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
 
-			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness. so NOT checked is GOOD!" 
-				name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
+			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness. so NOT checked is GOOD." 
+				name="GENTLE FAIR SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE FAIR SLEEPERS"/>
 
-			<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." 
-				name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
+			<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones, and saves battery. normally do not disable." 
+				name="ARCH POWER" action="schedfeat ARCH_POWER" label="ARCH POWER"/>
 
 		</settingsPane>
 
@@ -288,6 +288,9 @@
 			name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
 			unit="RED" min="78" reversed="false" step="1" max="178"/>
 
+		<checkbox description="You can enable LCD Mdnie Colors Sharpness by GM! effect after REBOOT"
+			name="Mdnie Sharpness Mod by GM!" action="generic01 /tmp/mdniemod" label="Mdnie Sharpness Mod"/>
+
 	</settingsPane>
 
 	<settingsPane description="Other Settings" name="Other Settings">
@@ -338,7 +341,7 @@
 		<seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
 			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=12)" 
+		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=15)" 
 			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="1" max="30"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
@@ -359,20 +362,20 @@
 	<settingsPane description="Master Headphone Gain Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
 		<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
-			name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+			name="Headphone Amplifier" action="soundgasm_hp" unit="dB" min="0" reversed="false" step="1" max="3"/>
 
 	</settingsPane>
 
 	<settingsPane description="More Headphone Amplification + Speaker Amplification + MIC Gain" name="Volume Levels and Gain Control">
 
 		<seekBar description="Headphone Amplification Level"
-			name="Analog Headphone" action="sound_volume 1" unit="DB" min="-10" reversed="false" step="2" max="20"/>
+			name="Analog Headphone" action="sound_volume 1" unit="dB" min="-10" reversed="false" step="2" max="20"/>
 
 		<seekBar description="Analog MIC GAIN Level"
-			name="MIC Gain Level" action="sound_volume 2" unit="DB" min="-12" reversed="false" step="4" max="12"/>
+			name="MIC Gain Level" action="sound_volume 2" unit="dB" min="-12" reversed="false" step="4" max="12"/>
 
 		<seekBar description="Analog Speaker Level"
-			name="Speaker Level" action="sound_volume 3" unit="DB" min="-12" reversed="false" step="4" max="12"/>
+			name="Speaker Level" action="sound_volume 3" unit="dB" min="-12" reversed="false" step="4" max="12"/>
 
 	</settingsPane>
 
@@ -499,6 +502,9 @@
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
+		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROM running the init.d scripts by auto, and i can force running the scripts, so if i run them and ROM run them, we have a problem! all scripts running X2, so my force RUN is disabled by default. if you know that your ROM not supporting init.d script run, then turn it ON here and reboot."
+			name="INIT.D Scripts RUN on/off" action="generic /tmp/init_d" label="INIT.D scripts ON/OFF"/>
+
 		<!--checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
 			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/-->
 
@@ -571,7 +577,6 @@
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
 			<spinnerItem name="AC/MISC:700mA, USB:500mA" value="2"/> 
 			<spinnerItem name="AC/Misc:750mA, USB:650mA(risky, may overheat if phone used)" value="3"/> 
-			<spinnerItem name="AC/MISC/USB NO Charge(debug battery)" value="4"/> 
 		</spinner>
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
@@ -682,6 +687,13 @@
 		<button description="Restore Extweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
 
 	</settingsPane>
+
+	<settingsPane description="Here you can Reinstall/Update your extweak app to one that added to kernel 'ver 0.31' it's will be installed to system and if you had extweak in DATA, it's will be removed. app will close and you get it back from kernel in 5Sec"
+		name="Extweaks Reinstall/Update.">
+
+		<button description="Push to Reinstall/Update Extweaks app." name="Extweaks Reinstall/Update" action="push-actions/extweaks_update" label="Extweaks Reinstall/Update"/>
+
+	 </settingsPane>
 
 	<settingsPane description="Here you can Add/Update/Remove AD Blocker! `You need ROOT to do the tweak!` if we update the blocker, you can push the `UPDATE AD NOW`, to get the new one installed!, if you install new ROM, and want to use AD BLOCKER, then push `UPDATE AD NOW` and REBOOT, if you need to REMOVE AD-B use the REMOVE button and REBOOT" name="AD Blocker menu.">
 

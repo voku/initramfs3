@@ -1,0 +1,29 @@
+#!/sbin/busybox sh
+
+(
+	BB="/sbin/busybox";
+
+	$BB chmod 755 /sbin/read_boot_headers;
+	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
+	load_offset=$boot_offset;
+	load_len=$boot_len;
+	cd /;
+	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x > /dev/null 2>&1;
+
+	if [ -e /res/misc/payload/Extweaks.apk.xz ]; then
+		rm -f /system/app/Extweaks.apk > /dev/null 2>&1;
+		rm -f /data/app/com.darekxan.extweaks.ap*.apk > /dev/null 2>&1;
+		rm -f /system/app/com.darekxan.extweaks.ap*.apk > /dev/null 2>&1;
+		rm -f /data/app/com.darekxan.extweaks.app > /dev/null 2>&1;
+		$BB xzcat /res/misc/payload/Extweaks.apk.xz > /system/app/Extweaks.apk;
+		$BB chown 0.0 /system/app/Extweaks.apk;
+		$BB chmod 644 /system/app/Extweaks.apk;
+		rm -rf /res/misc/payload/;
+		pkill -f "com.darekxan.extweaks";
+		sleep 2
+		am start -a android.intent.action.MAIN -n com.darekxan.extweaks.app/.ExTweaksActivity;
+	else
+		echo "payload is missing or code error!";
+	fi;
+)&
+

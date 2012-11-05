@@ -41,8 +41,12 @@ if [ "$mdniemod" == "on" ]; then
 fi;
 
 (
-	##### init.d scripts early, so my tweaks will fix the mess #####
-	$BB sh /sbin/ext/run-init-scripts.sh;
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
+	if [ $init_d == on ]; then
+		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
+	fi;
 )&
 
 # cpu undervolting
@@ -64,7 +68,7 @@ fi;
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 
-# disable IPv6 on all interfaces!
+# disable IPv6 on all interfaces.
 sysctl -w net.ipv6.conf.all.disable_ipv6=1
 
 # for ntfs automounting
@@ -83,24 +87,15 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
-# sound reset on boot.
-kmemhelper -t short -n mc1n2_vol_hpgain -o 0 1536;
-kmemhelper -t short -n mc1n2_vol_hpgain -o 2 1536;
-kmemhelper -t short -n mc1n2_vol_hpgain -o 4 1536;
-kmemhelper -t short -n mc1n2_vol_hpgain -o 6 1536;
-echo "1e 1" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
-echo "1e 0" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
-echo "-4" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_SP;
-echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
-
 # enable kmem interface for everyone by GM
 echo "0" > /proc/sys/kernel/kptr_restrict;
 
 (
-	# Stop uci.sh from running all the PUSH Buttons in extweaks on boot!
+	# Stop uci.sh from running all the PUSH Buttons in extweaks on boot.
 	$BB mount -o remount,rw rootfs;
-	$BB chmod 6755 /res/customconfig/actions/ -R;
 	$BB chown root:system /res/customconfig/actions/ -R;
+	$BB chmod 6755 /res/customconfig/actions/*;
+	$BB chmod 6755 /res/customconfig/actions/push-actions/*;
 	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 	# apply ExTweaks settings
@@ -117,6 +112,18 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# ==============================================================
 	# EXTWEAKS FIXING
 	# ==============================================================
+
+	# HeadPhones boost
+	/res/uci.sh soundgasm_hp $soundgasm_hp;
+
+	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
+	input keyevent 25
+	input keyevent 25
+	input keyevent 25
+	input keyevent 24
+	input keyevent 24
+	input keyevent 24
+	input keyevent 24
 
 	# apply BLN mods, that get changed by ROM on boot.
 	if [ $enabled == "off" ]; then
