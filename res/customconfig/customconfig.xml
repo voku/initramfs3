@@ -578,6 +578,7 @@
 			name="Discrete Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wakelock Stats"/> 
 
 		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
+			<spinnerItem name="AC/MISC/USB:450mA" value="stock"/> 
 			<spinnerItem name="AC/MISC:550mA, USB:450mA" value="0"/> 
 			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
 			<spinnerItem name="AC/MISC:700mA, USB:500mA" value="2"/> 
