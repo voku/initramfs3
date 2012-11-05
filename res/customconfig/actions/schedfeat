@@ -17,7 +17,7 @@ else
 		evalcmd='eval "$2=off"';
 		eval $evalcmd;
 		echo "off";
-		_feat=NO_${2};
+		_feat=NO_$2;
 	fi;
 	if [ -f /sys/kernel/debug/sched_features ]; then
 		echo "$_feat" > /sys/kernel/debug/sched_features;

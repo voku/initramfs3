@@ -23,7 +23,7 @@ echo 8 4a8 > /sys/class/misc/mdnie/tune_outdoor
 echo 8 e8 > /sys/class/misc/mdnie/tune_warm
 echo 8 4e8 > /sys/class/misc/mdnie/tune_warm_outdoor
 
-for i in `ls -1 /sys/class/misc/mdnie`;do
+for i in `ls -1 /sys/class/misc/mdnie | grep tune_*`; do
 echo 92 0 > /sys/class/misc/mdnie/$i
 echo 93 0 > /sys/class/misc/mdnie/$i
 echo 94 0 > /sys/class/misc/mdnie/$i
