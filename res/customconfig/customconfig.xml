@@ -653,10 +653,10 @@
 		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
 
-		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (To update after change REBOOT)"
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (To update after change REBOOT)"
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
 		<checkbox description="Enable or Disable the 'IPv6 Network'. (Default is OFF, To update after change, turn OFF screen and turn ON after 3sec!)"
@@ -665,19 +665,19 @@
 		<checkbox description="Enable or Disable the 'CPU-Tweaks'. (To update after change, turn OFF screen and turn ON after 3sec!)"
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (To update after change REBOOT)"
 			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (To update after change REBOOT)"
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'System-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'System-Tweaks'. (To update after change REBOOT)"
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (To update after change REBOOT)"
 			name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
+		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (To update after change REBOOT)"
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
 	</settingsPane>
