@@ -138,7 +138,7 @@
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 100, 133, 160, 200 and 267. Voltage defaults are 900mV, 950mV, 1000mV and 1050mV." name="GPU Control">
+	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1000mV and 1000mV." name="GPU Control">
 
 	<!--spinner description="Select the level to be used to boost GPU frequency when you touch the screen." 
 		name="Mali Touch Boost Level" action="generic /sys/module/mali/parameters/mali_touch_boost_level">
@@ -148,7 +148,7 @@
 		<spinnerItem name="Step4" value="3"/> 
 	</spinner-->
 
-	<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device crash or 'burn'. If you do not use VPLL Mode some frequency steps will be unavailable." name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
+	<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device LAG or Crash 'SOD'. If you do not use VPLL Mode frequency steps 330, 440, 520 will be unavailable. VPLL is a new FREQ Range to give some users more GPU performance!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
 	<seekBar description="Here you can change GPU utilization timeout! as close to 100(1sec) you get faster GPU response in steps jump on load. but more battery drained, CM10 default 250(2.5Sec)"
 		name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
@@ -172,7 +172,7 @@
 		<spinnerItem name="62MHz" value="62"/> 
 	</spinner>
 
-	<spinner description="Changes the third GPU frequency step" name="GPU Freq Step3" action="gpu-freq 3">
+	<spinner description="Changes the third GPU frequency step Note freq 400 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step3" action="gpu-freq 3">
 		<spinnerItem name="400MHz" value="400"/> 
 		<spinnerItem name="330MHz" value="330"/> 
 		<spinnerItem name="267MHz" value="267"/> 
@@ -181,7 +181,7 @@
 		<spinnerItem name="108MHz" value="108"/> 
 	</spinner>
 
-	<spinner description="Changes the fourth GPU frequency step, Note freq 400,440,520 need 1200mV MIN, above 1200mV you risk to burn your chip" name="GPU Freq Step4" action="gpu-freq 4">
+	<spinner description="Changes the fourth GPU frequency step, Note freq 400,440,520 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step4" action="gpu-freq 4">
 		<spinnerItem name="520MHz" value="520"/> 
 		<spinnerItem name="440MHz" value="440"/> 
 		<spinnerItem name="400MHz" value="400"/> 
@@ -191,7 +191,7 @@
 		<spinnerItem name="160MHz" value="160"/> 
 	</spinner>
 
-	<spinner description="Changes the fifth GPU frequency step, Note freq 400,440,520 need 1200mV MIN, above 1200mV you risk to burn your chip" name="GPU Freq Step5" action="gpu-freq 5">
+	<spinner description="Changes the fifth GPU frequency step, Note freq 400,440,520 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step5" action="gpu-freq 5">
 		<spinnerItem name="520MHz" value="520"/> 
 		<spinnerItem name="440MHz" value="440"/> 
 		<spinnerItem name="400MHz" value="400"/> 
@@ -504,8 +504,8 @@
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROM running the init.d scripts by auto, and i can force running the scripts, so if i run them and ROM run them, we have a problem! all scripts running X2, so my force RUN is disabled by default. if you know that your ROM not supporting init.d script run, then turn it ON here and reboot."
-			name="INIT.D Scripts RUN on/off" action="generic /tmp/init_d" label="INIT.D scripts ON/OFF"/>
+		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROMS running the init.d scripts by Auto, I also can force running the scripts, so if I run them and ROM run them, we have a problem! all scripts running X2 times, so my force RUN is Disabled by default. if you know that your ROM NOT supporting init.d script RUN, then turn it ON here and reboot.'set checkbox ON'"
+			name="INIT.D Scripts RUN control" action="generic /tmp/init_d" label="INIT.D scripts RUN control"/>
 
 		<!--checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
 			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/-->
@@ -575,13 +575,13 @@
 			name="Discrete Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wakelock Stats"/> 
 
 		<seekBar description="Battery AC Charge Current Setting" name="Battery AC Charge Current" action="chargecurrent 1" 
-                        unit="mV" min="450" reversed="false" step="50" max="750"/>
+                        unit="mA" min="450" reversed="false" step="50" max="750"/>
 
 		<seekBar description="Battery MISC Charge Current Setting" name="Battery MISC Charge Current" action="chargecurrent 2" 
-			unit="mV" min="450" reversed="false" step="50" max="750"/>
+			unit="mA" min="450" reversed="false" step="50" max="750"/>
 
 		<seekBar description="Battery USB Charge Current Setting" name="Battery USB Charge Current" action="chargecurrent 3" 
-			unit="mV" min="450" reversed="false" step="50" max="750"/>
+			unit="mA" min="450" reversed="false" step="50" max="750"/>
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
@@ -640,41 +640,44 @@
 
 		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not" name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. [depend on 'cortexbrain_background_process']"
-			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
-
-		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. [depend on 'cortexbrain_background_process']" 
-			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
-
-		<spinner description="Here you can control android logger `logcat and dmesg` you can set it to auto, then you will have logs on screen ON, when screen will be off, module will be unloaded to save battery, if you set debug it will be working non stop! if disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using auto mode, logger will not be unloaded so we can debug."
+		<spinner description="Here you can control android logger `logcat` you can set it to auto, then you will have logs on screen ON, when screen will be off, logger will be disabled to save battery, if you set Debug, it will be working non stop! if Disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using Auto mode, logger will not be disabled so we can debug."
 			name="Android Logger control" action="android_logger">
 				<spinnerItem name="AUTO" value="auto"/> 
 				<spinnerItem name="DEBUG" value="debug"/> 
 				<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
+			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+
+		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
+			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
+
+		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune it depend on 'cortexbrain_background_process']"
+		<checkbox description="Enable or Disable the 'IPv6 Network'. (Default is OFF, To update after change, turn OFF screen and turn ON after 3sec!)"
+			name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6 ON/OFF"/>
+
+		<checkbox description="Enable or Disable the 'CPU-Tweaks'. (To update after change, turn OFF screen and turn ON after 3sec!)"
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'System-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'System-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (To update after change, Disable, Enable, Cortexbrain-Background-Process!)"
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
 	</settingsPane>

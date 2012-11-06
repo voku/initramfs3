@@ -102,6 +102,7 @@ cortexbrain_auto_tweak_wifi=off
 android_logger=auto
 cortexbrain_firewall=on
 cortexbrain_tcp=on
+cortexbrain_ipv6=off
 cortexbrain_cpu=on
 cortexbrain_memory=on
 cortexbrain_battery=on

@@ -68,9 +68,6 @@ fi;
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 
-# disable IPv6 on all interfaces.
-sysctl -w net.ipv6.conf.all.disable_ipv6=1
-
 # for ntfs automounting
 mkdir /mnt/ntfs;
 chmod 777 /mnt/ntfs/ -R;

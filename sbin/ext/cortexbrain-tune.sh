@@ -633,10 +633,15 @@ DISABLE_SWAPPINESS()
 	fi;
 }
 
-DISABLE_IPV6()
+TUNE_IPV6()
 {
-	# wifi driver turn ON IPv6 when started, so we need to turn it OFF.
-	echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
+	if [ "$cortexbrain_ipv6" == on ]; then
+		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
+		sysctl -w net.ipv6.conf.all.disable_ipv6=0
+	else
+		echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
+		sysctl -w net.ipv6.conf.all.disable_ipv6=1
+	fi;
 }
 
 KERNEL_SCHED_AWAKE()
@@ -687,6 +692,8 @@ AWAKE_MODE()
 
 	DISABLE_WIFI_PM;
 
+	TUNE_IPV6;
+
 	ENABLE_WIFI;
 
 	WAKEUP_BOOST;
@@ -712,8 +719,6 @@ AWAKE_MODE()
 
 	# set wifi.supplicant_scan_interval
 	setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
-
-	DISABLE_IPV6;
 
 	# enable NMI Watchdog to detect hangs
 	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
@@ -758,7 +763,7 @@ SLEEP_MODE()
 
 	DISABLE_GESTURE;
 
-	DISABLE_IPV6;
+	TUNE_IPV6;
 
 	BATTERY_TWEAKS;
 
