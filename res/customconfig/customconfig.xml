@@ -138,7 +138,7 @@
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 100, 133, 160, 200 and 267. Voltage defaults are 900mV, 950mV, 1000mV and 1050mV." name="GPU Control">
+	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1000mV and 1000mV." name="GPU Control">
 
 	<!--spinner description="Select the level to be used to boost GPU frequency when you touch the screen." 
 		name="Mali Touch Boost Level" action="generic /sys/module/mali/parameters/mali_touch_boost_level">
@@ -148,79 +148,76 @@
 		<spinnerItem name="Step4" value="3"/> 
 	</spinner-->
 
+	<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device LAG or Crash 'SOD'. If you do not use VPLL Mode frequency steps 330, 440, 520 will be unavailable. VPLL is a new FREQ Range to give some users more GPU performance!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
+
 	<seekBar description="Here you can change GPU utilization timeout! as close to 100(1sec) you get faster GPU response in steps jump on load. but more battery drained, CM10 default 250(2.5Sec)"
 		name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
 		unit="MSec" min="100" reversed="false" step="50" max="500"/>
 
 	<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
+		<spinnerItem name="267MHz" value="267"/> 
+		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
-		<spinnerItem name="100MHz" value="100"/> 
+		<spinnerItem name="108MHz" value="108"/> 
 		<spinnerItem name="62MHz" value="62"/> 
-		<spinnerItem name="50MHz" value="50"/> 
+		<spinnerItem name="54MHz" value="54"/> 
 	</spinner>
 
 	<spinner description="Changes the second GPU frequency step" name="GPU Freq Step2" action="gpu-freq 2">
+		<spinnerItem name="330MHz" value="330"/> 
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
-		<spinnerItem name="100MHz" value="100"/> 
+		<spinnerItem name="108MHz" value="108"/> 
 		<spinnerItem name="62MHz" value="62"/> 
-		<spinnerItem name="50MHz" value="50"/> 
 	</spinner>
 
-	<spinner description="Changes the third GPU frequency step" name="GPU Freq Step3" action="gpu-freq 3">
+	<spinner description="Changes the third GPU frequency step Note freq 400 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step3" action="gpu-freq 3">
 		<spinnerItem name="400MHz" value="400"/> 
+		<spinnerItem name="330MHz" value="330"/> 
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
-		<spinnerItem name="100MHz" value="100"/> 
-		<spinnerItem name="62MHz" value="62"/> 
-		<spinnerItem name="50MHz" value="50"/> 
+		<spinnerItem name="108MHz" value="108"/> 
 	</spinner>
 
-	<spinner description="Changes the fourth GPU frequency step" name="GPU Freq Step4" action="gpu-freq 4">
+	<spinner description="Changes the fourth GPU frequency step, Note freq 400,440,520 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step4" action="gpu-freq 4">
+		<spinnerItem name="520MHz" value="520"/> 
+		<spinnerItem name="440MHz" value="440"/> 
 		<spinnerItem name="400MHz" value="400"/> 
+		<spinnerItem name="330MHz" value="330"/> 
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
 		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
-		<spinnerItem name="100MHz" value="100"/> 
-		<spinnerItem name="62MHz" value="62"/> 
-		<spinnerItem name="50MHz" value="50"/>
 	</spinner>
 
-	<spinner description="Changes the fifth GPU frequency step" name="GPU Freq Step5" action="gpu-freq 5">
+	<spinner description="Changes the fifth GPU frequency step, Note freq 400,440,520 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step5" action="gpu-freq 5">
+		<spinnerItem name="520MHz" value="520"/> 
+		<spinnerItem name="440MHz" value="440"/> 
 		<spinnerItem name="400MHz" value="400"/> 
+		<spinnerItem name="330MHz" value="330"/> 
 		<spinnerItem name="267MHz" value="267"/> 
 		<spinnerItem name="200MHz" value="200"/> 
-		<spinnerItem name="160MHz" value="160"/> 
-		<spinnerItem name="133MHz" value="133"/> 
-		<spinnerItem name="100MHz" value="100"/> 
-		<spinnerItem name="62MHz" value="62"/> 
-		<spinnerItem name="50MHz" value="50"/> 
 	</spinner>
 
 	</settingsPane>
 
-	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050." name="GPU Voltage Levels">
+	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050, voltage above 1200mV put your device on risk! do not blame me if GPU chip burn." name="GPU Voltage Levels">
 
 		<seekBar description="GPU Voltage for the first step" 
-			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="50" max="1400"/>
+			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the second step" 
-			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="50" max="1400"/>
+			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the third step" 
-			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="50" max="1400"/>
+			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the fourth step" 
-			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="50" max="1400"/>
+			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the fifth step" 
-			name="GPU Voltage Level5" action="gpu-voltage 5" unit="mV" min="800" reversed="false" step="50" max="1400"/>
+			name="GPU Voltage Level5" action="gpu-voltage 5" unit="mV" min="800" reversed="false" step="50" max="1300"/>
 
 	</settingsPane>
 
@@ -288,8 +285,8 @@
 			name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
 			unit="RED" min="78" reversed="false" step="1" max="178"/>
 
-		<checkbox description="You can enable LCD Mdnie Colors Sharpness by GM! effect after REBOOT"
-			name="Mdnie Sharpness Mod by GM!" action="generic01 /tmp/mdniemod" label="Mdnie Sharpness Mod"/>
+		<checkbox description="mDNIe sharpness tweaks from hardcore. Requires reboot to be effective."
+			name="mDNIe Sharpness Tweaks by GM!" action="generic01 /tmp/mdniemod" label="mDNIe Sharpness Tweaks"/>
 
 	</settingsPane>
 
@@ -341,7 +338,7 @@
 		<seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
 			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=15)" 
+		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=12)" 
 			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="1" max="30"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
@@ -350,7 +347,7 @@
 		<seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
 			name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="1" max="60"/>
 
-		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=44)" 
+		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=47)" 
 			name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="1" max="60"/>
 
     </settingsPane>
@@ -361,8 +358,13 @@
 
 	<settingsPane description="Master Headphone Gain Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
-		<seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
-			name="Headphone Amplifier" action="soundgasm_hp" unit="dB" min="0" reversed="false" step="1" max="3"/>
+		<spinner description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
+			name="Headphone Amplifier" action="soundgasm_hp">
+			<spinnerItem name="Disabled/Reset" value="0"/> 
+			<spinnerItem name="Boost 1.5dB" value="1"/> 
+			<spinnerItem name="Boost 3dB" value="2"/> 
+			<spinnerItem name="Boost 6dB" value="3"/> 
+		</spinner>
 
 	</settingsPane>
 
@@ -383,90 +385,61 @@
 
 <settingsTab name="BLN">
 
-	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
+	<settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
 
-		<checkbox description="BackLightNotification Switch" 
-			name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+		<checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
 
-		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON"
-			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" 
-				label="BLN Enabled on charging"/>
-
-		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
-			name="BLN MODE Switch" action="bln_switch">
-			<spinnerItem name="Active and static" value="1"/> 
-			<spinnerItem name="Active and breathing" value="2"/> 
-			<spinnerItem name="Active and blinking" value="3"/> 
+		<spinner description="This setting will set led behavior in BLN." name="BLN Effect" action="bln_switch">
+			<spinnerItem name="Steady" value="0"/>
+			<spinnerItem name="Breathing" value="1"/>
+			<spinnerItem name="Blinking" value="2"/>
 		</spinner>
 
-		<spinner description="Notification timeout. -1: disabled" 
-			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
-			<spinnerItem name="Never timeout" value="-1"/> 
-			<spinnerItem name="1 Minutes" value="60000"/> 
-			<spinnerItem name="3 Minutes" value="180000"/> 
-			<spinnerItem name="5 Minutes" value="300000"/> 
-			<spinnerItem name="10 Minutes" value="600000"/> 
-			<spinnerItem name="15 Minutes" value="900000"/> 
-			<spinnerItem name="30 Minutes" value="1800000"/> 
+		<spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
+			<spinnerItem name="Never timeout" value="0"/> 
+			<spinnerItem name="1 minute" value="60000"/> 
+			<spinnerItem name="3 minutes" value="180000"/> 
+			<spinnerItem name="5 minutes" value="300000"/> 
+			<spinnerItem name="10 minutes" value="600000"/> 
+			<spinnerItem name="20 minutes" value="1200000"/> 
+			<spinnerItem name="30 minutes" value="1800000"/> 
 			<spinnerItem name="1 Hour" value="3600000"/> 
 			<spinnerItem name="2 Hours" value="7200000"/> 
-			<spinnerItem name="5 Hours" value="18000000"/> 
 		</spinner>
-
-		<spinner description="This setting will set renew notification timeout yes/no." 
-			name="BLN Notification Reset" action="bln_reset_notification">
-			<spinnerItem name="Don't renew BLN timeout" value="0"/> 
-			<spinnerItem name="Renew BLN timeout" value="1"/> 
-		</spinner>
-
-		<spinner description="This setting will set BL Notification always ON, with charger, OFF/ON." 
-			name="BLN Notification on charger" action="bln_charging_notification">
-			<spinnerItem name="BLN no timeout OFF, on charger" value="0"/> 
-			<spinnerItem name="BLN no timeout ON, on charger" value="1"/> 
-		</spinner>
-
-		<spinner description="Back Light Notification OFF on low battery or ignore battery level" name="BLN Battery Check" action="bln_check_battery">
-			<spinnerItem name="BLN Ignore Battery level" value="0"/> 
-			<spinnerItem name="BLN OFF if 5% battery" value="1"/> 
-			<spinnerItem name="BLN OFF if 10% battery" value="2"/> 
-			<spinnerItem name="BLN OFF if 15% battery" value="3"/> 
-			<spinnerItem name="BLN OFF if 20% battery" value="4"/> 
-			<spinnerItem name="BLN OFF if 25% battery" value="5"/> 
-			<spinnerItem name="BLN OFF if 30% battery" value="6"/> 
-		</spinner>
-
-		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 	</settingsPane>
 
-	<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
-		name="Touch Keys Lights Settings">
+	<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" name="Touch Keys Lights Settings">
 
-		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
-			name="Keys led timeout" action="led_timeout">
-			<spinnerItem name="Always OFF" value="off"/> 
-			<spinnerItem name="1 sec" value="1"/> 
-			<spinnerItem name="2 sec" value="2"/> 
-			<spinnerItem name="3 sec" value="3"/> 
-			<spinnerItem name="5 sec" value="5"/> 
-			<spinnerItem name="15 sec" value="15"/> 
-			<spinnerItem name="30 sec" value="30"/> 
-			<spinnerItem name="Always ON" value="on"/> 
+		<spinner description="Led timeout. Select 'Use ROM defaults' if your ROM already has led timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use led fadeout effect." 
+			name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
+			<spinnerItem name="Use ROM defaults (disabled)" value="-1"/> 
+			<spinnerItem name="No timeout" value="0"/> 
+			<spinnerItem name="1 sec" value="1000"/> 
+			<spinnerItem name="3 sec" value="3000"/> 
+			<spinnerItem name="6 sec" value="6000"/> 
+			<spinnerItem name="15 sec" value="15000"/> 
+			<spinnerItem name="30 sec" value="30000"/> 
+			<spinnerItem name="60 sec" value="60000"/> 
 		</spinner>
 
-		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod."
-			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
+		<checkbox description="BLN Without Wakelock. You cannot use blinking or breathing effects together with this option. Enabling this will let the CPU sleep during BLN and save battery." 
+			name="BLNWW" action="generic /sys/class/misc/notification/blnww" label="BLNWW"/>
 
-		<!--checkbox description="BLN Without Wakelock. You cannot use blinking or breathing effects together with this option. Enabling this will let the CPU sleep during BLN and save battery." name="BLNWW" action="generic /sys/class/misc/notification/blnww" label="BLNWW"/-->
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in ExTweaks." 
+			name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touch keys leds to always on or always off, and use led timeout in ExTweaks." 
-			name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
+		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
+			name="Leds on with touch" action="generic /sys/class/misc/notification/led_on_touch" label="led-on-touch"/>
+
+		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
-			unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
+			unit="mV" min="2500" reversed="false" step="50" max="3300"/>
 
-		<!--checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/-->
+		<checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." 
+			name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/>
 
 	</settingsPane>
 
@@ -502,8 +475,8 @@
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROM running the init.d scripts by auto, and i can force running the scripts, so if i run them and ROM run them, we have a problem! all scripts running X2, so my force RUN is disabled by default. if you know that your ROM not supporting init.d script run, then turn it ON here and reboot."
-			name="INIT.D Scripts RUN on/off" action="generic /tmp/init_d" label="INIT.D scripts ON/OFF"/>
+		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROMS running the init.d scripts by Auto, I also can force running the scripts, so if I run them and ROM run them, we have a problem! all scripts running X2 times, so my force RUN is Disabled by default. if you know that your ROM NOT supporting init.d script RUN, then turn it ON here and reboot.'set checkbox ON'"
+			name="INIT.D Scripts RUN control" action="generic /tmp/init_d" label="INIT.D scripts RUN control"/>
 
 		<!--checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
 			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/-->
@@ -572,12 +545,14 @@
 		<checkbox description="If checked, BetterBatteryStatus will report discrete (non-overlapping) wakelock statistics." 
 			name="Discrete Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wakelock Stats"/> 
 
-		<spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
-			<spinnerItem name="AC/MISC:550mA, USB:450mA" value="0"/> 
-			<spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
-			<spinnerItem name="AC/MISC:700mA, USB:500mA" value="2"/> 
-			<spinnerItem name="AC/Misc:750mA, USB:650mA(risky, may overheat if phone used)" value="3"/> 
-		</spinner>
+		<seekBar description="Battery AC Charge Current Setting" name="Battery AC Charge Current" action="chargecurrent 1" 
+                        unit="mA" min="450" reversed="false" step="50" max="750"/>
+
+		<seekBar description="Battery MISC Charge Current Setting" name="Battery MISC Charge Current" action="chargecurrent 2" 
+			unit="mA" min="450" reversed="false" step="50" max="750"/>
+
+		<seekBar description="Battery USB Charge Current Setting" name="Battery USB Charge Current" action="chargecurrent 3" 
+			unit="mA" min="450" reversed="false" step="50" max="750"/>
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
@@ -636,41 +611,44 @@
 
 		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not" name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. [depend on 'cortexbrain_background_process']"
-			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
-
-		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. [depend on 'cortexbrain_background_process']" 
-			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
-
-		<spinner description="Here you can control android logger `logcat and dmesg` you can set it to auto, then you will have logs on screen ON, when screen will be off, module will be unloaded to save battery, if you set debug it will be working non stop! if disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using auto mode, logger will not be unloaded so we can debug."
+		<spinner description="Here you can control android logger `logcat` you can set it to auto, then you will have logs on screen ON, when screen will be off, logger will be disabled to save battery, if you set Debug, it will be working non stop! if Disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using Auto mode, logger will not be disabled so we can debug."
 			name="Android Logger control" action="android_logger">
 				<spinnerItem name="AUTO" value="auto"/> 
 				<spinnerItem name="DEBUG" value="debug"/> 
 				<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
+			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+
+		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
+			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
+
+		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (To update after change REBOOT)"
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (To update after change REBOOT)"
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'CPU-Tweaks'. [for auto tune it depend on 'cortexbrain_background_process']"
+		<checkbox description="Enable or Disable the 'IPv6 Network'. (Default is OFF, To update after change, turn OFF screen and turn ON after 3sec!)"
+			name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6 ON/OFF"/>
+
+		<checkbox description="Enable or Disable the 'CPU-Tweaks'. (To update after change, turn OFF screen and turn ON after 3sec!)"
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (To update after change REBOOT)"
 			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (To update after change REBOOT)"
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'System-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'System-Tweaks'. (To update after change REBOOT)"
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (To update after change REBOOT)"
 			name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (reboot needed after change)"
+		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (To update after change REBOOT)"
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
 	</settingsPane>
@@ -688,10 +666,10 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can Reinstall/Update your extweak app to one that added to kernel 'ver 0.31' it's will be installed to system and if you had extweak in DATA, it's will be removed. app will close and you get it back from kernel in 5Sec"
-		name="Extweaks Reinstall/Update.">
+	<settingsPane description="Here you can Reinstall/Update your STweak app to one that added to kernel, it's will be installed to system and if you had STweak in DATA, it's will be removed. app will close and you get it back from kernel in 5sec"
+		name="STweaks Reinstall/Update.">
 
-		<button description="Push to Reinstall/Update Extweaks app." name="Extweaks Reinstall/Update" action="push-actions/extweaks_update" label="Extweaks Reinstall/Update"/>
+		<button description="Push to Reinstall/Update STweaks app." name="STweaks Reinstall/Update" action="push-actions/stweaks_update" label="STweaks Reinstall/Update"/>
 
 	 </settingsPane>
 

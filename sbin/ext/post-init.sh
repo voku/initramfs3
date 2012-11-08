@@ -68,9 +68,6 @@ fi;
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 
-# disable IPv6 on all interfaces.
-sysctl -w net.ipv6.conf.all.disable_ipv6=1
-
 # for ntfs automounting
 mkdir /mnt/ntfs;
 chmod 777 /mnt/ntfs/ -R;
@@ -101,41 +98,32 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# apply ExTweaks settings
 	echo "booting" > /data/.siyah/booting;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
-	pkill -f "com.darekxan.extweaks.app";
+	pkill -f "com.gokhanmoral.STweaks";
 	$BB sh /res/uci.sh restore;
 
 	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-	pkill -f "com.darekxan.extweaks.app";
+	pkill -f "com.gokhanmoral.STweaks";
 	$BB rm -f /data/.siyah/booting;
 	# ==============================================================
 	# EXTWEAKS FIXING
 	# ==============================================================
 
-	# HeadPhones boost
-	/res/uci.sh soundgasm_hp $soundgasm_hp;
-
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
-	input keyevent 25
-	input keyevent 25
-	input keyevent 25
-	input keyevent 24
-	input keyevent 24
-	input keyevent 24
-	input keyevent 24
-
-	# apply BLN mods, that get changed by ROM on boot.
-	if [ $enabled == "off" ]; then
-		echo "0" > /sys/class/misc/backlightnotification/enabled;
-		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
-		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
-	else
-		/res/customconfig/actions/bln_switch bln_switch $bln_switch
+	MIUI_JB=0;
+	JELLY=0;
+	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+	[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
+	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
+		input keyevent 25
+		input keyevent 25
+		input keyevent 25
+		input keyevent 24
+		input keyevent 24
+		input keyevent 24
+		input keyevent 24
 	fi;
-
-	# apply touch led time out and led on touch, this is done if changed by ROM
-	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
 
 	# change USB mode MTP or Mass Storage
 	/res/customconfig/actions/usb-mode ${usb_mode};

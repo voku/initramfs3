@@ -1,29 +1,14 @@
 #!/sbin/busybox sh
 
-if [ "a$2" == "a" ]; then
-	echo "$chargecurrent";
+if [ "a$3" == "a" ]; then
+	evalcmd='eval "echo \$chargecurrent$2"';
+	eval $evalcmd;
 else
-	chargecurrent=$2;
-	echo "$chargecurrent";
+	evalcmd='eval "chargecurrent$2=$3"';
+	eval $evalcmd;
+	evalcmd='eval "echo \$chargecurrent$2"';
+	eval $evalcmd;
 fi;
 
-if [ -f /sys/devices/virtual/misc/charge_current/charge_current ]; then
-	case "${chargecurrent}" in
-		0)
-			echo "550 550 450" > /sys/devices/virtual/misc/charge_current/charge_current;
-		;;
-		1)
-			echo "650 450 450" > /sys/devices/virtual/misc/charge_current/charge_current;
-		;;
-		2)
-			echo "700 700 500" > /sys/devices/virtual/misc/charge_current/charge_current;
-		;;
-		3)
-			echo "750 750 650" > /sys/devices/virtual/misc/charge_current/charge_current;
-		;;
-		*)
-			chargecurrent=1;
-		;;
-	esac;
-fi;
+echo "$chargecurrent1" "$chargecurrent2" "$chargecurrent3" > /sys/devices/virtual/misc/charge_current/charge_current;
 

@@ -93,32 +93,33 @@ if [ ! -e /data/gesture_set.sh ]; then
 	$BB cp -a /res/misc/gesture_set.sh /data/;
 fi;
 
-# New GM EXTWEAKS, Still not fully ready, lets wait for great app.
 GMTWEAKS()
 {
 	echo "Checking if STweaks is installed";
-	if [ ! -f /system/app/STweaks.apk ] && [ ! -f /data/app/com.gokhanmoral.STweaks*.apk ]; then
-		$BB xzcat /res/STweaks.apk.xz > /system/app/STweaks.apk;
-		$BB chown 0.0 /system/app/STweaks.apk;
-		$BB chmod 644 /system/app/STweaks.apk;
-	fi;
-}
-#GMTWEAKS #For now lets use extweaks.
-
-EXTWEAKS()
-{
-	echo "Checking if ExTweaks is installed";
-	if [ ! -f /system/app/Extweaks.apk ] && [ ! -f /data/app/com.darekxan.extweaks.ap*.apk ]; then
+	if [ ! -f /system/app/STweaks.apk ]; then
+		rm -f /data/app/com.gokhanmoral.STweak*.apk > /dev/null 2>&1;
+		rm -rf /data/data/com.gokhanmoral.STweak* > /dev/null 2>&1;
 		if [ "$payload_extracted" == "0" ]; then
 			extract_payload;
 		fi;
-		$BB xzcat /res/misc/payload/Extweaks.apk.xz > /system/app/Extweaks.apk;
-		$BB chown 0.0 /system/app/Extweaks.apk;
-		$BB chmod 644 /system/app/Extweaks.apk;
+		$BB xzcat /res/misc/payload/STweaks.apk.xz > /system/app/STweaks.apk;
+		$BB chown 0.0 /system/app/STweaks.apk;
+		$BB chmod 644 /system/app/STweaks.apk;
 		payload_extracted=1
 	fi;
 }
-EXTWEAKS;
+GMTWEAKS
+
+EXTWEAKS_CLEAN()
+{
+	echo "Checking if ExTweaks is installed";
+	if [ -f /system/app/Extweaks.apk ] || [ -f /data/app/com.darekxan.extweaks.ap*.apk ]; then
+		rm -f /system/app/Extweaks.apk > /dev/null 2>&1;
+		rm -f /data/app/com.darekxan.extweaks.ap*.apk > /dev/null 2>&1;
+		rm -rf /data/data/com.darekxan.extweaks.app > /dev/null 2>&1;
+	fi;
+}
+#EXTWEAKS_CLEAN #will be active after all settle down.
 
 if [ ! -s /system/xbin/ntfs-3g ]; then
 	if [ "$payload_extracted" == "0" ]; then

@@ -18,8 +18,6 @@ case "${adb_mode}" in
 			mv /tmp/adbd.bkp /sbin/adbd;
 			chmod 755 /sbin/adbd;
 			start adbd;
-		else
-			echo "nothing to do! Normal ADB already used"
 		fi;
 	;;
 	1)
