@@ -695,10 +695,10 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can Reinstall/Update your extweak app to one that added to kernel 'ver 0.31' it's will be installed to system and if you had extweak in DATA, it's will be removed. app will close and you get it back from kernel in 5Sec"
-		name="Extweaks Reinstall/Update.">
+	<settingsPane description="Here you can Reinstall/Update your STweak app to one that added to kernel, it's will be installed to system and if you had STweak in DATA, it's will be removed. app will close and you get it back from kernel in 5sec"
+		name="STweaks Reinstall/Update.">
 
-		<button description="Push to Reinstall/Update Extweaks app." name="Extweaks Reinstall/Update" action="push-actions/extweaks_update" label="Extweaks Reinstall/Update"/>
+		<button description="Push to Reinstall/Update STweaks app." name="STweaks Reinstall/Update" action="push-actions/stweaks_update" label="STweaks Reinstall/Update"/>
 
 	 </settingsPane>
 

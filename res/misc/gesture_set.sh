@@ -88,8 +88,8 @@ do
 				
 	elif [ "$GESTURE" -eq "3" ]; then
 	
-		# Start the extweaks
-		am start -a android.intent.action.MAIN -n com.darekxan.extweaks.app/.ExTweaksActivity
+		# Start the STweaks
+		am start -a android.intent.action.MAIN -n com.gokhanmoral.STweaks/.MainActivity;
 
 	elif [ "$GESTURE" -eq "4" ]; then
 
