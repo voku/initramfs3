@@ -385,90 +385,61 @@
 
 <settingsTab name="BLN">
 
-	<settingsPane description="Back Light Notification Settings" name="Back Light Notification(BLN)">
+	<settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
 
-		<checkbox description="BackLightNotification Switch" 
-			name="BLN" action="generic01 /sys/class/misc/backlightnotification/enabled" label="BLN"/>
+		<checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
 
-		<checkbox description="Back Light Notification will work when on Charger/USB if above switch is OFF or ON"
-			name="BLN on Charger" action="generic01 /sys/class/misc/backlightnotification/enabled_charging" 
-				label="BLN Enabled on charging"/>
-
-		<spinner description="Back Light Notification switch, will work on Battery/Charger/USB" 
-			name="BLN MODE Switch" action="bln_switch">
-			<spinnerItem name="Active and static" value="1"/> 
-			<spinnerItem name="Active and breathing" value="2"/> 
-			<spinnerItem name="Active and blinking" value="3"/> 
+		<spinner description="This setting will set led behavior in BLN." name="BLN Effect" action="bln_switch">
+			<spinnerItem name="Steady" value="0"/>
+			<spinnerItem name="Breathing" value="1"/>
+			<spinnerItem name="Blinking" value="2"/>
 		</spinner>
 
-		<spinner description="Notification timeout. -1: disabled" 
-			name="Notification Timeout" action="generic /sys/class/misc/backlightnotification/notification_timeout">
-			<spinnerItem name="Never timeout" value="-1"/> 
-			<spinnerItem name="1 Minutes" value="60000"/> 
-			<spinnerItem name="3 Minutes" value="180000"/> 
-			<spinnerItem name="5 Minutes" value="300000"/> 
-			<spinnerItem name="10 Minutes" value="600000"/> 
-			<spinnerItem name="15 Minutes" value="900000"/> 
-			<spinnerItem name="30 Minutes" value="1800000"/> 
+		<spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
+			<spinnerItem name="Never timeout" value="0"/> 
+			<spinnerItem name="1 minute" value="60000"/> 
+			<spinnerItem name="3 minutes" value="180000"/> 
+			<spinnerItem name="5 minutes" value="300000"/> 
+			<spinnerItem name="10 minutes" value="600000"/> 
+			<spinnerItem name="20 minutes" value="1200000"/> 
+			<spinnerItem name="30 minutes" value="1800000"/> 
 			<spinnerItem name="1 Hour" value="3600000"/> 
 			<spinnerItem name="2 Hours" value="7200000"/> 
-			<spinnerItem name="5 Hours" value="18000000"/> 
 		</spinner>
-
-		<spinner description="This setting will set renew notification timeout yes/no." 
-			name="BLN Notification Reset" action="bln_reset_notification">
-			<spinnerItem name="Don't renew BLN timeout" value="0"/> 
-			<spinnerItem name="Renew BLN timeout" value="1"/> 
-		</spinner>
-
-		<spinner description="This setting will set BL Notification always ON, with charger, OFF/ON." 
-			name="BLN Notification on charger" action="bln_charging_notification">
-			<spinnerItem name="BLN no timeout OFF, on charger" value="0"/> 
-			<spinnerItem name="BLN no timeout ON, on charger" value="1"/> 
-		</spinner>
-
-		<spinner description="Back Light Notification OFF on low battery or ignore battery level" name="BLN Battery Check" action="bln_check_battery">
-			<spinnerItem name="BLN Ignore Battery level" value="0"/> 
-			<spinnerItem name="BLN OFF if 5% battery" value="1"/> 
-			<spinnerItem name="BLN OFF if 10% battery" value="2"/> 
-			<spinnerItem name="BLN OFF if 15% battery" value="3"/> 
-			<spinnerItem name="BLN OFF if 20% battery" value="4"/> 
-			<spinnerItem name="BLN OFF if 25% battery" value="5"/> 
-			<spinnerItem name="BLN OFF if 30% battery" value="6"/> 
-		</spinner>
-
-		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 	</settingsPane>
 
-	<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" 
-		name="Touch Keys Lights Settings">
+	<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" name="Touch Keys Lights Settings">
 
-		<spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." 
-			name="Keys led timeout" action="led_timeout">
-			<spinnerItem name="Always OFF" value="off"/> 
-			<spinnerItem name="1 sec" value="1"/> 
-			<spinnerItem name="2 sec" value="2"/> 
-			<spinnerItem name="3 sec" value="3"/> 
-			<spinnerItem name="5 sec" value="5"/> 
-			<spinnerItem name="15 sec" value="15"/> 
-			<spinnerItem name="30 sec" value="30"/> 
-			<spinnerItem name="Always ON" value="on"/> 
+		<spinner description="Led timeout. Select 'Use ROM defaults' if your ROM already has led timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use led fadeout effect." 
+			name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
+			<spinnerItem name="Use ROM defaults (disabled)" value="-1"/> 
+			<spinnerItem name="No timeout" value="0"/> 
+			<spinnerItem name="1 sec" value="1000"/> 
+			<spinnerItem name="3 sec" value="3000"/> 
+			<spinnerItem name="6 sec" value="6000"/> 
+			<spinnerItem name="15 sec" value="15000"/> 
+			<spinnerItem name="30 sec" value="30000"/> 
+			<spinnerItem name="60 sec" value="60000"/> 
 		</spinner>
 
-		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled) value from led timeout will be used for this mod."
-			name="Leds on with touch" action="generic_touch_led /sys/devices/virtual/sec/sec_touchscreen/tsp_flash_timeout" label="led-on-touch"/>
+		<checkbox description="BLN Without Wakelock. You cannot use blinking or breathing effects together with this option. Enabling this will let the CPU sleep during BLN and save battery." 
+			name="BLNWW" action="generic /sys/class/misc/notification/blnww" label="BLNWW"/>
 
-		<!--checkbox description="BLN Without Wakelock. You cannot use blinking or breathing effects together with this option. Enabling this will let the CPU sleep during BLN and save battery." name="BLNWW" action="generic /sys/class/misc/notification/blnww" label="BLNWW"/-->
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in ExTweaks." 
+			name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touch keys leds to always on or always off, and use led timeout in ExTweaks." 
-			name="led-fadeout" action="generic01 /sys/class/misc/backlightnotification/led_fadeout" label="Led Fadeout effect"/>
+		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
+			name="Leds on with touch" action="generic /sys/class/misc/notification/led_on_touch" label="led-on-touch"/>
+
+		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
-			unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
+			unit="mV" min="2500" reversed="false" step="50" max="3300"/>
 
-		<!--checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/-->
+		<checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." 
+			name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/>
 
 	</settingsPane>
 

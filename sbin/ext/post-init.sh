@@ -125,18 +125,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		input keyevent 24
 	fi;
 
-	# apply BLN mods, that get changed by ROM on boot.
-	if [ $enabled == "off" ]; then
-		echo "0" > /sys/class/misc/backlightnotification/enabled;
-		echo "0" > /sys/class/misc/backlightnotification/blinking_enabled;
-		echo "0" > /sys/class/misc/backlightnotification/breathing_enabled;
-	else
-		/res/customconfig/actions/bln_switch bln_switch $bln_switch
-	fi;
-
-	# apply touch led time out and led on touch, this is done if changed by ROM
-	/res/customconfig/actions/led_timeout led_timeout $led_timeout;
-
 	# change USB mode MTP or Mass Storage
 	/res/customconfig/actions/usb-mode ${usb_mode};
 )&

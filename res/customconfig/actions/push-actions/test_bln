@@ -15,11 +15,6 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 	if [ -e /sys/class/misc/notification/led ]; then
 		echo "1" > /sys/class/misc/notification/led;
 	fi;
-
-	# case if Myfluxi BLN active in kernel
-	if [ -e /sys/class/misc/backlightnotification/notification_led ]; then
-		echo "1" > /sys/class/misc/backlightnotification/notification_led;
-	fi;
 )&
 
 echo "Turn off the screen to test BLN.";
