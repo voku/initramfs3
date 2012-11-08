@@ -98,13 +98,13 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# apply ExTweaks settings
 	echo "booting" > /data/.siyah/booting;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
-	pkill -f "com.gokhanmoral.STweaks";
+	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB sh /res/uci.sh restore;
 
 	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-	pkill -f "com.gokhanmoral.STweaks";
+	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB rm -f /data/.siyah/booting;
 	# ==============================================================
 	# EXTWEAKS FIXING

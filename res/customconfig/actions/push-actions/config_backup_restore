@@ -124,7 +124,7 @@ case "${config_backup_restore}" in
 				/sbin/busybox rm -f $LOCK_FILE;
 
 				EXTWEAKSAPP_RUNNING=`pgrep -f "com.darekxan.extweaks.app" | wc -l`
-				STWEAKSAPP_RUNNING=`pgrep -f "com.gokhanmoral.STweaks" | wc -l`
+				STWEAKSAPP_RUNNING=`pgrep -f "com.gokhanmoral.stweaks.app" | wc -l`
 
 				if [ "$EXTWEAKSAPP_RUNNING" != "0" ]; then
 					# Killing extweaks, if was open it's will restart!
@@ -134,9 +134,9 @@ case "${config_backup_restore}" in
 				fi;
 				if [ "$STWEAKSAPP_RUNNING" != "0" ]; then
 					# Killing stweaks, if was open it's will restart!
-					STWEAKSAPP=`pgrep -f "com.gokhanmoral.STweaks"`;
+					STWEAKSAPP=`pgrep -f "com.gokhanmoral.stweaks.app"`;
 					kill $STWEAKSAPP;
-					am start -a android.intent.action.MAIN -n com.gokhanmoral.STweaks/.MainActivity;
+					am start -a android.intent.action.MAIN -n com.gokhanmoral.stweaks.app/.MainActivity;
 				fi;
 			)&
 
