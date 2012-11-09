@@ -663,7 +663,7 @@ KERNEL_SCHED_SLEEP()
 # ==============================================================
 AWAKE_MODE()
 {
-	# load all extweaks user settings.
+	# load all stweaks user settings.
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
@@ -853,7 +853,7 @@ fi;
 # Logic Explanations
 #
 # This script will manipulate all the system / cpu / battery behavior
-# Based on chosen EXTWEAKS profile+tweaks and based on SCREEN ON/OFF state.
+# Based on chosen STWEAKS profile+tweaks and based on SCREEN ON/OFF state.
 #
 # When User select battery/default profile all tuning will be toward battery save.
 # But user loose performance -20% and get more stable system and more battery left.

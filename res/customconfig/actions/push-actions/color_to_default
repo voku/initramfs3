@@ -11,7 +11,10 @@ case "$2" in
 		echo "133" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr;
 		sed -i "s/user_cb=[0-9]*/user_cb=130/g" /data/.siyah/$PROFILE.profile;
 		sed -i "s/user_cr=[0-9]*/user_cr=133/g" /data/.siyah/$PROFILE.profile;
-		echo "Color was set to default, reload ExTweaks";
+		echo "Color was set to default, reloading";
+		sleep 2
+		pkill -f "com.gokhanmoral.stweaks.app";
+		am start -a android.intent.action.MAIN -n com.gokhanmoral.stweaks.app/.MainActivity;		
 	;;
 	*)
 		echo "need input, 0=nothing, 1=reset color";

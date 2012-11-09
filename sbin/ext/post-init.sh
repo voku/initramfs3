@@ -88,14 +88,14 @@ $BB sh /sbin/ext/properties.sh;
 echo "0" > /proc/sys/kernel/kptr_restrict;
 
 (
-	# Stop uci.sh from running all the PUSH Buttons in extweaks on boot.
+	# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
 	$BB mount -o remount,rw rootfs;
 	$BB chown root:system /res/customconfig/actions/ -R;
 	$BB chmod 6755 /res/customconfig/actions/*;
 	$BB chmod 6755 /res/customconfig/actions/push-actions/*;
 	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
-	# apply ExTweaks settings
+	# apply STweaks settings
 	echo "booting" > /data/.siyah/booting;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 	pkill -f "com.gokhanmoral.stweaks.app";
@@ -107,7 +107,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB rm -f /data/.siyah/booting;
 	# ==============================================================
-	# EXTWEAKS FIXING
+	# STWEAKS FIXING
 	# ==============================================================
 
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
