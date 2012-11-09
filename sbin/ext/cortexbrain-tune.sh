@@ -463,27 +463,26 @@ FIREWALL_TWEAKS()
 }
 FIREWALL_TWEAKS;
 
-ENABLE_WIFI()
-{
-	# enable WIFI-driver if screen is on
-	if [ "$wifiON" == 1 ]; then
-		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-			svc wifi enable;
-		fi;
-	fi;
-}
-
 DISABLE_WIFI()
 {
 	# disable WIFI-driver if screen is off
-	wifiOFF=`cat /sys/module/dhd/initstate`;
-	if [ "a$wifiOFF" != "a" ]; then
+	if [ -e /sys/module/dhd/initstate ]; then
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			svc wifi disable;
-			wifiON=1;
+			WIFI_STATE=1;
 		fi;
 	else
-		wifiON=0;
+		WIFI_STATE=0;
+	fi;
+}
+
+ENABLE_WIFI()
+{
+	# enable WIFI-driver if screen is on
+	if [ "$WIFI_STATE" == 1 ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+			svc wifi enable;
+		fi;
 	fi;
 }
 
