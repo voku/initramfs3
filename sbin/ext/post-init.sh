@@ -130,24 +130,19 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 )&
 
 (
-	(while [ 1 ]; do
-		sleep 50;
+	while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
+		echo "Waiting For CPU to cool down";
+		sleep 30;
+	done;
 
-		PIDOFACORE=`pgrep -f "android.process.acore"`;
-		if [ $PIDOFACORE ]; then
+	PIDOFACORE=`pgrep -f "android.process.acore"`;
+	for i in $PIDOFACORE; do
+		echo "-600" > /proc/${i}/oom_score_adj;
+		renice -15 -p $i;
+		log -p i -t boot "*** do not kill -> android.process.acore ***";
+	done;
 
-			for i in $PIDOFACORE; do	
-				echo "-600" > /proc/${i}/oom_score_adj;
-				renice -15 -p $i;
-				log -p i -t boot "*** do not kill -> android.process.acore ***";
-			done;
-
-			exit;
-		fi;
-
-	done &);
+	echo "Done Booting" > /data/dm-boot-check;
+	date >> /data/dm-boot-check;
 )&
-
-echo "Done Booting" > /data/dm-boot-check;
-date >> /data/dm-boot-check;
 
