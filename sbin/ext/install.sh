@@ -79,6 +79,21 @@ if [ "$install_root" == "on" ]; then
 	fi;
 fi;
 
+if [ ! -f /system/app/CWMManager.apk ]; then
+	if [ "$payload_extracted" == "0" ]; then
+		extract_payload;
+	fi;
+	rm -f /data/app/CWMManager.apk > /dev/null 2>&1;
+	rm -f /data/dalvik-cache/*CWMManager.apk* > /dev/null 2>&1;
+	rm -f /data/app/eu.chainfire.cfroot.cwmmanager*.apk > /dev/null 2>&1;
+	rm -rf /data/data/eu.chainfire.cfroot.cwmmanage* > /dev/null 2>&1;
+
+	xzcat /res/misc/payload/CWMManager.apk.xz > /system/app/CWMManager.apk;
+	chown 0.0 /system/app/CWMManager.apk;
+	chmod 644 /system/app/CWMManager.apk;
+	payload_extracted=1
+fi;
+
 # liblights install by force to allow BLN
 if [ ! -e /system/lib/hw/lights.exynos4.so.BAK ]; then
 	$BB mv /system/lib/hw/lights.exynos4.so /system/lib/hw/lights.exynos4.so.BAK;
