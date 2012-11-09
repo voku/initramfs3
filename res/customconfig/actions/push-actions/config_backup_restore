@@ -105,7 +105,7 @@ case "${config_backup_restore}" in
 				/sbin/busybox mount -o remount,rw rootfs;
 				/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
-				# apply New ExTweaks settings
+				# apply New STweaks settings
 				/res/uci.sh restore;
 				# add trigger for push actions restore function
 				echo "uci done" > $LOCK_FILE;
@@ -128,14 +128,12 @@ case "${config_backup_restore}" in
 
 				if [ "$EXTWEAKSAPP_RUNNING" != "0" ]; then
 					# Killing extweaks, if was open it's will restart!
-					EXTWEAKSAPP=`pgrep -f "com.darekxan.extweaks.app"`;
-					kill $EXTWEAKSAPP;
+					pkill -f "com.darekxan.extweaks.app";
 					am start -a android.intent.action.MAIN -n com.darekxan.extweaks.app/.ExTweaksActivity;
 				fi;
 				if [ "$STWEAKSAPP_RUNNING" != "0" ]; then
 					# Killing stweaks, if was open it's will restart!
-					STWEAKSAPP=`pgrep -f "com.gokhanmoral.stweaks.app"`;
-					kill $STWEAKSAPP;
+					pkill -f "com.gokhanmoral.stweaks.app";
 					am start -a android.intent.action.MAIN -n com.gokhanmoral.stweaks.app/.MainActivity;
 				fi;
 			)&

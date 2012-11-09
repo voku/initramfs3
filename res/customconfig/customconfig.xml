@@ -75,7 +75,7 @@
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<spinner description="Sets the CPU undervolting/overvolting value which will be set during boot time only. !ALERT! -100 and -75 can brake the boot or shutdown the CPU! 'SOD', So dont post about it if you stuck after messing with this control! It's will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot! you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
+		<spinner description="Sets the CPU undervolting/overvolting value which will be set during boot time only. !ALERT! -100 and -75 can brake the boot or shutdown the CPU! 'SOD', So dont post about it if you stuck after messing with this control! It's will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot! you will have to reset stweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
 			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
 			<spinnerItem name=" +50 mV" value="+50"/> 
 			<spinnerItem name=" +25 mV" value="+25"/> 
@@ -426,7 +426,7 @@
 		<checkbox description="BLN Without Wakelock. You cannot use blinking or breathing effects together with this option. Enabling this will let the CPU sleep during BLN and save battery." 
 			name="BLNWW" action="generic /sys/class/misc/notification/blnww" label="BLNWW"/>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in ExTweaks." 
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in STweaks." 
 			name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
 
 		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
@@ -657,12 +657,12 @@
 
 <settingsTab name="BACKUP/RESTORE">
 
-	<settingsPane description="Here you can Backup / Restore your EXTWEAKS settings after installing new kernel, when you restore EXTWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till EXTWEAKS restart with new settings! restore will take 30sec, just wait here!"
-			name="Extweaks Settings Backup / Restore.">
+	<settingsPane description="Here you can Backup / Restore your STWEAKS settings after installing new kernel, when you restore STWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till STWEAKS restart with new settings! restore will take 30sec, just wait here!"
+			name="STweaks Settings Backup / Restore.">
 
-		<button description="Backup Extweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
+		<button description="Backup STweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
 
-		<button description="Restore Extweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
+		<button description="Restore STweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
 
 	</settingsPane>
 
@@ -685,7 +685,7 @@
 
 <settingsTab name="PROFILES">
 
-	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="Extweaks Profiles.">
+	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="STweaks Profiles.">
 
 		<button description="extreme_battery.profile" name="extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
 

@@ -255,7 +255,7 @@ PARTITION_TUNING()
 		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
 
-	# only if asked by user via extweaks
+	# only if asked by user via stweaks
 	if [ -e /system/run_fs_check ]; then
 		# reset the lock-file
 		rm -f /system/run_fs_check
@@ -289,7 +289,7 @@ USER_ACTIONS()
 		echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 	fi;
 
-	# only if asked by user via extweaks
+	# only if asked by user via stweaks
 	if [ -e /system/run_fix_media ]; then
 		mkdir /sdcardtmp;
 		chmod 777 /sdcardtmp;
