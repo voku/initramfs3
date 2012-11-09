@@ -12,16 +12,18 @@
 
 	if [ -e /res/misc/payload/STweaks.apk.xz ]; then
 		rm -f /system/app/STweaks.apk > /dev/null 2>&1;
-		rm -f /data/app/com.gokhanmoral.STweak*.apk > /dev/null 2>&1;
-		rm -f /system/app/com.gokhanmoral.STweak*.apk > /dev/null 2>&1;
-		rm -rf /data/data/com.gokhanmoral.STweaks > /dev/null 2>&1;
+		rm -f /data/app/com.gokhanmoral.*weak*.apk > /dev/null 2>&1;
+		rm -f /system/app/com.gokhanmoral.*weak*.apk > /dev/null 2>&1;
+		rm -rf /data/data/com.gokhanmoral.*weak* > /dev/null 2>&1;
+		rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
+		rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
 		$BB xzcat /res/misc/payload/STweaks.apk.xz > /system/app/STweaks.apk;
 		$BB chown 0.0 /system/app/STweaks.apk;
 		$BB chmod 644 /system/app/STweaks.apk;
 		rm -rf /res/misc/payload/;
-		pkill -f "com.gokhanmoral.STweaks";
+		pkill -f "com.gokhanmoral.stweaks.app";
 		sleep 2
-		am start -a android.intent.action.MAIN -n com.gokhanmoral.STweaks/.MainActivity;
+		am start -a android.intent.action.MAIN -n com.gokhanmoral.stweaks.app/.MainActivity;
 	else
 		echo "payload is missing or code error!";
 	fi;

@@ -6,7 +6,7 @@
 if [ "a$2" != "a" ]; then
 	bln_switch=$2;
 
-	case "${bln_switc}h" in
+	case "${bln_switch}" in
 	0) 
 		echo 0 > /sys/class/misc/notification/breathing;
 	;;
