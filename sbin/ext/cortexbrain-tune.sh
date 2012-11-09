@@ -31,7 +31,7 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 10 -p `pidof kswapd0`;
+renice 15 -p `pidof kswapd0`;
 renice 15 -p `pgrep logcat`;
 
 # replace kernel version info for repacked kernels
@@ -85,11 +85,11 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/read_ahead_kb ]; then
-				echo "1024" >  $i/queue/read_ahead_kb; # default: 128
+				echo "2048" >  $i/queue/read_ahead_kb; # default: 128
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "40" > $i/queue/nr_requests; # default: 128
+				echo "128" > $i/queue/nr_requests; # default: 128
 			fi;
 
 			if [ -e $i/queue/iosched/back_seek_penalty ]; then
@@ -107,15 +107,15 @@ IO_TWEAKS()
 		done;
 
 		if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-			echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+			echo "2048" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 		fi;
 
 		SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 		for i in $SDCARDREADAHEAD; do
-			echo "1024" > $i/read_ahead_kb;
+			echo "2048" > $i/read_ahead_kb;
 		done;
 
-		echo "15" > /proc/sys/fs/lease-break-time;
+		echo "10" > /proc/sys/fs/lease-break-time;
 
 		log -p i -t $FILE_NAME "*** filesystem tweaks ***: enabled";
 	fi;
@@ -393,11 +393,11 @@ MEMORY_TWEAKS()
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "25" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "15" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
@@ -679,7 +679,7 @@ AWAKE_MODE()
 	# set CPU-Governor
 	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-	echo "300" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+	echo "100" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 	KERNEL_SCHED_AWAKE;
 
@@ -696,6 +696,11 @@ AWAKE_MODE()
 	ENABLE_WIFI;
 
 	WAKEUP_BOOST;
+
+	# activate VPLL after wakeup booster delay
+	if [ "$mali_use_vpll" == on ]; then
+		echo "1" > /sys/module/mali/parameters/mali_use_vpll;
+	fi;
 
 	# bus freq back to normal
 	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -754,7 +759,8 @@ SLEEP_MODE()
 	WAKEUP_DELAY_SLEEP;
 
 	echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	echo "0" > /sys/module/mali/parameters/mali_use_vpll;
 
 	KERNEL_SCHED_SLEEP;
 
