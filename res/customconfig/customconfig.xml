@@ -56,7 +56,7 @@
 			<seekBar description="Sets hot plug sampling intervals for screen-on state (default is 100)" 
 				name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="100" reversed="false" step="100" max="1000"/>
 
-			<seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
+			<seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 600000)" 
 				name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" 
 				unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
@@ -117,7 +117,7 @@
 			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
 			unit="Sec" min="0" reversed="false" step="1" max="5"/>
 
-		<seekBar description="Here you can change Cortex Wakeup Boost, it's give you full power of CPU and System but only for time that set, then all back to normal, by default say 7 here."
+		<seekBar description="Here you can change Cortex Wakeup Boost, it's give you full power of CPU and System but only for time that set, then all back to normal"
 			name="Cortex Wakeup Boost" action="generic /tmp/wakeup_boost"
 			unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
@@ -140,17 +140,9 @@
 <settingsTab name="GPU">
 	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1000mV and 1000mV." name="GPU Control">
 
-	<!--spinner description="Select the level to be used to boost GPU frequency when you touch the screen." 
-		name="Mali Touch Boost Level" action="generic /sys/module/mali/parameters/mali_touch_boost_level">
-		<spinnerItem name="Disabled" value="0"/> 
-		<spinnerItem name="Step2" value="1"/> 
-		<spinnerItem name="Step3" value="2"/> 
-		<spinnerItem name="Step4" value="3"/> 
-	</spinner-->
-
 	<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device LAG or Crash 'SOD'. If you do not use VPLL Mode frequency steps 330, 440, 520 will be unavailable. VPLL is a new FREQ Range to give some users more GPU performance!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
-	<seekBar description="Here you can change GPU utilization timeout! as close to 100(1sec) you get faster GPU response in steps jump on load. but more battery drained, CM10 default 250(2.5Sec)"
+	<seekBar description="Here you can change GPU utilization timeout! as close to 100(1sec) you get faster GPU response in steps jump on load. but more battery drained, CM10 default 250(2.5sec)"
 		name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
 		unit="MSec" min="100" reversed="false" step="50" max="500"/>
 
@@ -277,11 +269,11 @@
 
 		<button description="Push to reset screen color to default" name="Reset Color to Default" action="push-actions/color_to_default 1" label="Default Color"/>
 
-		<seekBar description="Sets screen BLUE color scale (Default is 130)" 
+		<seekBar description="Sets screen BLUE color scale (Default is 127)" 
 			name="Blue Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb" 
 			unit="BLUE" min="78" reversed="false" step="1" max="178"/>
 
-		<seekBar description="Sets screen RED color scale (Default is 133)" 
+		<seekBar description="Sets screen RED color scale (Default is 127)" 
 			name="Red Color Scale" action="generic /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr" 
 			unit="RED" min="78" reversed="false" step="1" max="178"/>
 
@@ -358,7 +350,7 @@
 
 	<settingsPane description="Master Headphone Gain Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
 
-		<spinner description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)"
+		<spinner description="Headphone Amplifier Level (0-3 which corresponds to 0dB, 1.5dB, 3dB, 6dB)"
 			name="Headphone Amplifier" action="soundgasm_hp">
 			<spinnerItem name="Disabled/Reset" value="0"/> 
 			<spinnerItem name="Boost 1.5dB" value="1"/> 
@@ -440,6 +432,35 @@
 
 		<checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." 
 			name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/>
+
+	</settingsPane>
+
+</settingsTab>
+
+<settingsTab name="Cron Tasks">
+
+	<settingsPane description="Here you can activate Auto system: clean, tune, reconfig, resync, and much more" name="CRON TASKS MENU">
+
+		<spinner description="Main Switch for CRON TASKER ON/OFF, if OFF then all below tasks have no effect!" name="CRON TASK MAIN SWITCH" action="crontab">
+			<spinnerItem name="Cron Tasker ON" value="on"/> 
+			<spinnerItem name="Cron Tasker OFF" value="off"/> 
+		</spinner>
+
+		<button description="Use this button to test if Cron Task Service is ONLINE and supported!, if main switch is ON, and service is OFFLINE, then ROM Busybox not supporting CRON, update Busybox or ROM." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
+
+		<checkbox description="Cron Task to clear RAM cache every HOUR only if CPU is resting(IDLE)! this can improve stability and clean RAM from junk, and get it ready to be used"
+			name="RAM Clean Task" action="generic_cortex /tmp/cron_drop_cache" label="RAM Clean Task Every Hour"/>
+
+		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
+			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
+
+		<checkbox description="Cron Task to FIX APPS Permissions every 4:40AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, and FC of Apps"
+			name="Permissions Fix Task" action="generic_cortex /tmp/cron_fix_permissions" label="Permissions Fix Task Every 4:40AM"/>
+
+		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, FC of Apps, and improve apps load speed."
+			name="Zipaling Task" action="generic_cortex /tmp/cron_zipaling" label="Zipaling Task Every 4:50AM"/>
+
+		<button description="Use this button to check if Cron Task Jobs done as requested, this will show log for all finished jobs." name="Test Cron Task Jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
 
 	</settingsPane>
 

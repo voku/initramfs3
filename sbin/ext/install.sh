@@ -23,6 +23,14 @@ payload_extracted=0;
 
 cd /;
 
+# copy cron files
+if [ ! -d /data/crontab ]; then
+	cp -a /res/crontab /data/
+fi;
+
+# update my scripts in case i made change.
+cp -a /res/crontab/cron-scripts/* /data/crontab/cron-scripts/
+
 if [ "$install_root" == "on" ]; then
 	if [ -s /system/xbin/su ]; then
 		echo "Superuser already exists";

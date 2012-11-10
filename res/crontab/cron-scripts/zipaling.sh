@@ -1,9 +1,18 @@
 #!/sbin/busybox sh
 #From Darky's zipalign - Modified to make it actually work.
 #Modded by Dorimanx.
-export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
+PROFILE=`cat /data/.siyah/.active.profile`;
+. /data/.siyah/$PROFILE.profile;
+
+if [ "$cron_zipaling" == "on" ]; then
+
+	while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
+        	echo "Waiting For CPU to cool down";
+        	sleep 30;
+	done;
+
 	if [ `pgrep -f "zipalign" | wc -l` \< 5 ]; then
 		echo "Starting zipalign, it's will take 2min to finish, please wait.";
 		sleep 3;
@@ -57,8 +66,11 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 		touch $ZIPALIGNDB;
 		echo "Automatic ZipAlign finished at $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE;
+		date > /data/crontab/cron-zipaling;
+		echo "Done! Zipalined All Apps" >> /data/crontab/cron-zipaling;
 	else
 		echo "ZipAlign already running, please wait.";
 	fi;
+fi;
 )&
 
