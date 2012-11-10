@@ -40,6 +40,10 @@ if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh
 fi;
 
+# dual core hotplug
+echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
+echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
+
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;

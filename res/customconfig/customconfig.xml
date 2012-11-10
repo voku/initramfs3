@@ -5,12 +5,10 @@
 			name="CPU Global Settings">
 
 			<seekBar description="Maximum CPU Speed ALERT 1.5Ghz and 1.6Ghz can be unstable for your personal device! so try it, if stuck(SOD), then your CPU will not work on such high OC, nothing can be done! for others it's working fine. (default is 1200000)" 
-				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" 
-					unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 			<seekBar description="Minimum CPU Speed (default is 200000)" 
-				name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" 
-					unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+				name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and pegasusq governors." 
 				name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
@@ -294,10 +292,6 @@
 		<seekBar description="Vibration force level (default 75)" 
 			name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-		<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)" 
-			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" 
-			unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
-
 		<checkbox description="Slide2Wake By Fluxi@xda, when screen is OFF swipe from left side of screen to right side of screen, and screen will be turned ON!"
 			name="Slide2Wake ON/OFF Switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
 
@@ -499,9 +493,6 @@
 		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROMS running the init.d scripts by Auto, I also can force running the scripts, so if I run them and ROM run them, we have a problem! all scripts running X2 times, so my force RUN is Disabled by default. if you know that your ROM NOT supporting init.d script RUN, then turn it ON here and reboot.'set checkbox ON'"
 			name="INIT.D Scripts RUN control" action="generic /tmp/init_d" label="INIT.D scripts RUN control"/>
 
-		<!--checkbox description="Here you can Allow WIFI to use full PWR when screen is OFF, by default we use LOW PWR and get slow speed on wifi transfers, Only when screen is OFF, checked=LOW PWR, not checked=HIGH PWR"
-			name="WIFI LOW POWER SWITCH" action="generic /tmp/wifi_pwr" label="WIFI LOW PWR"/-->
-
 		<spinner description="This setting change normal full root ADB to DEV hacked not rooted ADB! that allow to use external apps to upload files and mod them inside the phone!, normal user not need it! DEV ADB is for developers only."
 			name="ADB BINARY MODE" action="adb_mode">
 			<spinnerItem name="Normal ADB" value="0"/> 
@@ -641,6 +632,9 @@
 
 		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+
+                <checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
+                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/>
 
 		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
