@@ -633,8 +633,8 @@
 		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-                <checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
-                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/>
+                <!--checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
+                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
 
 		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>

@@ -99,6 +99,9 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB chmod 6755 /res/customconfig/actions/push-actions/*;
 	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
+	# set root access script.
+	$BB chmod 6755 /sbin/ext/cortexbrain-tune.sh;
+
 	# apply STweaks settings
 	echo "booting" > /data/.siyah/booting;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
@@ -145,6 +148,9 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		renice -15 -p $i;
 		log -p i -t boot "*** do not kill -> android.process.acore ***";
 	done;
+
+	# run partitions tune after full boot
+	/sbin/ext/partitions-tune.sh
 
 	echo "Done Booting" > /data/dm-boot-check;
 	date >> /data/dm-boot-check;
