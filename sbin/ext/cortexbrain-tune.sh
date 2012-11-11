@@ -163,10 +163,10 @@ BATTERY_TWEAKS()
 		LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
 		BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
-		echo "*** LEVEL: $LEVEL - CUR: $CURR_ADC ***"
+		log -p i -t $FILE_NAME "*** BATTERY - LEVEL: $LEVEL - CUR: $CURR_ADC ***";
 		if [ "$LEVEL" == 100 ] && [ "$BATTFULL" == 1 ]; then
 			rm -f /data/system/batterystats.bin;
-			echo "battery-calibration done ...";
+			log -p i -t $FILE_NAME "battery-calibration done ...";
 		fi;
 
 		if [ "$power_reduce" == on ]; then
@@ -244,7 +244,7 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "15" > /sys/module/stand_hotplug/parameters/load_l1;
 
 		# boost wakeup
-		if [ "$scaling_max_freq" \> 1100000 ]; then
+		if [ "$scaling_max_freq" \> 1000000 ]; then
 			# powering MAX FREQ
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		else
