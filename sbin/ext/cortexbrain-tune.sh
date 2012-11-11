@@ -239,22 +239,20 @@ MEGA_BOOST_CPU_TWEAKS()
 		# GPU utilization to min delay
 		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
-		# cpu-settings for second core online at booster time.
+		# cpu-settings for second core online at booster time
 		echo "15" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "15" > /sys/module/stand_hotplug/parameters/load_l1;
 
-		# boost wakeup.
+		# boost wakeup
 		if [ "$scaling_max_freq" \> 1100000 ]; then
-			# Powering MAX FREQ
+			# powering MAX FREQ
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			# Powering MIN FREQ
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		else
-			# Powering MAX FREQ
+			# powering MAX FREQ
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			# Powering MIN FREQ
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		fi;
+		# powering MIN FREQ
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS Mode ***";
 	fi;
@@ -620,7 +618,7 @@ WAKEUP_BOOST()
 {
 	# check if ROM booting now, if yes, dont wait. creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
 	if [ ! -e /data/.siyah/booting ] && [ "$wakeup_boost" != 0 ]; then
-		log -p i -t $FILE_NAME "*** WAKEUP_BOOST Mode ***";
+		log -p i -t $FILE_NAME "*** WAKEUP_BOOST ${wakeup_boost}sec Mode ***";
 		sleep $wakeup_boost;
 	fi;
 }
@@ -629,7 +627,7 @@ WAKEUP_DELAY()
 {
 	# set wakeup booster delay to prevent mp3 music shattering when screen turned ON.
 	if [ "$wakeup_delay" != 0 ] && [ ! -e /data/.siyah/booting ]; then
-		log -p i -t $FILE_NAME "*** WAKEUP_DELAY Mode ***";
+		log -p i -t $FILE_NAME "*** WAKEUP_DELAY ${wakeup_delay}sec Mode ***";
 		sleep $wakeup_delay
 	fi;
 }
@@ -637,7 +635,7 @@ WAKEUP_DELAY()
 WAKEUP_DELAY_SLEEP()
 {
 	if [ "$wakeup_delay" != 0 ] && [ ! -e /data/.siyah/booting ]; then
-		log -p i -t $FILE_NAME "*** WAKEUP_DELAY_SLEEP Mode ***";
+		log -p i -t $FILE_NAME "*** WAKEUP_DELAY_SLEEP ${wakeup_delay}sec Mode ***";
 		sleep $wakeup_delay;
 	else
 		log -p i -t $FILE_NAME "*** WAKEUP_DELAY_SLEEP 3sec Mode ***";
