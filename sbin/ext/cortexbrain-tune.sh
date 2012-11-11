@@ -661,12 +661,15 @@ AUTO_BRIGHTNESS()
 SWAPPINESS()
 {
 	# set swappiness in case that no root installed, and zram used or disk swap used
-	SWAP_CHECK=`free | grep Swap | cut -c 18-18`;
+	SWAP_CHECK=`free | grep Swap | awk '{ print $2 }'`;
 	if [ "$zramtweaks" == 4 ] || [ "$SWAP_CHECK" == 0 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
 		log -p i -t $FILE_NAME "*** SWAPPINESS Mode OFF ***";
 	else
-		echo "60" > /proc/sys/vm/swappiness;
+		TOTAL_MEM=$(grep MemTotal /proc/meminfo | awk '{ print $2 }');
+		USED_MEM=$(grep AnonPages /proc/meminfo | awk '{ print $2 }');
+		RESULT_FOR_SWAPPINESS=$(($USED_MEM*100/$TOTAL_MEM));
+		echo "$RESULT_FOR_SWAPPINESS" > /proc/sys/vm/swappiness;
 		log -p i -t $FILE_NAME "*** SWAPPINESS Mode ON ***";
 	fi;
 }
