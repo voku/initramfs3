@@ -85,7 +85,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/read_ahead_kb ]; then
-				echo "2048" >  $i/queue/read_ahead_kb; # default: 128
+				echo "1024" >  $i/queue/read_ahead_kb; # default: 128
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
@@ -107,12 +107,12 @@ IO_TWEAKS()
 		done;
 
 		if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-			echo "2048" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+			echo "1024" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 		fi;
 
 		SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 		for i in $SDCARDREADAHEAD; do
-			echo "2048" > $i/read_ahead_kb;
+			echo "1024" > $i/read_ahead_kb;
 		done;
 
 		echo "10" > /proc/sys/fs/lease-break-time;
