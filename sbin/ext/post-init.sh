@@ -129,7 +129,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		input keyevent 24
 		input keyevent 24
 		input keyevent 24
-		input keyevent 24
 	fi;
 
 	# change USB mode MTP or Mass Storage

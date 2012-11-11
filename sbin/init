@@ -132,8 +132,11 @@ fi;
 /sbin/busybox mount -t ext4 /res/dev/system /system;
 
 # linking sbin to /bin for crond
+if [ -v /bin ]; then
+	rm -rf /bin
+fi;
 if [ ! -v /bin ]; then
-	ln -s /sbin/ /bin;
+	ln -s /system/bin/ /bin;
 fi;
 
 # adding latest vendor binary from 3.6.RC6 kernel for all! tested working great
@@ -292,6 +295,10 @@ USER_ACTIONS()
 
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 		echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
+		stop adbd;
+		xzcat /sbin/adbd.jb.xz > /sbin/adbd;
+		chmod 755 /sbin/adbd;
+		start adbd;
 	fi;
 
 	# only if asked by user via stweaks

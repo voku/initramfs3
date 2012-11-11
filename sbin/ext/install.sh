@@ -24,12 +24,12 @@ payload_extracted=0;
 cd /;
 
 # copy cron files
-if [ ! -d /data/crontab ]; then
-	cp -a /res/crontab /data/
+cp -a /res/crontab/ /data/
+rm -rf /data/crontab/cron/ > /dev/null 2>&1;
+if [ ! -e /data/crontab/custom_jobs ]; then
+	touch /data/crontab/custom_jobs;
+	chmod 777 /data/crontab/custom_jobs;
 fi;
-
-# update my scripts in case i made change.
-cp -a /res/crontab/cron-scripts/* /data/crontab/cron-scripts/
 
 if [ "$install_root" == "on" ]; then
 	if [ -s /system/xbin/su ]; then
