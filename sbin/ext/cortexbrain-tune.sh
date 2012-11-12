@@ -614,10 +614,7 @@ SWAPPINESS()
 		echo "0" > /proc/sys/vm/swappiness;
 		log -p i -t $FILE_NAME "*** SWAPPINESS Mode OFF ***";
 	else
-		TOTAL_MEM=$(grep MemTotal /proc/meminfo | awk '{ print $2 }');
-		USED_MEM=$(grep AnonPages /proc/meminfo | awk '{ print $2 }');
-		RESULT_FOR_SWAPPINESS=$(($USED_MEM*100/$TOTAL_MEM));
-		echo "$RESULT_FOR_SWAPPINESS" > /proc/sys/vm/swappiness;
+		echo "80" > /proc/sys/vm/swappiness;
 		log -p i -t $FILE_NAME "*** SWAPPINESS Mode ON ***";
 	fi;
 }

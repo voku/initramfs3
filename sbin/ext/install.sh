@@ -30,7 +30,7 @@ if [ ! -e /data/crontab/custom_jobs ]; then
 fi;
 
 if [ "$install_root" == "on" ]; then
-	if [ -s /system/xbin/su ]; then
+	if [ -e /system/xbin/su ]; then
 		echo "Superuser already exists";
 	else
 		# clean su traces
@@ -82,7 +82,7 @@ if [ "$install_root" == "on" ]; then
 	fi;
 fi;
 
-if [ ! -f /system/app/CWMManager.apk ]; then
+if [ ! -e /system/app/CWMManager.apk ]; then
 	rm -f /data/app/CWMManager.apk > /dev/null 2>&1;
 	rm -f /data/dalvik-cache/*CWMManager.apk* > /dev/null 2>&1;
 	rm -f /data/app/eu.chainfire.cfroot.cwmmanager*.apk > /dev/null 2>&1;
