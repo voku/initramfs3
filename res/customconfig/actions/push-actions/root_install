@@ -2,8 +2,9 @@
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
-	BB=/sbin/busybox;
 	if [ ! -e /system/xbin/su ]; then
+		BB=/sbin/busybox;
+
 		# extract Payload with root files
 		$BB mount -o remount,rw /system;
 		$BB mount -o remount,rw /;
@@ -62,8 +63,9 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 		# delete payload and kill superuser pid
 		pkill -f "com.noshufou.android.su";
 		pkill -f "eu.chinfire.supersu";
+		echo "App SuperSU was installed!, You have Full ROOT now!";
 	else
-		echo "You have root installed already! first remove it.";
+		echo "You have ROOT installed already! first remove it.";
 	fi;
 )&
 
