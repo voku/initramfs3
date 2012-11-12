@@ -16,14 +16,12 @@ case "${cortexbrain_background_process}" in
 		pkill -f "cat /sys/power/wait_for_fb_sleep";
 		pkill -f "cat /sys/power/wait_for_fb_wake";
 		sed -i "s/cortexbrain_background_process=[0-1]*/cortexbrain_background_process=0/g" /sbin/ext/cortexbrain-tune.sh;
-		/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh > /dev/null;
 	;;
 	1)
 		sed -i "s/cortexbrain_background_process=[0-1]*/cortexbrain_background_process=1/g" /sbin/ext/cortexbrain-tune.sh;
-		pkill -f "/sbin/ext/cortexbrain-tune.sh";
-		pkill -f "cat /sys/power/wait_for_fb_sleep";
-		pkill -f "cat /sys/power/wait_for_fb_wake";
-		/sbin/busybox sh /sbin/ext/cortexbrain-tune.sh > /dev/null;
+		if [ `pgrep -f "cortexbrain-tune.sh" | wc -l` == 0 ]; then
+			/sbin/ext/cortexbrain-tune.sh > /dev/null 2>&1;
+		fi;
 	;;
 	*)
 		cortexbrain_background_process=1;
