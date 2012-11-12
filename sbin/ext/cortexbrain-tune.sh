@@ -672,6 +672,16 @@ BLN_CORRECTION()
 	fi;
 }
 
+CROND_SAFETY()
+{
+	# if crond used, give it root perent, if started by STweaks, it's will be killed in time.
+	if [ "$crontab" == on ]; then
+		pkill -f "crond";
+		/res/crontab_service/service.sh;
+		log -p i -t $FILE_NAME "*** CROND_SAFETY Mode ***";
+	fi;
+}
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
@@ -824,6 +834,8 @@ SLEEP_MODE()
 	BATTERY_TWEAKS;
 
 	BLN_CORRECTION;
+
+	CROND_SAFETY;
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
