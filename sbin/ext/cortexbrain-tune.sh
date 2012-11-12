@@ -381,7 +381,7 @@ MEMORY_TWEAKS()
 		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "4096" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -650,6 +650,28 @@ KERNEL_SCHED_SLEEP()
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED_SLEEP Mode ***";
 }
 
+BLN_CORRECTION()
+{
+	if [ "$notification_enabled" == on ]; then
+
+		echo "1" > /sys/class/misc/notification/notification_enabled;
+
+		if [ "$bln_switch" == 0 ]; then
+			/res/uci.sh bln_switch 0;
+		elif [ "$bln_switch" == 1 ]; then
+			/res/uci.sh bln_switch 1;
+		elif [ "$bln_switch" == 2 ]; then
+			/res/uci.sh bln_switch 2;
+		fi;
+
+		log -p i -t $FILE_NAME "*** BLN_CORRECTION Mode ***";
+	fi;
+
+	if [ "$led_timeout_ms" == -1 ]; then
+		echo "-1" > /sys/class/misc/notification/led_timeout_ms;
+	fi;
+}
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
@@ -700,14 +722,14 @@ AWAKE_MODE()
 		fi;
 
 		# bus freq to 400MHZ in low load
-		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 		# GPU utilization to min delay
 		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 		# cpu-settings for second core online at booster time
-		echo "15" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "15" > /sys/module/stand_hotplug/parameters/load_l1;
+		echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
+		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
 		# boost wakeup
 		if [ "$scaling_max_freq" \> 1100000 ]; then
@@ -734,11 +756,6 @@ AWAKE_MODE()
 	ENABLE_WIFI;
 
 	WAKEUP_BOOST;
-
-	# activate VPLL after wakeup booster delay
-	if [ "$mali_use_vpll" == on ]; then
-		echo "1" > /sys/module/mali/parameters/mali_use_vpll;
-	fi;
 
 	# bus freq back to normal
 	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
@@ -780,6 +797,8 @@ AWAKE_MODE()
 
 	SWAPPINESS;
 
+	BLN_CORRECTION;
+
 	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 }
 
@@ -795,7 +814,6 @@ SLEEP_MODE()
 
 	echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
-	echo "0" > /sys/module/mali/parameters/mali_use_vpll;
 
 	KERNEL_SCHED_SLEEP;
 
@@ -804,6 +822,8 @@ SLEEP_MODE()
 	TUNE_IPV6;
 
 	BATTERY_TWEAKS;
+
+	BLN_CORRECTION;
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 	if [ $CHARGING == 0 ]; then
