@@ -48,7 +48,13 @@ echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	if [ $init_d == on ]; then
+	MIUI=0;
+	MIUI_JB=0;
+	[ -f /system/framework/framework-miui.jar ] && MIUI=1;
+	[ -f /system/framework/miui-framework.jar ] && MIUI=1;
+	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+
+	if [ $init_d == on ] || [ "$MIUI" == 1 ] || [ "$MIUI_JB" == 1 ]; then
 		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
