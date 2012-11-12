@@ -4,67 +4,64 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 (
 	BB=/sbin/busybox;
 	if [ ! -e /system/xbin/su ]; then
-		if [ ! -e /system/xbin/su ]; then
-			# extract Payload with root files
-			$BB mount -o remount,rw /system;
-			$BB mount -o remount,rw /;
+		# extract Payload with root files
+		$BB mount -o remount,rw /system;
+		$BB mount -o remount,rw /;
 
-			# clean su traces
-			$BB rm -f /system/bin/su > /dev/null 2>&1;
-			if [ ! -d /system/xbin ]; then
-				$BB mkdir /system/xbin;
-				$BB chmod 755 /system/xbin;
-			fi;
-
-			# extract SU binary
-			$BB cp -a /res/misc/payload/su /system/xbin/su;
-			$BB chown root:root /system/xbin/su;
-			$BB chmod 6755 /system/xbin/su;
-			$BB ln -s /system/xbin/su /system/bin/su;
-
-			# clean super user old apps
-			$BB rm -f /system/app/Superuser.apk > /dev/null 2>&1;
-			$BB rm -f /system/app/SuperSU.apk > /dev/null 2>&1;
-			$BB rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
-			$BB rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
-			$BB rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
-
-			$BB rm -f /data/app/Superuse*.apk > /dev/null 2>&1;
-			$BB rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
-			$BB rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
-			$BB rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
-
-			$BB rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
-			$BB rm -rf /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1;
-
-			$BB rm -rf /data/data/eu.chainfire.supersu > /dev/null 2>&1;
-			$BB rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
-
-			# extract super user app
-			$BB cp -a /res/misc/payload/SuperSU.apk /system/app/SuperSU.apk;
-			$BB chown root:root /system/app/SuperSU.apk;
-			$BB chmod 644 /system/app/SuperSU.apk;
-
-			# restore witch if exist
-			if [ -e /system/xbin/waswhich-bkp ]; then
-				$BB rm -f /system/xbin/which > /dev/null 2>&1;
-				$BB mv /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1;
-				$BB chmod 755 /system/xbin/which > /dev/null 2>&1;
-			fi;
-
-			if [ -e /system/xbin/boxman ]; then
-				$BB rm -f /system/xbin/busybox > /dev/null 2>&1;
-				$BB mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1;
-				$BB chmod 755 /system/xbin/busybox > /dev/null 2>&1;
-				$BB mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1;
-				$BB chmod 755 /system/bin/busybox > /dev/null 2>&1;
-			fi;
-
-			# delete payload and kill superuser pid
-			pkill -f "com.noshufou.android.su";
-			pkill -f "eu.chinfire.supersu";
+		# clean su traces
+		$BB rm -f /system/bin/su > /dev/null 2>&1;
+		if [ ! -d /system/xbin ]; then
+			$BB mkdir /system/xbin;
+			$BB chmod 755 /system/xbin;
 		fi;
 
+		# extract SU binary
+		$BB cp -a /res/misc/payload/su /system/xbin/su;
+		$BB chown root:root /system/xbin/su;
+		$BB chmod 6755 /system/xbin/su;
+		$BB ln -s /system/xbin/su /system/bin/su;
+
+		# clean super user old apps
+		$BB rm -f /system/app/Superuser.apk > /dev/null 2>&1;
+		$BB rm -f /system/app/SuperSU.apk > /dev/null 2>&1;
+		$BB rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
+		$BB rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
+		$BB rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
+
+		$BB rm -f /data/app/Superuse*.apk > /dev/null 2>&1;
+		$BB rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
+		$BB rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
+		$BB rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
+
+		$BB rm -f /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
+		$BB rm -f /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1;
+
+		$BB rm -rf /data/data/eu.chainfire.supersu > /dev/null 2>&1;
+		$BB rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
+
+		# extract super user app
+		$BB cp -a /res/misc/payload/SuperSU.apk /system/app/SuperSU.apk;
+		$BB chown root:root /system/app/SuperSU.apk;
+		$BB chmod 644 /system/app/SuperSU.apk;
+
+		# restore witch if exist
+		if [ -e /system/xbin/waswhich-bkp ]; then
+			$BB rm -f /system/xbin/which > /dev/null 2>&1;
+			$BB mv /system/xbin/waswhich-bkp /system/xbin/which > /dev/null 2>&1;
+			$BB chmod 755 /system/xbin/which > /dev/null 2>&1;
+		fi;
+
+		if [ -e /system/xbin/boxman ]; then
+			$BB rm -f /system/xbin/busybox > /dev/null 2>&1;
+			$BB mv /system/xbin/boxman /system/xbin/busybox > /dev/null 2>&1;
+			$BB chmod 755 /system/xbin/busybox > /dev/null 2>&1;
+			$BB mv /system/bin/boxman /system/bin/busybox > /dev/null 2>&1;
+			$BB chmod 755 /system/bin/busybox > /dev/null 2>&1;
+		fi;
+
+		# delete payload and kill superuser pid
+		pkill -f "com.noshufou.android.su";
+		pkill -f "eu.chinfire.supersu";
 	else
 		echo "You have root installed already! first remove it.";
 	fi;

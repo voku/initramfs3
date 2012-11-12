@@ -5,9 +5,6 @@ BB="/sbin/busybox";
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
-# start ADB early to see some logs :)
-start adbd;
-
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;

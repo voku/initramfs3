@@ -299,6 +299,8 @@ USER_ACTIONS()
 		cp -a /sbin/adbd.jb /sbin/adbd;
 		chmod 755 /sbin/adbd;
 		start adbd;
+	else
+		start adbd;
 	fi;
 
 	# only if asked by user via stweaks
