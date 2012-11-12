@@ -202,62 +202,12 @@ BATTERY_TWEAKS()
 		log -p i -t $FILE_NAME "*** BATTERY_TWEAKS ***: enabled";
 	fi;
 }
-BATTERY_TWEAKS;
 
 # ==============================================================
 # CPU-TWEAKS
 # ==============================================================
 
-MEGA_BOOST_CPU_TWEAKS()
-{
-	if [ "$cortexbrain_cpu" == on ]; then
-		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
-	
-		# boost CPU power for fast and no lag wakeup.
-		echo "20000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
-		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
-			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
-		fi;
-		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
-		fi;
-		echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
-		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq ]; then
-			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
-		fi;
-		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step ]; then
-			echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
-		fi;
-		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness ]; then
-			echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
-		fi;
-
-		# bus freq to 400MHZ in low load
-		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-
-		# GPU utilization to min delay
-		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
-
-		# cpu-settings for second core online at booster time
-		echo "15" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "15" > /sys/module/stand_hotplug/parameters/load_l1;
-
-		# boost wakeup
-		if [ "$scaling_max_freq" \> 1000000 ]; then
-			# powering MAX FREQ
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		else
-			# powering MAX FREQ
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		fi;
-		# powering MIN FREQ
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-
-		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS Mode ***";
-	fi;
-}
-
+sleep_power_save=0;
 CPU_GOV_TWEAKS()
 {
 	if [ "$cortexbrain_cpu" == on ]; then
@@ -374,7 +324,7 @@ CPU_GOV_TWEAKS()
 		# performance-settings		
 		elif [ "$PROFILE" == performance ] || [ "$PROFILE" == extreme_performance ]; then
 
-			echo "50000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
+			echo "60000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
 			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
 				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
 				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
@@ -415,8 +365,6 @@ CPU_GOV_TWEAKS()
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS ***: enabled";
 	fi;
 }
-sleep_power_save=0;
-CPU_GOV_TWEAKS;
 
 # ==============================================================
 # MEMORY-TWEAKS
@@ -427,7 +375,7 @@ MEMORY_TWEAKS()
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "15" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
@@ -593,10 +541,10 @@ DISABLE_GESTURE()
 
 DONT_KILL_CORTEX()
 {
-	# please don't kill "cortexbrain"
+	# please don't kill "cortexbrain" set oom_adj to -14
 	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
 	for i in $PIDOFCORTEX; do
-		echo "-600" > /proc/${i}/oom_score_adj;
+		echo "-950" > /proc/${i}/oom_score_adj;
 	done;
 
 	log -p i -t $FILE_NAME "*** DONT_KILL_CORTEX Mode ***";
@@ -731,7 +679,52 @@ AWAKE_MODE()
 
 	KERNEL_SCHED_AWAKE;
 
-	MEGA_BOOST_CPU_TWEAKS;
+	if [ "$cortexbrain_cpu" == on ]; then
+		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+
+		# boost CPU power for fast and no lag wakeup.
+		echo "20000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
+		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
+			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
+			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
+		fi;
+		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
+			echo "10" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
+		fi;
+		echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
+		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq ]; then
+			echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
+		fi;
+		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step ]; then
+			echo "100" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
+		fi;
+		if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness ]; then
+			echo "800000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
+		fi;
+
+		# bus freq to 400MHZ in low load
+		echo "20" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
+		# GPU utilization to min delay
+		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+
+		# cpu-settings for second core online at booster time
+		echo "15" > /sys/module/stand_hotplug/parameters/load_h0;
+		echo "15" > /sys/module/stand_hotplug/parameters/load_l1;
+
+		# boost wakeup
+		if [ "$scaling_max_freq" \> 1100000 ]; then
+			# powering MAX FREQ
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		else
+			# powering MAX FREQ
+			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		fi;
+		# powering MIN FREQ
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
+		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS Mode ***";
+	fi;
 
 	MOUNT_SD_CARD;
 
@@ -885,12 +878,11 @@ if [ "$cortexbrain_background_process" == 1 ] && [ `pgrep -f "cat /sys/power/wai
 		# AWAKE State. all system ON.
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
 		AWAKE_MODE;
-		sleep 10;
+		sleep 5;
 
 		# SLEEP state. All system to power save.
 		cat /sys/power/wait_for_fb_sleep > /dev/null 2>&1;
 		SLEEP_MODE;
-		sleep 2
 	done &);
 else
 	if [ "$cortexbrain_background_process" == 0 ]; then

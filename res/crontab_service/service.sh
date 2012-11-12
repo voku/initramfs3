@@ -1,8 +1,5 @@
 #!/sbin/busybox sh
 
-# $1 - "crontab"
-# $2 - value=
-
 # Created By Dorimanx and Dairinin
 
 if [ ! -d /system/etc/cron.d/crontabs/root ]; then

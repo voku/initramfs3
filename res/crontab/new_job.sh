@@ -1,5 +1,7 @@
 #!/sbin/busybox sh
 
+# Created By Dorimanx and Dairinin
+
 if [ "a$1" != "a" ] && [ -e /system/xbin/busybox ]; then
 	cron_localtime () {
 		local localtime=$1
