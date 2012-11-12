@@ -2,7 +2,7 @@
 
 # Created By Dorimanx and Dairinin
 
-if [ ! -d /system/etc/cron.d/crontabs/root ]; then
+if [ ! -e /system/etc/cron.d/crontabs/root ]; then
 	mkdir -p /system/etc/cron.d/crontabs;
 	chmod 777 /system/etc/cron.d/crontabs;
 	cp -a /res/crontab_service/root /system/etc/cron.d/crontabs/;
