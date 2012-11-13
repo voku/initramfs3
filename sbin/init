@@ -131,13 +131,8 @@ fi;
 # mounting system!
 /sbin/busybox mount -t ext4 /res/dev/system /system;
 
-# linking sbin to /bin for crond
-if [ -v /bin ]; then
-	rm -rf /bin
-fi;
-if [ ! -v /bin ]; then
-	ln -s /system/bin/ /bin;
-fi;
+# linking /system/bin to /bin for crond
+ln -s /system/bin/ /bin
 
 # adding latest vendor binary from 3.6.RC6 kernel for all! tested working great
 mkdir -p /system/vendor/firmware;
