@@ -36,7 +36,7 @@ loglevel 3
     export ANDROID_DATA /data
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework-miui.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar:/system/framework/sechardware.jar
+    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework-miui.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
 
 # Backward compatibility
     symlink /system/etc /etc
@@ -82,8 +82,9 @@ loglevel 3
 
     write /proc/sys/kernel/panic_on_oops 0
     write /proc/sys/kernel/hung_task_timeout_secs 120
-    write /proc/sys/kernel/sched_latency_ns 10000000
     write /proc/cpu/alignment 4
+    write /proc/sys/kernel/sched_latency_ns 10000000
+    write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
 
@@ -94,15 +95,6 @@ loglevel 3
     chown system system /dev/cpuctl/tasks
     chmod 0777 /dev/cpuctl/tasks
     write /dev/cpuctl/cpu.shares 1024
-    write /dev/cpuctl/cpu.rt_runtime_us 950000
-    write /dev/cpuctl/cpu.rt_period_us 1000000
-
-    mkdir /dev/cpuctl/apps
-    chown system system /dev/cpuctl/apps/tasks
-    chmod 0777 /dev/cpuctl/apps/tasks
-    write /dev/cpuctl/apps/cpu.shares 1024
-    write /dev/cpuctl/apps/cpu.rt_runtime_us 800000
-    write /dev/cpuctl/apps/cpu.rt_period_us 1000000
 
     mkdir /dev/cpuctl/fg_boost
     chown system system /dev/cpuctl/fg_boost/tasks
@@ -114,8 +106,6 @@ loglevel 3
     chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
     # 5.0 %
     write /dev/cpuctl/bg_non_interactive/cpu.shares 52
-    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_runtime_us 700000
-    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_period_us 1000000
 
 # Allow everybody to read the xt_qtaguid resource tracking misc dev.
 # This is needed by any process that uses socket tagging.
@@ -255,7 +245,7 @@ on post-fs-data
     mkdir /data/lost+found 0770
 
 # double check the perms, in case lost+found already exists, and set owner
-    chown root system /data/lost+found
+    chown root root /data/lost+found
     chmod 0770 /data/lost+found
 
 # create directory for DRM plug-ins - give drm the read/write access to
@@ -729,7 +719,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 0660 root radio
     socket rild-debug stream 0660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc diag log
+    group radio cache inet misc audio sdcard_rw log
 
 service DR-deamon /system/bin/drexe
     class main
@@ -758,7 +748,7 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
 service drm /system/bin/drmserver
     class main
     user drm
-    group system inet drmrpc sdcard_rw media_rw radio
+    group system inet sdcard_rw media_rw radio
 
 service media /system/bin/mediaserver
     class main
@@ -895,6 +885,12 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 
 on property:sys.boot_completed=1
     stop samsungani
+
+# Chainfire - system patch service
+service cfpatch /sbin/boot-patch.sh
+	class core
+	user root
+	oneshot
 
 service postinit /sbin/ext/post-init.sh
     class core
