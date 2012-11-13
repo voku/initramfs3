@@ -621,7 +621,8 @@ SWAPPINESS()
 
 TUNE_IPV6()
 {
-	if [ "$cortexbrain_ipv6" == on ]; then
+	CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
+	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 		sysctl -w net.ipv6.conf.all.disable_ipv6=0
 		log -p i -t $FILE_NAME "*** TUNE_IPV6 Mode ON ***";
