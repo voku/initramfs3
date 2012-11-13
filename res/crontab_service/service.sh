@@ -25,9 +25,9 @@ chmod 777 /data/crontab/cron-scripts/*;
 # use /system/etc/cron.d/crontabs/ call the crontab file "root"
 if [ -e /system/xbin/busybox ]; then
 	/sbin/busybox chmod 6755 /system/xbin/busybox;
-	/system/xbin/busybox crond -c /system/etc/cron.d/crontabs/
+	nohup /system/xbin/busybox crond -c /system/etc/cron.d/crontabs/
 elif [ -e /system/bin/busybox ]; then
 	/sbin/busybox chmod 6755 /system/bin/busybox;
-	/system/bin/busybox crond -c /system/etc/cron.d/crontabs/
+	nohup /system/bin/busybox crond -c /system/etc/cron.d/crontabs/
 fi;
 

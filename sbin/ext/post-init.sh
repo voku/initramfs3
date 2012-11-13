@@ -42,7 +42,7 @@ echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # Cortex parent should be ROOT/INIT and not STweaks
-/sbin/ext/cortexbrain-tune.sh; 
+nohup /sbin/ext/cortexbrain-tune.sh; 
 
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
@@ -149,12 +149,12 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 (
 	while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
 		echo "Waiting For CPU to cool down";
-		sleep 30;
+		sleep 60;
 	done;
 
 	PIDOFACORE=`pgrep -f "android.process.acore"`;
 	for i in $PIDOFACORE; do
-		echo "-600" > /proc/${i}/oom_score_adj;
+		echo "-800" > /proc/${i}/oom_score_adj;
 		renice -15 -p $i;
 		log -p i -t boot "*** do not kill -> android.process.acore ***";
 	done;

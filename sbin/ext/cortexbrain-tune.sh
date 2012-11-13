@@ -519,7 +519,7 @@ ENABLE_GESTURE()
 		echo "1" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
-		/sbin/busybox sh /data/gesture_set.sh;
+		nohup /sbin/busybox sh /data/gesture_set.sh;
 		log -p i -t $FILE_NAME "*** ENABLE_GESTURE Mode ***";
 	fi;
 }
