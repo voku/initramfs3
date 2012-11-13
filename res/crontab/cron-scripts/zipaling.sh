@@ -66,7 +66,7 @@ if [ "$cron_zipaling" == "on" ]; then
 
 		touch $ZIPALIGNDB;
 		echo "Automatic ZipAlign finished at $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE;
-		date > /data/crontab/cron-zipaling;
+		date +%H:%M-%D-%Z > /data/crontab/cron-zipaling;
 		echo "Done! Zipalined All Apps" >> /data/crontab/cron-zipaling;
 	else
 		echo "ZipAlign already running, please wait.";

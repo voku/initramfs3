@@ -2,14 +2,32 @@
 
 # Created By Dorimanx and Dairinin
 
-if [ ! -e /system/etc/cron.d/crontabs/root ]; then
-	mkdir -p /system/etc/cron.d/crontabs;
-	chmod 777 /system/etc/cron.d/crontabs;
-	cp -a /res/crontab_service/root /system/etc/cron.d/crontabs/;
-fi;
+MIUI_JB=0;
+JELLY=0;
+[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 
-# enable crond
-echo "root:x:0:0::/system/etc/cron.d/crontabs:/sbin/sh" > /etc/passwd;
+if [ "$MIUI_JB" == 1] || [ "$JELLY" == 1 ]; then
+	if [ ! -e /system/etc/cron.d/crontabs/root ]; then
+		mkdir -p /system/etc/cron.d/crontabs/;
+		chmod 777 /system/etc/cron.d/crontabs/;
+		cp -a /res/crontab_service/root /system/etc/cron.d/crontabs/;
+	fi;
+
+	chown 0:0 /system/etc/cron.d/crontabs/*;
+	chmod 777 /system/etc/cron.d/crontabs/*;
+	echo "root:x:0:0::/system/etc/cron.d/crontabs:/sbin/sh" > /etc/passwd;
+else
+	if [ ! -e /var/spool/cron/crontabs/root ]; then
+		mkdir -p /var/spool/cron/crontabs/;
+		chmod 777 /var/spool/cron/crontabs/;
+		cp -a /res/crontab_service/ics/root /var/spool/cron/crontabs/;
+	fi;
+
+	chown 0:0 /var/spool/cron/crontabs/*;
+	chmod 777 /var/spool/cron/crontabs/*;
+	echo "root:x:0:0::/var/spool/cron/crontabs:/sbin/sh" > /etc/passwd;
+fi;
 
 # set timezone
 TZ=UTC
@@ -18,16 +36,24 @@ TZ=UTC
 export TZ
 
 #Set Permissions to scripts
-chown 0:0 /system/etc/cron.d/crontabs/*;
 chown 0:0 /data/crontab/cron-scripts/*;
-chmod 777 /system/etc/cron.d/crontabs/*;
 chmod 777 /data/crontab/cron-scripts/*;
-# use /system/etc/cron.d/crontabs/ call the crontab file "root"
+
+# use /system/etc/cron.d/crontabs/ call the crontab file "root" for JB ROMS
+# use /var/spool/cron/crontabs/ call the crontab file "root" for ICS ROMS
 if [ -e /system/xbin/busybox ]; then
 	/sbin/busybox chmod 6755 /system/xbin/busybox;
-	nohup /system/xbin/busybox crond -c /system/etc/cron.d/crontabs/
+	if [ "$MIUI_JB" == 1] || [ "$JELLY" == 1 ]; then
+		nohup /system/xbin/busybox crond -c /system/etc/cron.d/crontabs/
+	else
+		nohup /system/xbin/busybox crond -c /var/spool/cron/crontabs/
+	fi;
 elif [ -e /system/bin/busybox ]; then
 	/sbin/busybox chmod 6755 /system/bin/busybox;
-	nohup /system/bin/busybox crond -c /system/etc/cron.d/crontabs/
+	if [ "$MIUI_JB" == 1] || [ "$JELLY" == 1 ]; then
+		nohup /system/bin/busybox crond -c /system/etc/cron.d/crontabs/
+	else
+		nohup /system/xbin/busybox crond -c /var/spool/cron/crontabs/
+	fi;
 fi;
 

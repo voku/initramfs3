@@ -451,7 +451,7 @@
 		<checkbox description="Cron Task to FIX APPS Permissions every 4:40AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, and FC of Apps"
 			name="Permissions Fix Task" action="generic_cortex /tmp/cron_fix_permissions" label="Permissions Fix Task Every 4:40AM"/>
 
-		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, FC of Apps, and improve apps load speed."
+		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, FC of Apps, and improve apps load speed. Do backup of all your apps before use! This process will remove Apps that BROKEN and not compressed or compiled correctly, so you may find some apps missing, use it in your own risk!, and update the broken Apps."
 			name="Zipaling Task" action="generic_cortex /tmp/cron_zipaling" label="Zipaling Task Every 4:50AM"/>
 
 		<button description="Use this button to check if Cron Task Jobs done as requested, this will show log for all finished jobs." name="Test Cron Task Jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
@@ -473,7 +473,7 @@
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipalign ONLY User apps, system may be unresponsive, it's OK, do not use phone for 2Min." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipalign ONLY User apps, system may be unresponsive, it's OK, do not use phone for 2Min. Do backup of all your apps before use! This process will remove Apps that BROKEN and not compressed or compiled correctly, so you may find some apps missing, use it in your own risk!, and update the broken Apps." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
 		<button description="Click here to start Apps DataBase's Optimization, compacting, cleaning and reindexing, will take 2min max." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 

@@ -10,7 +10,7 @@ if [ "$cron_fix_permissions" == "on" ]; then
 	done;
 
 	/sbin/fix_permissions;
-	date > /data/crontab/cron-fix_permissions;
+	date +%H:%M-%D-%Z > /data/crontab/cron-fix_permissions;
 	echo "Done! Fixed Apps Permissions" >> /data/crontab/cron-fix_permissions;
 fi;
 
