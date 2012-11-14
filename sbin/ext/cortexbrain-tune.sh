@@ -450,10 +450,22 @@ DISABLE_WIFI()
 	# disable WIFI-driver if screen is off
 	if [ -e /sys/module/dhd/initstate ]; then
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-			svc wifi disable;
-			WIFI_STATE=1;
+			if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
+				svc wifi disable;
+				WIFI_STATE=1;
+				log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
+			fi;
+			(
+				PROFILE=`cat /data/.siyah/.active.profile`;
+				. /data/.siyah/$PROFILE.profile;
+				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" != 0 ]; then
+					log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
+					sleep $cortexbrain_auto_tweak_wifi_sleep_delay;
+					svc wifi disable;
+					WIFI_STATE=1;
+				fi;
+			)&
 		fi;
-		log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
 	else
 		WIFI_STATE=0;
 	fi;

@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
 CRON_SERVICE=`pgrep -f "crond" | wc -l`;
-if [ "$CRON_SERVICE" == "1" ]; then
+if [ "$CRON_SERVICE" != 0 ]; then
 	echo "Service is ONLINE and supported";
 else
 	echo "Service is OFFLINE or NOT supported";

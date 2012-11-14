@@ -59,14 +59,6 @@ nohup /sbin/ext/cortexbrain-tune.sh;
 	fi;
 )&
 
-# cpu undervolting / sod fixer, If smart user set -75mv and use high OC he will be fine.
-echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-echo '1200000 1300' > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-echo '1300000 1350' > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-echo '1400000 1375' > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-echo '1500000 1400' > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-echo '1600000 1450' > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
-
 # disable debugging on some modules
 if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/ump/parameters/ump_debug_level;

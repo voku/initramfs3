@@ -4,10 +4,10 @@
 
 MIUI_JB=0;
 JELLY=0;
-[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+[ "`grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 
-if [ "$MIUI_JB" == 1] || [ "$JELLY" == 1 ]; then
+if [ "$MIUI_JB" == 1 ] || [ "$JELLY" == 1 ]; then
 	if [ ! -e /system/etc/cron.d/crontabs/root ]; then
 		mkdir -p /system/etc/cron.d/crontabs/;
 		chmod 777 /system/etc/cron.d/crontabs/;
@@ -43,14 +43,14 @@ chmod 777 /data/crontab/cron-scripts/*;
 # use /var/spool/cron/crontabs/ call the crontab file "root" for ICS ROMS
 if [ -e /system/xbin/busybox ]; then
 	/sbin/busybox chmod 6755 /system/xbin/busybox;
-	if [ "$MIUI_JB" == 1] || [ "$JELLY" == 1 ]; then
+	if [ "$MIUI_JB" == 1 ] || [ "$JELLY" == 1 ]; then
 		nohup /system/xbin/busybox crond -c /system/etc/cron.d/crontabs/
 	else
 		nohup /system/xbin/busybox crond -c /var/spool/cron/crontabs/
 	fi;
 elif [ -e /system/bin/busybox ]; then
 	/sbin/busybox chmod 6755 /system/bin/busybox;
-	if [ "$MIUI_JB" == 1] || [ "$JELLY" == 1 ]; then
+	if [ "$MIUI_JB" == 1 ] || [ "$JELLY" == 1 ]; then
 		nohup /system/bin/busybox crond -c /system/etc/cron.d/crontabs/
 	else
 		nohup /system/xbin/busybox crond -c /var/spool/cron/crontabs/
