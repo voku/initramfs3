@@ -442,9 +442,6 @@
 
 		<button description="Use this button to test if Cron Task Service is ONLINE and supported!, if main switch is ON, and service is OFFLINE, then ROM Busybox not supporting CRON, update Busybox or ROM." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
 
-		<checkbox description="Cron Task to clear RAM cache every HOUR only if CPU is resting(IDLE)! this can improve stability and clean RAM from junk, and get it ready to be used"
-			name="RAM Clean Task" action="generic_cortex /tmp/cron_drop_cache" label="RAM Clean Task Every Hour"/>
-
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
 

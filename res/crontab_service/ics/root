@@ -1,2 +1,1 @@
 # This file is at /var/spool/cron/crontabs/root
-0 0-23/1 * * * /sbin/busybox sh /data/crontab/cron-scripts/drop-cache-only.sh
