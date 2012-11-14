@@ -460,24 +460,6 @@ if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 	exec /sbin/init.samsung;
 fi;
 
-if [ "$MIUI" == "1" ]; then
-	cp -a /res/misc/Miui-ROM/* /;
-	echo "0" > /proc/sys/kernel/rom_feature_set;
-
-	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		mv /init.rc.2 /init.rc;
-	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
-	fi;
-
-	# Start ROM!
-	PARTITION_TUNING;
-	USER_ACTIONS;
-	exec /sbin/init.samsung;
-fi;
-
 if [ "$AOSP" == "1" ]; then
 	cp -a /res/misc/CM-ROM/* /;
 	# Injecting ICS Modded by Dorimanx, SUPER libsqlite!
