@@ -8,52 +8,16 @@ if [ "a$2" != "a" ]; then
 
 	case "${crontab}" in
 	on)
-		# Created By Dorimanx
+		# Created By Dorimanx and Dairinin
 
-		# enable crond
-		echo "root:x:0:0::/data/crontab/cron:/sbin/sh" > /etc/passwd;
+		# starting crontab service
+		if [ -e /system/xbin/busybox ] || [ /system/bin/busybox ]; then
+			/res/crontab_service/service.sh
 
-		# set timezone
-		timezone=`date +%z`;
-		timezone_name=`date +%Z`;
-
-		plus_zone=`echo ${timezone} | grep +`;
-		minus_zone=`echo ${timezone} | grep -`;
-
-		if [ "a$plus_zone" != "a" ]; then
-			cronzone1=`echo ${plus_zone} | cut -c2-2`;
-
-			if [ "$cronzone1" == "0" ]; then
-				cronzone=`echo ${plus_zone} | cut -c3-3`;
-			else
-				cronzone=`echo ${plus_zone} | cut -c2-3`;
-			fi;
-			TZ=`echo "${timezone_name}-${cronzone}"`;
-		fi;
-
-		if [ "a$minus_zone" != "a" ]; then
-			cronzone1=`echo ${minus_zone} | cut -c2-2`;
-
-			if [ "$cronzone1" == "0" ]; then
-				cronzone=`echo ${minus_zone} | cut -c3-3`;
-			else
-				cronzone=`echo ${minus_zone} | cut -c2-3`;
-			fi;
-			TZ=`echo "${timezone_name}+${cronzone}"`;
-		fi;
-
-		# set cron timezone
-		export TZ
-
-		#Set Permissions to scripts
-		chown 0:0 /data/crontab/cron/*;
-		chown 0:0 /data/crontab/cron-scripts/*;
-		chmod 777 /data/crontab/cron/*;
-		chmod 777 /data/crontab/cron-scripts/*;
-		# use /data/crontab/cron/ call the crontab file "root"
-		if [ -e /system/xbin/busybox ]; then
-			/sbin/busybox chmod 6755 /system/xbin/busybox;
-			/system/xbin/busybox crond -c /data/crontab/cron/
+			# setting my jobs with corrected timezone for all world.
+			/res/crontab_service/dm_job.sh "4:00" "/sbin/busybox sh /data/crontab/cron-scripts/clear-file-cache.sh"
+			/res/crontab_service/dm_job.sh "4:40" "/sbin/busybox sh /data/crontab/cron-scripts/fix-perm.sh"
+			/res/crontab_service/dm_job.sh "4:50" "/sbin/busybox sh /data/crontab/cron-scripts/zipaling.sh"
 		fi;
 	;;
 	off)

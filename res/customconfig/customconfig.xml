@@ -39,10 +39,10 @@
 				<spinnerItem name="sleepy" value="sleepy"/> 
 			</spinner>
 
-			<seekBar description="second core will be enabled when the load goes above this threshold, if you set above 24, and you have 800Mhz as MAX, second core will not turn ON!. if you set freq lower than 800Mhz Second core is DISABLED! (default is 23)" 
+			<seekBar description="second core will be enabled when the load goes above this threshold, if you set above 24, and you have 800Mhz as MAX, second core will not turn ON!. if you set MAX CPU freq lower than 800Mhz Second core is DISABLED! (default is 20)" 
 				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
-			<seekBar description="second core will be disabled when the load goes below this threshold (default is 30)" 
+			<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)" 
 				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="50"/>
 
 			<seekBar description="(default is 2)" 
@@ -73,17 +73,6 @@
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<spinner description="Sets the CPU undervolting/overvolting value which will be set during boot time only. !ALERT! -100 and -75 can brake the boot or shutdown the CPU! 'SOD', So dont post about it if you stuck after messing with this control! It's will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot! you will have to reset stweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overridden by those." 
-			name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
-			<spinnerItem name=" +50 mV" value="+50"/> 
-			<spinnerItem name=" +25 mV" value="+25"/> 
-			<spinnerItem name="No UV/OV" value="+0"/> 
-			<spinnerItem name=" -25 mV" value="-25"/> 
-			<spinnerItem name=" -50 mV" value="-50"/> 
-			<spinnerItem name=" -75 mV" value="-75"/> 
-			<spinnerItem name="-100 mV" value="-100"/> 
-		</spinner>
-
 		<spinner description="Sets the CPU Idle Mode. for best stability use Idle + LPA" 
 			name="CPU Idle Mode" action="generic /sys/module/cpuidle_exynos4/parameters/enable_mask">
 			<spinnerItem name="AFTR + LPA" value="3"/> 
@@ -97,7 +86,7 @@
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=80%" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
-			unit="%" min="20" reversed="false" step="1" max="90"/>
+			unit="%" min="23" reversed="false" step="1" max="90"/>
 
 		<seekBar description="Maximum DEEP SLEEP CPU Speed default is Kernel default 600000, Samsung Default 800000! too low freq will stuck your device!)" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
@@ -130,6 +119,55 @@
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 		</spinner>
+
+	</settingsPane>
+
+</settingsTab>
+
+<settingsTab name="CPU VOLTAGE">
+
+	<settingsPane description="CPU Voltage Controls: Freq's Above 1200Mhz not allowed to be Under Volted via STweaks, Voltage Range is 850~1350mV lower/higher NOT SUPPORTED, all done to prevent BUGS and SODS, Use this interface On Your Own Risk! If you get SOD before you can load this interface and fix your error! reset profiles from recovery. and think harder before you SOD your CPU with too much UV!" name="CPU Voltage Controls">
+
+		<checkbox description="Main Switch for Voltage Control! if OFF all below setting have no effect! If you are using external App or Script to configure CPU Voltage dont enable this checkbox. dont start to mod voltage before you enable this switch! it's will not make any effect! you will have to set to defaults, and tune agan." 
+			name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
+
+		<button description="Use this button to see CPU Voltage that used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
+
+		<seekBar description="CPU Voltage for 1200Mhz default 1300mV"
+			name="GPU Voltage 1200Mhz" action="cpu-voltage 1" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
+
+		<seekBar description="CPU Voltage for 1100Mhz default 1250mV"
+			name="GPU Voltage 1100Mhz" action="cpu-voltage 2" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+
+		<seekBar description="CPU Voltage for 1000Mhz default 1200mV"
+			name="GPU Voltage 1000Mhz" action="cpu-voltage 3" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+
+		<seekBar description="CPU Voltage for 900Mhz default 1125mV"
+			name="GPU Voltage 900Mhz" action="cpu-voltage 4" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+
+		<seekBar description="CPU Voltage for 800Mhz default 1075mV"
+			name="GPU Voltage 800Mhz" action="cpu-voltage 5" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+
+		<seekBar description="CPU Voltage for 700Mhz default 1025mV"
+			name="GPU Voltage 700Mhz" action="cpu-voltage 6" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+
+		<seekBar description="CPU Voltage for 600Mhz default 1000mV"
+			name="GPU Voltage 600Mhz" action="cpu-voltage 7" unit="mV" min="925" reversed="false" step="25" max="1050"/>
+
+		<seekBar description="CPU Voltage for 500Mhz default 975mV"
+			name="GPU Voltage 500Mhz" action="cpu-voltage 8" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+
+		<seekBar description="CPU Voltage for 400Mhz default 975mV"
+			name="GPU Voltage 400Mhz" action="cpu-voltage 9" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+
+		<seekBar description="CPU Voltage for 300Mhz default 975mV"
+			name="GPU Voltage 300Mhz" action="cpu-voltage 10" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+
+		<seekBar description="CPU Voltage for 200Mhz default 950mV"
+			name="GPU Voltage 200Mhz" action="cpu-voltage 11" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+
+		<seekBar description="CPU Voltage for 100Mhz default 925mV"
+			name="GPU Voltage 100Mhz" action="cpu-voltage 12" unit="mV" min="850" reversed="false" step="25" max="975"/>
 
 	</settingsPane>
 
@@ -442,8 +480,7 @@
 
 		<button description="Use this button to test if Cron Task Service is ONLINE and supported!, if main switch is ON, and service is OFFLINE, then ROM Busybox not supporting CRON, update Busybox or ROM." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
 
-		<checkbox description="Cron Task to clear RAM cache every HOUR only if CPU is resting(IDLE)! this can improve stability and clean RAM from junk, and get it ready to be used"
-			name="RAM Clean Task" action="generic_cortex /tmp/cron_drop_cache" label="RAM Clean Task Every Hour"/>
+		<button description="Use this button to RESET Cron scripts and jobs from kernel to refresh the config, This will clear all custom changes!" name="CRON Function Reset" action="push-actions/crontab_reset" label="Reset Cron Files"/>
 
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
@@ -451,7 +488,7 @@
 		<checkbox description="Cron Task to FIX APPS Permissions every 4:40AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, and FC of Apps"
 			name="Permissions Fix Task" action="generic_cortex /tmp/cron_fix_permissions" label="Permissions Fix Task Every 4:40AM"/>
 
-		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, FC of Apps, and improve apps load speed."
+		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, FC of Apps, and improve apps load speed. Do backup of all your apps before use! This process will remove Apps that BROKEN and not compressed or compiled correctly, so you may find some apps missing, use it in your own risk!, and update the broken Apps."
 			name="Zipaling Task" action="generic_cortex /tmp/cron_zipaling" label="Zipaling Task Every 4:50AM"/>
 
 		<button description="Use this button to check if Cron Task Jobs done as requested, this will show log for all finished jobs." name="Test Cron Task Jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
@@ -473,7 +510,7 @@
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipalign ONLY User apps, system may be unresponsive, it's OK, do not use phone for 2Min." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipalign ONLY User apps, system may be unresponsive, it's OK, do not use phone for 2Min. Do backup of all your apps before use! This process will remove Apps that BROKEN and not compressed or compiled correctly, so you may find some apps missing, use it in your own risk!, and update the broken Apps." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
 		<button description="Click here to start Apps DataBase's Optimization, compacting, cleaning and reindexing, will take 2min max." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
@@ -492,12 +529,6 @@
 
 		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROMS running the init.d scripts by Auto, I also can force running the scripts, so if I run them and ROM run them, we have a problem! all scripts running X2 times, so my force RUN is Disabled by default. if you know that your ROM NOT supporting init.d script RUN, then turn it ON here and reboot.'set checkbox ON'"
 			name="INIT.D Scripts RUN control" action="generic /tmp/init_d" label="INIT.D scripts RUN control"/>
-
-		<spinner description="This setting change normal full root ADB to DEV hacked not rooted ADB! that allow to use external apps to upload files and mod them inside the phone!, normal user not need it! DEV ADB is for developers only."
-			name="ADB BINARY MODE" action="adb_mode">
-			<spinnerItem name="Normal ADB" value="0"/> 
-			<spinnerItem name="Development ADB" value="1"/> 
-		</spinner>
 
 		<checkbox description="Enable or Disable Android Additional Logs (needs reboot)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
@@ -634,6 +665,10 @@
 
 		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+
+		<seekBar description="Here you can set delay before WIFI is fourced to OFF when screen is Off, Only if above tweak is Enabled! 'Force Auto-Wifi'" 
+			name="WIFI Turn Off Delay in Sec" action="generic /tmp/cortexbrain_auto_tweak_wifi_sleep_delay"
+			unit="sec" min="0" reversed="false" step="30" max="300"/>
 
                 <!--checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
                         name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->

@@ -36,8 +36,6 @@ case "${zramtweaks}" in
 				mkswap /dev/block/zram1 >/dev/null;
 				mkswap /dev/block/zram2 >/dev/null;
 				# activating ZRAM swaps with the same priority to load balance ram swapping
-				rm -f /sbin/swapon;
-				/sbin/busybox xzcat /sbin/swapon-xz.xz > /sbin/swapon;
 				chmod 755 /sbin/swapon;
 				swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
 				swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
@@ -65,8 +63,6 @@ case "${zramtweaks}" in
 				mkswap /dev/block/zram0 >/dev/null;
 				mkswap /dev/block/zram1 >/dev/null;
 				mkswap /dev/block/zram2 >/dev/null;
-				rm -f /sbin/swapon;
-				/sbin/busybox xzcat /sbin/swapon-xz.xz > /sbin/swapon;
 				chmod 755 /sbin/swapon;
 				# activating ZRAM swaps with the same priority to load balance ram swapping
 				swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
@@ -95,8 +91,6 @@ case "${zramtweaks}" in
 				mkswap /dev/block/zram0 >/dev/null;
 				mkswap /dev/block/zram1 >/dev/null;
 				mkswap /dev/block/zram2 >/dev/null;
-				rm -f /sbin/swapon;
-				/sbin/busybox xzcat /sbin/swapon-xz.xz > /sbin/swapon;
 				chmod 755 /sbin/swapon;
 				# activating ZRAM swaps with the same priority to load balance ram swapping
 				swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;

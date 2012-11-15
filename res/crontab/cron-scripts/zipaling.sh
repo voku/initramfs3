@@ -17,6 +17,9 @@ if [ "$cron_zipaling" == "on" ]; then
 		echo "Starting zipalign, it's will take 2min to finish, please wait.";
 		sleep 3;
 
+		/sbin/busybox mount -o remount,rw /system;
+		/sbin/busybox mount -o remount,rw /data;
+
 		if [ -e /data/zipalign.log ]; then
 			rm -f /data/zipalign.log;
 			rm -f /data/zipalign.db;
@@ -24,9 +27,6 @@ if [ "$cron_zipaling" == "on" ]; then
 
 		LOG_FILE=/data/zipalign.log;
 		ZIPALIGNDB=/data/zipalign.db;
-
-		/sbin/busybox mount -o remount,rw /system;
-		/sbin/busybox mount -o remount,rw /data;
 
 		if [ ! -e /system/xbin/zipalign ]; then
 			cp /res/misc/zipalign /system/xbin/zipalign;
@@ -66,8 +66,11 @@ if [ "$cron_zipaling" == "on" ]; then
 
 		touch $ZIPALIGNDB;
 		echo "Automatic ZipAlign finished at $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE;
-		date > /data/crontab/cron-zipaling;
+		date +%H:%M-%D-%Z > /data/crontab/cron-zipaling;
 		echo "Done! Zipalined All Apps" >> /data/crontab/cron-zipaling;
+		mv /data/local/*.apk /data/app/
+		chown system:system /data/app/*
+		chmod 644 /data/app/*
 	else
 		echo "ZipAlign already running, please wait.";
 	fi;

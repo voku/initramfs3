@@ -5,7 +5,6 @@ stop;
 
 # set busybox location
 BB="/sbin/busybox";
-FP="/sbin/fix_permissions";
 
 # remount all partitions tweked settings
 for k in $(busybox mount | busybox grep relatime | busybox cut -d " " -f3); do

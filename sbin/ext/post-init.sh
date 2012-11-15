@@ -5,9 +5,6 @@ BB="/sbin/busybox";
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
-# start ADB early to see some logs :)
-start adbd;
-
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;
@@ -37,24 +34,30 @@ read_config;
 
 #mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
-	. /sbin/ext/mdnie-sharpness-tweak.sh
+	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
+# Cortex parent should be ROOT/INIT and not STweaks
+nohup /sbin/ext/cortexbrain-tune.sh; 
+
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	if [ $init_d == on ]; then
+	MIUI=0;
+	MIUI_JB=0;
+	[ -f /system/framework/framework-miui.jar ] && MIUI=1;
+	[ -f /system/framework/miui-framework.jar ] && MIUI=1;
+	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+
+	if [ $init_d == on ] || [ "$MIUI" == 1 ] || [ "$MIUI_JB" == 1 ]; then
 		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
-
-# cpu undervolting
-echo "$cpu_undervolting" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 
 # disable debugging on some modules
 if [ "$logger" == "off" ]; then
@@ -129,7 +132,6 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		input keyevent 24
 		input keyevent 24
 		input keyevent 24
-		input keyevent 24
 	fi;
 
 	# change USB mode MTP or Mass Storage
@@ -139,12 +141,12 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 (
 	while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
 		echo "Waiting For CPU to cool down";
-		sleep 30;
+		sleep 60;
 	done;
 
 	PIDOFACORE=`pgrep -f "android.process.acore"`;
 	for i in $PIDOFACORE; do
-		echo "-600" > /proc/${i}/oom_score_adj;
+		echo "-800" > /proc/${i}/oom_score_adj;
 		renice -15 -p $i;
 		log -p i -t boot "*** do not kill -> android.process.acore ***";
 	done;

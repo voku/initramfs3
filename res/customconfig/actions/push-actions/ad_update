@@ -3,12 +3,12 @@
 	TMPFILE=$(mktemp -t);
 	HOST_FILE="/system/etc/hosts";
 
-	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE &>/dev/null 2>&1`;
+	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE > /dev/null 2>&1`;
 	if [ $? != 0 ]; then
 		echo "Problem: no internet connection! connect and try again";
 	else
 		mount -o remount,rw /system
-		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE &>/dev/null 2>&1;
+		wget http://winhelp2002.mvps.org/hosts.zip -O $TMPFILE > /dev/null 2>&1;
 		unzip -p $TMPFILE HOSTS > $HOST_FILE;
 		chmod 644 $HOST_FILE;
 		echo "AD Blocker: installed to /system/etc/hosts, reboot to use.";

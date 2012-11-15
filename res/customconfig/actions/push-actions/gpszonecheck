@@ -1,4 +1,7 @@
 #!/sbin/busybox sh
 
-cat /system/etc/gps.conf
+(
+	GPS=`cat /system/etc/gps.conf`
+	echo "$GPS"
+)&
 
