@@ -561,6 +561,7 @@
 		<spinner description="This will set the default Awake I/O scheduler. for internal, system, data and external sdcard, default is FIOPS" 
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="fiops" value="fiops"/> 
+			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
 			<spinnerItem name="deadline" value="deadline"/> 
@@ -572,6 +573,7 @@
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler. for internal, system, data and external sdcard, default is NOOP"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
 			<spinnerItem name="fiops" value="fiops"/> 
+			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
 			<spinnerItem name="deadline" value="deadline"/> 
