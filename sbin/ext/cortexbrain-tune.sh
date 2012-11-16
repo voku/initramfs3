@@ -212,154 +212,160 @@ CPU_GOV_TWEAKS()
 {
 	if [ "$cortexbrain_cpu" == on ]; then
 		SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+		
+		sampling_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate";
+		if [ ! -e $sampling_rate_tmp ]; then
+			sampling_rate_tmp="/dev/null";
+		fi;
+		cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate";
+		if [ ! -e $cpu_up_rate_tmp ]; then
+			cpu_up_rate_tmp="/dev/null";
+		fi;
+		cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate";
+		if [ ! -e $cpu_down_rate_tmp ]; then
+			cpu_down_rate_tmp="/dev/null";
+		fi;
+		up_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold";
+		if [ ! -e $up_threshold_tmp ]; then
+			up_threshold_tmp="/dev/null";
+		fi;
+		up_threshold_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq";
+		if [ ! -e $up_threshold_min_freq_tmp ]; then
+			up_threshold_min_freq_tmp="/dev/null";
+		fi;
+		down_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold";
+		if [ ! -e $down_threshold_tmp ]; then
+			down_threshold_tmp="/dev/null";
+		fi;
+		sampling_down_factor_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor";
+		if [ ! -e $sampling_down_factor_tmp ]; then
+			sampling_down_factor_tmp="/dev/null";
+		fi;
+		down_differential_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential";
+		if [ ! -e $down_differential_tmp ]; then
+			down_differential_tmp="/dev/null";
+		fi;
+		freq_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step";
+		if [ ! -e $freq_step_tmp ]; then
+			freq_step_tmp="/dev/null";
+		fi;
+		freq_responsiveness_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness";
+		if [ ! -e $freq_responsiveness_tmp ]; then
+			freq_responsiveness_tmp="/dev/null";
+		fi;
+		hotplug_freq_1_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_1_1";
+		if [ ! -e $hotplug_freq_1_1_tmp ]; then
+			hotplug_freq_1_1_tmp="/dev/null";
+		fi;
+		hotplug_freq_2_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_2_0";
+		if [ ! -e $hotplug_freq_2_0_tmp ]; then
+			hotplug_freq_2_0_tmp="/dev/null";
+		fi;
+		hotplug_rq_1_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_1_1";
+		if [ ! -e $hotplug_rq_1_1_tmp ]; then
+			hotplug_rq_1_1_tmp="/dev/null";
+		fi;
+		hotplug_rq_2_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_2_0";
+		if [ ! -e $hotplug_rq_2_0_tmp ]; then
+			hotplug_rq_2_0_tmp="/dev/null";
+		fi;
+		max_cpu_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/max_cpu_lock";
+		if [ ! -e $max_cpu_lock_tmp ]; then
+			max_cpu_lock_tmp="/dev/null";
+		fi;
+		dvfs_debug_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/dvfs_debug";
+		if [ ! -e $dvfs_debug_tmp ]; then
+			dvfs_debug_tmp="/dev/null";
+		fi;
+		hotplug_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_lock";
+		if [ ! -e $hotplug_lock_tmp ]; then	
+    		hotplug_lock_tmp="/dev/null";
+    	fi;
 
 		# extra battery-settings
 		if [ "$PROFILE" == extreme_battery ] || ([ "$PROFILE" == extreme_battery ] && [ "$sleep_power_save" == 1 ]); then
 
-			echo "100000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
-			fi;
-			echo "90" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq ]; then
-				echo "90" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold	]; then
-				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
-			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential ]; then
-				echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step ]; then
-				echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness ]; then
-				echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
-			fi;
-
-			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
-				echo "300000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-			fi;
+			echo "100000" > $sampling_rate_tmp;
+			echo "$load_h0" > $cpu_up_rate_tmp;
+			echo "$load_l1" > $cpu_down_rate_tmp;
+			echo "90" > $up_threshold_tmp;
+			echo "90" > $up_threshold_min_freq_tmp;
+			echo "60" > $down_threshold_tmp;
+			echo "1" > $sampling_down_factor_tmp;
+			echo "5" > $down_differential_tmp;
+			echo "20" > $freq_step_tmp;
+			echo "200000" > $freq_responsiveness_tmp;
+			echo "300000" > $hotplug_freq_1_1_tmp;
+			echo "200000" > $hotplug_freq_2_0_tmp;
+			echo "250" > $hotplug_rq_1_1_tmp;
+			echo "240" > $hotplug_rq_2_0_tmp;
+			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
+			echo "0" > $dvfs_debug_tmp;
+			echo "0" > $hotplug_lock_tmp;
 
 		# battery-settings
 		elif [ "$PROFILE" == battery ] || [ "$sleep_power_save" == 1 ]; then
 
-			echo "80000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
-			fi;
-			echo "85" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq ]; then
-				echo "85" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
-			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential ]; then
-				echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step ]; then
-				echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness ]; then
-				echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
-			fi;
-
-			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
-				echo "400000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-			fi;
+			echo "80000" > $sampling_rate_tmp;
+			echo "$load_h0" > $cpu_up_rate_tmp;
+			echo "$load_l1" > $cpu_down_rate_tmp;
+			echo "85" > $up_threshold_tmp;
+			echo "85" > $up_threshold_min_freq_tmp;
+			echo "60" > $down_threshold_tmp;
+			echo "1" > $sampling_down_factor_tmp;
+			echo "5" > $down_differential_tmp;
+			echo "20" > $freq_step_tmp;
+			echo "200000" > $freq_responsiveness_tmp;
+			echo "400000" > $hotplug_freq_1_1_tmp;
+			echo "200000" > $hotplug_freq_2_0_tmp;
+			echo "250" > $hotplug_rq_1_1_tmp;
+			echo "240" > $hotplug_rq_2_0_tmp;
+			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
+			echo "0" > $dvfs_debug_tmp;
+			echo "0" > $hotplug_lock_tmp;
 
 		# default-settings
 		elif [ "$PROFILE" == default ]; then
 
-			echo "70000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
-			fi;
-			echo "80" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq ]; then
-				echo "70" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-				echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
-			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential ]; then
-				echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step ]; then
-				echo "30" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness ]; then
-				echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
-			fi;
-
-			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
-				echo "500000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-			fi;
+			echo "70000" > $sampling_rate_tmp;
+			echo "$load_h0" > $cpu_up_rate_tmp;
+			echo "$load_l1" > $cpu_down_rate_tmp;
+			echo "80" > $up_threshold_tmp;
+			echo "70" > $up_threshold_min_freq_tmp;
+			echo "40" > $down_threshold_tmp;
+			echo "1" > $sampling_down_factor_tmp;
+			echo "5" > $down_differential_tmp;
+			echo "30" > $freq_step_tmp;
+			echo "200000" > $freq_responsiveness_tmp;
+			echo "500000" > $hotplug_freq_1_1_tmp;
+			echo "200000" > $hotplug_freq_2_0_tmp;
+			echo "250" > $hotplug_rq_1_1_tmp;
+			echo "240" > $hotplug_rq_2_0_tmp;
+			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
+			echo "0" > $dvfs_debug_tmp;
+			echo "0" > $hotplug_lock_tmp;
 
 		# performance-settings		
 		elif [ "$PROFILE" == performance ] || [ "$PROFILE" == extreme_performance ]; then
 
-			echo "60000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate ]; then
-				echo "$load_h0" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate;
-				echo "$load_l1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate;
-			fi;
-			echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq ]; then
-				echo "60" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold ]; then
-				echo "20" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold;
-			fi;
-			echo "1" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential ]; then
-				echo "5" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step ]; then
-				echo "40" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_step;
-			fi;
-			if [ -e /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness ]; then
-				echo "200000" > /sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness;
-			fi;
+			echo "60000" > $sampling_rate_tmp;
+			echo "$load_h0" > $cpu_up_rate_tmp;
+			echo "$load_l1" > $cpu_down_rate_tmp;
+			echo "60" > $up_threshold_tmp;
+			echo "60" > $up_threshold_min_freq_tmp;
+			echo "20" > $down_threshold_tmp;
+			echo "1" > $sampling_down_factor_tmp;
+			echo "5" > $down_differential_tmp;
+			echo "40" > $freq_step_tmp;
+			echo "200000" > $freq_responsiveness_tmp;
+			echo "600000" > $hotplug_freq_1_1_tmp;
+			echo "200000" > $hotplug_freq_2_0_tmp;
+			echo "250" > $hotplug_rq_1_1_tmp;
+			echo "240" > $hotplug_rq_2_0_tmp;
+			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
+			echo "0" > $dvfs_debug_tmp;
+			echo "0" > $hotplug_lock_tmp;
 
-			if [ "$SYSTEM_GOVERNOR" == conservative ]; then
-				echo "50" > /sys/devices/system/cpu/cpufreq/conservative/freq_step;
-			fi;
-
-			if [ "$SYSTEM_GOVERNOR" == pegasusq ]; then
-				echo "600000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_1_1;
-				echo "200000" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_freq_2_0;
-				echo "250" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_1_1;
-				echo "240" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_rq_2_0;
-				echo "$max_cpu_lock" > /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/dvfs debug;
-				echo "0" > /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock;
-			fi;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS ***: enabled";
