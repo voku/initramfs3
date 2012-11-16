@@ -448,34 +448,22 @@ FIREWALL_TWEAKS;
 DISABLE_WIFI()
 {
 	# disable WIFI-driver if screen is off
-	if [ -e /sys/module/dhd/initstate ]; then
-		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-			if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
-				svc wifi disable;
-				WIFI_STATE=1;
-				log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
-			fi;
-			(
-				PROFILE=`cat /data/.siyah/.active.profile`;
-				. /data/.siyah/$PROFILE.profile;
-				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" != 0 ]; then
-					log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
-					sleep $cortexbrain_auto_tweak_wifi_sleep_delay;
-					svc wifi disable;
-					WIFI_STATE=1;
-				fi;
-			)&
+	if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+		if [ -e /sys/module/dhd/initstate ]; then
+			svc wifi disable;
+			WIFI_STATE=1;
+			log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
+		else
+			WIFI_STATE=0;
 		fi;
-	else
-		WIFI_STATE=0;
 	fi;
 }
 
 ENABLE_WIFI()
 {
 	# enable WIFI-driver if screen is on
-	if [ "$WIFI_STATE" == 1 ]; then
-		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+	if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+		if [ "$WIFI_STATE" == 1 ]; then
 			svc wifi enable;
 		fi;
 		log -p i -t $FILE_NAME "*** ENABLE_WIFI Mode ***";
@@ -543,10 +531,8 @@ DISABLE_GESTURE()
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		# disable gestures code
-		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
-	else
-		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	fi;
+	echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 
 	log -p i -t $FILE_NAME "*** DISABLE_GESTURE Mode ***";
 }
@@ -700,10 +686,6 @@ CROND_SAFETY()
 # ==============================================================
 AWAKE_MODE()
 {
-	# load all stweaks user settings.
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
 	WAKEUP_DELAY;
 
 	# set default values
