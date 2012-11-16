@@ -561,6 +561,7 @@
 		<spinner description="This will set the default Awake I/O scheduler. for internal, system, data and external sdcard, default is FIOPS" 
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="fiops" value="fiops"/> 
+			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
 			<spinnerItem name="deadline" value="deadline"/> 
@@ -572,6 +573,7 @@
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler. for internal, system, data and external sdcard, default is NOOP"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
 			<spinnerItem name="fiops" value="fiops"/> 
+			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
 			<spinnerItem name="deadline" value="deadline"/> 
@@ -666,12 +668,8 @@
 		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-		<seekBar description="Here you can set delay before WIFI is fourced to OFF when screen is Off, Only if above tweak is Enabled! 'Force Auto-Wifi'" 
-			name="WIFI Turn Off Delay in Sec" action="generic /tmp/cortexbrain_auto_tweak_wifi_sleep_delay"
-			unit="sec" min="0" reversed="false" step="30" max="300"/>
-
-                <!--checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
-                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
+		<!--checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
+			name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
 
 		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
