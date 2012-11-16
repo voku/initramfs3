@@ -377,8 +377,8 @@ MEMORY_TWEAKS()
 		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
-		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "4096" > /proc/sys/vm/min_free_kbytes;
@@ -543,10 +543,8 @@ DISABLE_GESTURE()
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		# disable gestures code
-		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
-	else
-		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	fi;
+	echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 
 	log -p i -t $FILE_NAME "*** DISABLE_GESTURE Mode ***";
 }
@@ -717,7 +715,7 @@ AWAKE_MODE()
 	# set CPU-Governor
 	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-	echo "100" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+	echo "50" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 	KERNEL_SCHED_AWAKE;
 
@@ -805,9 +803,6 @@ AWAKE_MODE()
 	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
 		echo "1" > /proc/sys/kernel/nmi_watchdog;
 	fi;
-
-	# fs settings 
-	echo "25" > /proc/sys/vm/vfs_cache_pressure;
 
 	# set the vibrator - force in case it's has been reseted
 	echo "$pwm_val" > /sys/vibrator/pwm_val;
