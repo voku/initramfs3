@@ -20,6 +20,11 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
+# wifi timer helpers
+echo "WIFI_STATE_AWAKE=0" > /data/.siyah/wifi_helper;
+echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
+chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
+
 # default settings (1000 = 10 seconds)
 dirty_expire_centisecs_default=1000;
 dirty_writeback_centisecs_default=1000;
@@ -31,7 +36,7 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 15 -p `pidof kswapd0`;
+renice 5 -p `pidof kswapd0`;
 renice 15 -p `pgrep logcat`;
 
 # replace kernel version info for repacked kernels
@@ -288,12 +293,12 @@ CPU_GOV_TWEAKS()
 			echo "100000" > $sampling_rate_tmp;
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
-			echo "90" > $up_threshold_tmp;
-			echo "90" > $up_threshold_min_freq_tmp;
-			echo "60" > $down_threshold_tmp;
+			echo "85" > $up_threshold_tmp;
+			echo "85" > $up_threshold_min_freq_tmp;
+			echo "70" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
-			echo "20" > $freq_step_tmp;
+			echo "15" > $freq_step_tmp;
 			echo "200000" > $freq_responsiveness_tmp;
 			echo "300000" > $hotplug_freq_1_1_tmp;
 			echo "200000" > $hotplug_freq_2_0_tmp;
@@ -306,11 +311,11 @@ CPU_GOV_TWEAKS()
 		# battery-settings
 		elif [ "$PROFILE" == battery ] || [ "$sleep_power_save" == 1 ]; then
 
-			echo "80000" > $sampling_rate_tmp;
+			echo "100000" > $sampling_rate_tmp;
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
 			echo "85" > $up_threshold_tmp;
-			echo "85" > $up_threshold_min_freq_tmp;
+			echo "80" > $up_threshold_min_freq_tmp;
 			echo "60" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
@@ -351,9 +356,9 @@ CPU_GOV_TWEAKS()
 			echo "60000" > $sampling_rate_tmp;
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
-			echo "60" > $up_threshold_tmp;
-			echo "60" > $up_threshold_min_freq_tmp;
-			echo "20" > $down_threshold_tmp;
+			echo "80" > $up_threshold_tmp;
+			echo "70" > $up_threshold_min_freq_tmp;
+			echo "30" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
 			echo "40" > $freq_step_tmp;
@@ -387,7 +392,7 @@ MEMORY_TWEAKS()
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		echo "16384" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -458,39 +463,49 @@ DISABLE_WIFI()
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
 				svc wifi disable;
-				WIFI_STATE=1;
+				echo "WIFI_STATE=1" > /data/.siyah/wifi_helper_awake;
 				log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
+			else
+				(
+					echo "WIFI_STATE_AWAKE=0" > /data/.siyah/wifi_helper;
+					PROFILE=`cat /data/.siyah/.active.profile`;
+					. /data/.siyah/$PROFILE.profile;
+					# screen time out but user want to keep it on and have wifi.
+					sleep 10;
+					if [ `cat /data/.siyah/wifi_helper` == "WIFI_STATE_AWAKE=0" ]; then
+						# user did not turned screen on, so keep waiting.
+						SLEEP_TIME=`echo $(($cortexbrain_auto_tweak_wifi_sleep_delay - 10))`;
+						log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
+						sleep $SLEEP_TIME;
+						if [ `cat /data/.siyah/wifi_helper` == "WIFI_STATE_AWAKE=0" ]; then
+							# user left the screen off, then disable wifi.
+							svc wifi disable;
+							echo "WIFI_STATE=1" > /data/.siyah/wifi_helper_awake;
+						fi;
+					fi;
+				)&
 			fi;
-			(
-				PROFILE=`cat /data/.siyah/.active.profile`;
-				. /data/.siyah/$PROFILE.profile;
-				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" != 0 ]; then
-					log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
-					sleep $cortexbrain_auto_tweak_wifi_sleep_delay;
-					svc wifi disable;
-					WIFI_STATE=1;
-				fi;
-			)&
 		fi;
 	else
-		WIFI_STATE=0;
+		echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
 	fi;
 }
 
 ENABLE_WIFI()
 {
 	# enable WIFI-driver if screen is on
-	if [ "$WIFI_STATE" == 1 ]; then
+	echo "WIFI_STATE_AWAKE=1" > /data/.siyah/wifi_helper;
+	if [ `cat /data/.siyah/wifi_helper_awake` == "WIFI_STATE=1" ]; then
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			svc wifi enable;
+			log -p i -t $FILE_NAME "*** ENABLE_WIFI Mode ***";
 		fi;
-		log -p i -t $FILE_NAME "*** ENABLE_WIFI Mode ***";
 	fi;
 }
 
 ENABLE_WIFI_PM()
 {
-	if [ "$wifi_pwr" == on ]; then
+if [ "$wifi_pwr" == on ]; then
 		# WIFI PM-FAST support
 		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 			echo "1" > /sys/module/dhd/parameters/wifi_pm;
@@ -670,15 +685,18 @@ KERNEL_SCHED_SLEEP()
 BLN_CORRECTION()
 {
 	if [ "$notification_enabled" == on ]; then
-
 		echo "1" > /sys/class/misc/notification/notification_enabled;
 
-		if [ "$bln_switch" == 0 ]; then
+		if [ "$blnww" == off ]; then
+			if [ "$bln_switch" == 0 ]; then
+				/res/uci.sh bln_switch 0;
+			elif [ "$bln_switch" == 1 ]; then
+				/res/uci.sh bln_switch 1;
+			elif [ "$bln_switch" == 2 ]; then
+				/res/uci.sh bln_switch 2;
+			fi;
+		else
 			/res/uci.sh bln_switch 0;
-		elif [ "$bln_switch" == 1 ]; then
-			/res/uci.sh bln_switch 1;
-		elif [ "$bln_switch" == 2 ]; then
-			/res/uci.sh bln_switch 2;
 		fi;
 
 		log -p i -t $FILE_NAME "*** BLN_CORRECTION Mode ***";
@@ -707,6 +725,8 @@ AWAKE_MODE()
 	# load all stweaks user settings.
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
+
+	ENABLE_WIFI;
 
 	WAKEUP_DELAY;
 
@@ -779,8 +799,6 @@ AWAKE_MODE()
 	DISABLE_WIFI_PM;
 
 	TUNE_IPV6;
-
-	ENABLE_WIFI;
 
 	WAKEUP_BOOST;
 

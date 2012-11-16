@@ -7,25 +7,22 @@ JELLY=0;
 [ "`grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 
-if [ "$MIUI_JB" == 1 ] || [ "$JELLY" == 1 ]; then
-	if [ ! -e /system/etc/cron.d/crontabs/root ]; then
-		mkdir -p /system/etc/cron.d/crontabs/;
-		chmod 777 /system/etc/cron.d/crontabs/;
-		cp -a /res/crontab_service/root /system/etc/cron.d/crontabs/;
-	fi;
+if [ ! -e /system/etc/cron.d/crontabs/root ]; then
+	mkdir -p /system/etc/cron.d/crontabs/;
+	chmod 777 /system/etc/cron.d/crontabs/;
+	cp -a /res/crontab_service/root /system/etc/cron.d/crontabs/;
+fi;
 
-	chown 0:0 /system/etc/cron.d/crontabs/*;
-	chmod 777 /system/etc/cron.d/crontabs/*;
+chown 0:0 /system/etc/cron.d/crontabs/*;
+chmod 777 /system/etc/cron.d/crontabs/*;
+
+if [ "$MIUI_JB" == 1 ] || [ "$JELLY" == 1 ]; then
 	echo "root:x:0:0::/system/etc/cron.d/crontabs:/sbin/sh" > /etc/passwd;
 else
-	if [ ! -e /var/spool/cron/crontabs/root ]; then
-		mkdir -p /var/spool/cron/crontabs/;
-		chmod 777 /var/spool/cron/crontabs/;
-		cp -a /res/crontab_service/ics/root /var/spool/cron/crontabs/;
-	fi;
-
-	chown 0:0 /var/spool/cron/crontabs/*;
+	mkdir -p /var/spool/cron/crontabs/;
+	touch /var/spool/cron/crontabs/root;
 	chmod 777 /var/spool/cron/crontabs/*;
+	mount -o bind /system/etc/cron.d/crontabs/root /var/spool/cron/crontabs/root;
 	echo "root:x:0:0::/var/spool/cron/crontabs:/sbin/sh" > /etc/passwd;
 fi;
 
