@@ -26,8 +26,8 @@ echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
 # default settings (1000 = 10 seconds)
-dirty_expire_centisecs_default=1000;
-dirty_writeback_centisecs_default=1000;
+dirty_expire_centisecs_default=3000;
+dirty_writeback_centisecs_default=500;
 
 # battery settings
 dirty_expire_centisecs_battery=0;
@@ -36,8 +36,8 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 5 -p `pidof kswapd0`;
-renice 15 -p `pgrep logcat`;
+renice 15 -p `pgrep -f "kswapd0"`;
+renice 15 -p `pgrep -f "logcat"`;
 
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
@@ -94,7 +94,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "128" > $i/queue/nr_requests; # default: 128
+				echo "40" > $i/queue/nr_requests; # default: 128
 			fi;
 
 			if [ -e $i/queue/iosched/back_seek_penalty ]; then
@@ -120,7 +120,7 @@ IO_TWEAKS()
 			echo "2048" > $i/read_ahead_kb;
 		done;
 
-		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "45" > /proc/sys/fs/lease-break-time;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -385,12 +385,12 @@ MEMORY_TWEAKS()
 	if [ "$cortexbrain_memory" == on ]; then
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
+		echo "10" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 

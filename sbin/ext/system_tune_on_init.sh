@@ -4,19 +4,16 @@
 stop;
 
 # set busybox location
-BB="/sbin/busybox";
+BB=/sbin/busybox
 
 # remount all partitions tweked settings
-for k in $(busybox mount | busybox grep relatime | busybox cut -d " " -f3); do
-	busybox mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0 $k;
-done;
-for m in $(busybox mount | busybox grep ext[3-4] | busybox cut -d " " -f3); do
+for m in $($BB mount | grep ext[3-4] | cut -d " " -f3); do
 	busybox mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0,commit=30,noauto_da_alloc,delalloc $m;
 done;
 
-$BB mount -o remount,rw,noatime,nodiratime,nodev,barrier=0,commit=360,noauto_da_alloc,delalloc /cache;
-$BB mount -o remount,rw,noatime,nodiratime,nodev,barrier=0,commit=30,noauto_da_alloc,delalloc /data;
-$BB mount -o remount,rw,noatime,nodiratime,barrier=0,commit=30,noauto_da_alloc,delalloc /system;
+$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit,commit=360 /cache;
+$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /data;
+$BB mount -o remount,rw /system;
 
 $BB mount -t rootfs -o remount,rw rootfs;
 $BB mount -o remount,rw /data

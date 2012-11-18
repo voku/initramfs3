@@ -557,9 +557,8 @@
 
 		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
 
-		<spinner description="This will set the default awake I/O scheduler for internal, system, data and external sdcard. Default is FIOPS" 
+		<spinner description="This will set the default awake I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to cpy big files to external sdcard!. Default is ZEN" 
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
-			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
@@ -571,7 +570,6 @@
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. Default is NOOP"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
-			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 

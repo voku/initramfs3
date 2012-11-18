@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 cd /;
 
-BB=/sbin/busybox;
+BB=/sbin/busybox
 
 $BB mount -t proc proc /proc;
 $BB mount -t sysfs sysfs /sys;
