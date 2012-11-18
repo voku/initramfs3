@@ -1,36 +1,38 @@
 #!/sbin/busybox sh
 cd /;
 
-busybox mount -t proc proc /proc;
-busybox mount -t sysfs sysfs /sys;
+BB=/sbin/busybox
+
+$BB mount -t proc proc /proc;
+$BB mount -t sysfs sysfs /sys;
 
 # set "/" rw
-/sbin/busybox mount -t rootfs -o remount,rw rootfs;
+$BB mount -t rootfs -o remount,rw rootfs;
 
 if grep -q bootmode=2 /proc/cmdline; then
 	# recovery mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;
-	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
-	cp -a /recovery.rc /init.rc;
+	$BB cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
+	$BB cp -a /recovery.rc /init.rc;
 	exec /sbin/init.recovery;
 fi;
 
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
 	# low power mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;
-	cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
-	cp -a lpm.rc init.rc;
-	rm init.smdk4210.rc;
+	$BB cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
+	$BB cp -a lpm.rc init.rc;
+	$BB rm init.smdk4210.rc;
 	exec /sbin/init.recovery;
 fi;
 
 # cleaning and rebuilding the /mnt and sdcards mounts folders
-rm -rf /mnt;
-rm -rf /sdcard;
-rm -rf /emmc;
-rm -rf /storage;
-rm -rf /vendor;
-rm -rf /tmp/*;
+$BB rm -rf /mnt;
+$BB rm -rf /sdcard;
+$BB rm -rf /emmc;
+$BB rm -rf /storage;
+$BB rm -rf /vendor;
+$BB rm -rf /tmp/*;
 mkdir -p /dev/block;
 mkdir /dev/input;
 mkdir /dev/graphics;
@@ -40,10 +42,10 @@ mkdir -p /mnt/obb;
 mkdir -p /mnt/secure;
 mkdir -p /mnt/tmp;
 mkdir -p /mnt/.secondrom;
-chmod -R 777 /mnt/;
+$BB chmod -R 777 /mnt/;
 mkdir /preload;
 mkdir /storage;
-chmod -R 777 /storage;
+$BB chmod -R 777 /storage;
 mknod /dev/graphics/fb0 c 29 0
 mknod /dev/input/event1 c 13 65
 mknod /dev/input/event2 c 13 66
@@ -58,15 +60,15 @@ mknod /dev/block/mmcblk0p12 b 259 4
 mknod /dev/block/loop0 b 7 0
 
 # dual boot check and run
-mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
-mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+$BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
+$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 sync;
-umount -l /mnt/tmp;
-mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+$BB umount -l /mnt/tmp;
+$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
 if [ -e /mnt/tmp/.nextboot ]; then
 	NEXTBOOT=`cat /mnt/tmp/.nextboot`;
-	rm -f /mnt/tmp/.nextboot;
+	$BB rm /mnt/tmp/.nextboot;
 fi;
 if [ -e /mnt/tmp/.defaultrom ]; then
 	DEFAULTROM=`cat /mnt/tmp/.defaultrom`;
@@ -78,8 +80,8 @@ NOBOOTLOGO=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
 sync;
-umount /preload;
-umount -l /mnt/tmp;
+$BB umount /preload;
+$BB umount -l /mnt/tmp;
 
 if [ "$SECONDROM" == "0" ]; then
 	if [ "$NOBOOTLOGO" == "0" ]; then
@@ -115,13 +117,13 @@ else
 fi;
 
 if [ "$SECONDROM" == "1" ]; then
-	rm -rf /res/dev;
+	$BB rm -rf /res/dev;
 	mkdir -p /res/dev;
 	ln -s /mnt/.secondrom/.secondrom/data.img /res/dev/data;
 	ln -s /dev/block/mmcblk0p12 /res/dev/system;
 	ln -s /mnt/.secondrom/.secondrom/cache.img /res/dev/cache;
 else
-	rm -rf /res/dev;
+	$BB rm -rf /res/dev;
 	mkdir -p /res/dev;
 	ln -s /dev/block/mmcblk0p10 /res/dev/data;
 	ln -s /dev/block/mmcblk0p9 /res/dev/system;
@@ -129,42 +131,31 @@ else
 fi;
 
 # mounting system!
-/sbin/busybox mount -t ext4 /res/dev/system /system;
+$BB mount -t ext4 /res/dev/system /system;
 
 # linking /system/bin to /bin for crond
 ln -s /system/bin/ /bin
 
 # adding latest vendor binary from 3.6.RC6 kernel for all! tested working great
 mkdir -p /system/vendor/firmware;
-cp -a /res/misc/vendor/firmware/mfc_fw.bin /system/vendor/firmware/mfc_fw.bin;
-chmod 755 /system/vendor/firmware/mfc_fw.bin;
+$BB cp -a /res/misc/vendor/firmware/mfc_fw.bin /system/vendor/firmware/mfc_fw.bin;
+$BB chmod 755 /system/vendor/firmware/mfc_fw.bin;
 
 # fix permission to services.jar in case user did a mess, after using my MOD!
-chmod 644 /system/framework/services.jar;
+$BB chmod 644 /system/framework/services.jar;
 
 # copy new Kernel modules to /system/lib/modules and to second rom system if exist
 if [ ! -d /system/lib/modules ]; then
 	mkdir /system/lib/modules;
-	chmod 755 /system/lib/modules/;
+	$BB chmod 755 /system/lib/modules/;
 fi;
-rm -f /system/lib/modules/*.ko;
-cp /lib/modules/*.ko /system/lib/modules/;
-chmod 755 /system/lib/modules/*.ko;
-
-mount -o remount,rw /preload;
-if [ -d /preload/lib/ ]; then
-	if [ ! -d /preload/lib/modules ]; then
-		mkdir /preload/lib/modules;
-		chmod 755 /preload/lib/modules;
-	fi;
-	rm -f /preload/lib/modules/*.ko;
-	cp /lib/modules/*.ko /preload/lib/modules/;
-	chmod 755 /preload/lib/modules/*.ko;
-fi;
+$BB rm -f /system/lib/modules/*.ko;
+$BB cp /lib/modules/*.ko /system/lib/modules/;
+$BB chmod 755 /system/lib/modules/*.ko;
 
 if [ -f /system/recovery.cpio.gz ]; then
-	/sbin/busybox mount -o remount,rw /;
-	/sbin/busybox zcat /system/recovery.cpio.gz | cpio -idmu;
+	$BB mount -o remount,rw /;
+	$BB zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
 
 AOSP=0;
@@ -174,6 +165,7 @@ B2G=0;
 JELLY=0;
 CM10=0;
 S4A=0;
+JBSAMMY=0;
 
 [ -d /system/b2g ] && B2G=1;
 [ -f /system/framework/framework-miui.jar ] && MIUI=1;
@@ -184,9 +176,10 @@ S4A=0;
 [ -f /system/framework/framework2.jar ] || AOSP=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
 [ "`/sbin/busybox grep -i Slim /system/build.prop`" ] && AOSP=1;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
 
 # one more time set "/" rw just for good sleep
-/sbin/busybox mount -t rootfs -o remount,rw rootfs;
+$BB mount -t rootfs -o remount,rw rootfs;
 
 #############################
 # Partition global tuning!
@@ -205,78 +198,78 @@ PARTITION_TUNING()
 	LOG_CACHE_TMP="/log-cache-tmp";
 
 	# new empty log
-	/sbin/busybox sh -c "/sbin/date" > $LOG_DATA;
-	/sbin/busybox sh -c "/sbin/date" > $LOG_CACHE;
+	$BB sh -c "/sbin/date" > $LOG_DATA;
+	$BB sh -c "/sbin/date" > $LOG_CACHE;
 
 	# umount 
-	umount -l $DIR_DATA >> $LOG_DATA 2>&1;
-	umount -l $DIR_CACHE >> $LOG_CACHE 2>&1;
+	$BB umount -l $DIR_DATA >> $LOG_DATA 2>&1;
+	$BB umount -l $DIR_CACHE >> $LOG_CACHE 2>&1;
 
 	# set fs-feature -> [^]has_journal
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 	fi;
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal'" > $LOG_DATA_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
 
 	# set fs-feature -> [^]dir_index
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index'" > $LOG_CACHE_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then	
-		/sbin/busybox sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 	fi;
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index'" > $LOG_DATA_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
 
 	# set mount option -> [^]journal_data_ordered
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_CACHE_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 	fi;
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_DATA_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA" >> $LOG_DATA 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
 
 	# set inode to 256
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 	fi;
-	/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		/sbin/busybox sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA 2>&1;
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fs_check ]; then
 		# reset the lock-file
-		rm -f /system/run_fs_check
+		$BB rm -f /system/run_fs_check
 
 		# check cache
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | grep 'clean'" > $LOG_CACHE_TMP;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | grep 'clean'" > $LOG_CACHE_TMP;
 		if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 		else
 			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
 		fi;
 
 		# check data
-		/sbin/busybox sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
-		/sbin/busybox sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | grep 'clean'" > $LOG_DATA_TMP;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
+		$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | grep 'clean'" > $LOG_DATA_TMP;
 		if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-			/sbin/busybox sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA 2>&1;
+			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA 2>&1;
 		else
 			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
 		fi;
@@ -286,14 +279,19 @@ PARTITION_TUNING()
 USER_ACTIONS()
 {
 	# data mount
-	/sbin/busybox mount -t ext4 /res/dev/data /data;
+	$BB mount -t ext4 /res/dev/data /data;
 
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 		echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 		stop adbd;
-		cp -a /sbin/adbd.jb /sbin/adbd;
-		chmod 755 /sbin/adbd;
+		$BB cp -a /sbin/adbd.jb /sbin/adbd;
+		$BB chmod 755 /sbin/adbd;
 		start adbd;
+#	elif [ "JBSAMMY" == "1" ]; then
+#		stop adbd;
+#		$BB cp -a /sbin/adbd.sammy /sbin/adbd;
+#		$BB chmod 755 /sbin/adbd;
+#		start adbd;
 	else
 		start adbd;
 	fi;
@@ -301,29 +299,29 @@ USER_ACTIONS()
 	# only if asked by user via stweaks
 	if [ -e /system/run_fix_media ]; then
 		mkdir /sdcardtmp;
-		chmod 777 /sdcardtmp;
-		mount -t vfat /dev/block/mmcblk0p11 /sdcardtmp;
-		rm -f /system/run_fix_media;
+		$BB chmod 777 /sdcardtmp;
+		$BB mount -t vfat /dev/block/mmcblk0p11 /sdcardtmp;
+		$BB rm /system/run_fix_media;
 
 		if [ -e /sdcard/Android/data/ ]; then
-			rm -rf /sdcardtmp/Android/data/com.cooliris.media;
-			rm -rf /sdcardtmp/Android/data/com.android.gallery3d;
-			rm -rf /sdcardtmp/Android/data/com.google.android.gallery3d;
-			rm -rf /sdcardtmp/Android/data/com.android.providers.media;
-			rm -rf /sdcardtmp/Android/data/com.google.android.music;
-			rm -rf /data/data/com.android.providers.media/databases/*;
+			$BB rm -rf /sdcardtmp/Android/data/com.cooliris.media;
+			$BB rm -rf /sdcardtmp/Android/data/com.android.gallery3d;
+			$BB rm -rf /sdcardtmp/Android/data/com.google.android.gallery3d;
+			$BB rm -rf /sdcardtmp/Android/data/com.android.providers.media;
+			$BB rm -rf /sdcardtmp/Android/data/com.google.android.music;
+			$BB rm -rf /data/data/com.android.providers.media/databases/*;
 		fi;
 		# sdcard unmount
 		sync;
-		umount -l /sdcardtmp;
+		$BB umount -l /sdcardtmp;
 		if [ `du -h /sdcardtmp | grep 4 | cut -c1-4` == 4.0K ]; then
-			rm -rf /sdcardtmp;
+			$BB rm -rf /sdcardtmp;
 		fi;
 	fi;
 
 	# data unmount
 	sync;
-	umount -l /data;
+	$BB umount -l /data;
 }
 
 # network tuning reset to allow real ROM control over H/H+/3G/G signal.
@@ -352,7 +350,7 @@ sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1
 ######################################
 # Loading Modules
 ######################################
-chmod -R 755 /lib;
+$BB chmod -R 755 /lib;
 
 # cpu undervolting interfaces
 if [ -e /lib/modules/cpu_undervolting.ko ]; then
@@ -399,15 +397,15 @@ fi;
 
 if [ "$S4A" == "1" ]; then
 	echo "0" > /proc/sys/kernel/rom_feature_set;
-	mv /res/misc/Sense4All-ROM/init.s4a /init.rc;
-	mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2;
+	$BB mv /res/misc/Sense4All-ROM/init.s4a /init.rc;
+	$BB mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2;
 
 	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		mv /init.rc.2 /init.rc;
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB mv /init.rc.2 /init.rc;
 	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
 	fi;
 
 	# Start ROM!
@@ -418,14 +416,32 @@ fi;
 
 if [ "$B2G" == "1" ]; then
 	echo "0" > /proc/sys/kernel/rom_feature_set;
-	cp -a /res/misc/B2G-ROM/* /;
+	$BB cp -a /res/misc/B2G-ROM/* /;
 
 	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		mv /init.rc.2 /init.rc;
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB mv /init.rc.2 /init.rc;
 	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
+	fi;
+
+	# Start ROM!
+	PARTITION_TUNING;
+	USER_ACTIONS;
+	exec /sbin/init.samsung;
+fi;
+
+if [ "$JBSAMMY" == "1" ]; then
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+	$BB cp -a /res/misc/JellyB-Sammy/* /;
+
+	if [ "$SECONDROM" == "1" ]; then
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB rm /init.rc.2;
+	else
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
 	fi;
 
 	# Start ROM!
@@ -436,22 +452,20 @@ fi;
 
 if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 	# Injecting JB Modded by VOKU, SUPER libsqlite!
-	cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
-	cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
-	chmod 755 /system/lib/libsqlite.so;
-	chmod 755 /system/xbin/sqlite3;
+	$BB cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
+	$BB cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
+	$BB chmod 755 /system/lib/libsqlite.so;
+	$BB chmod 755 /system/xbin/sqlite3;
 
 	echo "3" > /proc/sys/kernel/rom_feature_set;
-	cp -a /res/misc/JellyB-CM-AOKP/* /;
+	$BB cp -a /res/misc/JellyB-CM-AOKP/* /;
 
 	if [ "$SECONDROM" == "1" ]; then
-		if [ -e /init.smdk4210.rc.2 ]; then
-			mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-			rm -f /init.rc.2;
-		else
-			rm -f /init.smdk4210.rc.2;
-			rm -f /init.rc.2;
-		fi;
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB rm /init.rc.2;
+	else
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
 	fi;
 
 	# Start ROM!
@@ -461,18 +475,18 @@ if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 fi;
 
 if [ "$AOSP" == "1" ]; then
-	cp -a /res/misc/CM-ROM/* /;
+	$BB cp -a /res/misc/CM-ROM/* /;
 	# Injecting ICS Modded by Dorimanx, SUPER libsqlite!
-	cp -a /res/misc/sql/ics/libsqlite.so /system/lib/libsqlite.so;
-	chmod 755 /system/lib/libsqlite.so;
+	$BB cp -a /res/misc/sql/ics/libsqlite.so /system/lib/libsqlite.so;
+	$BB chmod 755 /system/lib/libsqlite.so;
 	echo "1" > /proc/sys/kernel/rom_feature_set;
 
 	if [ "$SECONDROM" == "1" ]; then
-		mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		rm -f /init.rc.2;
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB rm /init.rc.2;
 	else
-		rm -f /init.smdk4210.rc.2;
-		rm -f /init.rc.2;
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
 	fi;
 
 	# Start ROM!
@@ -485,11 +499,11 @@ fi;
 echo "0" > /proc/sys/kernel/rom_feature_set;
 
 if [ "$SECONDROM" == "1" ]; then
-	mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-	mv /init.rc.2 /init.rc;
+	$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+	$BB mv /init.rc.2 /init.rc;
 else
-	rm -f /init.smdk4210.rc.2;
-	rm -f /init.rc.2;
+	$BB rm /init.smdk4210.rc.2;
+	$BB rm /init.rc.2;
 fi;
 
 # Start ROM

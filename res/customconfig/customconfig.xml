@@ -4,13 +4,13 @@
 		<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-			<seekBar description="Maximum CPU Speed ALERT 1.5Ghz and 1.6Ghz can be unstable for your personal device! so try it, if stuck(SOD), then your CPU will not work on such high OC, nothing can be done! for others it's working fine. (default is 1200000)" 
+			<seekBar description="Maximum CPU Speed. ALERT 1.5Ghz and 1.6Ghz can be unstable for your personal device! Try it, and if phonne is stuck(SOD), then your CPU will not work on such high frequency, nothing can be done! (default is 1200000)" 
 				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 			<seekBar description="Minimum CPU Speed (default is 200000)" 
 				name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and pegasusq governors." 
+			<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and PegasusQ governors." 
 				name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 				<spinnerItem name="Disabled" value="0"/> 
 				<spinnerItem name="1200MHz" value="4"/> 
@@ -27,7 +27,7 @@
 				<spinnerItem name="Single core mode" value="1"/> 
 			</spinner>
 
-			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later scripts or apps." 
+			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later runned scripts or applications." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 				<spinnerItem name="HYPER" value="HYPER"/> 
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
@@ -39,10 +39,10 @@
 				<spinnerItem name="sleepy" value="sleepy"/> 
 			</spinner>
 
-			<seekBar description="second core will be enabled when the load goes above this threshold, if you set above 24, and you have 800Mhz as MAX, second core will not turn ON!. if you set MAX CPU freq lower than 800Mhz Second core is DISABLED! (default is 20)" 
+			<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800Mhz as MAX, second core will not turn ON! If you set MAX CPU freq lower than 800Mhz, second core will be DISABLED! (default is 20)" 
 				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
-			<seekBar description="second core will be disabled when the load goes below this threshold (default is 20)" 
+			<seekBar description="Second core will be disabled when the load goes below this threshold. (default is 20)" 
 				name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="50"/>
 
 			<seekBar description="(default is 2)" 
@@ -62,10 +62,10 @@
 
 		<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
 
-			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness. so NOT checked is GOOD." 
+			<checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness, so NOT checked is GOOD." 
 				name="GENTLE FAIR SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE FAIR SLEEPERS"/>
 
-			<checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones, and saves battery. normally do not disable." 
+			<checkbox description="Using ARCH_POWER enables the use of ARM topology power functions instead of generic ones, and saves battery. Not recommended to disable." 
 				name="ARCH POWER" action="schedfeat ARCH_POWER" label="ARCH POWER"/>
 
 		</settingsPane>
@@ -73,7 +73,7 @@
 		<settingsPane description="Here you can set all the settings for power save!" 
 			name="CPU Idle and Power Settings">
 
-		<spinner description="Sets the CPU Idle Mode. for best stability use Idle + LPA" 
+		<spinner description="Sets the CPU Idle Mode. For best stability use Idle + LPA" 
 			name="CPU Idle Mode" action="generic /sys/module/cpuidle_exynos4/parameters/enable_mask">
 			<spinnerItem name="AFTR + LPA" value="3"/> 
 			<spinnerItem name="Idle + LPA" value="2"/> 
@@ -81,14 +81,14 @@
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start, and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
+		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start. Setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
-		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load! default=80%" 
+		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (default is 80%)" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
 			unit="%" min="23" reversed="false" step="1" max="90"/>
 
-		<seekBar description="Maximum DEEP SLEEP CPU Speed default is Kernel default 600000, Samsung Default 800000! too low freq will stuck your device!)" 
+		<seekBar description="Maximum DEEP SLEEP CPU Speed. Default is Linux Kernel default value: 600000. Samsung default value is 800000. Setting this too low will stuck your device!" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
@@ -96,19 +96,19 @@
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed, (default is 200000kHz) if music still shutter, rise to 300000/400000kHz"
+		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed. Default is 200000kHz. If music still shutter, rise to 300000/400000kHz"
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="For dev debug only! you can add small delay to cortex wakeup/sleep script, this will delay all function changesand the wakeup! normally say 0 here." 
+		<seekBar description="For developer debug only! You can add small delay to cortex wakeup/sleep script. This will delay all function changes and the wakeup! Default value is 0." 
 			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
 			unit="Sec" min="0" reversed="false" step="1" max="5"/>
 
-		<seekBar description="Here you can change Cortex Wakeup Boost, it's give you full power of CPU and System but only for time that set, then all back to normal"
+		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, allis set back to normal."
 			name="Cortex Wakeup Boost" action="generic /tmp/wakeup_boost"
 			unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
-		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor, depend on cortex background process ON." 
+		<spinner description="This will set the DEEP-SLEEP (screen OFF) CPU governor. Depends on cortex background process to be ON." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="scary" value="scary"/> 
@@ -126,59 +126,59 @@
 
 <settingsTab name="CPU VOLTAGE">
 
-	<settingsPane description="CPU Voltage Controls: Freq's Above 1200Mhz not allowed to be Under Volted via STweaks, Voltage Range is 850~1350mV lower/higher NOT SUPPORTED, all done to prevent BUGS and SODS, Use this interface On Your Own Risk! If you get SOD before you can load this interface and fix your error! reset profiles from recovery. and think harder before you SOD your CPU with too much UV!" name="CPU Voltage Controls">
+	<settingsPane description="CPU Voltage Controls. Frequencies above 1200Mhz are not allowed to be modified via STweaks. Voltage Range is 850~1350mV. Lower/higher is NOT SUPPORTED. All is done to prevent BUGS and SODS. Use this interface at YOUR OWN RISK! If you get SOD before you can load this interface and can fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV!" name="CPU Voltage Controls">
 
-		<checkbox description="Main Switch for Voltage Control! if OFF all below setting have no effect! If you are using external App or Script to configure CPU Voltage dont enable this checkbox. dont start to mod voltage before you enable this switch! it's will not make any effect! you will have to set to defaults, and tune agan." 
+		<checkbox description="Main Switch for Voltage Control! If set to OFF, all below setting have no effect! If you are using an external application or script to configure CPU Voltage, don't enable this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" 
 			name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
-		<button description="Use this button to see CPU Voltage that used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
+		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
-		<seekBar description="CPU Voltage for 1200Mhz default 1300mV"
-			name="GPU Voltage 1200Mhz" action="cpu-voltage 1" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
+		<seekBar description="CPU Voltage for 1200Mhz. Default is 1300mV"
+			name="CPU Voltage 1200Mhz" action="cpu-voltage 1" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
 
-		<seekBar description="CPU Voltage for 1100Mhz default 1250mV"
-			name="GPU Voltage 1100Mhz" action="cpu-voltage 2" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+		<seekBar description="CPU Voltage for 1100Mhz. Default is 1250mV"
+			name="CPU Voltage 1100Mhz" action="cpu-voltage 2" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
 
-		<seekBar description="CPU Voltage for 1000Mhz default 1200mV"
-			name="GPU Voltage 1000Mhz" action="cpu-voltage 3" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+		<seekBar description="CPU Voltage for 1000Mhz. Default is 1200mV"
+			name="CPU Voltage 1000Mhz" action="cpu-voltage 3" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
 
-		<seekBar description="CPU Voltage for 900Mhz default 1125mV"
-			name="GPU Voltage 900Mhz" action="cpu-voltage 4" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+		<seekBar description="CPU Voltage for 900Mhz. Default 1125mV"
+			name="CPU Voltage 900Mhz" action="cpu-voltage 4" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
 
-		<seekBar description="CPU Voltage for 800Mhz default 1075mV"
-			name="GPU Voltage 800Mhz" action="cpu-voltage 5" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+		<seekBar description="CPU Voltage for 800Mhz. Default is 1075mV"
+			name="CPU Voltage 800Mhz" action="cpu-voltage 5" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
 
-		<seekBar description="CPU Voltage for 700Mhz default 1025mV"
-			name="GPU Voltage 700Mhz" action="cpu-voltage 6" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 700Mhz. Default is 1025mV"
+			name="CPU Voltage 700Mhz" action="cpu-voltage 6" unit="mV" min="950" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 600Mhz default 1000mV"
-			name="GPU Voltage 600Mhz" action="cpu-voltage 7" unit="mV" min="925" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 600Mhz. Default is 1000mV"
+			name="CPU Voltage 600Mhz" action="cpu-voltage 7" unit="mV" min="925" reversed="false" step="25" max="1050"/>
 
-		<seekBar description="CPU Voltage for 500Mhz default 975mV"
-			name="GPU Voltage 500Mhz" action="cpu-voltage 8" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 500Mhz. Default is 975mV"
+			name="CPU Voltage 500Mhz" action="cpu-voltage 8" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 400Mhz default 975mV"
-			name="GPU Voltage 400Mhz" action="cpu-voltage 9" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 400Mhz. Default 975mV"
+			name="CPU Voltage 400Mhz" action="cpu-voltage 9" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 300Mhz default 975mV"
-			name="GPU Voltage 300Mhz" action="cpu-voltage 10" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 300Mhz. Default is 975mV"
+			name="CPU Voltage 300Mhz" action="cpu-voltage 10" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 200Mhz default 950mV"
-			name="GPU Voltage 200Mhz" action="cpu-voltage 11" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+		<seekBar description="CPU Voltage for 200Mhz. Default is 950mV"
+			name="CPU Voltage 200Mhz" action="cpu-voltage 11" unit="mV" min="875" reversed="false" step="25" max="1000"/>
 
-		<seekBar description="CPU Voltage for 100Mhz default 925mV"
-			name="GPU Voltage 100Mhz" action="cpu-voltage 12" unit="mV" min="850" reversed="false" step="25" max="975"/>
+		<seekBar description="CPU Voltage for 100Mhz. Default is 925mV"
+			name="CPU Voltage 100Mhz" action="cpu-voltage 12" unit="mV" min="850" reversed="false" step="25" max="975"/>
 
 	</settingsPane>
 
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency/voltage/steps/utilization Settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1000mV and 1000mV." name="GPU Control">
+	<settingsPane description="GPU Frequency/voltage/steps/utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1000mV and 1000mV." name="GPU Control">
 
-	<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device LAG or Crash 'SOD'. If you do not use VPLL Mode frequency steps 330, 440, 520 will be unavailable. VPLL is a new FREQ Range to give some users more GPU performance!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
+	<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device LAGS or Crashes 'SOD'. If you don't use VPLL Mode, the following frequency steps 330, 440, 520 will be unavailable. VPLL is a new FREQ Range to give some users more GPU performance!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
-	<seekBar description="Here you can change GPU utilization timeout! as close to 100(1sec) you get faster GPU response in steps jump on load. but more battery drained, CM10 default 250(2.5sec)"
+	<seekBar description="Here you can change GPU utilization timeout calculation! Closer to 100(1sec) you'll get faster GPU response in steps jump on load, but more battery drained. CM10 default 250(2.5sec)"
 		name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
 		unit="MSec" min="100" reversed="false" step="50" max="500"/>
 
@@ -200,7 +200,7 @@
 		<spinnerItem name="62MHz" value="62"/> 
 	</spinner>
 
-	<spinner description="Changes the third GPU frequency step Note freq 400 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step3" action="gpu-freq 3">
+	<spinner description="Changes the third GPU frequency step. Note! 400MHz needs 1100mV~1200mV. Above 1200mV you risk to burn your chip" name="GPU Freq Step3" action="gpu-freq 3">
 		<spinnerItem name="400MHz" value="400"/> 
 		<spinnerItem name="330MHz" value="330"/> 
 		<spinnerItem name="267MHz" value="267"/> 
@@ -209,7 +209,7 @@
 		<spinnerItem name="108MHz" value="108"/> 
 	</spinner>
 
-	<spinner description="Changes the fourth GPU frequency step, Note freq 400,440,520 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step4" action="gpu-freq 4">
+	<spinner description="Changes the fourth GPU frequency step. Note! 400,440,520MHz needs 1100mV~1200mV. Above 1200mV you risk to burn your chip" name="GPU Freq Step4" action="gpu-freq 4">
 		<spinnerItem name="520MHz" value="520"/> 
 		<spinnerItem name="440MHz" value="440"/> 
 		<spinnerItem name="400MHz" value="400"/> 
@@ -219,7 +219,7 @@
 		<spinnerItem name="160MHz" value="160"/> 
 	</spinner>
 
-	<spinner description="Changes the fifth GPU frequency step, Note freq 400,440,520 need 1100mV~1200mV, above 1200mV you risk to burn your chip" name="GPU Freq Step5" action="gpu-freq 5">
+	<spinner description="Changes the fifth GPU frequency step. Note! 400,440,520Mhz needs 1100mV~1200mV. Above 1200mV you risk to burn your chip" name="GPU Freq Step5" action="gpu-freq 5">
 		<spinnerItem name="520MHz" value="520"/> 
 		<spinnerItem name="440MHz" value="440"/> 
 		<spinnerItem name="400MHz" value="400"/> 
@@ -230,7 +230,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050, voltage above 1200mV put your device on risk! do not blame me if GPU chip burn." name="GPU Voltage Levels">
+	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050, voltage above 1200mV can put your device to risk! Do not blame me if GPU chip burned." name="GPU Voltage Levels">
 
 		<seekBar description="GPU Voltage for the first step" 
 			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="50" max="1300"/>
@@ -281,22 +281,22 @@
 
 <settingsTab name="Screen">
 
-	<settingsPane description="Brightness Curve settings which modify auto-brightness behavior." name="Brightness Curve">
+	<settingsPane description="Brightness Curve settings. Modifies auto-brightness behavior." name="Brightness Curve">
 
-		<seekBar description="Sets touch screen move sensitivity (vitalij value)." 
+		<seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
 			name="TouchMove Sensitivity" action="generic /sys/bus/i2c/devices/3-004a/mov_hysti" 
 			unit=" pixel" min="0" reversed="false" step="1" max="20"/>
 
-		<seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions (default 30)" 
+		<seekBar description="Setting min_bl higher will result in staying in the lowest brightness level for brighter conditions (default is 30)" 
 			name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
 
-		<seekBar description="Minimum brightness level (default 0)" 
+		<seekBar description="Minimum brightness level (default is 0)" 
 			name="min_gamma" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
 
-		<seekBar description="Maximum brightness level (default 24)" 
+		<seekBar description="Maximum brightness level (default is 24)" 
 			name="max_gamma" action="generic /sys/class/misc/brightness_curve/max_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
 
-		<checkbox description="LCD Power Reduce for backlight, default ON, if you like more brighter screen, in cost of battery drain, then turn it off"
+		<checkbox description="LCD Power Reduce for backlight, default is set to ON. If you like brighter screen in cost of battery drain, then turn it off"
 			name="LCD POWER" action="generic01 /sys/class/lcd/panel/power_reduce" label="LCD POWER REDUCE"/>
 
 	</settingsPane>
@@ -330,13 +330,13 @@
 		<seekBar description="Vibration force level (default 75)" 
 			name="Vibration Force" action="generic /sys/vibrator/pwm_val" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-		<checkbox description="Slide2Wake By Fluxi@xda, when screen is OFF swipe from left side of screen to right side of screen, and screen will be turned ON!"
+		<checkbox description="Slide2Wake By Fluxi@xda. When screen is OFF, swipe from left side of screen to right side of screen, and the screen will be turned ON!"
 			name="Slide2Wake ON/OFF Switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
 
-		<checkbox description="Enable inverting the screen colors by quickly pressing Home button below configured times" 
+		<checkbox description="Enable inverting the screen colors by quickly pressing Home button." 
 			name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
 
-		<spinner description="Negative Color, Screen effect settings, Fast Click MENU for number of times configured to activate MOD" 
+		<spinner description="Negative Color, screen effect settings. Fast clicking Home button for the number of times configured will activate MOD" 
 			name="Negative Screen Mod tuning." action="negative_tweak">
 			<spinnerItem name="Set 4 Clicks (default)" value="1"/> 
 			<spinnerItem name="Set 6 Clicks" value="2"/> 
@@ -344,17 +344,17 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh, more can be added by user, this tweak depend on cortex background service ON" 
+	<settingsPane description="Here you can control kernel screen gestures, set at /data/gesture_set.sh. More can be added by user. This tweak depends on cortex background service to be ON" 
 			name="Gestures Panel">
 
-		<checkbox description="Here you can turn on/off kernel build in gestures! see OP for instructions/ask in forum."
+		<checkbox description="Here you can turn on/off kernel built in gestures! See OP for instructions/ask in forum."
 			name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="GESTURES SWITCH"/>
 
-		<button description="Click to reset gestures to default, or update with new one from dev, gesture file will be added to `/data/` only once if was missing." name="RESET GESTURES" action="push-actions/reset_gestures" label="Reset Gestures"/>
+		<button description="Click to reset gestures to default, or update with new one from dev. Gesture file will be added to `/data/` only if it is missing." name="RESET GESTURES" action="push-actions/reset_gestures" label="Reset Gestures"/>
 
 	</settingsPane>
 
-	<settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong set will disable touch screen! and you will have too reset profiles in recovery! Also settings for Battery VS Charger are different! do not set the same levels! have fun tuning." name="Touch Screen Sensitivity">
+	<settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong setinggs will disable touch screen! Yyou will have too reset profiles in recovery! Also, settings for Battery and Charger are different! Do not set the same levels! Have fun tuning." name="Touch Screen Sensitivity">
 
 		<seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)" 
 			name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="1" max="70"/>
@@ -380,8 +380,7 @@
 
 <settingsTab name="Sound">
 
-	<settingsPane description="Master Headphone Gain Amplification Settings Thanks to Gokhanmoral!" name="Headphone Amplification">
-
+	<settingsPane description="Master headphone gain (amplification) settings, thanks to Gokhanmoral!" name="Headphone Amplification">
 		<spinner description="Headphone Amplifier Level (0-3 which corresponds to 0dB, 1.5dB, 3dB, 6dB)"
 			name="Headphone Amplifier" action="soundgasm_hp">
 			<spinnerItem name="Disabled/Reset" value="0"/> 
@@ -413,13 +412,13 @@
 
 		<checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
 
-		<spinner description="This setting will set led behavior in BLN." name="BLN Effect" action="bln_switch">
+		<spinner description="This setting will set led behavior for BLN." name="BLN Effect" action="bln_switch">
 			<spinnerItem name="Steady" value="0"/>
 			<spinnerItem name="Breathing" value="1"/>
 			<spinnerItem name="Blinking" value="2"/>
 		</spinner>
 
-		<spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
+		<spinner description="Notification timeout" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
 			<spinnerItem name="Never timeout" value="0"/> 
 			<spinnerItem name="1 minute" value="60000"/> 
 			<spinnerItem name="3 minutes" value="180000"/> 
@@ -433,7 +432,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Touch Keys Light Settings, here you can set the way touch keys light work" name="Touch Keys Lights Settings">
+	<settingsPane description="Touch keys light settings. Here you can set the way touch keys light work" name="Touch Keys Lights Settings">
 
 		<spinner description="Led timeout. Select 'Use ROM defaults' if your ROM already has led timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use led fadeout effect." 
 			name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
@@ -456,13 +455,13 @@
 		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
 			name="Leds on with touch" action="generic /sys/class/misc/notification/led_on_touch" label="led-on-touch"/>
 
-		<button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
+		<button description="Use this button to test BLN. BLN will be active after you turn the screen off." name="Test BLN" action="push-actions/test_bln" label="Test BLN"/>
 
 		<seekBar description="Controls touchpad led voltage level (default: 3000)" 
 			name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" 
 			unit="mV" min="2500" reversed="false" step="50" max="3300"/>
 
-		<checkbox description="Automatic touchpad led voltage level. If this one is checked touchpad led voltage level will be ignored." 
+		<checkbox description="Automatic touchpad led voltage level. If this one is checked, touchpad led voltage level will be ignored." 
 			name="Auto Led Voltage" action="generic /sys/class/misc/notification/dyn_brightness" label="Auto Led Voltage"/>
 
 	</settingsPane>
@@ -473,25 +472,25 @@
 
 	<settingsPane description="Here you can activate Auto system: clean, tune, reconfig, resync, and much more" name="CRON TASKS MENU">
 
-		<spinner description="Main Switch for CRON TASKER ON/OFF, if OFF then all below tasks have no effect!" name="CRON TASK MAIN SWITCH" action="crontab">
+		<spinner description="Main Switch for CRON TASKER ON/OFF. If set to OFF, then all tasks below have no effect!" name="CRON TASK MAIN SWITCH" action="crontab">
 			<spinnerItem name="Cron Tasker ON" value="on"/> 
 			<spinnerItem name="Cron Tasker OFF" value="off"/> 
 		</spinner>
 
-		<button description="Use this button to test if Cron Task Service is ONLINE and supported!, if main switch is ON, and service is OFFLINE, then ROM Busybox not supporting CRON, update Busybox or ROM." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
+		<button description="Use this button to test if Cron Task Service is ONLINE and supported! If main switch is ON, and service is OFFLINE, then ROM Busybox is not supporting CRON. Update Busybox or ROM for this to work." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
 
 		<button description="Use this button to RESET Cron scripts and jobs from kernel to refresh the config, This will clear all custom changes!" name="CRON Function Reset" action="push-actions/crontab_reset" label="Reset Cron Files"/>
 
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
 
-		<checkbox description="Cron Task to FIX APPS Permissions every 4:40AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, and FC of Apps"
+		<checkbox description="Cron Task to FIX APPS Permissions every 4:40AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, and applications FC."
 			name="Permissions Fix Task" action="generic_cortex /tmp/cron_fix_permissions" label="Permissions Fix Task Every 4:40AM"/>
 
-		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, FC of Apps, and improve apps load speed. Do backup of all your apps before use! This process will remove Apps that BROKEN and not compressed or compiled correctly, so you may find some apps missing, use it in your own risk!, and update the broken Apps."
+		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! This can help to reduce errors, bugs, applications FC, and improve applications load speed. Backup all apps before use! This process will remove apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. Use it at your own risk and update the broken Apps!"
 			name="Zipaling Task" action="generic_cortex /tmp/cron_zipaling" label="Zipaling Task Every 4:50AM"/>
 
-		<button description="Use this button to check if Cron Task Jobs done as requested, this will show log for all finished jobs." name="Test Cron Task Jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
+		<button description="Use this button to check if Cron Task Jobs are done as requested. This will show the log for all finished jobs." name="Test Cron Task Jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
 
 	</settingsPane>
 
@@ -499,26 +498,26 @@
 
 <settingsTab name="Misc">
 
-	<settingsPane description="Dual Mount-SDCARD and MMC via USB after USB disconnected Dual Mount Disabled! this tweak is working by AUTO, plug USB. turn off the screen and then turn ON, and you get working mounts, to scan your new MEDIA files, use some app to force Media Scan." name="DUAL MOUNT USB">
+	<settingsPane description="Dual Mount-SDCARD and MMC via USB. After USB is disconnected, Dual Mount is disabled! This tweak is working automatically. Plug USB, turn off the screen and then turn ON, and you get working mounts. To scan your new MEDIA files, use some app to force Media Scan." name="DUAL MOUNT USB">
 
 		<button description="Dual Mount USB Switch" name="DUAL MOUNT" action="push-actions/dualmount" label="Dual Mount"/>
 
 	</settingsPane>
 
-	<settingsPane description="Here you can run Fix Permissions, Zipalign, DB Optimization script's with one click! please click one time only, scripts will finish in 2~3Min max, no reboot needed." 
+	<settingsPane description="Here you can run Fix Permissions, Zipalign, and DB Optimization scripts with one click! Please click one time only, scripts will finish in max 2~3min, no reboot is needed." 
 			name="FIX PERMISIONS + ZIPALIGN + DB OPTIMIZE">
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipalign ONLY User apps, system may be unresponsive, it's OK, do not use phone for 2Min. Do backup of all your apps before use! This process will remove Apps that BROKEN and not compressed or compiled correctly, so you may find some apps missing, use it in your own risk!, and update the broken Apps." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipaligning ONLY User apps. System may be unresponsive, it's OK, do not use phone for 2Min. Backup all user apps before use! This process will remove Apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. Use it at your own risk, and update the broken apps!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
-		<button description="Click here to start Apps DataBase's Optimization, compacting, cleaning and reindexing, will take 2min max." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
+		<button description="Click here to start Apps DataBase's Optimization. Compacting, cleaning and reindexing will take max 2min." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
 	</settingsPane>
 
 	<settingsPane description="Misc Settings" name="Misc Settings">
 
-		<spinner description="WIFI supplicant scan interval, here you can set the time in sec for WIFI to look for access points when ON, Higher the range, less battery used by WIFI! but if you want WIFI to be off on screen OFF, and you set it in ROM settings!, then set it 60sec, if cortex process ON then no problem, will be set by auto and set your setting on screen ON to 360sec and off to 60sec!"
+		<spinner description="WIFI supplicant scan interval. Here you can set the time in sec for WIFI to look for access points when ON. Higher the range, less battery used by WIFI! If you want WIFI to be off on screen OFF, and you set it in ROM settings, then set it 60sec here. If cortex process ON then there's no problem, it will be set automatically, but set your range on screen ON to 360sec and off to 60sec!"
 			name="WIFI supplicant scan interval" action="supplicant_scan_interval">
 			<spinnerItem name="Set WIFI SCAN 60Sec" value="60"/> 
 			<spinnerItem name="Set WIFI SCAN 120Sec" value="120"/> 
@@ -527,13 +526,13 @@
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable INIT.D scripts RUN on boot, many new ROMS running the init.d scripts by Auto, I also can force running the scripts, so if I run them and ROM run them, we have a problem! all scripts running X2 times, so my force RUN is Disabled by default. if you know that your ROM NOT supporting init.d script RUN, then turn it ON here and reboot.'set checkbox ON'"
-			name="INIT.D Scripts RUN control" action="generic /tmp/init_d" label="INIT.D scripts RUN control"/>
+		<checkbox description="Enable or Disable INIT.D scripts RUN on boot. Many new ROMS are running the init.d scripts automatically. You can also force running the scripts, but if you run them and ROM runs them too, we have a problem: all scripts are running X2 times! To avoid conflicts, Stweaks RUN-control is disabled by default. If you know that your ROM is NOT supporting init.d script running, then turn it ON here and reboot."
+			name="INIT.D Scripts RUN control" action="generic /tmp/init_d" label="Enable INIT.D scripts RUN-control"/>
 
 		<checkbox description="Enable or Disable Android Additional Logs (needs reboot)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
-		<spinner description="ZRAM Module settings, here you can shutdown ZRAM or add more compressed RAM to System use." 
+		<spinner description="ZRAM Module settings. Here you can shutdown ZRAM or add more compressed RAM for your system." 
 			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
 			<spinnerItem name="Set ZRAM to 300MB (default)" value="2"/> 
@@ -541,11 +540,11 @@
 			<spinnerItem name="Set ZRAM OFF!" value="4"/> 
 		</spinner>
 
-		<button description="ZRAM check for active state" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
+		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
 		<button description="Update time via ntp-server" name="UPDATE TIME" action="push-actions/time_update" label="UPDATE TIME"/>
 
-		<spinner description="GPS Time Zone for faster LOCK! Use your region to fix GPS location!" name="GPS Region" action="gpsregion">
+		<spinner description="GPS Time Zone for faster GPS lock! Use your region to fix GPS location!" name="GPS Region" action="gpsregion">
 			<spinnerItem name="No GPS Zone changes (default)" value="No_GPS_Zone_changes"/> 
 			<spinnerItem name="Set Asia" value="Asia"/> 
 			<spinnerItem name="Set Europe" value="Europe"/> 
@@ -558,9 +557,8 @@
 
 		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
 
-		<spinner description="This will set the default Awake I/O scheduler. for internal, system, data and external sdcard, default is FIOPS" 
+		<spinner description="This will set the default awake I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to cpy big files to external sdcard!. Default is ZEN" 
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
-			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
@@ -570,9 +568,8 @@
 			<spinnerItem name="bfq" value="bfq"/> 
 		</spinner>
 
-		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler. for internal, system, data and external sdcard, default is NOOP"
+		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. Default is NOOP"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
-			<spinnerItem name="fiops" value="fiops"/> 
 			<spinnerItem name="zen" value="zen"/> 
 			<spinnerItem name="sio" value="sio"/> 
 			<spinnerItem name="noop" value="noop"/> 
@@ -582,7 +579,7 @@
 			<spinnerItem name="bfq" value="bfq"/> 
 		</spinner>
 
-		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or mtp" 
+		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or MTP" 
 			name="USB Mass Storage Mode" action="usb-mode">
 			<spinnerItem name="Default" value="default"/>
 			<spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/>
@@ -601,25 +598,25 @@
 		<seekBar description="Battery USB Charge Current Setting" name="Battery USB Charge Current" action="chargecurrent 3" 
 			unit="mA" min="450" reversed="false" step="50" max="750"/>
 
-		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, Then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
+		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
-		<button description="Do DATA and CACHE file system check and repair on boot. this is VERY DANGEROUS option! before activating it do full backup with titanium backup! or any kind of backup! if you have lots of damage in your DATA, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, if still no BOOT, you will have to format DATA file system via recovery, use this with your own risk, this is not a toy function! YOU BEEN WARNED!, this function works only for main rom, second rom get no effect and by default it's OFF, it's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
+		<button description="DATA and CACHE file system check and repair on boot. This is a VERY DANGEROUS option! Before activating it do a full backup with Titanium Backup or any kind of backup app! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still can't boot, you will have to format DATA file system via recovery! Use this at your own risk, this function is not a toy! YOUHAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it's OFF. It's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
 
-		<button description="Do clean the media cache on your sdcard, push again to Abort, You have to reboot for action to work!!!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
+		<button description="Clean the media cache on your sdcard. Push once to clean, push again to abort. You have to reboot for action to work!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
 
-		<button description="Do clean WIFI DHCP IP Lease, push the botton to Activate!" name="Clean WIFI Lease" action="push-actions/fix_wifi" label="Clean WIFI Lease"/>
+		<button description="Clean WIFI DHCP IP Lease. Push the botton to activate!" name="Clean WIFI Lease" action="push-actions/fix_wifi" label="Clean WIFI Lease"/>
 
 	</settingsPane>
 
-	<settingsPane description="Remove OR Reinstall ROOT, You can have ROOTED or not ROOTED phone." name="Remove OR Reinstall Root">
+	<settingsPane description="Remove OR Reinstall ROOT! You can have a ROOTED or not ROOTED phone." name="Remove OR Reinstall Root">
 
-		<button description="Root Install, Click to install ROOT (SuperUser) + ROM busybox if existed in case you have used the remove button, to Reinstall ROOT first REMOVE it, this function depend on CORTEX Process Enabled!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
+		<button description="Root Install. Click to install ROOT (SuperUser) + ROM busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! This function depends on CORTEX process to be enabled!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
 
-		<button description="Root Remove/Uninstall, Click to remove Any ROOT installed + busybox (kernel busybox remain, but hidden from system) to install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
+		<button description="Root Remove/Uninstall. Click to remove Any ROOT installed + busybox (kernel's busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
 
-		<button description="Root Check, Click to see if you have ROOT or Not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
+		<button description="Root Check. Click to see if you have ROOT or not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
 
-		<checkbox description="If checked, installs root on the next restart." name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
+		<checkbox description="If box is checked, root will be installed on the next restart." name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
 
 	</settingsPane>
 
@@ -627,17 +624,17 @@
 
 <settingsTab name="Dualboot">
 
-	<settingsPane description="Dual-Boot Settings. Warning: No confirmation will be asked for reboot buttons." name="Dual-Boot Settings">
+	<settingsPane description="Dual-Boot Settings. Warning! !No confirmation will be asked for reboot buttons!" name="Dual-Boot Settings">
 
-		<button description="Reboot into custom recovery which let you configure, clone or backup the 2ndROM" name="Reboot into Recovery" action="reboot-into 0" label="Reboot into 2ndROM Utils"/>
+		<button description="Reboot into custom recovery which let you configure, clone or backup the 2nd ROM" name="Reboot into ROM Recovery" action="reboot-into 0" label="Reboot into recovery"/>  <!-- fixed label? -->
 
-		<button description="Reboot into 1stROM" name="Reboot into 1stROM" action="reboot-into 1" label="Reboot into 1stROM"/>
+		<button description="Reboot into 1st ROM" name="Reboot into 1st ROM" action="reboot-into 1" label="Reboot into 1st ROM"/>
 
-		<button description="Reboot into 2ndROM" name="Reboot into 2ndROM" action="reboot-into 2" label="Reboot into 2ndROM"/>
+		<button description="Reboot into 2nd ROM" name="Reboot into 2nd ROM" action="reboot-into 2" label="Reboot into 2nd ROM"/>
 
 		<checkbox description="Check this if you don't want boot logo to be shown. If this options is checked boot logo will not be shown even if you have 2ndROM installed." name="No boot-logo" action="no-boot-logo" label="No boot-logo"/>
 
-		<spinner description="Default ROM to boot into. If you don't have 2ndROM installation 1stROM will be booted. If you press the home or volume-down buttons during the boot logo the alternative ROM will be booted, i.e. 1stROM will be booted if the default ROM selection is the 2ndROM." name="Default ROM" action="defaultrom">
+		<spinner description="Default ROM to boot into. If you don't have 2nd ROM installed, 1st ROM will be booted. If you press the home or volume-down buttons during the boot logo the alternative ROM will be booted, i.e. 1st ROM will be booted if the default ROM selection is the 2nd ROM." name="Default ROM" action="defaultrom">
 			<spinnerItem name="1stROM" value="0"/> 
 			<spinnerItem name="2ndROM" value="1"/> 
 		</spinner>
@@ -650,64 +647,68 @@
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-		<spinner description="Enable or Disable the 'background-process' from 'cortexbrain-tune.sh'. If you disable it! well you loose kernel AI that maintain your device. After Enable wait 2sec, then push the `CHECK SERVICE` to see if service is online."
+		<spinner description='Enable or Disable the "background-process" from "cortexbrain-tune.sh". If you disable it, you will you loose kernel AI that maintains your device. After enabling it, wait 2sec, then push the "CHECK SERVICE" button to see if service is online.'
 			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
 				<spinnerItem name="Enable" value="1"/> 
 				<spinnerItem name="Disable" value="0"/> 
 		</spinner>
 
-		<button description="Cortex service checker, Click to see if cortexbrain 'background-process' is running or not" name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
+		<button description="Cortex service checker. Click to see if Cortexbrain 'background-process' is running or not" name="CORTEX Service check" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<spinner description="Here you can control android logger `logcat` you can set it to auto, then you will have logs on screen ON, when screen will be off, logger will be disabled to save battery, if you set Debug, it will be working non stop! if Disabled, then OFF no metter what. tweak depend on cortex proccess ON, if USB/Charger connected! and using Auto mode, logger will not be disabled so we can debug."
+		<spinner description='Here you can control android logger "logcat". If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. The tweak depends on Cortexbrain to be enabled. If USB/Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug.'
 			name="Android Logger control" action="android_logger">
 				<spinnerItem name="AUTO" value="auto"/> 
 				<spinnerItem name="DEBUG" value="debug"/> 
 				<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off'-function. depend on Cortexbrain-Background-Process!"
+		<checkbox description='Enable or Disable the "Wifi turns off while screen is off" function. Depends on Cortexbrain-Background-Process to be enabled!'
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-		<!--checkbox description="Here you can Allow WIFI to use LOW PWR when Screen is OFF(when ON back to high PWR), if not set, we use HIGH PWR and get fast wifi transfers on screen OFF"
-			name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
+		<seekBar description='Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if "Auto-Wifi" tweak is Enabled!' 
+			name="WIFI Turn Off Delay (in sec)" action="generic /tmp/cortexbrain_auto_tweak_wifi_sleep_delay"
+			unit="sec" min="0" reversed="false" step="30" max="300"/>
 
-		<checkbox description="Enable or Disable the 'Auto-Brightness'-function. depend on Cortexbrain-Background-Process!"
+                <!--checkbox description="Here you can allow WIFI to use LOW PWR when Screen is turned OFF. When screen is back ON, WIFI turns back to high PWR). If not set, WIFI uses HIGH PWR and get fast WIFI transfers on screen OFF"
+                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
+
+		<checkbox description='Enable or Disable "Auto-Brightness" function. Depends on Cortexbrain-Background-Process!'
 			name="Auto-Brightness" action="generic_cortex /tmp/cortexbrain_auto_tweak_brightness" label="Force Auto-Brightness"/>
 
-		<checkbox description="Enable or Disable the 'Firewall-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "Firewall-Tweaks". (To update after change REBOOT)'
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'TCP-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "TCP-Tweaks". (To update after change REBOOT)'
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'IPv6 Network'. (Default is OFF, To update after change, turn OFF screen and turn ON after 3sec!)"
-			name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6 ON/OFF"/>
+		<checkbox description='Enable or Disable "IPv6 Network". (Default is OFF. To update after change, turn OFF screen and then turn it ON after 3sec!)'
+			name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/> <!-- I think it's better this way -->
 
-		<checkbox description="Enable or Disable the 'CPU-Tweaks'. (To update after change, turn OFF screen and turn ON after 3sec!)"
+		<checkbox description='Enable or Disable "CPU-Tweaks". (To update after change, turn OFF screen and turn it ON after 3sec!)'
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Memory-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "Memory-Tweaks". (To update after change REBOOT)'
 			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Battery-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "Battery-Tweaks". (To update after change REBOOT)'
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'System-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "System-Tweak". (To update after change REBOOT)'
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'Kernel-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "Kernel-Tweaks". (To update after change REBOOT)'
 			name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-		<checkbox description="Enable or Disable the 'I/O-Tweaks'. (To update after change REBOOT)"
+		<checkbox description='Enable or Disable "I/O-Tweaks". (To update after change REBOOT)'
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
-
+			<!-- I think they're better without "the" -->
 	</settingsPane>
 
 </settingsTab>
 
 <settingsTab name="BACKUP/RESTORE">
 
-	<settingsPane description="Here you can Backup / Restore your STWEAKS settings after installing new kernel, when you restore STWEAKS app will be closed and your settings will be committed! Some settings will work only after reboot!, wait till STWEAKS restart with new settings! restore will take 30sec, just wait here!"
+	<settingsPane description="Here you can Backup / Restore your STWEAKS settings after installing new kernel. When you restore STWEAKS, the application will be closed and your settings will be committed! Some settings will work only after reboot! Wait till STWEAKS restarts with the new settings! Restore will take up to 30sec, just wait here!"
 			name="STweaks Settings Backup / Restore.">
 
 		<button description="Backup STweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
@@ -716,14 +717,14 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can Reinstall/Update your STweak app to one that added to kernel, it's will be installed to system and if you had STweak in DATA, it's will be removed. app will close and you get it back from kernel in 5sec"
+	<settingsPane description="Here you can Reinstall/Update your STweak app to one that's added in the kernel. It will be installed to /system and if you had STweaks in /data, it will be removed. Application will close and you'll have it back from kernel in 5sec."
 		name="STweaks Reinstall/Update.">
 
 		<button description="Push to Reinstall/Update STweaks app." name="STweaks Reinstall/Update" action="push-actions/stweaks_update" label="STweaks Reinstall/Update"/>
 
 	 </settingsPane>
 
-	<settingsPane description="Here you can Add/Update/Remove AD Blocker! `You need ROOT to do the tweak!` if we update the blocker, you can push the `UPDATE AD NOW`, to get the new one installed!, if you install new ROM, and want to use AD BLOCKER, then push `UPDATE AD NOW` and REBOOT, if you need to REMOVE AD-B use the REMOVE button and REBOOT" name="AD Blocker menu.">
+	<settingsPane description='Here you can Add/Update/Remove AD Blocker! You need ROOT to do the tweak! If you want to update the blocker, you can push the "UPDATE AD NOW" button, to get the new one installed! If you install a new ROM, and you want to use AD BLOCKER, then push "UPDATE AD NOW" and REBOOT. If you need to REMOVE AD-BLOCKER use the REMOVE button and REBOOT' name="AD Blocker menu.">
 
 		<button description="ADD/UPDATE AD BLOCKER" name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
 

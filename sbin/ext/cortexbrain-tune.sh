@@ -20,9 +20,14 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
+# wifi timer helpers
+echo "WIFI_STATE_AWAKE=0" > /data/.siyah/wifi_helper;
+echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
+chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
+
 # default settings (1000 = 10 seconds)
-dirty_expire_centisecs_default=1000;
-dirty_writeback_centisecs_default=1000;
+dirty_expire_centisecs_default=3000;
+dirty_writeback_centisecs_default=500;
 
 # battery settings
 dirty_expire_centisecs_battery=0;
@@ -31,8 +36,8 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 15 -p `pidof kswapd0`;
-renice 15 -p `pgrep logcat`;
+renice 15 -p `pgrep -f "kswapd0"`;
+renice 15 -p `pgrep -f "logcat"`;
 
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
@@ -89,7 +94,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "128" > $i/queue/nr_requests; # default: 128
+				echo "40" > $i/queue/nr_requests; # default: 128
 			fi;
 
 			if [ -e $i/queue/iosched/back_seek_penalty ]; then
@@ -115,7 +120,7 @@ IO_TWEAKS()
 			echo "2048" > $i/read_ahead_kb;
 		done;
 
-		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "45" > /proc/sys/fs/lease-break-time;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -288,12 +293,12 @@ CPU_GOV_TWEAKS()
 			echo "100000" > $sampling_rate_tmp;
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
-			echo "90" > $up_threshold_tmp;
-			echo "90" > $up_threshold_min_freq_tmp;
-			echo "60" > $down_threshold_tmp;
+			echo "85" > $up_threshold_tmp;
+			echo "85" > $up_threshold_min_freq_tmp;
+			echo "70" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
-			echo "20" > $freq_step_tmp;
+			echo "15" > $freq_step_tmp;
 			echo "200000" > $freq_responsiveness_tmp;
 			echo "300000" > $hotplug_freq_1_1_tmp;
 			echo "200000" > $hotplug_freq_2_0_tmp;
@@ -306,11 +311,11 @@ CPU_GOV_TWEAKS()
 		# battery-settings
 		elif [ "$PROFILE" == battery ] || [ "$sleep_power_save" == 1 ]; then
 
-			echo "80000" > $sampling_rate_tmp;
+			echo "100000" > $sampling_rate_tmp;
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
 			echo "85" > $up_threshold_tmp;
-			echo "85" > $up_threshold_min_freq_tmp;
+			echo "80" > $up_threshold_min_freq_tmp;
 			echo "60" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
@@ -351,9 +356,9 @@ CPU_GOV_TWEAKS()
 			echo "60000" > $sampling_rate_tmp;
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
-			echo "60" > $up_threshold_tmp;
-			echo "60" > $up_threshold_min_freq_tmp;
-			echo "20" > $down_threshold_tmp;
+			echo "80" > $up_threshold_tmp;
+			echo "70" > $up_threshold_min_freq_tmp;
+			echo "30" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
 			echo "40" > $freq_step_tmp;
@@ -380,14 +385,14 @@ MEMORY_TWEAKS()
 	if [ "$cortexbrain_memory" == on ]; then
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-		echo "60" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "90" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "10" > /proc/sys/vm/dirty_background_ratio; # default: 10
+		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -454,31 +459,53 @@ FIREWALL_TWEAKS;
 DISABLE_WIFI()
 {
 	# disable WIFI-driver if screen is off
-	if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-		if [ -e /sys/module/dhd/initstate ]; then
-			svc wifi disable;
-			WIFI_STATE=1;
-			log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
-		else
-			WIFI_STATE=0;
+	if [ -e /sys/module/dhd/initstate ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+			if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
+				svc wifi disable;
+				echo "WIFI_STATE=1" > /data/.siyah/wifi_helper_awake;
+				log -p i -t $FILE_NAME "*** DISABLE_WIFI Mode ***";
+			else
+				(
+					echo "WIFI_STATE_AWAKE=0" > /data/.siyah/wifi_helper;
+					PROFILE=`cat /data/.siyah/.active.profile`;
+					. /data/.siyah/$PROFILE.profile;
+					# screen time out but user want to keep it on and have wifi.
+					sleep 10;
+					if [ `cat /data/.siyah/wifi_helper` == "WIFI_STATE_AWAKE=0" ]; then
+						# user did not turned screen on, so keep waiting.
+						SLEEP_TIME=`echo $(($cortexbrain_auto_tweak_wifi_sleep_delay - 10))`;
+						log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
+						sleep $SLEEP_TIME;
+						if [ `cat /data/.siyah/wifi_helper` == "WIFI_STATE_AWAKE=0" ]; then
+							# user left the screen off, then disable wifi.
+							svc wifi disable;
+							echo "WIFI_STATE=1" > /data/.siyah/wifi_helper_awake;
+						fi;
+					fi;
+				)&
+			fi;
 		fi;
+	else
+		echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
 	fi;
 }
 
 ENABLE_WIFI()
 {
 	# enable WIFI-driver if screen is on
-	if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-		if [ "$WIFI_STATE" == 1 ]; then
+	echo "WIFI_STATE_AWAKE=1" > /data/.siyah/wifi_helper;
+	if [ `cat /data/.siyah/wifi_helper_awake` == "WIFI_STATE=1" ]; then
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			svc wifi enable;
+			log -p i -t $FILE_NAME "*** ENABLE_WIFI Mode ***";
 		fi;
-		log -p i -t $FILE_NAME "*** ENABLE_WIFI Mode ***";
 	fi;
 }
 
 ENABLE_WIFI_PM()
 {
-	if [ "$wifi_pwr" == on ]; then
+if [ "$wifi_pwr" == on ]; then
 		# WIFI PM-FAST support
 		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
 			echo "1" > /sys/module/dhd/parameters/wifi_pm;
@@ -658,23 +685,40 @@ KERNEL_SCHED_SLEEP()
 BLN_CORRECTION()
 {
 	if [ "$notification_enabled" == on ]; then
-
 		echo "1" > /sys/class/misc/notification/notification_enabled;
 
-		if [ "$bln_switch" == 0 ]; then
+		if [ "$blnww" == off ]; then
+			if [ "$bln_switch" == 0 ]; then
+				/res/uci.sh bln_switch 0;
+			elif [ "$bln_switch" == 1 ]; then
+				/res/uci.sh bln_switch 1;
+			elif [ "$bln_switch" == 2 ]; then
+				/res/uci.sh bln_switch 2;
+			fi;
+		else
 			/res/uci.sh bln_switch 0;
-		elif [ "$bln_switch" == 1 ]; then
-			/res/uci.sh bln_switch 1;
-		elif [ "$bln_switch" == 2 ]; then
-			/res/uci.sh bln_switch 2;
+		fi;
+
+		if [ "$dyn_brightness" == on ]; then
+			echo "0" > /sys/class/misc/notification/dyn_brightness;
 		fi;
 
 		log -p i -t $FILE_NAME "*** BLN_CORRECTION Mode ***";
 	fi;
+}
+
+TOUCH_KEYS_CORRECTION()
+{
+	if [ "$dyn_brightness" == on ]; then
+		echo "1" > /sys/class/misc/notification/dyn_brightness;
+	fi;
 
 	if [ "$led_timeout_ms" == -1 ]; then
 		echo "-1" > /sys/class/misc/notification/led_timeout_ms;
+	else
+		/res/uci.sh led_timeout_ms $led_timeout_ms;
 	fi;
+	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION Mode ***";
 }
 
 CROND_SAFETY()
@@ -692,6 +736,14 @@ CROND_SAFETY()
 # ==============================================================
 AWAKE_MODE()
 {
+	# load all stweaks user settings.
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
+	ENABLE_WIFI;
+
+	TOUCH_KEYS_CORRECTION;
+
 	WAKEUP_DELAY;
 
 	# set default values
@@ -705,7 +757,7 @@ AWAKE_MODE()
 	# set CPU-Governor
 	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-	echo "50" > /proc/sys/vm/vfs_cache_pressure;
+	echo "50" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 	KERNEL_SCHED_AWAKE;
 
@@ -764,8 +816,6 @@ AWAKE_MODE()
 
 	TUNE_IPV6;
 
-	ENABLE_WIFI;
-
 	WAKEUP_BOOST;
 
 	# bus freq back to normal
@@ -804,8 +854,6 @@ AWAKE_MODE()
 	ENABLE_LOGGER;
 
 	SWAPPINESS;
-
-	BLN_CORRECTION;
 
 	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 }
@@ -878,7 +926,7 @@ SLEEP_MODE()
 		fi;
 
 		# set battery value
-		echo "10" > /proc/sys/vm/vfs_cache_pressure;
+		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 
 		DISABLE_WIFI;
 

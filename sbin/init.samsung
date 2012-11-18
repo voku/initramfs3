@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
-rm -f /init
-mv /boot /init
+/sbin/busybox rm /init
+/sbin/busybox mv /boot /init
 cd /
 exec /init
 
