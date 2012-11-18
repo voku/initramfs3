@@ -176,7 +176,7 @@ JBSAMMY=0;
 [ -f /system/framework/framework2.jar ] || AOSP=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
 [ "`/sbin/busybox grep -i Slim /system/build.prop`" ] && AOSP=1;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
+#[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
 
 # one more time set "/" rw just for good sleep
 $BB mount -t rootfs -o remount,rw rootfs;
