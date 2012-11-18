@@ -4,7 +4,7 @@
 		<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-			<seekBar description="Maximum CPU Speed. ALERT 1.5Ghz and 1.6Ghz can be unstable for your personal device! Try it, and if phonne is stuck(SOD), then your CPU will not work on such high frequency, nothing can be done! (default is 1200000)" 
+			<seekBar description="Maximum CPU Speed. ALERT 1.5Ghz and 1.6Ghz can be unstable for your personal device! Try it, and if phone is stuck(SOD), then your CPU will not work on such high frequency, nothing can be done! (default is 1200000)" 
 				name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 			<seekBar description="Minimum CPU Speed (default is 200000)" 
@@ -27,7 +27,7 @@
 				<spinnerItem name="Single core mode" value="1"/> 
 			</spinner>
 
-			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by later runned scripts or applications." 
+			<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by any other scripts or applications." 
 				name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 				<spinnerItem name="HYPER" value="HYPER"/> 
 				<spinnerItem name="pegasusq" value="pegasusq"/> 
@@ -39,7 +39,7 @@
 				<spinnerItem name="sleepy" value="sleepy"/> 
 			</spinner>
 
-			<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800Mhz as MAX, second core will not turn ON! If you set MAX CPU freq lower than 800Mhz, second core will be DISABLED! (default is 20)" 
+			<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800Mhz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800Mhz, second core will be DISABLED! (default is 20)" 
 				name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
 			<seekBar description="Second core will be disabled when the load goes below this threshold. (default is 20)" 
@@ -81,7 +81,7 @@
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<seekBar description="Sets the sched_mc value which changes the cpu scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start. Setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)" 
+		<seekBar description="Sets the sched_mc value which changes the CPU scheduler behavior for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before SEC CPU will start. Setting it to 2 will bias task wake-ups to semi-idle CPU package for power savings. (default: 0)" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (default is 80%)" 
@@ -96,7 +96,7 @@
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="Minimum Standby (music palying on screen off) CPU Speed. Default is 200000kHz. If music still shutter, rise to 300000/400000kHz"
+		<seekBar description="Minimum Standby (music playing on screen off) CPU Speed. Default is 200000kHz. If music still shutter, rise to 300000/400000kHz"
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
@@ -104,7 +104,7 @@
 			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
 			unit="Sec" min="0" reversed="false" step="1" max="5"/>
 
-		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, allis set back to normal."
+		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, all is set back to normal."
 			name="Cortex Wakeup Boost" action="generic /tmp/wakeup_boost"
 			unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
@@ -354,21 +354,21 @@
 
 	</settingsPane>
 
-	<settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong setinggs will disable touch screen! Yyou will have too reset profiles in recovery! Also, settings for Battery and Charger are different! Do not set the same levels! Have fun tuning." name="Touch Screen Sensitivity">
+	<settingsPane description="Touch screen configuration on BATT and on CHARGE, !ALERT! wrong settings will disable touch screen! You will have to reset profiles in recovery! Also, settings for Battery and Charger are different! Do not set the same levels! Have fun tuning." name="Touch Screen Sensitivity">
 
-		<seekBar description="Touch Screen on BATTERY (Touch Treshold) (default=50)" 
+		<seekBar description="Touch Screen on BATTERY (Touch Threshold) (default=50)" 
 			name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touch Screen on BATTERY (Noise Treshold) (default=40)" 
+		<seekBar description="Touch Screen on BATTERY (Noise Threshold) (default=40)" 
 			name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="1" max="70"/>
 
 		<seekBar description="Touch Screen on BATTERY (Move Filter) (default=12)" 
 			name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="1" max="30"/>
 
-		<seekBar description="Touch Screen on CHARGER/USB (Touch Treshold) (default=53)" 
+		<seekBar description="Touch Screen on CHARGER/USB (Touch Threshold) (default=53)" 
 			name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touch Screen on CHARGER/USB (Noise Treshold) (default=38)" 
+		<seekBar description="Touch Screen on CHARGER/USB (Noise Threshold) (default=38)" 
 			name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="1" max="60"/>
 
 		<seekBar description="Touch Screen on CHARGER/USB (Move Filter) (default=47)" 
@@ -408,7 +408,7 @@
 
 <settingsTab name="BLN">
 
-	<settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
+	<settingsPane description="BackLightNotification and Touch Keys related Settings" name="BackLightNotification">
 
 		<checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
 
@@ -449,7 +449,7 @@
 		<checkbox description="BLN Without Wakelock. You cannot use blinking or breathing effects together with this option. Enabling this will let the CPU sleep during BLN and save battery." 
 			name="BLNWW" action="generic /sys/class/misc/notification/blnww" label="BLNWW"/>
 
-		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in STweaks." 
+		<checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set Touch Keys leds to always on or always off and use led timeout in STweaks." 
 			name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
 
 		<checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." 
@@ -479,7 +479,7 @@
 
 		<button description="Use this button to test if Cron Task Service is ONLINE and supported! If main switch is ON, and service is OFFLINE, then ROM Busybox is not supporting CRON. Update Busybox or ROM for this to work." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
 
-		<button description="Use this button to RESET Cron scripts and jobs from kernel to refresh the config, This will clear all custom changes!" name="CRON Function Reset" action="push-actions/crontab_reset" label="Reset Cron Files"/>
+		<button description="Use this button to RESET Cron scripts and jobs from kernel to refresh the configuration, This will clear all custom changes!" name="CRON Function Reset" action="push-actions/crontab_reset" label="Reset Cron Files"/>
 
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
@@ -504,12 +504,12 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can run Fix Permissions, Zipalign, and DB Optimization scripts with one click! Please click one time only, scripts will finish in max 2~3min, no reboot is needed." 
-			name="FIX PERMISIONS + ZIPALIGN + DB OPTIMIZE">
+	<settingsPane description="Here you can run Fix Permissions, Zip align, and DB Optimization scripts with one click! Please click one time only, scripts will finish in max 2~3min, no reboot is needed." 
+			name="FIX PERMISIONS + ZIP ALIGN + DB OPTIMIZE">
 
 		<button description="Click here to start fixing." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipaligning ONLY User apps. System may be unresponsive, it's OK, do not use phone for 2Min. Backup all user apps before use! This process will remove Apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. Use it at your own risk, and update the broken apps!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zip aligning ONLY User apps. System may be unresponsive, it's OK, do not use phone for 2Min. Backup all user apps before use! This process will remove Apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. Use it at your own risk, and update the broken apps!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
 		<button description="Click here to start Apps DataBase's Optimization. Compacting, cleaning and reindexing will take max 2min." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
@@ -557,26 +557,26 @@
 
 		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
 
-		<spinner description="This will set the default awake I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to cpy big files to external sdcard!. Default is ZEN" 
+		<spinner description="This will set the default awake I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to copy big files to external sdcard!. Default is ZEN" 
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
-			<spinnerItem name="zen" value="zen"/> 
-			<spinnerItem name="sio" value="sio"/> 
-			<spinnerItem name="noop" value="noop"/> 
-			<spinnerItem name="deadline" value="deadline"/> 
-			<spinnerItem name="vr" value="vr"/> 
-			<spinnerItem name="cfq" value="cfq"/> 
-			<spinnerItem name="bfq" value="bfq"/> 
+			<spinnerItem name="ZEN" value="zen"/> 
+			<spinnerItem name="SIO" value="sio"/> 
+			<spinnerItem name="NOOP" value="noop"/> 
+			<spinnerItem name="DEADLINE" value="deadline"/> 
+			<spinnerItem name="VR" value="vr"/> 
+			<spinnerItem name="CFQ" value="cfq"/> 
+			<spinnerItem name="BFQ" value="bfq"/> 
 		</spinner>
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. Default is NOOP"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
-			<spinnerItem name="zen" value="zen"/> 
-			<spinnerItem name="sio" value="sio"/> 
-			<spinnerItem name="noop" value="noop"/> 
-			<spinnerItem name="deadline" value="deadline"/> 
-			<spinnerItem name="vr" value="vr"/> 
-			<spinnerItem name="cfq" value="cfq"/> 
-			<spinnerItem name="bfq" value="bfq"/> 
+			<spinnerItem name="ZEN" value="zen"/> 
+			<spinnerItem name="SIO" value="sio"/> 
+			<spinnerItem name="NOOP" value="noop"/> 
+			<spinnerItem name="DEADLINE" value="deadline"/> 
+			<spinnerItem name="VR" value="vr"/> 
+			<spinnerItem name="CFQ" value="cfq"/> 
+			<spinnerItem name="BFQ" value="bfq"/> 
 		</spinner>
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or MTP" 
@@ -647,7 +647,7 @@
 
 	<settingsPane description="Here you can manage cortexbrain-tune script" name="Automation Script tuning.">
 
-		<spinner description='Enable or Disable the "background-process" from "cortexbrain-tune.sh". If you disable it, you will you loose kernel AI that maintains your device. After enabling it, wait 2sec, then push the "CHECK SERVICE" button to see if service is online.'
+		<spinner description='Enable or Disable the "background-process" from "cortexbrain-tune.sh". If you disable it, you will you lose kernel AI that maintains your device. After enabling it, wait 2sec, then push the "CHECK SERVICE" button to see if service is online.'
 			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
 				<spinnerItem name="Enable" value="1"/> 
 				<spinnerItem name="Disable" value="0"/> 
