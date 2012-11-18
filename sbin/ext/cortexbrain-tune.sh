@@ -699,12 +699,26 @@ BLN_CORRECTION()
 			/res/uci.sh bln_switch 0;
 		fi;
 
+		if [ "$dyn_brightness" == on ]; then
+			echo "0" > /sys/class/misc/notification/dyn_brightness;
+		fi;
+
 		log -p i -t $FILE_NAME "*** BLN_CORRECTION Mode ***";
+	fi;
+}
+
+TOUCH_KEYS_CORRECTION()
+{
+	if [ "$dyn_brightness" == on ]; then
+		echo "1" > /sys/class/misc/notification/dyn_brightness;
 	fi;
 
 	if [ "$led_timeout_ms" == -1 ]; then
 		echo "-1" > /sys/class/misc/notification/led_timeout_ms;
+	else
+		/res/uci.sh led_timeout_ms $led_timeout_ms;
 	fi;
+	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION Mode ***";
 }
 
 CROND_SAFETY()
@@ -727,6 +741,8 @@ AWAKE_MODE()
 	. /data/.siyah/$PROFILE.profile;
 
 	ENABLE_WIFI;
+
+	TOUCH_KEYS_CORRECTION;
 
 	WAKEUP_DELAY;
 
@@ -838,8 +854,6 @@ AWAKE_MODE()
 	ENABLE_LOGGER;
 
 	SWAPPINESS;
-
-	BLN_CORRECTION;
 
 	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 }
