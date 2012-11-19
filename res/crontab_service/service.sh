@@ -19,11 +19,13 @@ chmod 777 /system/etc/cron.d/crontabs/*;
 if [ "$MIUI_JB" == 1 ] || [ "$JELLY" == 1 ]; then
 	echo "root:x:0:0::/system/etc/cron.d/crontabs:/sbin/sh" > /etc/passwd;
 else
-	mkdir -p /var/spool/cron/crontabs/;
-	touch /var/spool/cron/crontabs/root;
-	chmod 777 /var/spool/cron/crontabs/*;
-	mount -o bind /system/etc/cron.d/crontabs/root /var/spool/cron/crontabs/root;
-	echo "root:x:0:0::/var/spool/cron/crontabs:/sbin/sh" > /etc/passwd;
+	if [ ! -e /var/spool/cron/crontabs/root ]; then
+		mkdir -p /var/spool/cron/crontabs/;
+		touch /var/spool/cron/crontabs/root;
+		chmod 777 /var/spool/cron/crontabs/*;
+		mount -o bind /system/etc/cron.d/crontabs/root /var/spool/cron/crontabs/root;
+		echo "root:x:0:0::/var/spool/cron/crontabs:/sbin/sh" > /etc/passwd;
+	fi;
 fi;
 
 # set timezone

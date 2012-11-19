@@ -520,7 +520,7 @@
 
 	<settingsPane description="Misc Settings" name="Misc Settings">
 
-		<spinner description="WIFI supplicant scan interval. Here you can set the time in sec for WIFI to look for access points when ON. Higher the range, less battery used by WIFI! If you want WIFI to be off on screen OFF, and you set it in ROM settings, then set it 60sec here. If cortex process ON then there's no problem, it will be set automatically, but set your range on screen ON to 360sec and off to 60sec!"
+		<spinner description="WIFI supplicant scan interval. Here you can set the time in sec for WIFI to look for access points when ON. Higher the range, less battery used by WIFI! If you want WIFI to be forced OFF on screen OFF, Turn Force WIFI OFF Tweak in Cortex TAB, also if cortex process is ON, then it will be set automatically to 360sec on Screen OFF, so set your range for screen ON!"
 			name="WIFI supplicant scan interval" action="supplicant_scan_interval">
 			<spinnerItem name="Set WIFI SCAN 60Sec" value="60"/> 
 			<spinnerItem name="Set WIFI SCAN 120Sec" value="120"/> 

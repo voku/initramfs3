@@ -561,7 +561,7 @@ DISABLE_LOGGER()
 	fi;
 }
 
-ENABLE_GESTURE()
+ENABLE_GESTURES()
 {
 	if [ "$gesture_tweak" == on ]; then
 		echo "1" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
@@ -572,7 +572,7 @@ ENABLE_GESTURE()
 	fi;
 }
 
-DISABLE_GESTURE()
+DISABLE_GESTURES()
 {
 	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ "$gesture_tweak" == off ]; then
 		pkill -f "/data/gesture_set.sh";
@@ -597,11 +597,14 @@ DONT_KILL_CORTEX()
 # mount sdcard and emmc, if usb mass storage is used
 MOUNT_SD_CARD()
 {
-	echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
-	if [ -e /dev/block/vold/179:25 ]; then
-		echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
+        CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+        if [ $CHARGING != 0 ]; then
+		echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
+		if [ -e /dev/block/vold/179:25 ]; then
+			echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
+		fi;
+		log -p i -t $FILE_NAME "*** MOUNT_SD_CARD ***";
 	fi;
-	log -p i -t $FILE_NAME "*** MOUNT_SD_CARD ***";
 }
 
 # set wakeup booster delay to prevent mp3 music shattering when screen turned ON
@@ -637,6 +640,8 @@ WAKEUP_BOOST_DELAY()
 MEGA_BOOST_CPU_TWEAKS()
 {
 	if [ "$cortexbrain_cpu" == on ]; then
+
+		echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 		power_performance=1;
 		CPU_GOV_TWEAKS;
@@ -797,11 +802,17 @@ AWAKE_MODE()
 
 	ENABLE_WIFI;
 
+	KERNEL_SCHED_AWAKE;
+
 	TOUCH_KEYS_CORRECTION;
 
 	WAKEUP_DELAY;
 
 	MEGA_BOOST_CPU_TWEAKS;
+
+	MOUNT_SD_CARD;
+
+	ENABLE_GESTURES;
 
 	WAKEUP_BOOST_DELAY;
 
@@ -813,16 +824,7 @@ AWAKE_MODE()
 	echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
 	echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
 
-	# set CPU-Governor
-	echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-
 	echo "50" > /proc/sys/vm/vfs_cache_pressure;
-
-	KERNEL_SCHED_AWAKE;
-
-	MOUNT_SD_CARD;
-
-	ENABLE_GESTURE;
 
 	DISABLE_WIFI_PM;
 
@@ -837,9 +839,12 @@ AWAKE_MODE()
 	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
 	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
 
-	# set CPU speed
-	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	if [ "$cortexbrain_cpu" == on ]; then
+		# set CPU speed
+		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	fi;
+
 	echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	# set wifi.supplicant_scan_interval
@@ -868,12 +873,15 @@ SLEEP_MODE()
 
 	WAKEUP_DELAY_SLEEP;
 
-	echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	if [ "$cortexbrain_cpu" == on ]; then
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	fi;
+
 	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	KERNEL_SCHED_SLEEP;
 
-	DISABLE_GESTURE;
+	DISABLE_GESTURES;
 
 	TUNE_IPV6;
 
@@ -890,20 +898,22 @@ SLEEP_MODE()
 
 		ENABLE_WIFI_PM;
 
-		# set CPU-Governor
-		echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		if [ "$cortexbrain_cpu" == on ]; then
+			# set CPU-Governor
+			echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-		# reduce deepsleep CPU speed, SUSPEND mode
-		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			# reduce deepsleep CPU speed, SUSPEND mode
+			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+
+			# set CPU-Tweak
+			sleep_power_save=1;
+			CPU_GOV_TWEAKS;
+		fi;
 
 		# bus freq to min 133Mhz
 		echo "90" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-
-		# set CPU-Tweak
-		sleep_power_save=1;
-		CPU_GOV_TWEAKS;
 
 		# set disk I/O sched to noop simple and battery saving.
 		echo "$sleep_scheduler" > /sys/block/mmcblk0/queue/scheduler;
