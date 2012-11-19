@@ -17,6 +17,10 @@
 PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
+# set not yet known values for functions
+power_performance=0;
+sleep_power_save=0;
+
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
