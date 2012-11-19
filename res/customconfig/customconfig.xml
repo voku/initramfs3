@@ -481,6 +481,9 @@
 
 		<button description="Use this button to RESET Cron scripts and jobs from kernel to refresh the configuration, This will clear all custom changes!" name="CRON Function Reset" action="push-actions/crontab_reset" label="Reset Cron Files"/>
 
+		<checkbox description="Cron Task to clear RAM Cache/Buffers every HOUR only if CPU is resting(IDLE)! this will free RAM from buffers and not used cache"
+			name="RAM Cache Clean Task" action="generic_cortex /tmp/cron_drop_cache" label="RAM Cache Clean Every Hour"/>
+
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
 

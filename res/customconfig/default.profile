@@ -88,6 +88,7 @@ led_on_touch=off
 touchkey_brightness=3000
 dyn_brightness=off
 crontab=off
+cron_drop_cache=off
 cron_clear_app_cache=off
 cron_fix_permissions=off
 cron_zipaling=off
