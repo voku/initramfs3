@@ -484,6 +484,9 @@
 		<checkbox description="Cron Task to clear RAM Cache/Buffers every HOUR only if CPU is resting(IDLE)! this will free RAM from buffers and not used cache"
 			name="RAM Cache Clean Task" action="generic_cortex /tmp/cron_drop_cache" label="RAM Cache Clean Every Hour"/>
 
+		<checkbox description="Cron Task to update AD BLOCKER every week at SAT 6:00AM UTC time, from official site. task will check if internel is connected, if not will try to use WIFI! script will turn wifi wait for connection and update, when finish will turn WIFI off. if not connection, will write error in log"
+			name="Update AD Block every week" action="generic_cortex /tmp/ad_block_update" label="Update AD Block every week"/>
+
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
 

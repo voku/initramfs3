@@ -313,7 +313,7 @@ CPU_GOV_TWEAKS()
 			echo "70" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
-			echo "15" > $freq_step_tmp;
+			echo "20" > $freq_step_tmp;
 			echo "200000" > $freq_responsiveness_tmp;
 			echo "300000" > $hotplug_freq_1_1_tmp;
 			echo "200000" > $hotplug_freq_2_0_tmp;
@@ -334,7 +334,7 @@ CPU_GOV_TWEAKS()
 			echo "60" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
-			echo "20" > $freq_step_tmp;
+			echo "25" > $freq_step_tmp;
 			echo "200000" > $freq_responsiveness_tmp;
 			echo "400000" > $hotplug_freq_1_1_tmp;
 			echo "200000" > $hotplug_freq_2_0_tmp;
@@ -372,11 +372,11 @@ CPU_GOV_TWEAKS()
 			echo "$load_h0" > $cpu_up_rate_tmp;
 			echo "$load_l1" > $cpu_down_rate_tmp;
 			echo "80" > $up_threshold_tmp;
-			echo "70" > $up_threshold_min_freq_tmp;
+			echo "80" > $up_threshold_min_freq_tmp;
 			echo "30" > $down_threshold_tmp;
 			echo "1" > $sampling_down_factor_tmp;
 			echo "5" > $down_differential_tmp;
-			echo "40" > $freq_step_tmp;
+			echo "35" > $freq_step_tmp;
 			echo "200000" > $freq_responsiveness_tmp;
 			echo "600000" > $hotplug_freq_1_1_tmp;
 			echo "200000" > $hotplug_freq_2_0_tmp;
@@ -960,7 +960,7 @@ if [ "$cortexbrain_background_process" == 1 ] && [ `pgrep -f "cat /sys/power/wai
 		# AWAKE State. all system ON.
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
 		AWAKE_MODE;
-		sleep 5;
+		sleep 3;
 
 		# SLEEP state. All system to power save.
 		cat /sys/power/wait_for_fb_sleep > /dev/null 2>&1;
