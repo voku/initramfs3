@@ -6,7 +6,7 @@
 PROFILE=`cat /data/.siyah/.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
-if [ "$cron_zipaling" == "on" ]; then
+if [ "$cron_zipalign" == "on" ]; then
 
 	while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
         	echo "Waiting For CPU to cool down";
@@ -66,8 +66,8 @@ if [ "$cron_zipaling" == "on" ]; then
 
 		touch $ZIPALIGNDB;
 		echo "Automatic ZipAlign finished at $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE;
-		date +%H:%M-%D-%Z > /data/crontab/cron-zipaling;
-		echo "Done! Zipalined All Apps" >> /data/crontab/cron-zipaling;
+		date +%H:%M-%D-%Z > /data/crontab/cron-zipalign;
+		echo "Done! Zipalined All Apps" >> /data/crontab/cron-zipalign;
 		mv /data/local/*.apk /data/app/
 		chown system:system /data/app/*
 		chmod 644 /data/app/*

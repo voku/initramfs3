@@ -9,8 +9,8 @@ fi;
 if [ ! -e /data/crontab/cron-fix_permissions ]; then
 	echo "no data" > /data/crontab/cron-fix_permissions;
 fi;
-if [ ! -e /data/crontab/cron-zipaling ]; then
-	echo "no data" > /data/crontab/cron-zipaling;
+if [ ! -e /data/crontab/cron-zipalign ]; then
+	echo "no data" > /data/crontab/cron-zipalign;
 fi;
 if [ ! -e /data/crontab/cron-ad_block_update ]; then
 	echo "no data" > /data/crontab/cron-ad_block_update;
@@ -24,7 +24,7 @@ cat /data/crontab/cron-clear-ram-cache >> /data/crontab/cron_log;
 echo "--------------" >> /data/crontab/cron_log;
 cat /data/crontab/cron-fix_permissions >> /data/crontab/cron_log;
 echo "--------------" >> /data/crontab/cron_log;
-cat /data/crontab/cron-zipaling >> /data/crontab/cron_log;
+cat /data/crontab/cron-zipalign >> /data/crontab/cron_log;
 
 # push all to one log.
 CRON_LOG=`cat /data/crontab/cron_log`;
