@@ -30,14 +30,14 @@ for i in $DM; do
 	if [ -e $i/queue/iosched/rev_penalty ]; then
 		echo "1" > $i/queue/iosched/rev_penalty;
 	fi;
-
 done;
 
 umount /preload;
-/sbin/busybox mount -o remount,rw /system;
+mount -o remount,rw /system;
+mount -o remount,rw /;
 
-if [ -e /data/.siyah/jb-installed ]; then
-	rm -f /data/.siyah/jb-installed;
+if [ -e /sbin/ext/jb-installed ]; then
+	rm -f /sbin/ext/jb-installed;
 	mount -o remount,utf8 /storage/sdcard1;
 	mount -o remount,utf8 /storage/sdcard0;
 else

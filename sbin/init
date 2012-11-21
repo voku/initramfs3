@@ -298,11 +298,8 @@ PARTITION_TUNING()
 
 USER_ACTIONS()
 {
-	# data mount
-	$BB mount -t ext4 /res/dev/data /data;
-
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
-		echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
+		echo "JB-INSTALLED" > /sbin/ext/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
@@ -313,6 +310,9 @@ USER_ACTIONS()
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fix_media ]; then
+		# data mount
+		$BB mount -t ext4 /res/dev/data /data;
+
 		mkdir /sdcardtmp;
 		$BB chmod 777 /sdcardtmp;
 		$BB mount -t vfat /dev/block/mmcblk0p11 /sdcardtmp;
@@ -332,11 +332,11 @@ USER_ACTIONS()
 		if [ `du -h /sdcardtmp | grep 4 | cut -c1-4` == "4.0K" ]; then
 			$BB rm -rf /sdcardtmp;
 		fi;
-	fi;
 
-	# data unmount
-	sync;
-	$BB umount -l /data;
+		# data unmount
+		sync;
+		$BB umount -l /data;
+	fi;
 }
 
 BOOTROM()
@@ -451,9 +451,6 @@ else
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 
 	SECROM_FUNCTION_SAMMY;
-
-	# Start ROM!
-	BOOTROM;
 fi;
 
 # if found by ROM detector and function finished, boot the detected ROM.
