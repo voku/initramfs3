@@ -2,6 +2,15 @@
 
 TMPFILE=$(mktemp -t);
 
+mount -o remount,rw /;
+
+DNS1=`getprop net.rmnet0.dns1`;
+DNS2=`getprop net.rmnet0.dns2`;
+
+echo "nameserver 8.8.8.8" > /system/etc/resolv.conf;
+echo "nameserver $DNS1" >> /system/etc/resolv.conf;
+echo "nameserver $DNS2" >> /system/etc/resolv.conf;
+
 TESTCONNECTION=`wget http://www.google.com -O $TMPFILE > /dev/null 2>&1`;
 if [ $? != 0 ]; then
 	echo "Problem: no internet connection! connect and try again";
@@ -11,3 +20,6 @@ else
 	)&
 	echo "updated time via ntp";
 fi;
+
+rm -f $TMPFILE;
+

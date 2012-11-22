@@ -67,7 +67,7 @@ if [ "$cron_zipalign" == "on" ]; then
 		touch $ZIPALIGNDB;
 		echo "Automatic ZipAlign finished at $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE;
 		date +%H:%M-%D-%Z > /data/crontab/cron-zipalign;
-		echo "Done! Zipalined All Apps" >> /data/crontab/cron-zipalign;
+		echo "Done! Zipaligned All Apps" >> /data/crontab/cron-zipalign;
 		mv /data/local/*.apk /data/app/
 		chown system:system /data/app/*
 		chmod 644 /data/app/*
