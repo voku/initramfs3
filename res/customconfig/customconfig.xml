@@ -481,14 +481,20 @@
 
 		<button description="Use this button to RESET Cron scripts and jobs from kernel to refresh the configuration, This will clear all custom changes!" name="CRON Function Reset" action="push-actions/crontab_reset" label="Reset Cron Files"/>
 
+		<checkbox description="Cron Task to clear RAM Cache/Buffers every HOUR only if CPU is resting(IDLE)! this will free RAM from buffers and not used cache"
+			name="RAM Cache Clean Task" action="generic_cortex /tmp/cron_drop_cache" label="RAM Cache Clean Every Hour"/>
+
+		<checkbox description="Cron Task to update AD BLOCKER every week at SAT 6:00AM UTC time, from official site. task will check if internel is connected, if not will try to use WIFI! script will turn wifi wait for connection and update, when finish will turn WIFI off. if not connection, will write error in log"
+			name="Update AD Block every week" action="generic_cortex /tmp/ad_block_update" label="Update AD Block every week"/>
+
 		<checkbox description="Cron Task to clear APP cache every 4:00AM only if CPU is resting(IDLE)! this can maintain free space on data partition, and clean all old junk."
 			name="DISK Clean Task" action="generic_cortex /tmp/cron_clear_app_cache" label="DISK Clean Task Every 4:00AM"/>
 
 		<checkbox description="Cron Task to FIX APPS Permissions every 4:40AM only if CPU is resting(IDLE)! this can help to reduce errors, bugs, and applications FC."
 			name="Permissions Fix Task" action="generic_cortex /tmp/cron_fix_permissions" label="Permissions Fix Task Every 4:40AM"/>
 
-		<checkbox description="Cron Task to Zipaling all DATA APPS every 4:50AM only if CPU is resting(IDLE)! This can help to reduce errors, bugs, applications FC, and improve applications load speed. Backup all apps before use! This process will remove apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. Use it at your own risk and update the broken Apps!"
-			name="Zipaling Task" action="generic_cortex /tmp/cron_zipaling" label="Zipaling Task Every 4:50AM"/>
+		<checkbox description="Cron Task to Zipalign all DATA APPS every 4:50AM only if CPU is resting(IDLE)! This can help to reduce errors, bugs, applications FC, and improve applications load speed. Backup all apps before use! This process will remove apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. Use it at your own risk and update the broken Apps!"
+			name="Zipalign Task" action="generic_cortex /tmp/cron_zipalign" label="Zipalign Task Every 4:50AM"/>
 
 		<button description="Use this button to check if Cron Task Jobs are done as requested. This will show the log for all finished jobs." name="Test Cron Task Jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
 
@@ -517,7 +523,7 @@
 
 	<settingsPane description="Misc Settings" name="Misc Settings">
 
-		<spinner description="WIFI supplicant scan interval. Here you can set the time in sec for WIFI to look for access points when ON. Higher the range, less battery used by WIFI! If you want WIFI to be off on screen OFF, and you set it in ROM settings, then set it 60sec here. If cortex process ON then there's no problem, it will be set automatically, but set your range on screen ON to 360sec and off to 60sec!"
+		<spinner description="WIFI supplicant scan interval. Here you can set the time in sec for WIFI to look for access points when ON. Higher the range, less battery used by WIFI! If you want WIFI to be forced OFF on screen OFF, Turn Force WIFI OFF Tweak in Cortex TAB, also if cortex process is ON, then it will be set automatically to 360sec on Screen OFF, so set your range for screen ON!"
 			name="WIFI supplicant scan interval" action="supplicant_scan_interval">
 			<spinnerItem name="Set WIFI SCAN 60Sec" value="60"/> 
 			<spinnerItem name="Set WIFI SCAN 120Sec" value="120"/> 

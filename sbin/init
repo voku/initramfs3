@@ -130,6 +130,30 @@ else
 	ln -s /dev/block/mmcblk0p7 /res/dev/cache;
 fi;
 
+SECROM_FUNCTION_AOSP()
+{
+	# init.rc style JB/CM/AOKP
+	if [ "$SECONDROM" == "1" ]; then
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB rm /init.rc.2;
+	else
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
+	fi;
+}
+
+SECROM_FUNCTION_SAMMY()
+{
+	# init.rc style SAMMY ICS
+	if [ "$SECONDROM" == "1" ]; then
+		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
+		$BB mv /init.rc.2 /init.rc
+	else
+		$BB rm /init.smdk4210.rc.2;
+		$BB rm /init.rc.2;
+	fi;
+}
+
 # mounting system!
 $BB mount -t ext4 /res/dev/system /system;
 
@@ -147,36 +171,32 @@ $BB chmod 644 /system/framework/services.jar;
 # copy new Kernel modules to /system/lib/modules and to second rom system if exist
 if [ ! -d /system/lib/modules ]; then
 	mkdir /system/lib/modules;
-	$BB chmod 755 /system/lib/modules/;
+	$BB cp /lib/modules/*.ko /system/lib/modules/;
+	$BB chmod 755 /system/lib/modules/*.ko;
+else
+	$BB rm -f /system/lib/modules/*.ko;
+	$BB cp /lib/modules/*.ko /system/lib/modules/;
+	$BB chmod 755 /system/lib/modules/*.ko;
 fi;
-$BB rm -f /system/lib/modules/*.ko;
-$BB cp /lib/modules/*.ko /system/lib/modules/;
-$BB chmod 755 /system/lib/modules/*.ko;
 
 if [ -f /system/recovery.cpio.gz ]; then
 	$BB mount -o remount,rw /;
 	$BB zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
 
-AOSP=0;
-MIUI=0;
-MIUI_JB=0;
 B2G=0;
+MIUI_JB=0;
 JELLY=0;
-CM10=0;
+AOSP=0;
 S4A=0;
 JBSAMMY=0;
 
 [ -d /system/b2g ] && B2G=1;
-[ -f /system/framework/framework-miui.jar ] && MIUI=1;
-[ -f /system/framework/miui-framework.jar ] && MIUI=1;
 [ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
-[ -f /system/framework/seccamera.jar ] || CM10=1;
 [ -f /system/framework/framework2.jar ] || AOSP=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
-[ "`/sbin/busybox grep -i Slim /system/build.prop`" ] && AOSP=1;
-#[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
 
 # one more time set "/" rw just for good sleep
 $BB mount -t rootfs -o remount,rw rootfs;
@@ -278,26 +298,21 @@ PARTITION_TUNING()
 
 USER_ACTIONS()
 {
-	# data mount
-	$BB mount -t ext4 /res/dev/data /data;
-
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
-		echo "JB-INSTALLED" > /data/.siyah/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
+		echo "JB-INSTALLED" > /sbin/ext/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
 		start adbd;
-#	elif [ "JBSAMMY" == "1" ]; then
-#		stop adbd;
-#		$BB cp -a /sbin/adbd.sammy /sbin/adbd;
-#		$BB chmod 755 /sbin/adbd;
-#		start adbd;
 	else
 		start adbd;
 	fi;
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fix_media ]; then
+		# data mount
+		$BB mount -t ext4 /res/dev/data /data;
+
 		mkdir /sdcardtmp;
 		$BB chmod 777 /sdcardtmp;
 		$BB mount -t vfat /dev/block/mmcblk0p11 /sdcardtmp;
@@ -314,14 +329,21 @@ USER_ACTIONS()
 		# sdcard unmount
 		sync;
 		$BB umount -l /sdcardtmp;
-		if [ `du -h /sdcardtmp | grep 4 | cut -c1-4` == 4.0K ]; then
+		if [ `du -h /sdcardtmp | grep 4 | cut -c1-4` == "4.0K" ]; then
 			$BB rm -rf /sdcardtmp;
 		fi;
-	fi;
 
-	# data unmount
-	sync;
-	$BB umount -l /data;
+		# data unmount
+		sync;
+		$BB umount -l /data;
+	fi;
+}
+
+BOOTROM()
+{
+	PARTITION_TUNING;
+	USER_ACTIONS;
+	exec /sbin/init.samsung;
 }
 
 # network tuning reset to allow real ROM control over H/H+/3G/G signal.
@@ -329,20 +351,14 @@ sed -i "s/ro.ril.hsxpa=[0-9]*//g" /system/build.prop;
 sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
 
 # system dalvik.vm tuning.
-if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 120 ]; then
-	setprop dalvik.vm.heapsize 128m
-	sed -i "s/dalvik.vm.heapsize=[0-9\a-z\]*/dalvik.vm.heapsize=128m/g" /system/build.prop;
-fi;
+setprop dalvik.vm.heapsize 128m
+sed -i "s/dalvik.vm.heapsize=[0-9a-zA-Z]*/dalvik.vm.heapsize=128m/g" /system/build.prop;
 
-if [ "`getprop dalvik.vm.heapstartsize | sed 's/m//g'`" -lt 16 ]; then
-	setprop dalvik.vm.heapstartsize 16m
-	sed -i "s/dalvik.vm.heapstartsize=[0-9\a-z\]*/dalvik.vm.heapstartsize=16m/g" /system/build.prop;
-fi;
+setprop dalvik.vm.heapstartsize 16m
+sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=16m/g" /system/build.prop;
 
-if [ "`getprop dalvik.vm.heapgrowthlimit | sed 's/m//g'`" -lt 120 ]; then
-	setprop dalvik.vm.heapgrowthlimit 128m
-	sed -i "s/dalvik.vm.heapgrowthlimit=[0-9\a-z\]*/dalvik.vm.heapgrowthlimit=128m/g" /system/build.prop;
-fi;
+setprop dalvik.vm.heapgrowthlimit 128m
+sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=128m/g" /system/build.prop;
 
 # we can OC to 1.5Ghz.
 sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;
@@ -351,16 +367,6 @@ sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1
 # Loading Modules
 ######################################
 $BB chmod -R 755 /lib;
-
-# cpu undervolting interfaces
-if [ -e /lib/modules/cpu_undervolting.ko ]; then
-	insmod /lib/modules/cpu_undervolting.ko;
-fi;
-
-# mali (gpu) interfaces
-if [ -e /lib/modules/mali_control.ko ]; then
-	insmod /lib/modules/mali_control.ko;
-fi;
 
 # FM radio
 Si4709="/lib/modules/Si4709_driver.ko";
@@ -397,61 +403,25 @@ fi;
 
 if [ "$S4A" == "1" ]; then
 	echo "0" > /proc/sys/kernel/rom_feature_set;
-	$BB mv /res/misc/Sense4All-ROM/init.s4a /init.rc;
-	$BB mv /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2;
+	$BB cp -a /res/misc/Sense4All-ROM/init.s4a /init.rc;
+	$BB cp -a /res/misc/Sense4All-ROM/init.s4a.2 /init.rc.2;
 
-	if [ "$SECONDROM" == "1" ]; then
-		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		$BB mv /init.rc.2 /init.rc;
-	else
-		$BB rm /init.smdk4210.rc.2;
-		$BB rm /init.rc.2;
-	fi;
+	SECROM_FUNCTION_SAMMY;
 
-	# Start ROM!
-	PARTITION_TUNING;
-	USER_ACTIONS;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$B2G" == "1" ]; then
+elif [ "$B2G" == "1" ]; then
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/B2G-ROM/* /;
 
-	if [ "$SECONDROM" == "1" ]; then
-		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		$BB mv /init.rc.2 /init.rc;
-	else
-		$BB rm /init.smdk4210.rc.2;
-		$BB rm /init.rc.2;
-	fi;
+	SECROM_FUNCTION_SAMMY;
 
-	# Start ROM!
-	PARTITION_TUNING;
-	USER_ACTIONS;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$JBSAMMY" == "1" ]; then
+elif [ "$JBSAMMY" == "1" ]; then
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
 
-	if [ "$SECONDROM" == "1" ]; then
-		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		$BB rm /init.rc.2;
-	else
-		$BB rm /init.smdk4210.rc.2;
-		$BB rm /init.rc.2;
-	fi;
+	SECROM_FUNCTION_AOSP;
 
-	# Start ROM!
-	PARTITION_TUNING;
-	USER_ACTIONS;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
-	# Injecting JB Modded by VOKU, SUPER libsqlite!
+elif [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
+	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	$BB cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
 	$BB cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
 	$BB chmod 755 /system/lib/libsqlite.so;
@@ -460,54 +430,23 @@ if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP/* /;
 
-	if [ "$SECONDROM" == "1" ]; then
-		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		$BB rm /init.rc.2;
-	else
-		$BB rm /init.smdk4210.rc.2;
-		$BB rm /init.rc.2;
-	fi;
+	SECROM_FUNCTION_AOSP;
 
-	# Start ROM!
-	PARTITION_TUNING;
-	USER_ACTIONS;
-	exec /sbin/init.samsung;
-fi;
-
-if [ "$AOSP" == "1" ]; then
-	$BB cp -a /res/misc/CM-ROM/* /;
+elif [ "$AOSP" == "1" ]; then
 	# Injecting ICS Modded by Dorimanx, SUPER libsqlite!
 	$BB cp -a /res/misc/sql/ics/libsqlite.so /system/lib/libsqlite.so;
 	$BB chmod 755 /system/lib/libsqlite.so;
 	echo "1" > /proc/sys/kernel/rom_feature_set;
+	$BB cp -a /res/misc/CM-ROM/* /;
 
-	if [ "$SECONDROM" == "1" ]; then
-		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-		$BB rm /init.rc.2;
-	else
-		$BB rm /init.smdk4210.rc.2;
-		$BB rm /init.rc.2;
-	fi;
-
-	# Start ROM!
-	PARTITION_TUNING;
-	USER_ACTIONS;
-	exec /sbin/init.samsung;
-fi;
-
-# If not detected ROM / SAMMY ROM installed, then:
-echo "0" > /proc/sys/kernel/rom_feature_set;
-
-if [ "$SECONDROM" == "1" ]; then
-	$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
-	$BB mv /init.rc.2 /init.rc;
+	SECROM_FUNCTION_AOSP;
 else
-	$BB rm /init.smdk4210.rc.2;
-	$BB rm /init.rc.2;
+	# If not detected Known ROM, then SAMMY ICS ROM installed.
+	echo "0" > /proc/sys/kernel/rom_feature_set;
+
+	SECROM_FUNCTION_SAMMY;
 fi;
 
-# Start ROM
-PARTITION_TUNING;
-USER_ACTIONS;
-exec /sbin/init.samsung;
+# if found by ROM detector and function finished, boot the detected ROM.
+BOOTROM;
 

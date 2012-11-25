@@ -11,13 +11,13 @@ if [ "a$2" != "a" ]; then
 		# Created By Dorimanx and Dairinin
 
 		# starting crontab service
-		if [ -e /system/xbin/busybox ] || [ /system/bin/busybox ]; then
+		if [ -e /system/xbin/busybox ] || [ -e /system/bin/busybox ]; then
 			/res/crontab_service/service.sh
 
 			# setting my jobs with corrected timezone for all world.
 			/res/crontab_service/dm_job.sh "4:00" "/sbin/busybox sh /data/crontab/cron-scripts/clear-file-cache.sh"
 			/res/crontab_service/dm_job.sh "4:40" "/sbin/busybox sh /data/crontab/cron-scripts/fix-perm.sh"
-			/res/crontab_service/dm_job.sh "4:50" "/sbin/busybox sh /data/crontab/cron-scripts/zipaling.sh"
+			/res/crontab_service/dm_job.sh "4:50" "/sbin/busybox sh /data/crontab/cron-scripts/zipalign.sh"
 		fi;
 	;;
 	off)
