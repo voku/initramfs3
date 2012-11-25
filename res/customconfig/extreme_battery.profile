@@ -73,6 +73,7 @@ TOUCHSCREEN3=12
 TOUCHSCREEN4=53
 TOUCHSCREEN5=38
 TOUCHSCREEN6=47
+jb_sound_fix=off
 soundgasm_hp=0
 sound_volume1=0
 sound_volume2=0

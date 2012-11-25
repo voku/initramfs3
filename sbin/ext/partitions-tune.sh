@@ -26,10 +26,6 @@ for i in $DM; do
 	if [ -e $i/queue/iosched/fifo_batch ]; then
 		echo "1" > $i/queue/iosched/fifo_batch;
 	fi;
-
-	if [ -e $i/queue/iosched/rev_penalty ]; then
-		echo "1" > $i/queue/iosched/rev_penalty;
-	fi;
 done;
 
 umount /preload;
