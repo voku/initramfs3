@@ -41,6 +41,7 @@ if [ "$ad_block_update" == "on" ]; then
 		chmod 644 $HOST_FILE;
 		date +%H:%M-%D-%Z > /data/crontab/cron-ad_block_update;
 		echo "AD Blocker: Updated" >> /data/crontab/cron-ad_block_update;
-        fi;
+	fi;
+
 	rm -f $TMPFILE;
 fi;
