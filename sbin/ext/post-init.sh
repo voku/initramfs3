@@ -126,12 +126,12 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 	[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
-		input keyevent 25
-		input keyevent 25
-		input keyevent 25
-		input keyevent 24
-		input keyevent 24
-		input keyevent 24
+		if [ "$jb_sound_fix" == "on" ]; then
+			input keyevent 25
+			input keyevent 25
+			input keyevent 24
+			input keyevent 24
+		fi;
 	fi;
 
 	# change USB mode MTP or Mass Storage
