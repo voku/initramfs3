@@ -599,6 +599,9 @@
 			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
 		</spinner>
 
+		<checkbox description="If checked, Mass Storage SDCARDS will be Auto mounted when USB connected. then you can transfer files on high speed from PC to device. ON by Default."
+			name="Auto Mount USB Drives" action="generic_cortex /tmp/auto_mount_sd" label="Auto Mount USB Drives"/>
+
 		<checkbox description="If checked, BetterBatteryStatus will report discrete (non-overlapping) wakelock statistics." 
 			name="Discrete Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wakelock Stats"/> 
 

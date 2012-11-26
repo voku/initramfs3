@@ -103,6 +103,7 @@ gpsregion=No_GPS_Zone_changes
 scheduler=zen
 sleep_scheduler=noop
 usb_mode=default
+auto_mount_sd=on
 default_stats=off
 chargecurrent1=700
 chargecurrent2=700
