@@ -597,8 +597,7 @@ DONT_KILL_CORTEX()
 # mount sdcard and emmc, if usb mass storage is used
 MOUNT_SD_CARD()
 {
-        CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-        if [ $CHARGING != 0 ]; then
+        if [ "$auto_mount_sd" == on ]; then
 		echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
 		if [ -e /dev/block/vold/179:25 ]; then
 			echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
