@@ -98,7 +98,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "128" > $i/queue/nr_requests; # default: 128
+				echo "20" > $i/queue/nr_requests; # default: 128
 			fi;
 
 			if [ -e $i/queue/iosched/back_seek_penalty ]; then
