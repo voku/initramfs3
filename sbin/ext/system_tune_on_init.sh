@@ -8,10 +8,10 @@ BB=/sbin/busybox
 
 # remount all partitions tweked settings
 for m in $($BB mount | grep ext[3-4] | cut -d " " -f3); do
-	busybox mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0,commit=30,noauto_da_alloc,delalloc $m;
+	$BB mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0 $m;
 done;
 
-$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit,commit=360 /cache;
+$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /cache;
 $BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /data;
 $BB mount -o remount,rw /system;
 
