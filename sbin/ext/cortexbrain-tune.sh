@@ -30,7 +30,7 @@ echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
 # default settings (1000 = 10 seconds)
-dirty_expire_centisecs_default=3000;
+dirty_expire_centisecs_default=250;
 dirty_writeback_centisecs_default=500;
 
 # battery settings
@@ -124,7 +124,11 @@ IO_TWEAKS()
 			echo "2048" > $i/read_ahead_kb;
 		done;
 
-		echo "45" > /proc/sys/fs/lease-break-time;
+		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "524288" > /proc/sys/fs/file-max;
+		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
+		echo "256" > /proc/sys/fs/inotify/max_user_instances;
+		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -137,8 +141,16 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		sysctl -w vm.panic_on_oom=0;
+		echo "65536" > /proc/sys/kernel/msgmax;
+		echo "2048" > /proc/sys/kernel/msgmni;
+		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+		echo "500 512000 64 2048" > /proc/sys/kernel/sem;
+		echo "2097152" > /proc/sys/kernel/shmall;
+		echo "268435456" > /proc/sys/kernel/shmmax;
+		echo "524288" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	fi;
@@ -153,7 +165,7 @@ SYSTEM_TWEAKS()
 	if [ "$cortexbrain_system" == on ]; then
 		# render UI with GPU
 		setprop hwui.render_dirty_regions false;
-		setprop windowsmgr.max_events_per_sec 240;
+		setprop windowsmgr.max_events_per_sec 150;
 		setprop profiler.force_disable_err_rpt 1;
 		setprop profiler.force_disable_ulog 1;
 
@@ -407,7 +419,7 @@ MEMORY_TWEAKS()
 		echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
@@ -435,13 +447,13 @@ TCP_TWEAKS()
 		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-		echo "262144" > /proc/sys/net/core/wmem_max;
+		echo "524288" > /proc/sys/net/core/wmem_max;
 		echo "524288" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
 		echo "262144" > /proc/sys/net/core/wmem_default;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "4096 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
+		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
@@ -711,8 +723,8 @@ TUNE_IPV6()
 
 KERNEL_SCHED_AWAKE()
 {
-	echo "10000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "18000000" > /proc/sys/kernel/sched_latency_ns;
+	echo "3000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: awake";
 }
@@ -720,8 +732,8 @@ KERNEL_SCHED_AWAKE()
 KERNEL_SCHED_SLEEP()
 {
 	echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "3000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "2500000" > /proc/sys/kernel/sched_min_granularity_ns;
+	echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+	echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: sleep";
 }
 
@@ -823,7 +835,7 @@ AWAKE_MODE()
 	echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
 	echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
 
-	echo "50" > /proc/sys/vm/vfs_cache_pressure;
+	echo "20" > /proc/sys/vm/vfs_cache_pressure;
 
 	DISABLE_WIFI_PM;
 
