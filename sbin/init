@@ -27,10 +27,6 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
 fi;
 
 # cleaning and rebuilding the /mnt and sdcards mounts folders
-$BB rm -rf /mnt;
-$BB rm -rf /sdcard;
-$BB rm -rf /emmc;
-$BB rm -rf /storage;
 $BB rm -rf /vendor;
 $BB rm -rf /tmp/*;
 mkdir -p /dev/block;
@@ -302,6 +298,12 @@ USER_ACTIONS()
 		echo "JB-INSTALLED" > /sbin/ext/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
+		$BB chmod 755 /sbin/adbd;
+		start adbd;
+	elif [ "$JBSAMMY" == "1" ]; then
+		echo "JB-INSTALLED" > /sbin/ext/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
+		stop adbd;
+		$BB cp -a /sbin/adbd.jbs /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
 		start adbd;
 	else

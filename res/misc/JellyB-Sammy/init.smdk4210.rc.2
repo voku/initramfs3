@@ -136,7 +136,8 @@ on boot
     chown root shell /dev/tspdrv
 
 on fs
-# mount ext4 partitions    
+# mount ext4 partitions
+    mount ext4 /res/dev/system /system noatime wait
 # verify filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
 
@@ -144,39 +145,18 @@ on fs
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
 # Check and mount
-    mount ext4 /res/dev/system /system noatime wait
     exec sfsck /res/dev/cache ext4
+    exec sfsck /res/dev/data ext4
+
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait rw
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
-    exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 loop@/res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait 
 
+#   mount_all /fstab.smdk4210.2
     setprop ro.crypto.fuse_sdcard false
 
 # Permissions for backlight
-# Add permission for ATM. 2010.03.20
-    chown system radio /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_read_soc
-    chown system radio /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_lpm_state
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/fg_psoc
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/system_rev
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_current_adc
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_test_value
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_temp_adc_spec
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_temp_check
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_full_check
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_type
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/mp3
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/video
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_lp_charging
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/charging_source
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_temp_adc_avg
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_temp_adc
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_temp
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_vfocv
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_soc
-    chown system radio /sys/devices/platform/sec-battery/power_supply/battery/batt_vol
 
     chown system system /sys/class/backlight/panel/brightness
     chown system system /sys/class/sec/sec_touchkey/brightness
