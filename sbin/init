@@ -360,19 +360,9 @@ $BB sed -i "s/ro.ril.hsxpa=[0-9]*//g" /system/build.prop;
 $BB sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
 
 # system dalvik.vm tuning.
-/sbin/setprop dalvik.vm.heapsize 128m
 $BB sed -i "s/dalvik.vm.heapsize=[0-9a-zA-Z]*/dalvik.vm.heapsize=128m/g" /system/build.prop;
-
-/sbin/setprop dalvik.vm.heapstartsize 16m
 $BB sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=32m/g" /system/build.prop;
-
-/sbin/setprop dalvik.vm.heapgrowthlimit 128m
 $BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=128m/g" /system/build.prop;
-
-# CM 10.1 tweaks.
-/sbin/setprop dalvik.vm.heaptargetutilization 0.75
-/sbin/setprop dalvik.vm.heapminfree 512k
-/sbin/setprop dalvik.vm.heapmaxfree 2m
 
 # we can OC to 1.5Ghz.
 $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;
