@@ -191,7 +191,7 @@ CM10_JB=0;
 [ -d /system/b2g ] && B2G=1;
 [ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
-[ -f /system/framework/framework2.jar ] && AOSP=1;
+[ -f /system/framework/framework2.jar ] || AOSP=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
 [ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
 [ "`/sbin/busybox grep -i ro.cm.version=10.1 /system/build.prop`" ] && CM10_JB=1;
