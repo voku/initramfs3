@@ -30,8 +30,8 @@ echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
 # default settings (1000 = 10 seconds)
-dirty_expire_centisecs_default=250;
-dirty_writeback_centisecs_default=500;
+dirty_expire_centisecs_default=1000;
+dirty_writeback_centisecs_default=1000;
 
 # battery settings
 dirty_expire_centisecs_battery=0;
