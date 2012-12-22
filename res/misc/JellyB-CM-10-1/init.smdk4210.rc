@@ -37,19 +37,10 @@ on early-init
 on fs
 # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait
-# verify filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
 
-# make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
-
-# Check and mount /cache
-    exec sfsck /res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait rw
-
-# Check and mount /data
-    exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+# mount the rest.
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -141,9 +132,6 @@ on post-fs-data
     chmod 0770 /dev/snd/controlC0
     chmod 0770 /dev/snd/timer
     chmod 0770 /dev/snd/hwC0D0
-
-# Permission for MHL
-    chown system radio /sys/class/mhl/test_result
 
 # create log system
     mkdir /data/log 0775 system log
@@ -387,16 +375,6 @@ service iprenew_wlan0 /system/bin/dhcpcd -n
 
 service iprenew_p2p /system/bin/dhcpcd -n
     class main
-    disabled
-    oneshot
-
-# for bluetooth
-service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm --no2bytes --tosleep 50000 \
-    --baudrate 3000000 --use_baudrate_for_download --patchram /system/bin/bcm4330B1.hcd \
-    --scopcm=0,0,0,0,0,0,0,3,3,0  /dev/ttySAC0
-    class main
-    user bluetooth
-    group bluetooth net_bt_admin
     disabled
     oneshot
 

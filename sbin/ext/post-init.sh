@@ -37,6 +37,11 @@ if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
+# CM 10.1 tweaks.
+/sbin/setprop dalvik.vm.heaptargetutilization 0.75
+/sbin/setprop dalvik.vm.heapminfree 512k
+/sbin/setprop dalvik.vm.heapmaxfree 2m
+
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
