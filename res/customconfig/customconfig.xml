@@ -409,6 +409,9 @@
 		<seekBar description="Headphone amplification level"
 			name="Analog headphone level" action="sound_volume 1" unit="dB" min="-10" reversed="false" step="2" max="20"/>
 
+		<seekBar description="Headphone gain power level"
+			name="Analog headphone gain" action="sound_volume 4" unit="dB" min="-6" reversed="false" step="1" max="6"/>
+
 		<seekBar description="Analog Mic gain level"
 			name="Mic gain Level" action="sound_volume 2" unit="dB" min="-12" reversed="false" step="4" max="12"/>
 

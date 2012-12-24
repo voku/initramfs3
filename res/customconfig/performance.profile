@@ -78,6 +78,7 @@ soundgasm_hp=0
 sound_volume1=8
 sound_volume2=0
 sound_volume3=0
+sound_volume4=0
 gesture_tweak=on
 notification_enabled=on
 bln_switch=1

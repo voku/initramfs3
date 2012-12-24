@@ -22,5 +22,8 @@ if [ -d /sys/devices/virtual/sound/sound_mc1n2/ ]; then
 	# set speaker volume
 	echo "$sound_volume3" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_SP;
 	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
+	# more headphones gain power
+	echo "$sound_volume4" > /sys/devices/virtual/sound/sound_mc1n2/DVOL_DAC_MASTER;
+	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 fi;
 

@@ -88,7 +88,6 @@ NOBOOTLOGO=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
 sync;
-$BB umount /preload;
 $BB umount -l /mnt/tmp;
 
 if [ "$SECONDROM" == "0" ]; then
@@ -364,6 +363,7 @@ BOOTROM()
 {
 	PARTITION_TUNING;
 	USER_ACTIONS;
+	$BB rm -f /sbin/mount;
 	exec /sbin/init.samsung;
 }
 
