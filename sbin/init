@@ -26,7 +26,17 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
 	exec /sbin/init.recovery;
 fi;
 
+# unmount all sdcards before any folder cleaning
+$BB umount -l /sdcard;
+$BB umount -l /extSdCard;
+$BB umount -l /mnt/sdcard;
+$BB umount -l /storage/sdcard0;
+$BB umount -l /storage/sdcard1;
+
 # cleaning and rebuilding the /mnt and sdcards mounts folders
+$BB rm -rf /sdcard;
+$BB rm -rf /mnt;
+$BB rm -rf /storage;
 $BB rm -rf /vendor;
 $BB rm -rf /tmp/*;
 mkdir -p /dev/block;
