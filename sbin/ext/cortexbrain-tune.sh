@@ -57,23 +57,23 @@ IO_TWEAKS()
 
 		for z in $ZRM; do
 	
-			if [ -e $i/queue/rotational ]; then
+			if [ -e $z/queue/rotational ]; then
 				echo "0" > $i/queue/rotational;
 			fi;
 
-			if [ -e $i/queue/iostats ]; then
+			if [ -e $z/queue/iostats ]; then
 				echo "0" > $i/queue/iostats;
 			fi;
 
-			if [ -e $i/queue/rq_affinity ]; then
+			if [ -e $z/queue/rq_affinity ]; then
 				echo "1" > $i/queue/rq_affinity;
 			fi;
 
-			if [ -e $i/queue/read_ahead_kb ]; then
+			if [ -e $z/queue/read_ahead_kb ]; then
 				echo "512" >  $i/queue/read_ahead_kb;
 			fi;
 
-			if [ -e $i/queue/max_sectors_kb ]; then
+			if [ -e $z/queue/max_sectors_kb ]; then
 				echo "512" >  $i/queue/max_sectors_kb; # default: 127
 			fi;
 
