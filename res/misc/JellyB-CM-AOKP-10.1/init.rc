@@ -4,7 +4,7 @@
 # This is a common source of Android security bugs.
 #
 
-# THIS INIT.RC is FOR CM10.1 JB ROM!
+# THIS INIT.RC is FOR CM/AOKP 10.1 JB ROM!
 
 import /init.smdk4210.rc
 import /init.usb.rc
@@ -88,12 +88,11 @@ loglevel 3
 
     write /proc/sys/kernel/panic_on_oops 0
     write /proc/sys/kernel/hung_task_timeout_secs 0
+    write /proc/cpu/alignment 4
     write /proc/sys/kernel/sched_latency_ns 10000000
     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
-    write /proc/cpu/alignment 4
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
-#   write /proc/sys/kernel/randomize_va_space 2
     write /proc/sys/kernel/kptr_restrict 0
     write /proc/sys/kernel/dmesg_restrict 0
     write /proc/sys/vm/mmap_min_addr 32768

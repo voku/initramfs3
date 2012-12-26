@@ -138,11 +138,11 @@ on boot
 on fs
 # Mount all
 
-    mount ext4 /res/dev/system /system noatime wait
+    mount ext4 /res/dev/system /system noatime wait rw
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait rw
-    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
-    mount ext4 /res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait encryptable=/efs/metadata
+    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait rw
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait rw
+    mount ext4 /res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait encryptable=/efs/metadata rw
 
 #   mount_all /fstab.smdk4210
     setprop ro.crypto.fuse_sdcard false
@@ -160,8 +160,8 @@ on fs
     chmod 0660 /sys/power/cpufreq_min_limit
 
 # MTP device permission
-	chmod 0660 /dev/usb_mtp_gadget
-	chown system system /dev/usb_mtp_gadget
+    chmod 0660 /dev/usb_mtp_gadget
+    chown system system /dev/usb_mtp_gadget
 
 # Permissions for Gscaler log level
     chmod 0666 /sys/module/gsc/parameters/gsc_dbg
@@ -291,9 +291,9 @@ service iprenew_p2p /system/bin/dhcpcd -n
 
 # TVout
 service TvoutService_C /system/bin/bintvoutservice
-     class main
-     user system
-     group graphics
+    class main
+    user system
+    group graphics
 on property:ro.tvout.enable=false
     stop TvoutService_C
 
@@ -317,20 +317,20 @@ service immvibed /system/bin/immvibed
 
 #for WiFi MFG(TestMode)
 service mfgloader /system/bin/mfgloader
-	class main
-	disabled
-	oneshot
+    class main
+    disabled
+    oneshot
 
 service wlandutservice /system/bin/wlandutservice
-	class main
-	user system
-	group wifi net_raw net_admin system inet
-	disabled
-	oneshot
+    class main
+    user system
+    group wifi net_raw net_admin system inet
+    disabled
+    oneshot
 
 service macloader /system/bin/macloader
-	class main
-	oneshot
+    class main
+    oneshot
 
 on property:init.svc.macloader=stopped
     chown system root /data/.cid.info
@@ -344,11 +344,5 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     class main
     user shell
     group log
-    oneshot
-
-# DVFS - limit cpufreq during booting sequence
-service dvfs /system/bin/sh /system/bin/dvfs.sh
-    class main
-    user root
     oneshot
 

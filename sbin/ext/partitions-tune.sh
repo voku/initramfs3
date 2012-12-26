@@ -28,7 +28,6 @@ for i in $DM; do
 	fi;
 done;
 
-umount /preload;
 mount -o remount,rw /system;
 mount -o remount,rw /;
 
