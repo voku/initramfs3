@@ -37,10 +37,14 @@ if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
-# CM 10.1 tweaks.
-/sbin/setprop dalvik.vm.heaptargetutilization 0.75
-/sbin/setprop dalvik.vm.heapminfree 512k
-/sbin/setprop dalvik.vm.heapmaxfree 2m
+JELLY=0;
+JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
+if [ $JELLY == 1 ]; then
+	# JB tweaks.
+	/sbin/setprop dalvik.vm.heaptargetutilization 0.75
+	/sbin/setprop dalvik.vm.heapminfree 512k
+	/sbin/setprop dalvik.vm.heapmaxfree 2m
+fi;
 
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
