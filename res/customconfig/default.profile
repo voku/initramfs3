@@ -1,6 +1,6 @@
 scaling_max_freq=1200000
 scaling_min_freq=200000
-smooth_level0=24
+smooth_level0=14
 scaling_governor=HYPER
 load_l1=20
 load_h0=20
