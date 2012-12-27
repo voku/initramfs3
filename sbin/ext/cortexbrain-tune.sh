@@ -124,11 +124,11 @@ IO_TWEAKS()
 			echo "2048" > $i/read_ahead_kb;
 		done;
 
-		echo "10" > /proc/sys/fs/lease-break-time;
-		echo "524288" > /proc/sys/fs/file-max;
-		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
-		echo "256" > /proc/sys/fs/inotify/max_user_instances;
-		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
+		echo "45" > /proc/sys/fs/lease-break-time;
+#		echo "524288" > /proc/sys/fs/file-max;
+#		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
+#		echo "256" > /proc/sys/fs/inotify/max_user_instances;
+#		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -141,16 +141,16 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 		sysctl -w vm.panic_on_oom=0;
-		echo "65536" > /proc/sys/kernel/msgmax;
-		echo "2048" > /proc/sys/kernel/msgmni;
-		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
-		echo "500 512000 64 2048" > /proc/sys/kernel/sem;
-		echo "2097152" > /proc/sys/kernel/shmall;
-		echo "268435456" > /proc/sys/kernel/shmmax;
-		echo "524288" > /proc/sys/kernel/threads-max;
+#		echo "65536" > /proc/sys/kernel/msgmax;
+#		echo "2048" > /proc/sys/kernel/msgmni;
+#		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
+#		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+#		echo "500 512000 64 2048" > /proc/sys/kernel/sem;
+#		echo "2097152" > /proc/sys/kernel/shmall;
+#		echo "268435456" > /proc/sys/kernel/shmmax;
+#		echo "524288" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	fi;
@@ -419,7 +419,7 @@ MEMORY_TWEAKS()
 		echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
