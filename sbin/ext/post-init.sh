@@ -87,7 +87,7 @@ echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 # for ntfs automounting
 mkdir /mnt/ntfs;
 chmod 777 /mnt/ntfs/ -R;
-mount -o mode=0777,gid=1000 -t tmpfs tmpfs /mnt/ntfs
+mount -t tmpfs -o mode=0777,gid=1000 tmpfs /mnt/ntfs
 
 $BB sh /sbin/ext/properties.sh;
 
