@@ -426,8 +426,17 @@ elif [ "$B2G" == "1" ]; then
 	SECROM_FUNCTION_SAMMY;
 
 elif [ "$JBSAMMY" == "1" ]; then
-	echo "0" > /proc/sys/kernel/rom_feature_set;
+	echo "2" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
+
+	# FIX HOME BUTTON JBSAMMY 
+	GPIOKEYS="/system/usr/keylayout/gpio-keys.kl";
+	if [ -e $GPIOKEYS ]; then
+		KHCOUNT=`cat $GPIOKEYS | grep "172" -c`;
+		if [ $KHCOUNT == 1 ]; then
+			sed -i 's/172/102/g' $GPIOKEYS;
+		fi;
+	fi;
 
 	SECROM_FUNCTION_AOSP;
 
