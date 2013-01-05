@@ -1,6 +1,6 @@
 /dev/mali                 0666   system     system
 /dev/ump                  0666   system     graphics
-/dev/exynos-mem           0660   system     graphics
+/dev/exynos-mem           0666   system     graphics
 /dev/s3c-mem              0666   system     system
 /dev/ion                  0666   system     system
 /dev/pmem                 0660   system     graphics
