@@ -786,6 +786,7 @@
 		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to copy big files to external sdcard!. Default: ZEN" 
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="ZEN" value="zen"/> 
+			<spinnerItem name="ROW" value="row"/> 
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="NOOP" value="noop"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
@@ -797,6 +798,7 @@
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. Default: NOOP"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
 			<spinnerItem name="ZEN" value="zen"/> 
+			<spinnerItem name="ROW" value="row"/> 
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="NOOP" value="noop"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
