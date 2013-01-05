@@ -41,8 +41,9 @@ dirty_writeback_centisecs_battery=0;
 # =========
 # Renice - kernel thread responsible for managing the swap memory and logs
 # =========
-renice 15 -p `pgrep -f "kswapd0"`;
-renice 15 -p `pgrep -f "logcat"`;
+# (re)nice: a higher nice value means a low priority [-20 -> 20]
+#renice 15 -p `pgrep -f "kswapd0"`;
+#renice 15 -p `pgrep -f "logcat"`;
 
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
@@ -122,7 +123,7 @@ IO_TWEAKS()
 
 		SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 		for i in $SDCARDREADAHEAD; do
-			echo "2048" > $i/read_ahead_kb;
+			echo "2048" > ${i}/read_ahead_kb;
 		done;
 
 		echo "45" > /proc/sys/fs/lease-break-time;
