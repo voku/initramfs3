@@ -380,8 +380,7 @@ $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-co
 $BB chmod -R 755 /lib;
 
 for module in $(ls in /lib/modules/*.ko); do
-	progress "Loading kernel module $module"
-	$BB insmod "/lib/modules/${module}.ko" || error "load_modules" "Failed to load kernel module $module";
+	$BB insmod "${module}";
 done;
 
 ######################################
