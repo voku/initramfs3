@@ -941,7 +941,7 @@
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
 		<spinner description='Maximum number of kilobytes to read-ahead for filesystems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
-			name="kilobytes to read-ahead" action="cortexbrain_read_ahead_kb">
+			name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
 			<spinnerItem name="64 kb" value="64"/> 
 			<spinnerItem name="128 kb" value="128"/> 
 			<spinnerItem name="256 kb" value="256"/> 
