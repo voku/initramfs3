@@ -909,7 +909,7 @@
 		<checkbox description='Enable or Disable "less set brightnes". Depends on Cortexbrain-Background-Process!'
 			name="Less-Brightness" action="generic_cortex /tmp/cortexbrain_auto_less_brightness" label="Less-Brightness"/>
 
-		<seekBar description='Here you can set a value for less brightnes. Works only if "Less-Brightness" tweak is Enabled!' 
+		<seekBar description='Here you can set a value for less brightnes. Works only if "Less-Brightness" tweak is enabled!' 
 			name="Set value (0 - 100)" action="generic /tmp/cortexbrain_less_brightness"
 			unit="" min="0" reversed="false" step="5" max="100"/>
 
@@ -939,6 +939,17 @@
 
 		<checkbox description='Enable or Disable "I/O-Tweaks". (To update after change REBOOT)'
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
+
+		<spinner description='Maximum number of kilobytes to read-ahead for filesystems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
+			name="kilobytes to read-ahead" action="cortexbrain_read_ahead_kb">
+			<spinnerItem name="64 kb" value="64"/> 
+			<spinnerItem name="128 kb" value="128"/> 
+			<spinnerItem name="256 kb" value="256"/> 
+			<spinnerItem name="512 kb" value="512"/> 
+			<spinnerItem name="1024 kb" value="1024"/> 
+			<spinnerItem name="2048 kb" value="2048"/>
+			<spinnerItem name="4096 kb" value="4096"/>
+		</spinner>
 
 	</settingsPane>
 

@@ -26,8 +26,8 @@ FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
 # wifi timer helpers
-echo "WIFI_STATE_AWAKE=0" > /data/.siyah/wifi_helper;
-echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
+echo "0" > /data/.siyah/wifi_helper;
+echo "0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
 # default settings (1000 = 10 seconds)
@@ -54,9 +54,8 @@ cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 
 IO_TWEAKS()
 {
 	if [ "$cortexbrain_io" == on ]; then
-		MMC=`ls -d /sys/block/mmc*`;
-		ZRM=`ls -d /sys/block/zram*`;
 
+		ZRM=`ls -d /sys/block/zram*`;
 		for z in $ZRM; do
 	
 			if [ -e $z/queue/rotational ]; then
@@ -71,16 +70,9 @@ IO_TWEAKS()
 				echo "1" > $z/queue/rq_affinity;
 			fi;
 
-			if [ -e $z/queue/read_ahead_kb ]; then
-				echo "512" >  $z/queue/read_ahead_kb;
-			fi;
-
-			if [ -e $z/queue/max_sectors_kb ]; then
-				echo "512" >  $z/queue/max_sectors_kb; # default: 127
-			fi;
-
 		done;
 
+		MMC=`ls -d /sys/block/mmc*`;
 		for i in $MMC; do
 
 			if [ -e $i/queue/scheduler ]; then
@@ -96,11 +88,13 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/read_ahead_kb ]; then
-				echo "2048" >  $i/queue/read_ahead_kb; # default: 128
+				echo "$cortexbrain_read_ahead_kb" >  $i/queue/read_ahead_kb; # default: 128
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "20" > $i/queue/nr_requests; # default: 128
+				if [ "$scheduler" == "sio" ] || [ "$scheduler" == "zen" ]; then
+					echo "20" > $i/queue/nr_requests; # default: 128
+				fi;
 			fi;
 
 			if [ -e $i/queue/iosched/back_seek_penalty ]; then
@@ -118,15 +112,15 @@ IO_TWEAKS()
 		done;
 
 		if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]; then
-			echo "2048" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+			echo "$cortexbrain_read_ahead_kb" > /sys/devices/virtual/bdi/default/read_ahead_kb;
 		fi;
 
 		SDCARDREADAHEAD=`ls -d /sys/devices/virtual/bdi/179*`;
 		for i in $SDCARDREADAHEAD; do
-			echo "2048" > ${i}/read_ahead_kb;
+			echo "$cortexbrain_read_ahead_kb" > $i/read_ahead_kb;
 		done;
 
-		echo "45" > /proc/sys/fs/lease-break-time;
+#		echo "45" > /proc/sys/fs/lease-break-time;
 #		echo "524288" > /proc/sys/fs/file-max;
 #		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
 #		echo "256" > /proc/sys/fs/inotify/max_user_instances;
@@ -477,13 +471,13 @@ MEMORY_TWEAKS()
 	if [ "$cortexbrain_memory" == on ]; then
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-		echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
-		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
-		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
-		echo "3" > /proc/sys/vm/page-cluster; # default: 3
+		#echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
+		#echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
+		#echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
+		#echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		#echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
+		#echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+		#echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
@@ -558,22 +552,22 @@ DISABLE_WIFI()
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
 				svc wifi disable;
-				echo "WIFI_STATE=1" > /data/.siyah/wifi_helper_awake;
+				echo "1" > /data/.siyah/wifi_helper_awake;
 				log -p i -t $FILE_NAME "*** WIFI ***: disabled";
 			else
 				(
-					echo "WIFI_STATE_AWAKE=0" > /data/.siyah/wifi_helper;
+					echo "0" > /data/.siyah/wifi_helper;
 					# screen time out but user want to keep it on and have wifi
 					sleep 10;
-					if [ `cat /data/.siyah/wifi_helper` == "WIFI_STATE_AWAKE=0" ]; then
+					if [ `cat /data/.siyah/wifi_helper` == "0" ]; then
 						# user did not turned screen on, so keep waiting
 						SLEEP_TIME=$(($cortexbrain_auto_tweak_wifi_sleep_delay - 10));
 						log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 						sleep $SLEEP_TIME;
-						if [ `cat /data/.siyah/wifi_helper` == "WIFI_STATE_AWAKE=0" ]; then
+						if [ `cat /data/.siyah/wifi_helper` == "0" ]; then
 							# user left the screen off, then disable wifi
 							svc wifi disable;
-							echo "WIFI_STATE=1" > /data/.siyah/wifi_helper_awake;
+							echo "1" > /data/.siyah/wifi_helper_awake;
 							log -p i -t $FILE_NAME "*** WIFI ***: disabled";
 						fi;
 					fi;
@@ -581,14 +575,14 @@ DISABLE_WIFI()
 			fi;
 		fi;
 	else
-		echo "WIFI_STATE=0" > /data/.siyah/wifi_helper_awake;
+		echo "0" > /data/.siyah/wifi_helper_awake;
 	fi;
 }
 
 ENABLE_WIFI()
 {
-	echo "WIFI_STATE_AWAKE=1" > /data/.siyah/wifi_helper;
-	if [ `cat /data/.siyah/wifi_helper_awake` == "WIFI_STATE=1" ]; then
+	echo "1" > /data/.siyah/wifi_helper;
+	if [ `cat /data/.siyah/wifi_helper_awake` == "1" ]; then
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			svc wifi enable;
 			log -p i -t $FILE_NAME "*** WIFI ***: enabled";
@@ -728,7 +722,7 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
-		if [ "$scaling_max_freq" \> 1100000 ]; then
+		if [ "$scaling_max_freq" -ge 1000000 ]; then
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		else
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
@@ -1012,7 +1006,7 @@ SLEEP_MODE()
 		echo "50" > /sys/module/stand_hotplug/parameters/load_l1;
 
 		# set wifi.supplicant_scan_interval
-		if [ "$supplicant_scan_interval" \< 180 ]; then
+		if [ "$supplicant_scan_interval" -le 180 ]; then
 			setprop wifi.supplicant_scan_interval 360;
 		fi;
 
