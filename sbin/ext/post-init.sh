@@ -148,7 +148,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 )&
 
 (
-	while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
+	while [ "`cat /proc/loadavg | cut -c1`" -ge "3" ]; do
 		echo "Waiting For CPU to cool down";
 		sleep 60;
 	done;

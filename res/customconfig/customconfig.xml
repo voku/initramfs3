@@ -912,7 +912,7 @@
 
 		<seekBar description='Here you can set a value for less brightnes. Works only if "Less-Brightness" tweak is enabled!' 
 			name="Set value (0 - 100)" action="generic /tmp/cortexbrain_less_brightness"
-			unit="" min="0" reversed="false" step="10" max="200"/>
+			unit="" min="0" reversed="false" step="5" max="255"/>
 
 		<checkbox description='Enable or Disable "Firewall-Tweaks". (To update after change REBOOT)'
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
