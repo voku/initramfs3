@@ -670,7 +670,7 @@ DONT_KILL_CORTEX()
 # mount sdcard and emmc, if usb mass storage is used
 MOUNT_SD_CARD()
 {
-        if [ "$auto_mount_sd" == on ]; then
+	if [ "$auto_mount_sd" == on ]; then
 		echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
 		if [ -e /dev/block/vold/179:25 ]; then
 			echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
@@ -739,10 +739,11 @@ MEGA_BOOST_CPU_TWEAKS()
 	fi;
 }
 
-# set less brightnes is battery is low
-AUTO_BRIGHTNESS()
+# set less brightnes if battery is low 
+# (works only without "auto_brightness" for now?!)
+SYNC_BRIGHTNESS()
 {
-	if [ "$cortexbrain_auto_tweak_brightness" == on ]; then
+	if [ "$cortexbrain_auto_sync_brightness" == on ]; then
 		LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
@@ -750,10 +751,24 @@ AUTO_BRIGHTNESS()
 		if [ "$NEW_BRIGHTNESS" -le "$OLD_BRIGHTNESS" ]; then
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
-		log -p i -t $FILE_NAME "*** AUTO_BRIGHTNESS ***";
+		log -p i -t $FILE_NAME "*** SYNC_BRIGHTNESS ***";
 	fi;
 }
 
+# set less brightnes 
+# (works only without "auto_brightness" for now?!)
+LESS_BRIGHTNESS()
+{
+	if [ "$cortexbrain_auto_less_brightness" == on ]; then
+		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
+		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
+		NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS-cortexbrain_less_brightness ))`;
+		if [ "$NEW_BRIGHTNESS" -ge "0" ]; then
+			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
+		fi;
+		log -p i -t $FILE_NAME "*** LESS_BRIGHTNESS ***";
+	fi;
+}
 
 # set swappiness in case that no root installed, and zram used or disk swap used
 SWAPPINESS()
@@ -927,7 +942,8 @@ AWAKE_MODE()
 
 	ENABLE_NMI;
 
-	AUTO_BRIGHTNESS;
+	SYNC_BRIGHTNESS;
+	LESS_BRIGHTNESS;
 
 	DONT_KILL_CORTEX;
 
