@@ -56,12 +56,6 @@ on fs
     chmod 0770 /data/misc/wifi 
 
 on post-fs-data
-# insmod kernel modules
-    insmod /system/lib/modules/j4fs.ko
-
-# mount param.lfs
-    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-
 # MDNS
     socket mdns stream 0660 root system
 

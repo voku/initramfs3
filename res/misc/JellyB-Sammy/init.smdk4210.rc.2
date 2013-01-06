@@ -216,10 +216,8 @@ on fs
     chmod 0660 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
-    insmod /lib/modules/j4fs.ko
 #   insmod /lib/modules/exfat_core.ko
 #   insmod /lib/modules/exfat_fs.ko
-    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 
     chown radio system /efs
     chmod 0771 /efs

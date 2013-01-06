@@ -81,6 +81,25 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/xt_qtaguid/parameters/debug_mask;
 fi;
 
+######################################
+# Loading Modules
+######################################
+$BB chmod -R 755 /lib;
+
+(
+	sleep 40;
+	# order of modules load is important.
+	$BB insmod /lib/modules/scsi_wait_scan.ko;
+	$BB insmod /lib/modules/j4fs.ko;
+
+	sleep 10;
+	mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
+	$BB insmod /lib/modules/Si4709_driver.ko;
+	$BB insmod /lib/modules/ftdi_sio.ko;
+	$BB insmod /lib/modules/pl2303.ko;
+	$BB insmod /lib/modules/cifs.ko;
+)&
+
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 

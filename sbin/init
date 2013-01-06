@@ -375,15 +375,6 @@ $BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=1
 $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;
 
 ######################################
-# Loading Modules
-######################################
-$BB chmod -R 755 /lib;
-
-for module in $(ls in /lib/modules/*.ko); do
-	$BB insmod "${module}";
-done;
-
-######################################
 # Starting ROM choose and INIT config.
 ######################################
 
