@@ -741,7 +741,7 @@ SYNC_BRIGHTNESS()
 		LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
-		NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS*LEVEL/100 ))`;
+		NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
 		if [ "$NEW_BRIGHTNESS" -le "$OLD_BRIGHTNESS" ]; then
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
@@ -756,7 +756,7 @@ LESS_BRIGHTNESS()
 	if [ "$cortexbrain_auto_less_brightness" == on ]; then
 		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
-		NEW_BRIGHTNESS=`$(( MAX_BRIGHTNESS-cortexbrain_less_brightness ))`;
+		NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS-cortexbrain_less_brightness ));
 		if [ "$NEW_BRIGHTNESS" -ge "0" ]; then
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
