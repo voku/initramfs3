@@ -38,7 +38,8 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
-			<spinnerItem name="sleepy" value="sleepy"/> 
+			<spinnerItem name="sleepy" value="sleepy"/>
+			<spinnerItem name="nightmare" value="nightmare"/>
 		</spinner>
 
 		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800Mhz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800Mhz, second core will be DISABLED! Default: 20" 
