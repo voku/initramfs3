@@ -379,34 +379,9 @@ $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-co
 ######################################
 $BB chmod -R 755 /lib;
 
-# FM radio
-Si4709="/lib/modules/Si4709_driver.ko";
-if [ -e $Si4709 ]; then
-	insmod $Si4709;
-fi;
-
-# load CIFS with all that needed
-CIFS="/lib/modules/cifs.ko";
-if [ -e $CIFS ]; then
-	insmod $CIFS;
-fi;
-
-# for NFS automounting
-FUSE="/lib/modules/fuse.ko";
-if [ -e $FUSE ]; then
-	insmod $FUSE;
-fi;
-
-# load serial modules for console cable usage.
-SERIAL_MODULE="/lib/modules/usbserial.ko";
-if [ -e $SERIAL_MODULE ]; then
-	insmod $SERIAL_MODULE;
-fi;
-
-CONSOLE_MODULE="/lib/modules/pl2303.ko";
-if [ -e $CONSOLE_MODULE ]; then
-	insmod $CONSOLE_MODULE;
-fi;
+for module in $(ls in /lib/modules/*.ko); do
+	$BB insmod "${module}";
+done;
 
 ######################################
 # Starting ROM choose and INIT config.

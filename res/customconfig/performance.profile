@@ -186,3 +186,4 @@ cortexbrain_battery=on
 cortexbrain_system=on
 cortexbrain_kernel_tweaks=on
 cortexbrain_io=on
+cortexbrain_read_ahead_kb=128
