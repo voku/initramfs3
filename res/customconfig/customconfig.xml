@@ -21,7 +21,7 @@
 			<spinnerItem name="100MHz" value="15"/> 
 		</spinner>
 
-		<spinner description="Sets the number of CPUs to be used in hotplugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
+		<spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
 			name="Max CPU Lock" action="generic /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock">
 			<spinnerItem name="Dual core mode" value="2"/> 
 			<spinnerItem name="Single core mode" value="1"/> 
@@ -230,10 +230,10 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 20000)"
 			name="down_sample_time" action="generic /tmp/down_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
 			name="hotplug_freq_1_1" action="generic /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
 			name="hotplug_freq_2_0" action="generic /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
 		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
@@ -331,10 +331,10 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 10000)" 
 			name="down_sample_time_sleep" action="generic /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
 			name="hotplug_freq_1_1_sleep" action="generic /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
 			name="hotplug_freq_2_0_sleep" action="generic /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
 		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
@@ -758,7 +758,7 @@
 		<checkbox description="Enable or Disable Android Additional Logs (needs reboot)" 
 			name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
 
-		<spinner description="ZRAM Module settings. Here you can shutdown ZRAM or add more compressed RAM for your system." 
+		<spinner description="ZRAM Module settings. Here you can shut down ZRAM or add more compressed RAM for your system." 
 			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
 			<spinnerItem name="Set ZRAM to 300MB (default)" value="2"/> 
@@ -831,7 +831,7 @@
 
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
-		<button description="DATA and CACHE file system check and repair on boot. !WARNING! This is a VERY DANGEROUS option! Before activating it DO A FULL BACKUP with Titanium Backup or any kind of backup application! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still can't boot, you will have to format DATA file system via recovery! USE IT AT YOUR OWN RISK! THIS FUNCTION IS NOT A TOY! YOU HAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it's OFF. It's also one time action, push the botton to Activate, push again to Abort!" name="FIX Filesystem on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
+		<button description="DATA and CACHE file system check and repair on boot. !WARNING! This is a VERY DANGEROUS option! Before activating it DO A FULL BACKUP with Titanium Backup or any kind of backup application! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still can't boot, you will have to format DATA file system via recovery! USE IT AT YOUR OWN RISK! THIS FUNCTION IS NOT A TOY! YOU HAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it's OFF. It's also one time action, push the button to Activate, push again to Abort!" name="FIX File System on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
 
 		<button description="Clean the media cache on your sdcard. Push once to clean, push again to abort. You have to reboot for action to work!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
 
@@ -941,7 +941,7 @@
 		<checkbox description='Enable or Disable "I/O-Tweaks". (To update after change REBOOT)'
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
-		<spinner description='Maximum number of kilobytes to read-ahead for filesystems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
+		<spinner description='Maximum number of kilobytes to read-ahead for file systems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
 			name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
 			<spinnerItem name="64 kb" value="64"/> 
 			<spinnerItem name="128 kb" value="128"/> 
@@ -958,7 +958,7 @@
 
 <settingsTab name="BACKUP/RESTORE">
 
-	<settingsPane description="Here you can Backup/Restore your STWEAKS settings after installing new kernel. When you restore STWEAKS, the application will be closed and your settings will be committed! Some settings will work only after reboot! Wait till STWEAKS restarts with the new settings! Restore will take up to 30 secs, just wait here!"
+	<settingsPane description="Here you can Backup/Restore your STWEAKS settings after installing new kernel. When you restore STWEAKS, the application will be closed and your settings will be committed! Some settings will work only after reboot! Wait till STWEAKS restarts with the new settings! Restore will take up to 30 sec, just wait here!"
 			name="STweaks Settings Backup/Restore">
 
 		<button description="Backup STweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
