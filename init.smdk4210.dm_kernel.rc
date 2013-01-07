@@ -13,7 +13,8 @@ on fs
     setprop pm.sleep_mode 1
     setprop ro.kernel.android.checkjni 0
     setprop ro.kernel.checkjni 0
-#   setprop persist.sys.purgeable_assets 1
+    setprop persist.sys.purgeable_assets 1
+    
 
 # Video Tuning
     setprop ro.media.enc.jpeg.quality 100,100,100
@@ -21,8 +22,8 @@ on fs
     setprop ro.media.enc.hprof.vid.bps 8000000
     setprop ro.config.hw_quickpoweron true
     setprop persist.sys.use_dithering 1
-#   setprop video.accelerate.hw 1
-#   setprop debug.performance.tuning 1
+    setprop video.accelerate.hw 1
+    setprop debug.performance.tuning 1
 #   setprop debug.sf.hw 1
 
 # Network Tuning
@@ -37,7 +38,7 @@ on fs
     setprop media.stagefright.enable-scan false
     setprop media.stagefright.enable-http true
     setprop ro.mot.eri.losalert.delay 1000
-    setprop ro.ril.disable.power.collapse 0
+    setprop ro.ril.disable.power.collapse 1
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
