@@ -414,7 +414,7 @@ CPU_GOV_TWEAKS()
 			echo "$down_avg_load_sleep" > $down_avg_load_tmp;			
 			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
-			echo "0" > $hotplug_lock_tmp;						
+			echo "0" > $hotplug_lock_tmp;
 
 		# awake-settings
 		else
@@ -1017,9 +1017,6 @@ SLEEP_MODE()
 		# set battery value
 		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 		
-		# set the vibrator - 0
-		echo "0" > /sys/vibrator/pwm_val;
-
 		DISABLE_NMI;
 
 		DISABLE_WIFI;
