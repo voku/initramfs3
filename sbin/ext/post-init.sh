@@ -37,15 +37,6 @@ if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
-JELLY=0;
-JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
-if [ $JELLY == 1 ]; then
-	# JB tweaks.
-	/sbin/setprop dalvik.vm.heaptargetutilization 0.75
-	/sbin/setprop dalvik.vm.heapminfree 512k
-	/sbin/setprop dalvik.vm.heapmaxfree 2m
-fi;
-
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
@@ -87,7 +78,7 @@ fi;
 $BB chmod -R 755 /lib;
 
 (
-	sleep 40;
+	sleep 30;
 	# order of modules load is important.
 	$BB insmod /lib/modules/scsi_wait_scan.ko;
 	$BB insmod /lib/modules/j4fs.ko;
