@@ -137,7 +137,7 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 		sysctl -w vm.panic_on_oom=0;
 		echo "65536" > /proc/sys/kernel/msgmax;
 		echo "2048" > /proc/sys/kernel/msgmni;
@@ -161,7 +161,7 @@ SYSTEM_TWEAKS()
 	if [ "$cortexbrain_system" == on ]; then
 		# render UI with GPU
 		setprop hwui.render_dirty_regions false;
-		setprop windowsmgr.max_events_per_sec 150;
+		setprop windowsmgr.max_events_per_sec 180;
 		setprop profiler.force_disable_err_rpt 1;
 		setprop profiler.force_disable_ulog 1;
 
@@ -502,13 +502,13 @@ TCP_TWEAKS()
 		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-		echo "524288" > /proc/sys/net/core/wmem_max;
+		echo "262144" > /proc/sys/net/core/wmem_max;
 		echo "524288" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
 		echo "262144" > /proc/sys/net/core/wmem_default;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
+		echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "4096 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
@@ -648,18 +648,6 @@ DISABLE_GESTURES()
 	echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	log -p i -t $FILE_NAME "*** GESTURE ***: disabled";
 }
-
-
-# please don't kill "cortexbrain"
-DONT_KILL_CORTEX()
-{
-	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
-	for i in $PIDOFCORTEX; do
-		echo "-950" > /proc/${i}/oom_score_adj;
-	done;
-	log -p i -t $FILE_NAME "*** DONT_KILL_CORTEX ***";
-}
-
 
 # mount sdcard and emmc, if usb mass storage is used
 MOUNT_SD_CARD()
@@ -939,8 +927,6 @@ AWAKE_MODE()
 	SYNC_BRIGHTNESS;
 	LESS_BRIGHTNESS;
 
-	DONT_KILL_CORTEX;
-
 	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 }
 
@@ -959,7 +945,7 @@ SLEEP_MODE()
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	fi;
 
-	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	KERNEL_SCHED_SLEEP;
 

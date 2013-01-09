@@ -5,7 +5,7 @@ on init
 on fs
 
 # Tweaks For ROM
-    setprop ro.telephony.call_ring.delay 800
+    setprop ro.telephony.call_ring.delay 0
     setprop ro.lge.proximity.delay 25
     setprop mot.proximity.delay 25
     setprop dalvik.vm.execution-mode int:jit
@@ -13,11 +13,9 @@ on fs
     setprop pm.sleep_mode 1
     setprop ro.kernel.android.checkjni 0
     setprop ro.kernel.checkjni 0
-    setprop persist.sys.purgeable_assets 1
-    
 
 # Video Tuning
-    setprop ro.media.enc.jpeg.quality 100,100,100
+    setprop ro.media.enc.jpeg.quality 70,90,100
     setprop ro.media.dec.jpeg.memcap 8000000
     setprop ro.media.enc.hprof.vid.bps 8000000
     setprop ro.config.hw_quickpoweron true
@@ -38,13 +36,13 @@ on fs
     setprop media.stagefright.enable-scan false
     setprop media.stagefright.enable-http true
     setprop ro.mot.eri.losalert.delay 1000
-    setprop ro.ril.disable.power.collapse 1
+    setprop ro.ril.disable.power.collapse 0
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.default 4096,87380,563200,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     4096,87380,1220608,4096,16384,563200
+    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
     setprop net.tcp.buffersize.hspa    4094,87380,563200,4096,16384,110208
     setprop net.tcp.buffersize.hsupa   4094,87380,563200,4096,16384,262144
