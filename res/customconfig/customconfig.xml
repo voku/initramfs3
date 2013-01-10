@@ -319,8 +319,8 @@
 
 		<spinner description="Non-zero means indefinite speed boost active. (Only for ZenX) (Default is 0)" 
 			name="boost" action="generic /tmp/boost">
-			<spinnerItem name="Not Boost" value="0"/> 
-			<spinnerItem name="Boost" value="1"/> 
+			<spinnerItem name="No" value="0"/> 
+			<spinnerItem name="Yes" value="1"/> 
 		</spinner>
 
 		<seekBar description="Duration of a boot pulse in usecs. (Only for ZenX) (default is 40000)"
@@ -396,8 +396,8 @@
 
 		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core/Frequency scale. 0 = History Load Based (Default), 1 = Current Load Based. (Only for Nightmare)" 
 			name="hotplug_compare_level_sleep" action="generic /tmp/hotplug_compare_level_sleep">
-			<spinnerItem name="No" value="0"/> 
-			<spinnerItem name="Yes" value="1"/> 
+			<spinnerItem name="History Load Based" value="0"/> 
+			<spinnerItem name="Current Load Based" value="1"/> 
 		</spinner>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 40)"
