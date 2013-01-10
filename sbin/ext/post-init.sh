@@ -85,6 +85,7 @@ $BB chmod -R 755 /lib;
 	sleep 5;
 	mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 	$BB insmod /lib/modules/Si4709_driver.ko;
+	$BB insmod /lib/modules/usbserial.ko;
 	$BB insmod /lib/modules/ftdi_sio.ko;
 	$BB insmod /lib/modules/pl2303.ko;
 	$BB insmod /lib/modules/cifs.ko;
