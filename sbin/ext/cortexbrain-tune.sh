@@ -137,7 +137,7 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		sysctl -w vm.panic_on_oom=0;
 		echo "65536" > /proc/sys/kernel/msgmax;
 		echo "2048" > /proc/sys/kernel/msgmni;
@@ -475,10 +475,10 @@ MEMORY_TWEAKS()
 		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
-		echo "1000" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "4096" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -861,6 +861,12 @@ ENABLE_NMI()
 	fi;
 }
 
+GAMMA_FIX()
+{
+	echo "$min_gamma" > /sys/class/misc/brightness_curve/min_gamma;
+	echo "$max_gamma" > /sys/class/misc/brightness_curve/max_gamma;
+	log -p i -t $FILE_NAME "*** GAMMA_FIX ***: done";
+}
 
 # ==============================================================
 # TWEAKS: if Screen-ON
@@ -870,6 +876,8 @@ AWAKE_MODE()
 	ENABLE_LOGGER;
 
 	ENABLE_WIFI;
+
+	GAMMA_FIX;
 
 	KERNEL_SCHED_AWAKE;
 

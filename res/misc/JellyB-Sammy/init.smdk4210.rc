@@ -144,7 +144,6 @@ on fs
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait rw
     mount ext4 /res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait encryptable=/efs/metadata rw
 
-#   mount_all /fstab.smdk4210
     setprop ro.crypto.fuse_sdcard false
 
 # Permissions for backlight
