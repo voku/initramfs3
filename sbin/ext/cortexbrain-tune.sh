@@ -367,6 +367,70 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $down_avg_load_tmp ]; then	
 			down_avg_load_tmp="/dev/null";
 		fi;
+		target_loads_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/target_loads";
+		if [ ! -e $target_loads_tmp ]; then	
+			target_loads_tmp="/dev/null";
+		fi;
+		go_hispeed_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/go_hispeed_load";
+		if [ ! -e $go_hispeed_load_tmp ]; then	
+			go_hispeed_load_tmp="/dev/null";
+		fi;
+		unplug_load_cpu1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/unplug_load_cpu1";
+		if [ ! -e $unplug_load_cpu1_tmp ]; then	
+			unplug_load_cpu1_tmp="/dev/null";
+		fi;
+		unplug_load_cpu2_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/unplug_load_cpu2";
+		if [ ! -e $unplug_load_cpu2_tmp ]; then	
+			unplug_load_cpu2_tmp="/dev/null";
+		fi;
+		unplug_load_cpumore_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/unplug_load_cpumore";
+		if [ ! -e $unplug_load_cpumore_tmp ]; then	
+			unplug_load_cpumore_tmp="/dev/null";
+		fi;
+		hot_add_sampling_periods_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_add_sampling_periods";
+		if [ ! -e $hot_add_sampling_periods_tmp ]; then	
+			hot_add_sampling_periods_tmp="/dev/null";
+		fi;
+		hot_add_sampling_periods_suspended_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_add_sampling_periods_suspended";
+		if [ ! -e $hot_add_sampling_periods_suspended_tmp ]; then	
+			hot_add_sampling_periods_suspended_tmp="/dev/null";
+		fi;
+		hot_remove_sampling_periods_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_remove_sampling_periods";
+		if [ ! -e $hot_remove_sampling_periods_tmp ]; then	
+			hot_remove_sampling_periods_tmp="/dev/null";
+		fi;
+		hot_remove_sampling_periods_suspended_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_remove_sampling_periods_suspended";
+		if [ ! -e $hot_remove_sampling_periods_suspended_tmp ]; then	
+			hot_remove_sampling_periods_suspended_tmp="/dev/null";
+		fi;
+		above_hispeed_delay_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/above_hispeed_delay";
+		if [ ! -e $above_hispeed_delay_tmp ]; then	
+			above_hispeed_delay_tmp="/dev/null";
+		fi;
+		min_sample_time_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_sample_time";
+		if [ ! -e $min_sample_time_tmp ]; then	
+			min_sample_time_tmp="/dev/null";
+		fi;
+		timer_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_rate";
+		if [ ! -e $timer_rate_tmp ]; then	
+			timer_rate_tmp="/dev/null";
+		fi;
+		timer_rate_suspended_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_rate_suspended";
+		if [ ! -e $timer_rate_suspended_tmp ]; then	
+			timer_rate_suspended_tmp="/dev/null";
+		fi;
+		timer_slack_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_slack";
+		if [ ! -e $timer_slack_tmp ]; then	
+			timer_slack_tmp="/dev/null";
+		fi;
+		boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boost";
+		if [ ! -e $boost_tmp ]; then	
+			boost_tmp="/dev/null";
+		fi;
+		boostpulse_duration_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostpulse_duration";
+		if [ ! -e $boostpulse_duration_tmp ]; then	
+			boostpulse_duration_tmp="/dev/null";
+		fi;
 
 		# power_performance
 		if [ "$power_performance" == 1 ]; then
@@ -414,7 +478,20 @@ CPU_GOV_TWEAKS()
 			echo "$down_avg_load_sleep" > $down_avg_load_tmp;			
 			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
-			echo "0" > $hotplug_lock_tmp;
+			echo "0" > $hotplug_lock_tmp;			
+			echo "$target_loads_sleep" > $target_loads_tmp;
+			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
+			echo "$unplug_load_cpu1_sleep" > $unplug_load_cpu1_tmp;
+			echo "$unplug_load_cpu2_sleep" > $unplug_load_cpu2_tmp;
+			echo "$unplug_load_cpumore_sleep" > $unplug_load_cpumore_tmp;
+			echo "$hot_add_sampling_periods_sleep" > $hot_add_sampling_periods_tmp;
+			echo "$hot_remove_sampling_periods_sleep" > $hot_remove_sampling_periods_tmp;
+			echo "$above_hispeed_delay_sleep" > $above_hispeed_delay_tmp;
+			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
+			echo "$timer_rate_sleep" > $timer_rate_tmp;
+			echo "$timer_slack_sleep" > $timer_slack_tmp;
+			echo "$boost_sleep" > $boost_tmp;
+			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
 
 		# awake-settings
 		else
@@ -452,6 +529,22 @@ CPU_GOV_TWEAKS()
 			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
 			echo "0" > $hotplug_lock_tmp;
+			echo "$target_loads" > $target_loads_tmp;
+			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
+			echo "$unplug_load_cpu1" > $unplug_load_cpu1_tmp;
+			echo "$unplug_load_cpu2" > $unplug_load_cpu2_tmp;
+			echo "$unplug_load_cpumore" > $unplug_load_cpumore_tmp;
+			echo "$hot_add_sampling_periods" > $hot_add_sampling_periods_tmp;
+			echo "$hot_add_sampling_periods_suspended" > $hot_add_sampling_periods_suspended_tmp;
+			echo "$hot_remove_sampling_periods" > $hot_remove_sampling_periods_tmp;
+			echo "$hot_remove_sampling_periods_suspended" > $hot_remove_sampling_periods_suspended_tmp;
+			echo "$above_hispeed_delay" > $above_hispeed_delay_tmp;
+			echo "$min_sample_time" > $min_sample_time_tmp;
+			echo "$timer_rate" > $timer_rate_tmp;
+			echo "$timer_rate_suspended" > $timer_rate_suspended_tmp;
+			echo "$timer_slack" > $timer_slack_tmp;
+			echo "$boost" > $boost_tmp;
+			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
 
 		fi;
 
