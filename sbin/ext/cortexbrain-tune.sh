@@ -120,11 +120,11 @@ IO_TWEAKS()
 			echo "$cortexbrain_read_ahead_kb" > $i/read_ahead_kb;
 		done;
 
-#		echo "45" > /proc/sys/fs/lease-break-time;
-#		echo "524288" > /proc/sys/fs/file-max;
-#		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
-#		echo "256" > /proc/sys/fs/inotify/max_user_instances;
-#		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
+		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "524288" > /proc/sys/fs/file-max;
+		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
+		echo "256" > /proc/sys/fs/inotify/max_user_instances;
+		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -137,16 +137,16 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		sysctl -w vm.panic_on_oom=0;
-#		echo "65536" > /proc/sys/kernel/msgmax;
-#		echo "2048" > /proc/sys/kernel/msgmni;
-#		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-#		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
-#		echo "500 512000 64 2048" > /proc/sys/kernel/sem;
-#		echo "2097152" > /proc/sys/kernel/shmall;
-#		echo "268435456" > /proc/sys/kernel/shmmax;
-#		echo "524288" > /proc/sys/kernel/threads-max;
+		echo "65536" > /proc/sys/kernel/msgmax;
+		echo "2048" > /proc/sys/kernel/msgmni;
+		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+		echo "500 512000 64 2048" > /proc/sys/kernel/sem;
+		echo "2097152" > /proc/sys/kernel/shmall;
+		echo "268435456" > /proc/sys/kernel/shmmax;
+		echo "524288" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	fi;
@@ -161,7 +161,7 @@ SYSTEM_TWEAKS()
 	if [ "$cortexbrain_system" == on ]; then
 		# render UI with GPU
 		setprop hwui.render_dirty_regions false;
-		setprop windowsmgr.max_events_per_sec 150;
+		setprop windowsmgr.max_events_per_sec 180;
 		setprop profiler.force_disable_err_rpt 1;
 		setprop profiler.force_disable_ulog 1;
 
@@ -414,7 +414,7 @@ CPU_GOV_TWEAKS()
 			echo "$down_avg_load_sleep" > $down_avg_load_tmp;			
 			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
-			echo "0" > $hotplug_lock_tmp;						
+			echo "0" > $hotplug_lock_tmp;
 
 		# awake-settings
 		else
@@ -471,14 +471,14 @@ MEMORY_TWEAKS()
 	if [ "$cortexbrain_memory" == on ]; then
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-		#echo "20" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		#echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
-		#echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		#echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
-		#echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		#echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
-		#echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
+		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
+		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "3" > /proc/sys/vm/page-cluster; # default: 3
+		echo "4096" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -502,13 +502,13 @@ TCP_TWEAKS()
 		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-		echo "524288" > /proc/sys/net/core/wmem_max;
+		echo "262144" > /proc/sys/net/core/wmem_max;
 		echo "524288" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
 		echo "262144" > /proc/sys/net/core/wmem_default;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
+		echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "4096 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
@@ -648,18 +648,6 @@ DISABLE_GESTURES()
 	echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	log -p i -t $FILE_NAME "*** GESTURE ***: disabled";
 }
-
-
-# please don't kill "cortexbrain"
-DONT_KILL_CORTEX()
-{
-	PIDOFCORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
-	for i in $PIDOFCORTEX; do
-		echo "-950" > /proc/${i}/oom_score_adj;
-	done;
-	log -p i -t $FILE_NAME "*** DONT_KILL_CORTEX ***";
-}
-
 
 # mount sdcard and emmc, if usb mass storage is used
 MOUNT_SD_CARD()
@@ -873,6 +861,12 @@ ENABLE_NMI()
 	fi;
 }
 
+GAMMA_FIX()
+{
+	echo "$min_gamma" > /sys/class/misc/brightness_curve/min_gamma;
+	echo "$max_gamma" > /sys/class/misc/brightness_curve/max_gamma;
+	log -p i -t $FILE_NAME "*** GAMMA_FIX ***: done";
+}
 
 # ==============================================================
 # TWEAKS: if Screen-ON
@@ -882,6 +876,8 @@ AWAKE_MODE()
 	ENABLE_LOGGER;
 
 	ENABLE_WIFI;
+
+	GAMMA_FIX;
 
 	KERNEL_SCHED_AWAKE;
 
@@ -939,8 +935,6 @@ AWAKE_MODE()
 	SYNC_BRIGHTNESS;
 	LESS_BRIGHTNESS;
 
-	DONT_KILL_CORTEX;
-
 	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 }
 
@@ -959,7 +953,7 @@ SLEEP_MODE()
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	fi;
 
-	echo "500" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+	echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
 	KERNEL_SCHED_SLEEP;
 
@@ -1017,9 +1011,6 @@ SLEEP_MODE()
 		# set battery value
 		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 		
-		# set the vibrator - 0
-		echo "0" > /sys/vibrator/pwm_val;
-
 		DISABLE_NMI;
 
 		DISABLE_WIFI;

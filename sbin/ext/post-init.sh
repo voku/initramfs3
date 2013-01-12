@@ -37,15 +37,6 @@ if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
-JELLY=0;
-JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
-if [ $JELLY == 1 ]; then
-	# JB tweaks.
-	/sbin/setprop dalvik.vm.heaptargetutilization 0.75
-	/sbin/setprop dalvik.vm.heapminfree 512k
-	/sbin/setprop dalvik.vm.heapmaxfree 2m
-fi;
-
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
@@ -80,6 +71,25 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/binder/parameters/debug_mask;
 	echo "0" > /sys/module/xt_qtaguid/parameters/debug_mask;
 fi;
+
+######################################
+# Loading Modules
+######################################
+$BB chmod -R 755 /lib;
+
+(
+	sleep 30;
+	# order of modules load is important.
+	$BB insmod /lib/modules/j4fs.ko;
+
+	sleep 5;
+	mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
+	$BB insmod /lib/modules/Si4709_driver.ko;
+	$BB insmod /lib/modules/usbserial.ko;
+	$BB insmod /lib/modules/ftdi_sio.ko;
+	$BB insmod /lib/modules/pl2303.ko;
+	$BB insmod /lib/modules/cifs.ko;
+)&
 
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
