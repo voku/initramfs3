@@ -1,0 +1,28 @@
+#!/sbin/busybox sh
+
+mount -o remount,rw /;
+mount -o remount,rw /system;
+
+TMPFILE=$(mktemp -t);
+TMPFILE2=$(mktemp -t);
+OLD_VERSION=`cat /proc/version | sed 's/.*-V//g' | sed 's/-I.*//g'`;
+
+TESTCONNECTION=`wget http://www.google.com -O $TMPFILE > /dev/null 2>&1`;
+if [ $? != 0 ]; then
+	echo "Problem: no internet connection! connect and try again";
+else
+	wget http://www.dorimanx.com/Android-ICS/ -O $TMPFILE > /dev/null 2>&1;
+	cat $TMPFILE | grep ".*-V" |  sed 's/.*-V//g' | sed 's/-I.*//g' | sed 's/[-\[].*//g' > $TMPFILE2;
+
+	for version in $(cat $TMPFILE2); do 
+		# debug
+		#echo $version " - " $old_version;
+
+		expr $version \> $old_version >/dev/null && echo "There is a new version of this kernel available!!!"; 
+		expr "7.10" \= $version >/dev/null && break;
+	done;
+	
+fi;
+
+rm $TMPFILE;
+rm $TMPFILE2;

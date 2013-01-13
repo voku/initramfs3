@@ -1107,4 +1107,14 @@
 
 </settingsTab>
 
+<settingsTab name="KERNEL-UPDATE">
+
+	<settingsPane description="Check if there is a new kernel-update available." name="Kernel-Update">
+
+		<button description="Check for Update" name="Kernel-Update" action="push-actions/kernel_check" label="KERNEL-CHECK"/>
+
+	</settingsPane>
+
+</settingsTab>
+
 </settingsRoot>
