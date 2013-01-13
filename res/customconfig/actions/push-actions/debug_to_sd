@@ -56,6 +56,18 @@ case "${debug_to_sd}" in
 			cat /proc/meminfo >> $DEBUG_FILE;
 			SEPARATOR;
 
+			# low mem kill info
+			echo "App-Info for 'low memory killer':" >> $DEBUG_FILE;
+			for i in `ls /proc/ | grep -E '^[0-9]+'`; do
+				if [ "$i" -ne 0 ] && [ -f  "/proc/$i/oom_score_adj" ] && [ "`cat /proc/$i/cmdline`" ]; then
+					echo "" >> $DEBUG_FILE;
+					cat /proc/$i/oom_score_adj >> $DEBUG_FILE;
+					cat /proc/$i/cmdline >> $DEBUG_FILE;
+					echo "" >> $DEBUG_FILE;
+				fi;
+			done;
+			SEPARATOR;
+
 			# CPU
 			echo "CPU-Info:" >> $DEBUG_FILE;
 			scaling_governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
