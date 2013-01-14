@@ -818,6 +818,49 @@
 
 </settingsTab>
 
+<settingsTab name="I/O">
+
+	<settingsPane description="Here you can tune I/O settings managed by Kernel" name="I/O Tuning">
+
+		<spinner description='Maximum number of kilobytes to read-ahead for file systems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
+			name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
+			<spinnerItem name="64 kb" value="64"/>
+			<spinnerItem name="128 kb" value="128"/>
+			<spinnerItem name="256 kb" value="256"/>
+			<spinnerItem name="512 kb" value="512"/>
+			<spinnerItem name="1024 kb" value="1024"/>
+			<spinnerItem name="2048 kb" value="2048"/>
+			<spinnerItem name="4096 kb" value="4096"/>
+		</spinner>
+
+		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to copy big files to external sdcard!. Default: ZEN"
+			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+			<spinnerItem name="ZEN" value="zen"/>
+			<spinnerItem name="ROW" value="row"/>
+			<spinnerItem name="SIO" value="sio"/>
+			<spinnerItem name="NOOP" value="noop"/>
+			<spinnerItem name="DEADLINE" value="deadline"/>
+			<spinnerItem name="VR" value="vr"/>
+			<spinnerItem name="CFQ" value="cfq"/>
+			<spinnerItem name="BFQ" value="bfq"/>
+		</spinner>
+
+		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. Default: NOOP"
+			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
+			<spinnerItem name="ZEN" value="zen"/>
+			<spinnerItem name="ROW" value="row"/>
+			<spinnerItem name="SIO" value="sio"/>
+			<spinnerItem name="NOOP" value="noop"/>
+			<spinnerItem name="DEADLINE" value="deadline"/>
+			<spinnerItem name="VR" value="vr"/>
+			<spinnerItem name="CFQ" value="cfq"/>
+			<spinnerItem name="BFQ" value="bfq"/>
+		</spinner>
+
+	</settingsPane>
+
+</settingsTab>
+
 <settingsTab name="Misc">
 
 	<settingsPane description="Dual Mount-SDCARD and MMC via USB. After USB is disconnected, Dual Mount is disabled! This tweak is working automatically. Plug USB, turn off the screen and then turn ON, and you get working mounts. To scan your new MEDIA files, use some app to force Media Scan." name="DUAL MOUNT USB">
@@ -878,30 +921,6 @@
 		</spinner>
 
 		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
-
-		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard, use ZEN if you have problems to copy big files to external sdcard!. Default: ZEN" 
-			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
-			<spinnerItem name="ZEN" value="zen"/> 
-			<spinnerItem name="ROW" value="row"/> 
-			<spinnerItem name="SIO" value="sio"/> 
-			<spinnerItem name="NOOP" value="noop"/> 
-			<spinnerItem name="DEADLINE" value="deadline"/> 
-			<spinnerItem name="VR" value="vr"/> 
-			<spinnerItem name="CFQ" value="cfq"/> 
-			<spinnerItem name="BFQ" value="bfq"/> 
-		</spinner>
-
-		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. Default: NOOP"
-			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
-			<spinnerItem name="ZEN" value="zen"/> 
-			<spinnerItem name="ROW" value="row"/> 
-			<spinnerItem name="SIO" value="sio"/> 
-			<spinnerItem name="NOOP" value="noop"/> 
-			<spinnerItem name="DEADLINE" value="deadline"/> 
-			<spinnerItem name="VR" value="vr"/> 
-			<spinnerItem name="CFQ" value="cfq"/> 
-			<spinnerItem name="BFQ" value="bfq"/> 
-		</spinner>
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or MTP." 
 			name="USB mass storage mode" action="usb-mode">
@@ -1036,17 +1055,6 @@
 
 		<checkbox description='Enable or Disable "I/O-Tweaks". (To update after change REBOOT)'
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
-
-		<spinner description='Maximum number of kilobytes to read-ahead for file systems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
-			name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
-			<spinnerItem name="64 kb" value="64"/> 
-			<spinnerItem name="128 kb" value="128"/> 
-			<spinnerItem name="256 kb" value="256"/> 
-			<spinnerItem name="512 kb" value="512"/> 
-			<spinnerItem name="1024 kb" value="1024"/> 
-			<spinnerItem name="2048 kb" value="2048"/>
-			<spinnerItem name="4096 kb" value="4096"/>
-		</spinner>
 
 	</settingsPane>
 
