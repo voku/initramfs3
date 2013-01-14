@@ -54,7 +54,7 @@ JBSAMMY=0;
 if [ "$JBSAMMY" == 1 ]; then
 	echo "1" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 	sed -i "s/enable_mask=[0-1]*/enable_mask=1/g" /data/.siyah/$PROFILE.profile;
-fi:
+fi;
 
 # ==============================================================
 # I/O-TWEAKS 
