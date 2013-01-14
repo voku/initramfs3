@@ -151,6 +151,7 @@ user_cr=127
 mdniemod=off
 user_gamma_adjust=5
 pwm_val=75
+tsp_touch_freq=500000
 tsp_slide2wake=on
 mdnie_shortcut_enabled=off
 fbearlysuspend_delay0=50

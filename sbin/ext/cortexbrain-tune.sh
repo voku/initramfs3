@@ -48,6 +48,14 @@ dirty_writeback_centisecs_battery=0;
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
 
+# TEMP FIX for JB ROM music shattering on screen off + fix for notification sound bug.
+JBSAMMY=0;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
+if [ "$JBSAMMY" == 1 ]; then
+	echo "1" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	sed -i "s/enable_mask=[0-1]*/enable_mask=1/g" /data/.siyah/$PROFILE.profile;
+fi;
+
 # ==============================================================
 # I/O-TWEAKS 
 # ==============================================================
