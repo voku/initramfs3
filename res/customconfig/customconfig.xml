@@ -32,7 +32,7 @@
 			name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
-			<spinnerItem name="ZenX" value="ZenX"/> 
+			<spinnerItem name="zenx" value="zenx"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
@@ -118,7 +118,7 @@
 			<spinnerItem name="sleepy" value="sleepy"/> 
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
-			<spinnerItem name="ZenX" value="ZenX"/> 
+			<spinnerItem name="zenx" value="zenx"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
