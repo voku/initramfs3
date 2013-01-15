@@ -311,12 +311,20 @@ on boot
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
 
     # Assume SMP uses shared cpufreq policy for all CPUs
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+
+    chown system system /sys/block/mmcblk0/queue/scheduler
+    chmod 0664 /sys/block/mmcblk0/queue/scheduler
 
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/backlight/panel/brightness
     chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/jogball-backlight/brightness
     chown system system /sys/class/leds/red/brightness
@@ -339,6 +347,7 @@ on boot
     chown system system /sys/kernel/ipv4/tcp_rmem_min
     chown system system /sys/kernel/ipv4/tcp_rmem_def
     chown system system /sys/kernel/ipv4/tcp_rmem_max
+    chown system system /sys/class/power_supply/battery/temp
     chown root radio /proc/cmdline
 
 # Permissions for gpio_keys
@@ -493,10 +502,10 @@ service debuggerd /system/bin/debuggerd
 
 service ril-daemon /system/bin/rild
     class main
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
+    socket rild stream 0660 root radio
+    socket rild-debug stream 0660 radio system
     user root
-    group radio cache inet misc audio sdcard_rw log
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log
     onrestart restart cpboot-daemon
 
 service DR-daemon /system/bin/ddexe
@@ -537,7 +546,7 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 660 root system
+    socket zygote stream 0660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
@@ -580,16 +589,16 @@ service bootanim /system/bin/bootanimation
 
 service dbus /system/bin/dbus-daemon --system --nofork
     class main
-    socket dbus stream 660 bluetooth bluetooth
+    socket dbus stream 0660 bluetooth bluetooth
     user bluetooth
     group bluetooth net_bt_admin
 
 service bluetoothd /system/bin/bluetoothd -n
     class main
-    socket bluetooth stream 660 bluetooth bluetooth
-    socket dbus_bluetooth stream 660 bluetooth bluetooth
-    # init.rc does not yet support applying capabilities, so run as root and
-    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+    socket bluetooth stream 0660 bluetooth bluetooth
+    socket dbus_bluetooth stream 0660 bluetooth bluetooth
+# init.rc does not yet support applying capabilities, so run as root and
+# let bluetoothd drop uid to bluetooth with the right linux capabilities
     group bluetooth net_bt_admin misc
     disabled
 
@@ -606,7 +615,7 @@ service iprenew_bnep0 /system/bin/dhcpcd -n
 
 service installd /system/bin/installd
     class main
-    socket installd stream 600 system system
+    socket installd stream 0600 system system
 
 service flash_recovery /system/etc/install-recovery.sh
     class main
@@ -614,15 +623,15 @@ service flash_recovery /system/etc/install-recovery.sh
 
 service racoon /system/bin/racoon
     class main
-    socket racoon stream 600 system system
-    # IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
+    socket racoon stream 0600 system system
+# IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
     group vpn net_admin inet
     disabled
     oneshot
 
 service mtpd /system/bin/mtpd
     class main
-    socket mtpd stream 600 system system
+    socket mtpd stream 0600 system system
     user vpn
     group vpn net_admin inet net_raw
     disabled
@@ -632,7 +641,7 @@ service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
     group keystore drmrpc
-    socket keystore stream 666
+    socket keystore stream 0666
 
 service dumpstate /system/bin/dumpstate -s
     class main
