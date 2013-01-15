@@ -136,10 +136,17 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB rm -f /data/.siyah/booting;
-	# ==============================================================
-	# STWEAKS FIXING
-	# ==============================================================
 
+	# change USB mode MTP or Mass Storage
+	/res/customconfig/actions/usb-mode ${usb_mode};
+)&
+
+(
+	# ###############################################################
+	# JB Low Sound Fix.
+	# ###############################################################
+
+	sleep 30;
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
 	MIUI_JB=0;
 	JELLY=0;
@@ -149,19 +156,19 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 		if [ "$jb_sound_fix" == "on" ]; then
 			input keyevent 25
 			input keyevent 25
+			input keyevent 25
+			input keyevent 24
+			input keyevent 24
 			input keyevent 24
 			input keyevent 24
 		fi;
 	fi;
-
-	# change USB mode MTP or Mass Storage
-	/res/customconfig/actions/usb-mode ${usb_mode};
 )&
 
 (
 	while [ "`cat /proc/loadavg | cut -c1`" -ge "3" ]; do
 		echo "Waiting For CPU to cool down";
-		sleep 60;
+		sleep 30;
 	done;
 
 	PIDOFACORE=`pgrep -f "android.process.acore"`;

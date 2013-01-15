@@ -1,0 +1,15 @@
+#!/sbin/busybox sh
+
+mount -o remount,rw /system;
+
+GPIOKEYS="/system/usr/keylayout/gpio-keys.kl";
+if [ -e $GPIOKEYS ]; then
+	KHCOUNT=`cat $GPIOKEYS | grep "102" -c`;
+	if [ $KHCOUNT == 1 ]; then
+		sed -i 's/102/172/g' $GPIOKEYS;
+		echo "Home Key Restored to JB SAMMY Default!";
+	else
+		echo "Home Key already restored! you can install other kernel";
+	fi;
+fi;
+

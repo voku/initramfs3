@@ -41,12 +41,12 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0770 wifi system
+    mkdir /data/misc/wifi 0774 wifi system
     mkdir /efs/wifi 0775 radio system
     mkdir /efs/bluetooth 0775 radio system
     mkdir /efs/imei 0775 radio system
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0774 wifi wifi
     mkdir /data/misc/dhcp 0775 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
     chown system system /efs/wifi/.mac.info
@@ -197,8 +197,7 @@ on fs
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system media_rw /sys/class/mdnie/mdnie/negative
-    write /sys/class/mdnie/mdnie/scenario 0
-    write /sys/class/mdnie/mdnie/mode 0
+    write /sys/class/mdnie/mdnie/scenario 4
 
 # Switch Device
     chown system radio /sys/class/sec/switch/uart_sel/value
