@@ -594,10 +594,10 @@
 		<seekBar description="Setting min_bl higher will result in staying in the lowest brightness level for brighter conditions. Default: 30" 
 			name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
 
-		<seekBar description="Minimum brightness level. Default: 0"
+		<seekBar description="Minimum brightness level. Default: 1"
 			name="min_gamma" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="23"/>
 
-		<seekBar description="Maximum brightness level. Default: 24" 
+		<seekBar description="Maximum brightness level. Default and MAX: 23" 
 			name="max_gamma" action="generic /sys/class/misc/brightness_curve/max_gamma" unit="" min="0" reversed="false" step="1" max="23"/>
 
 		<checkbox description="LCD Power Reduce for backlight. If you like brighter screen in cost of battery drain, then turn it off.  Default: On."
@@ -635,7 +635,7 @@
 			name="Vibration force" action="generic /sys/vibrator/pwm_val" unit="%" min="0" reversed="false" step="5" max="100"/>
 
 		<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)"
-			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="0" reversed="false" step="100000" max="1200000"/>
+			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
 		<checkbox description="Slide2Wake By Fluxi@xda. When screen is turned off, swipe from the left side of the screen to the right side of the screen, and the screen will be turned on!"
 			name="Slide2Wake ON/OFF switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
@@ -819,9 +819,9 @@
 
 </settingsTab>
 
-<settingsTab name="I/O">
+<settingsTab name="I/O and OOM">
 
-	<settingsPane description="Here you can tune I/O settings managed by Kernel" name="I/O Tuning">
+	<settingsPane description="Here you can tune I/O and OOM(low mem management) settings managed by Kernel" name="I/O and OOM Tuning">
 
 		<spinner description='Maximum number of kilobytes to read-ahead for file systems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! Default: 128'
 			name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
@@ -856,6 +856,15 @@
 			<spinnerItem name="SIO" value="sio"/>
 			<spinnerItem name="VR" value="vr"/>
 			<spinnerItem name="ZEN" value="zen"/>
+		</spinner>
+
+		<spinner description="Here you can set the level of low mem managemet by kernel lowmemkiller function, more aggressive, then more free RAM but more killed apps"
+			name="OOM Level Tuning" action="oom_config">
+			<spinnerItem name="very_light" value="very_light"/> 
+			<spinnerItem name="light" value="light"/> 
+			<spinnerItem name="medium" value="medium"/> 
+			<spinnerItem name="aggressive" value="aggressive"/> 
+			<spinnerItem name="exterminate" value="exterminate"/> 
 		</spinner>
 
 	</settingsPane>

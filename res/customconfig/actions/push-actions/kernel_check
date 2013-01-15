@@ -1,28 +1,42 @@
 #!/sbin/busybox sh
 
-mount -o remount,rw /;
-mount -o remount,rw /system;
+WGET_CHECK1=`ls -la /system/xbin/wget | wc -l`;
+WGET_CHECK2=`ls -la /system/bin/wget | wc -l`;
 
-TMPFILE=$(mktemp -t);
-TMPFILE2=$(mktemp -t);
-OLD_VERSION=`cat /proc/version | sed 's/.*-V//g' | sed 's/-I.*//g'`;
+if [ "$WGET_CHECK1" == 1 ] || [ "$WGET_CHECK2" == 1 ]; then
 
-TESTCONNECTION=`wget http://www.google.com -O $TMPFILE > /dev/null 2>&1`;
-if [ $? != 0 ]; then
-	echo "Problem: no internet connection! connect and try again";
+	mount -o remount,rw /;
+	mount -o remount,rw /system;
+
+	DNS1=`getprop net.rmnet0.dns1`;
+	DNS2=`getprop net.rmnet0.dns2`;
+
+	echo "nameserver 8.8.8.8" > /system/etc/resolv.conf;
+	echo "nameserver $DNS1" >> /system/etc/resolv.conf;
+	echo "nameserver $DNS2" >> /system/etc/resolv.conf;
+
+	TMPFILE=$(mktemp -t);
+	TMPFILE2=$(mktemp -t);
+	OLD_VERSION=`cat /proc/version | sed 's/.*-V//g' | sed 's/-I.*//g'`;
+
+	TESTCONNECTION=`wget http://www.google.com -O $TMPFILE > /dev/null 2>&1`;
+	if [ $? != 0 ]; then
+		echo "Problem: no internet connection! connect and try again";
+	else
+		wget http://www.dorimanx.com/Android-ICS/ -O $TMPFILE > /dev/null 2>&1;
+		cat $TMPFILE | grep ".*-V" |  sed 's/.*-V//g' | sed 's/-I.*//g' | sed 's/[-\[].*//g' > $TMPFILE2;
+
+		for version in $(cat $TMPFILE2); do
+			# debug
+			#echo $version " - " $OLD_VERSION;
+
+			expr $version \> $OLD_VERSION >/dev/null && echo "There is a new version of this kernel available!!!";
+			expr "7.10" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
+		done;
+	fi;
+
+	rm $TMPFILE;
+	rm $TMPFILE2;
 else
-	wget http://www.dorimanx.com/Android-ICS/ -O $TMPFILE > /dev/null 2>&1;
-	cat $TMPFILE | grep ".*-V" |  sed 's/.*-V//g' | sed 's/-I.*//g' | sed 's/[-\[].*//g' > $TMPFILE2;
-
-	for version in $(cat $TMPFILE2); do 
-		# debug
-		#echo $version " - " $OLD_VERSION;
-
-		expr $version \> $OLD_VERSION >/dev/null && echo "There is a new version of this kernel available!!!"; 
-		expr "7.10" \= $version >/dev/null && break;
-	done;
-	
+	echo "Your BusyBox is not supported! Update to latest";
 fi;
-
-rm $TMPFILE;
-rm $TMPFILE2;

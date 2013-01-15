@@ -41,6 +41,10 @@ fi;
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
+# oom and mem perm fix
+chmod 777 /sys/module/lowmemorykiller/parameters/cost;
+chmod 777 /proc/sys/vm/mmap_min_addr;
+
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh; 
 
@@ -48,13 +52,10 @@ nohup /sbin/ext/cortexbrain-tune.sh;
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	MIUI=0;
 	MIUI_JB=0;
-	[ -f /system/framework/framework-miui.jar ] && MIUI=1;
-	[ -f /system/framework/miui-framework.jar ] && MIUI=1;
 	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 
-	if [ $init_d == on ] || [ "$MIUI" == 1 ] || [ "$MIUI_JB" == 1 ]; then
+	if [ $init_d == on ] || [ "$MIUI_JB" == 1 ]; then
 		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&

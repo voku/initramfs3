@@ -192,6 +192,7 @@ zramtweaks=4
 gpsregion=No_GPS_Zone_changes
 scheduler=zen
 sleep_scheduler=noop
+oom_config=medium
 usb_mode=default
 auto_mount_sd=on
 default_stats=off

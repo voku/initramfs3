@@ -81,10 +81,8 @@ loglevel 3
     write /proc/cpu/alignment 4
     write /proc/sys/kernel/sched_compat_yield 1
     write /proc/sys/kernel/sched_child_runs_first 0
-#   write /proc/sys/kernel/randomize_va_space 2
     write /proc/sys/kernel/kptr_restrict 0
     write /proc/sys/kernel/dmesg_restrict 0
-    write /proc/sys/vm/mmap_min_addr 32768
     write /proc/sys/kernel/sched_rt_runtime_us 950000
     write /proc/sys/kernel/sched_rt_period_us 1000000
 
@@ -434,13 +432,13 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+    group system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc sdcard_rw sdcard_r media_rw
     ioprio rt 4
 
 service bootanim /system/bin/bootanimation
     class main
     user graphics
-    group graphics
+    group graphics system
     disabled
     oneshot
 

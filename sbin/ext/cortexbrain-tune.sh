@@ -52,8 +52,7 @@ cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 
 JBSAMMY=0;
 [ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
 if [ "$JBSAMMY" == 1 ]; then
-	echo "1" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
-	sed -i "s/enable_mask=[0-1]*/enable_mask=1/g" /data/.siyah/$PROFILE.profile;
+	/res/uci.sh generic /sys/module/cpuidle_exynos4/parameters/enable_mask 1;
 fi;
 
 # ==============================================================
@@ -128,7 +127,7 @@ IO_TWEAKS()
 			echo "$cortexbrain_read_ahead_kb" > $i/read_ahead_kb;
 		done;
 
-		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "15" > /proc/sys/fs/lease-break-time;
 		echo "524288" > /proc/sys/fs/file-max;
 		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
 		echo "256" > /proc/sys/fs/inotify/max_user_instances;
