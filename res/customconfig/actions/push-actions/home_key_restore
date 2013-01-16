@@ -18,6 +18,6 @@ if [ "$JBSAMMY" == 1 ]; then
 		fi;
 	fi;
 else
-	echo "You dont have JB SAMMY ROM, Go Away :)";
+	echo "You dont have JB SAMMY ROM :)";
 fi;
 
