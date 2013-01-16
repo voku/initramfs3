@@ -5,21 +5,29 @@
 			name="CPU Global Settings">
 
 		<seekBar description="Maximum CPU Speed. ALERT! 1.5Ghz and 1.6Ghz can be unstable for your personal device! Try it, and if the phone is stuck(SOD), then your CPU will not work on such high frequency, nothing can be done! Default: 1200000kHz" 
-			name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+			name="scaling_max_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
 
 		<seekBar description="Minimum CPU Speed. Default: 200000kHz" 
-			name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+			name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
 
 		<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and PegasusQ governors." 
 			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 			<spinnerItem name="Disabled" value="0"/> 
 			<spinnerItem name="1200MHz" value="4"/> 
-			<spinnerItem name="1000MHz" value="6"/> 
-			<spinnerItem name="800MHz" value="8"/> 
-			<spinnerItem name="500MHz" value="11"/> 
-			<spinnerItem name="200MHz" value="14"/> 
-			<spinnerItem name="100MHz" value="15"/> 
-		</spinner>
+			<spinnerItem name="1000MHz" value="8"/> 
+			<spinnerItem name="800MHz" value="12"/> 
+			<spinnerItem name="500MHz" value="18"/> 
+			<spinnerItem name="450MHz" value="19"/> 
+			<spinnerItem name="400MHz" value="20"/> 
+			<spinnerItem name="350MHz" value="21"/> 
+			<spinnerItem name="300MHz" value="22"/> 
+			<spinnerItem name="250MHz" value="23"/> 
+			<spinnerItem name="200MHz" value="24"/> 
+			<spinnerItem name="150MHz" value="25"/> 
+			<spinnerItem name="100MHz" value="26"/> 
+			<spinnerItem name="50MHz" value="27"/> 
+			<spinnerItem name="25MHz" value="28"/> 
+			</spinner>
 
 		<spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
 			name="Max CPU Lock" action="generic /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock">
@@ -59,7 +67,7 @@
 
 		<seekBar description="Sets the below frequency on which second core will not be turned on, regardless of thresholds. (Default: 600000kHz)" 
 			name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 	</settingsPane>
 
@@ -93,15 +101,15 @@
 
 		<seekBar description="Maximum DEEP SLEEP CPU speed. Default is Linux Kernel default value: 600000kHz. Samsung's default value is 800000kHz. Setting this too low will stuck your device!" 
 			name="scaling_max_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU speed Default: 200000kHz" 
 			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="Minimum STANDBY (music playing and screen off) CPU speed. If music still shutter, rise frequency to 300000kHz/400000kHz. Default: 200000kHz"
 			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
-			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="For developer debug only! You can add small delay to cortex wakeup/sleep script. This will delay all function changes and the wakeup! Default: 0" 
 			name="Cortex Wakeup Delay" action="generic /tmp/wakeup_delay"
@@ -142,38 +150,71 @@
 		<seekBar description="CPU Voltage for 1200Mhz. Default: 1300mV"
 			name="CPU Voltage 1200Mhz" action="cpu-voltage 1" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
 
+		<seekBar description="CPU Voltage for 1150Mhz. Default: 1275mV"
+			name="CPU Voltage 1150Mhz" action="cpu-voltage 2" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+
 		<seekBar description="CPU Voltage for 1100Mhz. Default: 1250mV"
-			name="CPU Voltage 1100Mhz" action="cpu-voltage 2" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+			name="CPU Voltage 1100Mhz" action="cpu-voltage 3" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+
+		<seekBar description="CPU Voltage for 1050Mhz. Default: 1225mV"
+			name="CPU Voltage 1050Mhz" action="cpu-voltage 4" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
 
 		<seekBar description="CPU Voltage for 1000Mhz. Default: 1200mV"
-			name="CPU Voltage 1000Mhz" action="cpu-voltage 3" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+			name="CPU Voltage 1000Mhz" action="cpu-voltage 5" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+
+		<seekBar description="CPU Voltage for 950Mhz. Default: 1150mV"
+			name="CPU Voltage 950Mhz" action="cpu-voltage 6" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
 
 		<seekBar description="CPU Voltage for 900Mhz. Default: 1125mV"
-			name="CPU Voltage 900Mhz" action="cpu-voltage 4" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+			name="CPU Voltage 900Mhz" action="cpu-voltage 7" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+
+		<seekBar description="CPU Voltage for 850Mhz. Default: 1100mV"
+			name="CPU Voltage 850Mhz" action="cpu-voltage 8" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
 
 		<seekBar description="CPU Voltage for 800Mhz. Default: 1075mV"
-			name="CPU Voltage 800Mhz" action="cpu-voltage 5" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+			name="CPU Voltage 800Mhz" action="cpu-voltage 9" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+
+		<seekBar description="CPU Voltage for 750Mhz. Default: 1050mV"
+			name="CPU Voltage 750Mhz" action="cpu-voltage 10" unit="mV" min="950" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 700Mhz. Default: 1025mV"
-			name="CPU Voltage 700Mhz" action="cpu-voltage 6" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+			name="CPU Voltage 700Mhz" action="cpu-voltage 11" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+
+		<seekBar description="CPU Voltage for 650Mhz. Default: 1000mV"
+			name="CPU Voltage 650Mhz" action="cpu-voltage 12" unit="mV" min="925" reversed="false" step="25" max="1050"/>
 
 		<seekBar description="CPU Voltage for 600Mhz. Default: 1000mV"
-			name="CPU Voltage 600Mhz" action="cpu-voltage 7" unit="mV" min="925" reversed="false" step="25" max="1050"/>
+			name="CPU Voltage 600Mhz" action="cpu-voltage 13" unit="mV" min="925" reversed="false" step="25" max="1050"/>
+
+		<seekBar description="CPU Voltage for 550Mhz. Default: 975mV"
+			name="CPU Voltage 550Mhz" action="cpu-voltage 14" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
 		<seekBar description="CPU Voltage for 500Mhz. Default: 975mV"
-			name="CPU Voltage 500Mhz" action="cpu-voltage 8" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 500Mhz" action="cpu-voltage 15" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+
+		<seekBar description="CPU Voltage for 450Mhz. Default: 975mV"
+			name="CPU Voltage 450Mhz" action="cpu-voltage 16" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
 		<seekBar description="CPU Voltage for 400Mhz. Default: 975mV"
-			name="CPU Voltage 400Mhz" action="cpu-voltage 9" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 400Mhz" action="cpu-voltage 17" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+
+		<seekBar description="CPU Voltage for 350Mhz. Default: 975mV"
+			name="CPU Voltage 350Mhz" action="cpu-voltage 18" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
 		<seekBar description="CPU Voltage for 300Mhz. Default: 975mV"
-			name="CPU Voltage 300Mhz" action="cpu-voltage 10" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 300Mhz" action="cpu-voltage 19" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+
+		<seekBar description="CPU Voltage for 250Mhz. Default: 950mV"
+			name="CPU Voltage 250Mhz" action="cpu-voltage 20" unit="mV" min="875" reversed="false" step="25" max="1000"/>
 
 		<seekBar description="CPU Voltage for 200Mhz. Default: 950mV"
-			name="CPU Voltage 200Mhz" action="cpu-voltage 11" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+			name="CPU Voltage 200Mhz" action="cpu-voltage 21" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+
+		<seekBar description="CPU Voltage for 150Mhz. Default: 925mV"
+			name="CPU Voltage 150Mhz" action="cpu-voltage 22" unit="mV" min="850" reversed="false" step="25" max="975"/>
 
 		<seekBar description="CPU Voltage for 100Mhz. Default: 925mV"
-			name="CPU Voltage 100Mhz" action="cpu-voltage 12" unit="mV" min="850" reversed="false" step="25" max="975"/>
+			name="CPU Voltage 100Mhz" action="cpu-voltage 23" unit="mV" min="850" reversed="false" step="25" max="975"/>
 
 	</settingsPane>
 
@@ -234,10 +275,10 @@
 			name="down_sample_time" action="generic /tmp/down_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
 		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
-			name="hotplug_freq_1_1" action="generic /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="hotplug_freq_1_1" action="generic /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
-			name="hotplug_freq_2_0" action="generic /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="hotplug_freq_2_0" action="generic /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
 			name="hotplug_rq_1_1" action="generic /tmp/hotplug_rq_1_1" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
@@ -270,13 +311,13 @@
 			name="pump_down_step" action="generic /tmp/pump_down_step" unit="step" min="0" reversed="false" step="1" max="16"/>
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 400000)"
-			name="freq_for_responsiveness" action="generic /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="freq_for_responsiveness" action="generic /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Steps in frequency table to be used when screen-off. Example: If available freqs are 1600 1400 1200 1000 800 500 200 100 (L0 to L7) and screen_off_min_step=5 then 100,200 and 500 (L5 to L7) will be used during screen-off depending on the demand. (Only for lulzActiveQ) (default is 11)"
 			name="screen_off_min_step" action="generic /tmp/screen_off_min_step" unit="step" min="1" reversed="false" step="1" max="30"/>
 
 		<seekBar description="[lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag]. [ZenX: Hi speed to bump to from lo speed when load burst] (Only for lulzActiveQ, ZenX) (default is 1200000)"
-			name="hispeed_freq" action="generic /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="hispeed_freq" action="generic /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Lower values result in higher CPU speeds. (Only for ZenX) (default is 90)"
 			name="target_loads" action="generic /tmp/target_loads" unit="%" min="10" reversed="false" step="1" max="100"/>
@@ -294,16 +335,16 @@
 			name="unplug_load_cpumore" action="generic /tmp/unplug_load_cpumore" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Number of sampling periods to take average CPU load across for CPU add. (Only for ZenX) (default is 30)"
-			name="hot_add_sampling_periods" action="generic /tmp/hot_add_sampling_periods" unit="%" min="10" reversed="false" step="10" max="500"/>
+			name="hot_add_sampling_periods" action="generic /tmp/hot_add_sampling_periods" unit="uS" min="10" reversed="false" step="10" max="500"/>
 
 		<seekBar description="Number of sampling periods when suspended to take average CPU load across for CPU add. (Only for ZenX) (default is 100)"
-			name="hot_add_sampling_periods_suspended" action="generic /tmp/hot_add_sampling_periods_suspended" unit="%" min="10" reversed="false" step="10" max="500"/>
+			name="hot_add_sampling_periods_suspended" action="generic /tmp/hot_add_sampling_periods_suspended" unit="uS" min="10" reversed="false" step="10" max="500"/>
 
 		<seekBar description="Number of sampling periods to take average CPU load across for CPU removal. (Only for ZenX) (default is 100)"
-			name="hot_remove_sampling_periods" action="generic /tmp/hot_remove_sampling_periods" unit="%" min="10" reversed="false" step="10" max="500"/>
+			name="hot_remove_sampling_periods" action="generic /tmp/hot_remove_sampling_periods" unit="uS" min="10" reversed="false" step="10" max="500"/>
 
 		<seekBar description="Number of sampling periods when suspended to take average CPU load across for CPU removal. (Only for ZenX) (default is 50)"
-			name="hot_remove_sampling_periods_suspended" action="generic /tmp/hot_remove_sampling_periods_suspended" unit="%" min="10" reversed="false" step="10" max="500"/>
+			name="hot_remove_sampling_periods_suspended" action="generic /tmp/hot_remove_sampling_periods_suspended" unit="uS" min="10" reversed="false" step="10" max="500"/>
 
 		<seekBar description="Wait this long before raising speed above hispeed, by default a single timer interval. (Only for ZenX) (default is 20000)"
 			name="above_hispeed_delay" action="generic /tmp/above_hispeed_delay" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
@@ -386,10 +427,10 @@
 			name="down_sample_time_sleep" action="generic /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
 		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
-			name="hotplug_freq_1_1_sleep" action="generic /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="hotplug_freq_1_1_sleep" action="generic /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
-			name="hotplug_freq_2_0_sleep" action="generic /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="hotplug_freq_2_0_sleep" action="generic /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
 			name="hotplug_rq_1_1_sleep" action="generic /tmp/hotplug_rq_1_1_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
@@ -422,10 +463,10 @@
 			name="pump_down_step_sleep" action="generic /tmp/pump_down_step_sleep" unit="step" min="0" reversed="false" step="1" max="16"/>
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 200000)"
-			name="freq_for_responsiveness_sleep" action="generic /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="freq_for_responsiveness_sleep" action="generic /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="[lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag]. [ZenX: Hi speed to bump to from lo speed when load burst] (Only for lulzActiveQ, ZenX) (default is 400000)"
-			name="hispeed_freq_sleep" action="generic /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+			name="hispeed_freq_sleep" action="generic /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Lower values result in higher CPU speeds. (Only for ZenX) (default is 90)"
 			name="target_loads_sleep" action="generic /tmp/target_loads_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
@@ -443,10 +484,10 @@
 			name="unplug_load_cpumore_sleep" action="generic /tmp/unplug_load_cpumore_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Number of sampling periods to take average CPU load across for CPU add. (Only for ZenX) (default is 30)"
-			name="hot_add_sampling_periods_sleep" action="generic /tmp/hot_add_sampling_periods_sleep" unit="%" min="10" reversed="false" step="10" max="500"/>
+			name="hot_add_sampling_periods_sleep" action="generic /tmp/hot_add_sampling_periods_sleep" unit="uS" min="10" reversed="false" step="10" max="500"/>
 
 		<seekBar description="Number of sampling periods to take average CPU load across for CPU removal. (Only for ZenX) (default is 100)"
-			name="hot_remove_sampling_periods_sleep" action="generic /tmp/hot_remove_sampling_periods_sleep" unit="%" min="10" reversed="false" step="10" max="500"/>
+			name="hot_remove_sampling_periods_sleep" action="generic /tmp/hot_remove_sampling_periods_sleep" unit="uS" min="10" reversed="false" step="10" max="500"/>
 
 		<seekBar description="Wait this long before raising speed above hispeed, by default a single timer interval. (Only for ZenX) (default is 20000)"
 			name="above_hispeed_delay_sleep" action="generic /tmp/above_hispeed_delay_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
