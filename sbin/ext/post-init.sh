@@ -89,6 +89,8 @@ $BB chmod -R 755 /lib;
 	$BB insmod /lib/modules/usbserial.ko;
 	$BB insmod /lib/modules/ftdi_sio.ko;
 	$BB insmod /lib/modules/pl2303.ko;
+	$BB insmod /lib/modules/usbnet.ko;
+	$BB insmod /lib/modules/asix.ko;
 	$BB insmod /lib/modules/cifs.ko;
 )&
 
