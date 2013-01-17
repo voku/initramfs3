@@ -91,6 +91,14 @@
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
+		<spinner description="Sets the CPU Idle Mode (Sleep Mode). For best stability use Idle + LPA. Default: AFTR only" 
+			name="CPU Idle Mode (Sleep Mode)" action="generic /tmp/enable_mask_sleep">
+			<spinnerItem name="AFTR + LPA" value="3"/> 
+			<spinnerItem name="Idle + LPA" value="2"/> 
+			<spinnerItem name="AFTR only" value="1"/> 
+			<spinnerItem name="Idle only" value="0"/> 
+		</spinner>
+
 		<seekBar description="Sets the sched_mc value which changes the CPU scheduler behavior for multi-core systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before second core will start. Setting it to 2 will bias task wake-ups to semi-idle CPU package for power savings. Default: 0" 
 			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
 

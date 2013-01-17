@@ -11,6 +11,7 @@ freq_min=600000
 GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
 enable_mask=3
+enable_mask_sleep=1
 sched_mc_power_savings=0
 busfreq_up_threshold=23
 scaling_max_suspend_freq=600000
