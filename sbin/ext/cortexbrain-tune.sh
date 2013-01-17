@@ -967,23 +967,23 @@ GAMMA_FIX()
 	log -p i -t $FILE_NAME "*** GAMMA_FIX ***: done";
 }
 
-ENABLEMASK_AWAKE()
+ENABLEMASK()
 {
-	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	local state="$1";
+	if [ "${state}" == "awake" ]; then 
+		echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	elif [ "${state}" == "sleep" ]; then
+		echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+	fi;
+	log -p i -t $FILE_NAME "*** ENABLEMASK ${state} ***: done";
 }
-
-ENABLEMASK_SLEEP()
-{
-	echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
-}
-
 
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
 {
-	ENABLEMASK_AWAKE;
+	ENABLEMASK "awake";
 
 	ENABLE_LOGGER;
 
@@ -1059,7 +1059,7 @@ SLEEP_MODE()
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
-	ENABLEMASK_SLEEP;
+	ENABLEMASK "sleep";
 
 	WAKEUP_DELAY_SLEEP;
 
