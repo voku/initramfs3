@@ -48,13 +48,6 @@ dirty_writeback_centisecs_battery=0;
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
 
-# TEMP FIX for JB ROM music shattering on screen off + fix for notification sound bug.
-JBSAMMY=0;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
-if [ "$JBSAMMY" == 1 ]; then
-	/res/uci.sh generic /sys/module/cpuidle_exynos4/parameters/enable_mask 1;
-fi;
-
 # ==============================================================
 # I/O-TWEAKS 
 # ==============================================================
@@ -982,11 +975,24 @@ GAMMA_FIX()
 	log -p i -t $FILE_NAME "*** GAMMA_FIX ***: done";
 }
 
+ENABLEMASK_AWAKE()
+{
+	echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+}
+
+ENABLEMASK_SLEEP()
+{
+	echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+}
+
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
 {
+	ENABLEMASK_AWAKE;
+
 	ENABLE_LOGGER;
 
 	ENABLE_WIFI;
@@ -1060,6 +1066,8 @@ SLEEP_MODE()
 	# we only read the config when screen goes off ...
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
+
+	ENABLEMASK_SLEEP;
 
 	WAKEUP_DELAY_SLEEP;
 

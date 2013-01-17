@@ -245,6 +245,7 @@ on post-fs-data
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system media_rw /sys/class/mdnie/mdnie/negative
     write /sys/class/mdnie/mdnie/scenario 4
+    write /sys/class/mdnie/mdnie/mode 1
 
 # Permissions for uart_sel and usb_sel
     chown system radio /sys/class/sec/switch/uart_sel/value
@@ -305,8 +306,6 @@ on post-fs-data
 on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-    setprop ro.build.product GT-I9100
-    setprop ro.product.device GT-I9100
     setprop ro.radio.noril yes
 
 # permissions for NFC

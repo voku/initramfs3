@@ -53,7 +53,7 @@
 /dev/video19              0660   system     system
 
 # Rotator
-/dev/video21              0660   system     system
+/dev/video21              0666   system     system
 
 /dev/video23              0660   system     system
 /dev/video24              0660   system     system
