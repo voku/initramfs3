@@ -4,26 +4,18 @@
 	<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-<<<<<<< HEAD
 		<seekBar description="Maximum CPU-Speed. ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! CPU Frequency step by 50.000 kHz are valid from 100.000 kHz to 1.200.000 kHz! (Default: 1.200.000 kHz)" 
-			name="Max Frequency" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
+			name="Max Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
 
 		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 50000KHz are valid from 100.000 kHz to 1.200.000 kHz! (Default: 200.000 kHz)" 
-			name="Min Frequency" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
+			name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
 
 		<seekBar description="Maximum CPU-Boost, when you touch the screen. This is also limited by above Max/Min CPU-Speed! (Default: 1.000.000 kHz)"
-			name="Max Touch-Frequency" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
+			name="Max Touch-Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="Minimum Frequency until second core will not be turned on, regardless of thresholds. (Default: 600.000 kHz)" 
-			name="Min Frequency for 2-core" action="generic /sys/module/stand_hotplug/parameters/freq_min" 
+			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-=======
-		<seekBar description="Maximum CPU Speed. ALERT! 1.5Ghz and 1.6Ghz can be unstable for your personal device! Try it, and if the phone is stuck(SOD), then your CPU will not work on such high frequency, nothing can be done! CPU Frequency step by 50000KHz are valid from 100000KHz to 1200000KHz! Default: 1200000kHz" 
-			name="scaling_max_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
-
-		<seekBar description="Minimum CPU Speed. CPU Frequency step by 50000KHz are valid from 100000KHz to 1200000KHz! Default: 200000kHz" 
-			name="scaling_min_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
->>>>>>> dorimanx/master
 
 		<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and PegasusQ governors." 
 			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
@@ -50,7 +42,7 @@
 			<spinnerItem name="Auto" value="0"/> 
 		</spinner>
 
-		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800Mhz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800Mhz, second core will be DISABLED! (Default: 20)" 
+		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800MHz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800MHz, second core will be DISABLED! (Default: 20)" 
 			name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
 		<seekBar description="Second core will be disabled when the load goes below this threshold. (Default: 20)" 
@@ -65,13 +57,6 @@
 		<seekBar description="Sets hot plug sampling intervals for screen-on state. (Default: 100)" 
 			name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="100" reversed="false" step="100" max="1000"/>
 
-<<<<<<< HEAD
-=======
-		<seekBar description="Sets the below frequency on which second core will not be turned on, regardless of thresholds. (Default: 600000kHz)" 
-			name="freq_min" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
-			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
->>>>>>> dorimanx/master
 	</settingsPane>
 
 	<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
@@ -114,21 +99,12 @@
 			name="scaling_max_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-<<<<<<< HEAD
 		<seekBar description="Minimum DEEP SLEEP CPU speed. (Default: 200.000 kHz)" 
-			name="scaling_min_suspend_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
-			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
-
-		<seekBar description="Minimum STANDBY (music playing and screen off) CPU speed. If music still shutter, rise frequency to 300000kHz/400000kHz. (Default: 200.000 kHz)"
-			name="scaling_min_standby_freq" action="generic /tmp/standby_freq"
-=======
-		<seekBar description="Minimum DEEP SLEEP CPU speed Default: 200000kHz" 
 			name="scaling_min_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="Minimum STANDBY (music playing and screen off) CPU speed. If music still shutter, rise frequency to 300000kHz/400000kHz. Default: 200000kHz"
+		<seekBar description="Minimum STANDBY (music playing and screen off) CPU speed. If music still shutter, rise frequency to 300000kHz/400000kHz. (Default: 200.000 kHz)"
 			name="scaling_min_standby_freq" action="genericfreq /tmp/standby_freq"
->>>>>>> dorimanx/master
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="For developer debug only! You can add small delay to cortex wakeup/sleep script. This will delay all function changes and the wakeup! (Default: 0)" 
@@ -145,109 +121,93 @@
 
 <settingsTab name="CPU-VOLTAGE">
 
-	<settingsPane description="CPU Voltage Controls. Frequencies above 1200Mhz are not allowed to be modified via STweaks. Voltage Range is 850~1350mV. Lower/higher is NOT SUPPORTED. All is done to prevent BUGS and SODS. USE this interface AT YOUR OWN RISK! If you get SOD before you can load this interface and can't fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV!" name="CPU Voltage Controls">
+	<settingsPane description="CPU Voltage Controls. Frequencies above 1200MHz are not allowed to be modified via STweaks. Voltage Range is 850~1350mV. Lower/higher is NOT SUPPORTED. All is done to prevent BUGS and SODS. USE this interface AT YOUR OWN RISK! If you get SOD before you can load this interface and can't fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV!" name="CPU Voltage Controls">
 
 		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, don't tick this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" 
 			name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
 		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
-		<seekBar description="CPU Voltage for 1600Mhz. (Default: 1450 mV)"
-			name="CPU Voltage 1200Mhz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1450 mV)"
+			name="CPU Voltage 1200 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1500Mhz. (Default: 1400 mV)"
-			name="CPU Voltage 1200Mhz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1400 mV)"
+			name="CPU Voltage 1200 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1400Mhz. (Default: 1375 mV)"
-			name="CPU Voltage 1200Mhz" action="cpu-voltage 3" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1375 mV)"
+			name="CPU Voltage 1200 MHz" action="cpu-voltage 3" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1300Mhz. (Default: 1350 mV)"
-			name="CPU Voltage 1200Mhz" action="cpu-voltage 4" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1350 mV)"
+			name="CPU Voltage 1200 MHz" action="cpu-voltage 4" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1200Mhz. (Default: 1300 mV)"
-			name="CPU Voltage 1200Mhz" action="cpu-voltage 5" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
+		<seekBar description="CPU Voltage for 1200 MHz. (Default: 1300 mV)"
+			name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
 
-<<<<<<< HEAD
-		<seekBar description="CPU Voltage for 1150Mhz. (Default: 1275 mV)"
-=======
-		<seekBar description="CPU Voltage for 1152Mhz. Default: 1275mV"
->>>>>>> dorimanx/master
-			name="CPU Voltage 1150Mhz" action="cpu-voltage 6" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+		<seekBar description="CPU Voltage for 1152 MHz. (Default: 1275 mV)"
+			name="CPU Voltage 1152 MHz" action="cpu-voltage 6" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
 
-		<seekBar description="CPU Voltage for 1100Mhz. (Default: 1250 mV)"
-			name="CPU Voltage 1100Mhz" action="cpu-voltage 7" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+		<seekBar description="CPU Voltage for 1100 MHz. (Default: 1250 mV)"
+			name="CPU Voltage 1100 MHz" action="cpu-voltage 7" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
 
-<<<<<<< HEAD
-		<seekBar description="CPU Voltage for 1050Mhz. (Default: 1225 mV)"
-=======
-		<seekBar description="CPU Voltage for 1052Mhz. Default: 1225mV"
->>>>>>> dorimanx/master
-			name="CPU Voltage 1050Mhz" action="cpu-voltage 8" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+		<seekBar description="CPU Voltage for 1052 MHz. (Default: 1225 mV)"
+			name="CPU Voltage 1052 MHz" action="cpu-voltage 8" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
 
-		<seekBar description="CPU Voltage for 1000Mhz. (Default: 1200 mV)"
-			name="CPU Voltage 1000Mhz" action="cpu-voltage 9" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1200 mV)"
+			name="CPU Voltage 1000 MHz" action="cpu-voltage 9" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
 
-<<<<<<< HEAD
-		<seekBar description="CPU Voltage for 950Mhz. (Default: 1150 mV)"
-=======
-		<seekBar description="CPU Voltage for 952Mhz. Default: 1150mV"
->>>>>>> dorimanx/master
-			name="CPU Voltage 950Mhz" action="cpu-voltage 10" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+		<seekBar description="CPU Voltage for 952 MHz. (Default: 1150 mV)"
+			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
 
-		<seekBar description="CPU Voltage for 900Mhz. (Default: 1125 mV)"
-			name="CPU Voltage 900Mhz" action="cpu-voltage 11" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+		<seekBar description="CPU Voltage for 900 MHz. (Default: 1125 mV)"
+			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
 
-<<<<<<< HEAD
-		<seekBar description="CPU Voltage for 850Mhz. (Default: 1100 mV)"
-=======
-		<seekBar description="CPU Voltage for 852Mhz. Default: 1100mV"
->>>>>>> dorimanx/master
-			name="CPU Voltage 850Mhz" action="cpu-voltage 12" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+		<seekBar description="CPU Voltage for 852 MHz. (Default: 1100 mV)"
+			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
 
-		<seekBar description="CPU Voltage for 800Mhz. (Default: 1075 mV)"
-			name="CPU Voltage 800Mhz" action="cpu-voltage 13" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+		<seekBar description="CPU Voltage for 800 MHz. (Default: 1075 mV)"
+			name="CPU Voltage 800 MHz" action="cpu-voltage 13" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
 
-		<seekBar description="CPU Voltage for 750Mhz. (Default: 1050 mV)"
-			name="CPU Voltage 750Mhz" action="cpu-voltage 14" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 750 MHz. (Default: 1050 mV)"
+			name="CPU Voltage 750 MHz" action="cpu-voltage 14" unit="mV" min="950" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 700Mhz. (Default: 1025 mV)"
-			name="CPU Voltage 700Mhz" action="cpu-voltage 15" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 700 MHz. (Default: 1025 mV)"
+			name="CPU Voltage 700MHz" action="cpu-voltage 15" unit="mV" min="950" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 650Mhz. (Default: 1000 mV)"
-			name="CPU Voltage 650Mhz" action="cpu-voltage 16" unit="mV" min="925" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 650 MHz. (Default: 1000 mV)"
+			name="CPU Voltage 650 MHz" action="cpu-voltage 16" unit="mV" min="925" reversed="false" step="25" max="1050"/>
 
-		<seekBar description="CPU Voltage for 600Mhz. (Default: 1000 mV)"
-			name="CPU Voltage 600Mhz" action="cpu-voltage 17" unit="mV" min="925" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 600 MHz. (Default: 1000 mV)"
+			name="CPU Voltage 600 MHz" action="cpu-voltage 17" unit="mV" min="925" reversed="false" step="25" max="1050"/>
 
-		<seekBar description="CPU Voltage for 550Mhz. (Default: 975 mV)"
-			name="CPU Voltage 550Mhz" action="cpu-voltage 18" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 550 MHz. (Default: 975 mV)"
+			name="CPU Voltage 550 MHz" action="cpu-voltage 18" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 500Mhz. (Default: 975 mV)"
-			name="CPU Voltage 500Mhz" action="cpu-voltage 19" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 500 MHz. (Default: 975 mV)"
+			name="CPU Voltage 500 MHz" action="cpu-voltage 19" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 450Mhz. (Default: 975 mV)"
-			name="CPU Voltage 450Mhz" action="cpu-voltage 20" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 450 MHz. (Default: 975 mV)"
+			name="CPU Voltage 450 MHz" action="cpu-voltage 20" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 400Mhz. (Default: 975 mV)"
-			name="CPU Voltage 400Mhz" action="cpu-voltage 21" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 400 MHz. (Default: 975 mV)"
+			name="CPU Voltage 400 MHz" action="cpu-voltage 21" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 350Mhz. (Default: 975 mV)"
-			name="CPU Voltage 350Mhz" action="cpu-voltage 22" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 350 MHz. (Default: 975 mV)"
+			name="CPU Voltage 350 MHz" action="cpu-voltage 22" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 300Mhz. (Default: 975 mV)"
-			name="CPU Voltage 300Mhz" action="cpu-voltage 23" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 300 MHz. (Default: 975 mV)"
+			name="CPU Voltage 300 MHz" action="cpu-voltage 23" unit="mV" min="900" reversed="false" step="25" max="1025"/>
 
-		<seekBar description="CPU Voltage for 250Mhz. (Default: 950 mV)"
-			name="CPU Voltage 250Mhz" action="cpu-voltage 24" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+		<seekBar description="CPU Voltage for 250 MHz. (Default: 950 mV)"
+			name="CPU Voltage 250 MHz" action="cpu-voltage 24" unit="mV" min="875" reversed="false" step="25" max="1000"/>
 
-		<seekBar description="CPU Voltage for 200Mhz. (Default: 950 mV)"
-			name="CPU Voltage 200Mhz" action="cpu-voltage 25" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+		<seekBar description="CPU Voltage for 200 MHz. (Default: 950 mV)"
+			name="CPU Voltage 200 MHz" action="cpu-voltage 25" unit="mV" min="875" reversed="false" step="25" max="1000"/>
 
-		<seekBar description="CPU Voltage for 150Mhz. (Default: 925 mV)"
-			name="CPU Voltage 150Mhz" action="cpu-voltage 26" unit="mV" min="850" reversed="false" step="25" max="975"/>
+		<seekBar description="CPU Voltage for 150 MHz. (Default: 925 mV)"
+			name="CPU Voltage 150 MHz" action="cpu-voltage 26" unit="mV" min="850" reversed="false" step="25" max="975"/>
 
-		<seekBar description="CPU Voltage for 100Mhz. (Default: 925 mV)"
-			name="CPU Voltage 100Mhz" action="cpu-voltage 27" unit="mV" min="850" reversed="false" step="25" max="975"/>
+		<seekBar description="CPU Voltage for 100 MHz. (Default: 925 mV)"
+			name="CPU Voltage 100 MHz" action="cpu-voltage 27" unit="mV" min="850" reversed="false" step="25" max="975"/>
 
 	</settingsPane>
 
@@ -363,13 +323,8 @@
 		<seekBar description="Steps in frequency table to be used when screen-off. Example: If available freqs are 1600 1400 1200 1000 800 500 200 100 (L0 to L7) and screen_off_min_step=5 then 100,200 and 500 (L5 to L7) will be used during screen-off depending on the demand. (Only for lulzActiveQ) (default is 11)"
 			name="screen_off_min_step" action="generic /tmp/screen_off_min_step" unit="step" min="1" reversed="false" step="1" max="30"/>
 
-<<<<<<< HEAD
 		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 1200000)"
-			name="hispeed_freq" action="generic /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-=======
-		<seekBar description="[lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag]. [ZenX: Hi speed to bump to from lo speed when load burst] (Only for lulzActiveQ, ZenX) (default is 1200000)"
 			name="hispeed_freq" action="genericfreq /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
->>>>>>> dorimanx/master
 
 	</settingsPane>
 
@@ -479,13 +434,8 @@
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 200000)"
 			name="freq_for_responsiveness_sleep" action="genericfreq /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
-<<<<<<< HEAD
 		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 400000)"
-			name="hispeed_freq_sleep" action="generic /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-=======
-		<seekBar description="[lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag]. [ZenX: Hi speed to bump to from lo speed when load burst] (Only for lulzActiveQ, ZenX) (default is 400000)"
 			name="hispeed_freq_sleep" action="genericfreq /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
->>>>>>> dorimanx/master
 
 	</settingsPane>
 
@@ -571,57 +521,57 @@
 			unit="MSec" min="100" reversed="false" step="50" max="500"/>
 
 		<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Frequency Step 1" action="gpu-freq 1">
-			<spinnerItem name="267MHz" value="267"/> 
-			<spinnerItem name="200MHz" value="200"/> 
-			<spinnerItem name="160MHz" value="160"/> 
-			<spinnerItem name="108MHz" value="108"/> 
-			<spinnerItem name="62MHz" value="62"/> 
-			<spinnerItem name="54MHz" value="54"/> 
+			<spinnerItem name="267 MHz" value="267"/> 
+			<spinnerItem name="200 MHz" value="200"/> 
+			<spinnerItem name="160 MHz" value="160"/> 
+			<spinnerItem name="108 MHz" value="108"/> 
+			<spinnerItem name="62 MHz" value="62"/> 
+			<spinnerItem name="54 MHz" value="54"/> 
 		</spinner>
 
 		<spinner description="Changes the second GPU frequency step" name="GPU Frequency Step 2" action="gpu-freq 2">
-			<spinnerItem name="330MHz" value="330"/> 
-			<spinnerItem name="267MHz" value="267"/> 
-			<spinnerItem name="200MHz" value="200"/> 
-			<spinnerItem name="160MHz" value="160"/> 
-			<spinnerItem name="108MHz" value="108"/> 
-			<spinnerItem name="62MHz" value="62"/> 
+			<spinnerItem name="330 MHz" value="330"/> 
+			<spinnerItem name="267 MHz" value="267"/> 
+			<spinnerItem name="200 MHz" value="200"/> 
+			<spinnerItem name="160 MHz" value="160"/> 
+			<spinnerItem name="108 MHz" value="108"/> 
+			<spinnerItem name="62 MHz" value="62"/> 
 		</spinner>
 
-		<spinner description="Changes the third GPU frequency step. WARNING! 400MHz needs 1100mV~1200mV. Above 1200mV you risk to burn your chip!" 
+		<spinner description="Changes the third GPU frequency step. WARNING! 400 MHz needs 1100 mV ~ 1200 mV. Above 1200 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 3" action="gpu-freq 3">
-			<spinnerItem name="400MHz" value="400"/> 
-			<spinnerItem name="330MHz" value="330"/> 
-			<spinnerItem name="267MHz" value="267"/> 
-			<spinnerItem name="200MHz" value="200"/> 
-			<spinnerItem name="160MHz" value="160"/> 
-			<spinnerItem name="108MHz" value="108"/> 
+			<spinnerItem name="400 MHz" value="400"/> 
+			<spinnerItem name="330 MHz" value="330"/> 
+			<spinnerItem name="267 MHz" value="267"/> 
+			<spinnerItem name="200 MHz" value="200"/> 
+			<spinnerItem name="160 MHz" value="160"/> 
+			<spinnerItem name="108 MHz" value="108"/> 
 		</spinner>
 
-		<spinner description="Changes the fourth GPU frequency step. WARNING! 400,440,520MHz needs 1100mV~1200mV. Above 1200mV you risk to burn your chip!" 
+		<spinner description="Changes the fourth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV ~ 1200 mV. Above 1200 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 4" action="gpu-freq 4">
-			<spinnerItem name="520MHz" value="520"/> 
-			<spinnerItem name="440MHz" value="440"/> 
-			<spinnerItem name="400MHz" value="400"/> 
-			<spinnerItem name="330MHz" value="330"/> 
-			<spinnerItem name="267MHz" value="267"/> 
-			<spinnerItem name="200MHz" value="200"/> 
-			<spinnerItem name="160MHz" value="160"/> 
+			<spinnerItem name="520 MHz" value="520"/> 
+			<spinnerItem name="440 MHz" value="440"/> 
+			<spinnerItem name="400 MHz" value="400"/> 
+			<spinnerItem name="330 MHz" value="330"/> 
+			<spinnerItem name="267 MHz" value="267"/> 
+			<spinnerItem name="200 MHz" value="200"/> 
+			<spinnerItem name="160 MHz" value="160"/> 
 		</spinner>
 
-		<spinner description="Changes the fifth GPU frequency step. WARNING! 400,440,520Mhz needs 1100mV~1200mV. Above 1200mV you risk to burn your chip!" 
+		<spinner description="Changes the fifth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV ~ 1200 mV. Above 1200 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 5" action="gpu-freq 5">
-			<spinnerItem name="520MHz" value="520"/> 
-			<spinnerItem name="440MHz" value="440"/> 
-			<spinnerItem name="400MHz" value="400"/> 
-			<spinnerItem name="330MHz" value="330"/> 
-			<spinnerItem name="267MHz" value="267"/> 
-			<spinnerItem name="200MHz" value="200"/> 
+			<spinnerItem name="520 MHz" value="520"/> 
+			<spinnerItem name="440 MHz" value="440"/> 
+			<spinnerItem name="400 MHz" value="400"/> 
+			<spinnerItem name="330 MHz" value="330"/> 
+			<spinnerItem name="267 MHz" value="267"/> 
+			<spinnerItem name="200 MHz" value="200"/> 
 		</spinner>
 
 	</settingsPane>
 
-	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050. WARNING! Voltage above 1200mV can put your device to risk! Do not blame me if GPU chip burned." 
+	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050. WARNING! Voltage above 1200 mV can put your device to risk! Do not blame me if GPU chip burned." 
 			name="GPU Voltage Levels">
 
 		<seekBar description="GPU Voltage for the first step" 
