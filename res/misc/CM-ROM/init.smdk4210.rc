@@ -31,8 +31,8 @@ on fs
 # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait
 
-# Check and mount /cache
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait rw
+# mount the rest.
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
 
@@ -60,10 +60,10 @@ on post-fs-data
     chown system system /data/gps
 
 # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi 0774 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0774 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
 

@@ -13,17 +13,16 @@ fi;
 if [ -d /sys/devices/virtual/sound/sound_mc1n2/ ]; then
 	# set headphones volume.
 	echo "$sound_volume1" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_HP;
-	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 	# set MIC gain volume.
 	echo "$sound_volume2" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_MIC1;
 	echo "$sound_volume2" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_MIC2;
 	echo "$sound_volume2" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_RC;
-	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 	# set speaker volume
 	echo "$sound_volume3" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_SP;
-	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 	# more headphones gain power
 	echo "$sound_volume4" > /sys/devices/virtual/sound/sound_mc1n2/DVOL_DAC_MASTER;
+
+	# apply new settings to driver.
 	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
 fi;
 

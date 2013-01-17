@@ -37,6 +37,8 @@
 /dev/video12              0666   system     system
 /dev/video16              0666   system     system
 /dev/video14              0666   system     system
+# logger should be world writable (for logging) but not readable
+/dev/log/*                0662   root       log
 /dev/i2c-7                0666   system     system
 /dev/video20              0666   system     system
 /dev/video6               0660   media      graphics
@@ -70,8 +72,8 @@
 
 /dev/i2c-2                0660   system     system
 /dev/i2c-5                0660   system     system
-/dev/CEC                  0660   system     system
-/dev/HPD                  0660   system     system
+/dev/CEC                  0666   system     system
+/dev/HPD                  0666   system     system
 /dev/fimg2d               0666   system     graphics
 /dev/fmradio              0660   system     audio
 /dev/input/*              0660   root       input
@@ -86,7 +88,7 @@
 /dev/snd/timer            0660   system     audio
 
 #ALP Audio
-/dev/srp                  0660   system     audio
+/dev/srp                  0666   system     audio
 /dev/srp_ctrl             0666   system     audio
 
 /dev/s3c-mfc              0666   system     graphics

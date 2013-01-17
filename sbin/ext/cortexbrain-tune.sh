@@ -563,6 +563,20 @@ CPU_GOV_TWEAKS()
 	fi;
 }
 
+# this needed for cpu tweaks apply from STweaks in real time.
+apply_cpu=$2;
+case "${apply_cpu}" in
+
+	update)
+		CPU_GOV_TWEAKS;
+	;;
+	nothing)
+	;;
+	*)
+		apply_cpu=nothing;
+	;;
+esac;
+
 # ==============================================================
 # MEMORY-TWEAKS
 # ==============================================================

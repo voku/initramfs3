@@ -56,9 +56,6 @@ on fs
     chmod 0770 /data/misc/wifi 
 
 on post-fs-data
-# MDNS
-    socket mdns stream 0660 root system
-
 # GPS
     chown root system /dev/ttySAC1
     chmod 0660 /dev/ttySAC1

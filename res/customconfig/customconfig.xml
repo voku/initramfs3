@@ -183,6 +183,8 @@
 
 	<settingsPane description="Here you can manage advanced governor settings. If cortexbrain 'background-process' and 'cpu' are running their values are valid only for AWAKE settings." name="Governor Parameters tuning.">
 
+		<button description="Use this button to push all new changes to GOV core in real time! the sleep tuning will be auto added on screen off, to screen off gov." name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
+
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 40)"
 			name="up_threshold_at_min_freq" action="generic /tmp/up_threshold_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
@@ -1078,6 +1080,13 @@
 		<button description="Backup STweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
 
 		<button description="Restore STweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
+
+	</settingsPane>
+
+	<settingsPane description="Here you can restore Home Key config before installing other JB Sammy Kernel, you must push this button or Home Key will not work with other kernel."
+			name="Home Key Restore to JB Sammy default">
+
+		<button description="Before installing any other JB SAMMY'LEAK' kernel, use this to restore Home Key, if you will reboot again with my kernel, you will have to push button again, to restore the key before installing different JB SAMMY kernel, if you stay with my kernel, ignore this button!" name="Restore home key for other kernels" action="push-actions/home_key_restore" label="Restore Home Key NOW"/>
 
 	</settingsPane>
 

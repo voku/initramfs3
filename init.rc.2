@@ -57,7 +57,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0777 system cache
+    mkdir /cache 0771 system cache
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
@@ -151,7 +151,7 @@ on post-fs
 
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0777 /cache
+    chmod 0771 /cache
 
 # This may have been created by the recovery system with odd permissions
     mkdir /cache/recovery 0770
@@ -440,6 +440,7 @@ on boot
     chown radio system /sys/android_power/acquire_full_wake_lock
     chown radio system /sys/android_power/acquire_partial_wake_lock
     chown radio system /sys/android_power/release_wake_lock
+    chown system system /sys/power/autosleep
     chown radio system /sys/power/state
     chown system system /sys/power/wakeup_count
     chown radio system /sys/power/wake_lock
