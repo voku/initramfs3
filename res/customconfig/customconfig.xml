@@ -920,7 +920,7 @@
 			<spinnerItem name="ZEN" value="zen"/>
 		</spinner>
 
-		<spinner description="Here you can set the level of low mem managemet by kernel lowmemkiller function, more aggressive, then more free RAM but more killed apps"
+		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function, more aggressive, then more free RAM but more killed apps"
 			name="OOM Level Tuning" action="oom_config">
 			<spinnerItem name="very_light" value="very_light"/> 
 			<spinnerItem name="light" value="light"/> 
@@ -1143,7 +1143,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can restore Home Key config before installing other JB Sammy Kernel, you must push this button or Home Key will not work with other kernel."
+	<settingsPane description="Here you can restore Home Key config before installing any other JB Sammy Kernel, You must push this button or Home Key will not work with other kernel."
 			name="Home Key Restore to JB Sammy default">
 
 		<button description="Before installing any other JB SAMMY'LEAK' kernel, use this to restore Home Key, if you will reboot again with my kernel, you will have to push button again, to restore the key before installing different JB SAMMY kernel, if you stay with my kernel, ignore this button!" name="Restore home key for other kernels" action="push-actions/home_key_restore" label="Restore Home Key NOW"/>
