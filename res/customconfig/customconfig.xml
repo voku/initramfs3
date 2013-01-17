@@ -10,6 +10,9 @@
 		<seekBar description="Minimum CPU Speed. Default: 200000kHz" 
 			name="scaling_min_freq" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
+		<seekBar description="Sets max. touch-screen cpu-freq, when you touch the screen CPU will be boosted to max. that speed! default is 1000000mHz)"
+			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="100000" reversed="false" step="100000" max="1000000"/>
+
 		<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and PegasusQ governors." 
 			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 			<spinnerItem name="Disabled" value="0"/> 
@@ -636,8 +639,8 @@
 		<seekBar description="Vibration force level. Default: 75" 
 			name="Vibration force" action="generic /sys/vibrator/pwm_val" unit="%" min="0" reversed="false" step="5" max="100"/>
 
-		<seekBar description="Sets Touch screen cpu freq, when you touch the screen CPU will be boosted to that speed! default is 500000mHz)"
-			name="Touch screen lock freq" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="mHz" min="100000" reversed="false" step="100000" max="1000000"/>
+
+
 
 		<checkbox description="Slide2Wake By Fluxi@xda. When screen is turned off, swipe from the left side of the screen to the right side of the screen, and the screen will be turned on!"
 			name="Slide2Wake ON/OFF switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
