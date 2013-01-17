@@ -14,6 +14,14 @@ if [ ! -d /data/.siyah ]; then
 	$BB mkdir -p /data/.siyah;
 fi;
 
+# reset config-backup-restore 
+if [ -f /data/.siyah/restore_running ]; then
+	rm -f /data/.siyah/restore_running;
+fi;
+if [ -f /res/no-push-on-boot/config_backup_restore ] && [ ! -f /res/customconfig/actions/push-actions/config_backup_restore ];
+	mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+fi;
+
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	rm -f /data/.siyah/*.profile;
@@ -32,7 +40,7 @@ $BB chmod 0777 /data/.siyah/ -R;
 read_defaults;
 read_config;
 
-#mdnie sharpness tweak
+# mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
