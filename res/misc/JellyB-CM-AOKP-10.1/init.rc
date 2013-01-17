@@ -6,8 +6,8 @@
 
 # THIS INIT.RC is FOR CM/AOKP 10.1 JB ROM!
 
-import /init.smdk4210.rc
 import /init.usb.rc
+import /init.smdk4210.rc
 import /init.trace.rc
 import /init.smdk4210.dm_kernel.rc
 
@@ -59,7 +59,6 @@ loglevel 3
     mkdir /data 0771 system system
     mkdir /cache 0771 system cache
     mkdir /config 0500 root root
-    mkdir /preload 0771 system system
 
 # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/shell 0700 shell shell

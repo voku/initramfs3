@@ -62,7 +62,7 @@ on fs
 
     mkdir /data/misc/vpn/profiles 0770 system system
     mkdir /data/misc/radio 0775 radio system
-    chmod 0770 /data/misc/wifi 
+    chmod 0774 /data/misc/wifi
 
 on post-fs-data
 # MDNS
@@ -80,8 +80,8 @@ on post-fs-data
 
 # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0774 wifi wifi
-    chmod 0770 /data/misc/wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    chmod 0774 /data/misc/wifi
+    chmod 0664 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/misc/wifi/sockets 0774 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
