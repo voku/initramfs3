@@ -457,7 +457,7 @@
 			<spinnerItem name="4096 kb" value="4096"/> 
 		</spinner>
 
-		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard. (Default: sio)"
+		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard. (Default: ZEN)"
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="CFQ" value="cfq"/> 
@@ -466,6 +466,7 @@
 			<spinnerItem name="ROW" value="row"/> 
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="VR" value="vr"/> 
+			<spinnerItem name="ZEN" value="zen"/> 
 		</spinner>
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. (Default: NOOP)"
@@ -477,6 +478,7 @@
 			<spinnerItem name="ROW" value="row"/> 
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="VR" value="vr"/> 
+			<spinnerItem name="ZEN" value="zen"/> 
 		</spinner>
 
 	</settingsPane>
