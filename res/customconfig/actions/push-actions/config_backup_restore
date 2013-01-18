@@ -68,7 +68,7 @@ case "${config_backup_restore}" in
 			echo "Restoring config file, please wait ~30sec till full restore is done"
 			echo "then the app will restart with new settings.";
 			(
-				/sbin/busybox rm -f $LOCK_FILE;
+				rm -f $LOCK_FILE;
 
 				# read in file1->line1
 				while read line1; do
@@ -103,7 +103,7 @@ case "${config_backup_restore}" in
 
 				# hiding all push action scripts from uci.sh
 				/sbin/busybox mount -o remount,rw rootfs;
-				/sbin/busybox mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+				mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 
 				# apply New STweaks settings
 				/res/uci.sh restore;
@@ -120,8 +120,8 @@ case "${config_backup_restore}" in
 
 				# restore all the PUSH Button Actions back to there location
 				/sbin/busybox mount -o remount,rw rootfs;
-				/sbin/busybox mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-				/sbin/busybox rm -f $LOCK_FILE;
+				mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
+				rm -f $LOCK_FILE;
 
 				EXTWEAKSAPP_RUNNING=`pgrep -f "com.darekxan.extweaks.app" | wc -l`
 				STWEAKSAPP_RUNNING=`pgrep -f "com.gokhanmoral.stweaks.app" | wc -l`

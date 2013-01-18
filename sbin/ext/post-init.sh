@@ -14,6 +14,11 @@ if [ ! -d /data/.siyah ]; then
 	$BB mkdir -p /data/.siyah;
 fi;
 
+# reset config-backup-restore
+if [ -f /data/.siyah/restore_running ]; then
+	rm -f /data/.siyah/restore_running;
+fi;
+
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
 	rm -f /data/.siyah/*.profile;
@@ -32,7 +37,7 @@ $BB chmod 0777 /data/.siyah/ -R;
 read_defaults;
 read_config;
 
-#mdnie sharpness tweak
+# mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
@@ -121,8 +126,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB mount -o remount,rw rootfs;
 	$BB chown root:system /res/customconfig/actions/ -R;
 	$BB chmod 6755 /res/customconfig/actions/*;
-	$BB chmod 6755 /res/customconfig/actions/push-actions/*;
 	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+	$BB chmod 6755 /res/no-push-on-boot/*;
 
 	# set root access script.
 	$BB chmod 6755 /sbin/ext/cortexbrain-tune.sh;
