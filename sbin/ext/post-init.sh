@@ -18,7 +18,7 @@ fi;
 if [ -f /data/.siyah/restore_running ]; then
 	rm -f /data/.siyah/restore_running;
 fi;
-if [ -f /res/no-push-on-boot/config_backup_restore ] && [ ! -f /res/customconfig/actions/push-actions/config_backup_restore ];
+if [ -f /res/no-push-on-boot/config_backup_restore ] && [ ! -f /res/customconfig/actions/push-actions/config_backup_restore ]; then
 	mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 fi;
 
