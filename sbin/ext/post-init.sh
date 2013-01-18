@@ -18,9 +18,6 @@ fi;
 if [ -f /data/.siyah/restore_running ]; then
 	rm -f /data/.siyah/restore_running;
 fi;
-if [ -f /res/no-push-on-boot/config_backup_restore ] && [ ! -f /res/customconfig/actions/push-actions/config_backup_restore ]; then
-	mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
-fi;
 
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
@@ -129,8 +126,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB mount -o remount,rw rootfs;
 	$BB chown root:system /res/customconfig/actions/ -R;
 	$BB chmod 6755 /res/customconfig/actions/*;
-	$BB chmod 6755 /res/customconfig/actions/push-actions/*;
 	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+	$BB chmod 6755 /res/no-push-on-boot/*;
 
 	# set root access script.
 	$BB chmod 6755 /sbin/ext/cortexbrain-tune.sh;
