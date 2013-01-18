@@ -859,7 +859,7 @@ SWAPPINESS()
 		echo "0" > /proc/sys/vm/swappiness;
 		log -p i -t $FILE_NAME "*** SWAPPINESS ***: disabled";
 	else
-		echo "80" > /proc/sys/vm/swappiness;
+		echo "$swappiness" > /proc/sys/vm/swappiness;
 		log -p i -t $FILE_NAME "*** SWAPPINESS ***: enabled";
 	fi;
 }
