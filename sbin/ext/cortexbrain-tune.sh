@@ -756,11 +756,11 @@ SWAPPINESS()
 	SWAP_CHECK=`free | grep Swap | awk '{ print $2 }'`;
 	if [ "$zramtweaks" == 4 ] || [ "$SWAP_CHECK" == 0 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
-		log -p i -t $FILE_NAME "*** SWAPPINESS ***: disabled";
 	else
-		echo "80" > /proc/sys/vm/swappiness;
-		log -p i -t $FILE_NAME "*** SWAPPINESS ***: enabled";
+		echo "$swappiness" > /proc/sys/vm/swappiness;
 	fi;
+
+	log -p i -t $FILE_NAME "*** SWAPPINESS: $swappiness ***";
 }
 
 TUNE_IPV6()
@@ -913,8 +913,6 @@ AWAKE_MODE()
 	echo "20" > /proc/sys/vm/vfs_cache_pressure;
 
 	DISABLE_WIFI_PM;
-
-	TUNE_IPV6;
 
 	CPU_GOV_TWEAKS;
 

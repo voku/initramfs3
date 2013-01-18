@@ -205,3 +205,4 @@ cortexbrain_system=on
 cortexbrain_kernel_tweaks=on
 cortexbrain_io=on
 cortexbrain_read_ahead_kb=2048
+swappiness=0
