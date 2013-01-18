@@ -919,6 +919,15 @@ BLN_CORRECTION()
 	fi;
 }
 
+TOUCH_FREQ_CORRECTION()
+{
+	if [ "$tsp_touch_freq" != 500000 ]; then
+		echo "$tsp_touch_freq" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
+	fi;
+
+	log -p i -t $FILE_NAME "*** TOUCH_FREQ_CORRECTION: $tsp_touch_freq ***";
+}
+
 TOUCH_KEYS_CORRECTION()
 {
 	if [ "$dyn_brightness" == on ]; then
@@ -931,7 +940,7 @@ TOUCH_KEYS_CORRECTION()
 		/res/uci.sh led_timeout_ms $led_timeout_ms;
 	fi;
 
-	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION ***";
+	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - $led_timeout_ms ms ***";
 }
 
 # if crond used, then give it root perent - if started by STweaks, then it will be killed in time
@@ -944,19 +953,17 @@ CROND_SAFETY()
 	fi;
 }
 
-DISABLE_NMI()
+NMI()
 {
 	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
-		echo "0" > /proc/sys/kernel/nmi_watchdog;
-		log -p i -t $FILE_NAME "*** NMI ***: disable";
-	fi;
-}
+		local state="$1";
+		if [ "${state}" == "enable" ]; then
+			echo "1" > /proc/sys/kernel/nmi_watchdog;
+		elif [ "${state}" == "disable" ]; then
+			echo "0" > /proc/sys/kernel/nmi_watchdog;
+		fi;
 
-ENABLE_NMI()
-{
-	if [ -e /proc/sys/kernel/nmi_watchdog ]; then
-		echo "1" > /proc/sys/kernel/nmi_watchdog;
-		log -p i -t $FILE_NAME "*** NMI ***: enabled";
+		log -p i -t $FILE_NAME "*** NMI ***: $state";
 	fi;
 }
 
@@ -964,7 +971,7 @@ GAMMA_FIX()
 {
 	echo "$min_gamma" > /sys/class/misc/brightness_curve/min_gamma;
 	echo "$max_gamma" > /sys/class/misc/brightness_curve/max_gamma;
-	log -p i -t $FILE_NAME "*** GAMMA_FIX ***: done";
+	log -p i -t $FILE_NAME "*** GAMMA_FIX: min: $min_gamma max: $max_gamma ***: done";
 }
 
 ENABLEMASK()
@@ -994,6 +1001,8 @@ AWAKE_MODE()
 	KERNEL_SCHED_AWAKE;
 
 	TOUCH_KEYS_CORRECTION;
+
+	TOUCH_FREQ_CORRECTION;
 
 	WAKEUP_DELAY;
 
@@ -1042,7 +1051,7 @@ AWAKE_MODE()
 	# set the vibrator - force in case it's has been reseted
 	echo "$pwm_val" > /sys/vibrator/pwm_val;
 
-	ENABLE_NMI;
+	NMI "enable";
 
 	SYNC_BRIGHTNESS;
 	LESS_BRIGHTNESS;
@@ -1125,7 +1134,7 @@ SLEEP_MODE()
 		# set battery value
 		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 		
-		DISABLE_NMI;
+		NMI "disable";
 
 		DISABLE_WIFI;
 
