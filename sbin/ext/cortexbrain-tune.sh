@@ -919,15 +919,6 @@ BLN_CORRECTION()
 	fi;
 }
 
-TOUCH_FREQ_CORRECTION()
-{
-	if [ "$tsp_touch_freq" != 500000 ]; then
-		echo "$tsp_touch_freq" > /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq;
-	fi;
-
-	log -p i -t $FILE_NAME "*** TOUCH_FREQ_CORRECTION: $tsp_touch_freq ***";
-}
-
 TOUCH_KEYS_CORRECTION()
 {
 	if [ "$dyn_brightness" == on ]; then
@@ -1001,8 +992,6 @@ AWAKE_MODE()
 	KERNEL_SCHED "awake";
 
 	TOUCH_KEYS_CORRECTION;
-
-	TOUCH_FREQ_CORRECTION;
 
 	WAKEUP_DELAY;
 
