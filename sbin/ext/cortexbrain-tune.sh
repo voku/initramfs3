@@ -768,29 +768,29 @@ TUNE_IPV6()
 	CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
 	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
-		sysctl -w net.ipv6.conf.all.disable_ipv6=0
+		sysctl -w net.ipv6.conf.all.disable_ipv6=0;
 		log -p i -t $FILE_NAME "*** TUNE_IPV6 ***: enabled";
 	else
 		echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
-		sysctl -w net.ipv6.conf.all.disable_ipv6=1
+		sysctl -w net.ipv6.conf.all.disable_ipv6=1;
 		log -p i -t $FILE_NAME "*** TUNE_IPV6 ***: disabled";
 	fi;
 }
 
-KERNEL_SCHED_AWAKE()
+KERNEL_SCHED()
 {
-	echo "18000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "3000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
-	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: awake";
-}
+	local state="$1";
+	if [ "${state}" == "awake" ]; then
+		echo "18000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "3000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
+	elif [ "${state}" == "sleep" ]; then
+		echo "20000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
+	fi;
 
-KERNEL_SCHED_SLEEP()
-{
-	echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-	echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-	echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
-	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: sleep";
+	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
 }
 
 BLN_CORRECTION()
@@ -853,7 +853,7 @@ NMI()
 			echo "0" > /proc/sys/kernel/nmi_watchdog;
 		fi;
 
-		log -p i -t $FILE_NAME "*** NMI ***: $state";
+		log -p i -t $FILE_NAME "*** NMI ***: ${state}";
 	fi;
 }
 
@@ -888,7 +888,7 @@ AWAKE_MODE()
 
 	GAMMA_FIX;
 
-	KERNEL_SCHED_AWAKE;
+	KERNEL_SCHED "awake";
 
 	TOUCH_KEYS_CORRECTION;
 
@@ -967,7 +967,7 @@ SLEEP_MODE()
 
 	echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 
-	KERNEL_SCHED_SLEEP;
+	KERNEL_SCHED "sleep";
 
 	DISABLE_GESTURES;
 
