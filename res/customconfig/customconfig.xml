@@ -129,16 +129,16 @@
 		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
 		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1450 mV)"
-			name="CPU Voltage 1200 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
 		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1400 mV)"
-			name="CPU Voltage 1200 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+			name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
 		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1375 mV)"
-			name="CPU Voltage 1200 MHz" action="cpu-voltage 3" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
+			name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
 
 		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1350 mV)"
-			name="CPU Voltage 1200 MHz" action="cpu-voltage 4" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
+			name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
 
 		<seekBar description="CPU Voltage for 1200 MHz. (Default: 1300 mV)"
 			name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
