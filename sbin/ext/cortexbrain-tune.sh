@@ -676,25 +676,19 @@ MOUNT_SD_CARD()
 DELAY()
 {
 	local state="$1";
-	if [ -e /data/.siyah/booting ]; then
+	local delay="$wakeup_delay";
+	if [ ! -e /data/.siyah/booting ]; then
 
-		log -p i -t $FILE_NAME "*** DELAY 0sec (booting) ***";
-
-	elif [ "${state}" == "awake" ]; then
-
-		if [ "$wakeup_delay" != 0 ]; then
-			log -p i -t $FILE_NAME "*** DELAY ${wakeup_delay}sec ***";
-			sleep $wakeup_delay
+		if [ "${state}" == "sleep" ]; then
+			if [ "$wakeup_delay" == 0 ]; then
+				delay=3;
+			fi;
 		fi;
 
-	elif [ "${state}" == "sleep" ]; then
-	
-		if [ "$wakeup_delay" == 0 ]; then
-			wakeup_delay=3;
+		if [ "$delay" != 0 ]; then
+			log -p i -t $FILE_NAME "*** DELAY ${delay}sec ***";
+			sleep $delay;
 		fi;
-
-		log -p i -t $FILE_NAME "*** DELAY ${wakeup_delay}sec ***";
-		sleep $wakeup_delay;
 
 	fi;
 }
@@ -923,13 +917,14 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
+	DELAY "sleep";
+
 	# we only read the config when screen goes off ...
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
 
 	ENABLEMASK "sleep";
 
-	DELAY "sleep";
 
 	if [ "$cortexbrain_cpu" == on ]; then
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
