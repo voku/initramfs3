@@ -754,7 +754,7 @@ LESS_BRIGHTNESS()
 SWAPPINESS()
 {
 	SWAP_CHECK=`free | grep Swap | awk '{ print $2 }'`;
-	if [ "$zramtweaks" == 4 ] || [ "$SWAP_CHECK" == 0 ]; then
+	if [ "$SWAP_CHECK" == 0 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
 	else
 		echo "$swappiness" > /proc/sys/vm/swappiness;
