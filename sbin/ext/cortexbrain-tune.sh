@@ -341,6 +341,14 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $max_cpu_lock_tmp ]; then
 			max_cpu_lock_tmp="/dev/null";
 		fi;
+		min_cpu_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_cpu_lock";
+		if [ ! -e $min_cpu_lock_tmp ]; then
+			min_cpu_lock_tmp="/dev/null";
+		fi;
+		hotplug_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_lock";
+		if [ ! -e $hotplug_lock_tmp ]; then
+			hotplug_lock_tmp="/dev/null";
+		fi;
 		dvfs_debug_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/dvfs_debug";
 		if [ ! -e $dvfs_debug_tmp ]; then
 			dvfs_debug_tmp="/dev/null";
@@ -399,9 +407,10 @@ CPU_GOV_TWEAKS()
 			echo "$pump_down_step_sleep" > $pump_down_step_tmp;
 			echo "$up_avg_load_sleep" > $up_avg_load_tmp;
 			echo "$down_avg_load_sleep" > $down_avg_load_tmp;			
-			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
+			echo "0" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
-			echo "0" > $hotplug_lock_tmp;			
+			echo "$hotplug_lock_sleep" > $min_cpu_lock_tmp;
+			echo "$hotplug_lock_sleep" > $hotplug_lock_tmp;			
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -434,9 +443,10 @@ CPU_GOV_TWEAKS()
 			echo "$up_avg_load" > $up_avg_load_tmp;
 			echo "$down_avg_load" > $down_avg_load_tmp;
 			echo "$screen_off_min_step" > $screen_off_min_step_tmp;
-			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
+			echo "0" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
-			echo "0" > $hotplug_lock_tmp;
+			echo "$hotplug_lock" > $min_cpu_lock_tmp;
+			echo "$hotplug_lock" > $hotplug_lock_tmp;	
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
