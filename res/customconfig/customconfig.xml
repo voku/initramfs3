@@ -1053,16 +1053,6 @@
                 <!--checkbox description="Here you can allow WIFI to use LOW PWR when Screen is turned OFF. When screen is back ON, WIFI turns back to high PWR). If not set, WIFI uses HIGH PWR and get fast WIFI transfers on screen OFF"
                         name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
 
-		<checkbox description="Enable or Disable 'sync brightness with the battery discharge' (less battery = less brightness). Depends on CortexBrain-Background-Process!"
-			name="Sync-Brightness" action="generic_cortex /tmp/cortexbrain_auto_sync_brightness" label="Sync-Brightness"/>
-
-		<checkbox description="Enable or Disable 'less set brightness'. Depends on CortexBrain-Background-Process!"
-			name="Less-Brightness" action="generic_cortex /tmp/cortexbrain_auto_less_brightness" label="Less-Brightness"/>
-
-		<seekBar description="Here you can set a value for less brightness. Works only if 'Less-Brightness' is enabled!" 
-			name="Set value (0 - 100)" action="generic /tmp/cortexbrain_less_brightness"
-			unit="" min="0" reversed="false" step="5" max="255"/>
-
 		<checkbox description="Enable or Disable 'Firewall-Tweaks'."
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
