@@ -67,8 +67,6 @@ on post-fs-data
     chmod 0660 /data/.psm.info
 
 on boot
-# Need for Sound changes and other stuff, found by GM!
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 # SISO-ANDR_PERF :: START Changing scheduler to noop during boot
     write /sys/block/mmcblk0/queue/scheduler noop
@@ -207,8 +205,8 @@ on fs
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system media_rw /sys/class/mdnie/mdnie/negative
-    write /sys/class/mdnie/mdnie/scenario 4
-    write /sys/class/mdnie/mdnie/mode 1
+    write /sys/class/mdnie/mdnie/scenario 0
+    write /sys/class/mdnie/mdnie/mode 0
 
 # Switch Device
     chown system radio /sys/class/sec/switch/uart_sel/value
