@@ -212,6 +212,7 @@ BATTERY_TWEAKS()
 		log -p i -t $FILE_NAME "*** BATTERY_TWEAKS ***: enabled";
 	fi;
 }
+BATTERY_TWEAKS;
 
 # ==============================================================
 # CPU-TWEAKS
@@ -454,8 +455,9 @@ CPU_GOV_TWEAKS()
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS ***: enabled";
 	fi;
 }
+CPU_GOV_TWEAKS;
 
-# this needed for cpu tweaks apply from STweaks in real time.
+# this needed for cpu tweaks apply from STweaks in real time
 apply_cpu=$2;
 if [ "${apply_cpu}" == "update" ]; then
 	CPU_GOV_TWEAKS;
