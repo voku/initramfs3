@@ -32,7 +32,6 @@
 			<spinnerItem name="200 MHz" value="24"/> 
 			<spinnerItem name="150 MHz" value="25"/> 
 			<spinnerItem name="100 MHz" value="26"/> 
-			<spinnerItem name="50 MHz" value="27"/> 
 		</spinner>
 
 		<spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
