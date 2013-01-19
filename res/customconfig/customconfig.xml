@@ -17,7 +17,7 @@
 			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
-		<spinner description="This sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of ondemand, HYPER, Sleepy, Scary and PegasusQ governors." 
+		<spinner description="This sets the smooth scaling level which prevents Ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of Ondemand, HYPER, Sleepy, Scary and PegasusQ governors." 
 			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 			<spinnerItem name="Disabled" value="0"/> 
 			<spinnerItem name="1200 MHz" value="4"/> 
@@ -215,7 +215,8 @@
 
 <settingsTab name="CPU-TUNING (AWAKE)">
 
-	<settingsPane description="Here you can manage advanced governor settings. If cortexbrain 'background-process' and 'cpu' are enabled. These settings are only active if the screen is on." name="Governor Parameters tuning">
+	<settingsPane description="Here you can manage advanced governor settings. If cortexbrain 'background-process' and 'CPU' are enabled. These settings are only active if the screen is on." 
+			name="Governor Parameters tuning">
 
 		<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by any other scripts or applications." 
 			name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
@@ -227,19 +228,18 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
-			<spinnerItem name="sleepy" value="sleepy"/>
+			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
 
-		<button description="Use this button to push all new changes to GOV core in real time! the sleep tuning will be auto added on screen off, to screen off gov." 
-			name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
+		<button description="Use this button to push all new changes to GOV core in real time! the sleep tuning will be auto added on screen off, to screen off gov." name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 40)"
 			name="up_threshold_at_min_freq" action="generic /tmp/up_threshold_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy)  (default is 75)"
+		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy)  (default is 75)"
 			name="up_threshold" action="generic /tmp/up_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="This is same as the 'up_threshold' found for the ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (default is 40)"
+		<seekBar description="This is same as the 'up_threshold' found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (default is 40)"
 			name="down_threshold" action="generic /tmp/down_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 40)"
@@ -281,10 +281,10 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 20000)"
 			name="down_sample_time" action="generic /tmp/down_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
 			name="hotplug_freq_1_1" action="genericfreq /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
 			name="hotplug_freq_2_0" action="genericfreq /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
@@ -293,7 +293,7 @@
 		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
 			name="hotplug_rq_2_0" action="generic /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
-		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core/Frequency scale. 0 = History Load Based (Default), 1 = Current Load Based. (Only for Nightmare)" 
+		<spinner description="Set the HOT PLUG Compare Level to turn on the Second Core/Frequency scale. 0 = History Load Based (Default), 1 = Current Load Based. (Only for Nightmare)" 
 			name="hotplug_compare_level" action="generic /tmp/hotplug_compare_level">
 			<spinnerItem name="History Load Based" value="0"/> 
 			<spinnerItem name="Current Load Based" value="1"/> 
@@ -332,7 +332,8 @@
 
 <settingsTab name="CPU-TUNING (SLEEP)">
 
-	<settingsPane description="Here you can manage advanced governor settings. If cortexbrain 'background-process' and 'cpu' are enabled. These settings are only active if the screen is off." name="Governor Parameters tuning">
+	<settingsPane description="Here you can manage advanced governor settings. If cortexbrain 'background-process' and 'CPU' are enabled. These settings are only active if the screen is off." 
+			name="Governor Parameters tuning">
 
 		<spinner description="This will set the DEEP SLEEP (screen off) CPU governor. Depends on cortex background process to be enabled." 
 			name="Deep-Sleep! CPU Governor" action="generic /tmp/deep_sleep">
@@ -344,7 +345,7 @@
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
-			<spinnerItem name="sleepy" value="sleepy"/>
+			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 70)"
@@ -395,7 +396,7 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 10000)" 
 			name="down_sample_time_sleep" action="generic /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hot plug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
 			name="hotplug_freq_1_1_sleep" action="genericfreq /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
@@ -445,18 +446,18 @@
 
 	<settingsPane description="Here you can tune I/O settings managed by Kernel" name="I/O Tuning">
 
-		<spinner description='Maximum number of kilobytes to read-ahead for file systems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with "SD Tools"-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if "I/O-Tweaks" tweak is enabled! (Default: 128)'
+		<spinner description="Maximum number of kilobytes to read-ahead for file systems on this block device. Maybe get better read-performance with higher value, but you will probably need to experiment and benchmark (e.g. with SD Tools-App) to find the best value for your sd-card / system and maybe you will have a higher overhead (less memory) with a higher value. Works only if 'I/O-Tweaks' tweak is enabled! (Default: 128)"
 			name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
-			<spinnerItem name="64 kb" value="64"/>
-			<spinnerItem name="128 kb" value="128"/>
-			<spinnerItem name="256 kb" value="256"/>
-			<spinnerItem name="512 kb" value="512"/>
-			<spinnerItem name="1024 kb" value="1024"/>
-			<spinnerItem name="2048 kb" value="2048"/>
-			<spinnerItem name="4096 kb" value="4096"/>
+			<spinnerItem name="64 kb" value="64"/> 
+			<spinnerItem name="128 kb" value="128"/> 
+			<spinnerItem name="256 kb" value="256"/> 
+			<spinnerItem name="512 kb" value="512"/> 
+			<spinnerItem name="1024 kb" value="1024"/> 
+			<spinnerItem name="2048 kb" value="2048"/> 
+			<spinnerItem name="4096 kb" value="4096"/> 
 		</spinner>
 
-		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard. (Default: sio)"
+		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard. (Default: ZEN)"
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="CFQ" value="cfq"/> 
@@ -465,17 +466,19 @@
 			<spinnerItem name="ROW" value="row"/> 
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="VR" value="vr"/> 
+			<spinnerItem name="ZEN" value="zen"/> 
 		</spinner>
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. (Default: NOOP)"
 			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
-			<spinnerItem name="BFQ" value="bfq"/>
-			<spinnerItem name="CFQ" value="cfq"/>
-			<spinnerItem name="DEADLINE" value="deadline"/>
-			<spinnerItem name="NOOP" value="noop"/>
-			<spinnerItem name="ROW" value="row"/>
-			<spinnerItem name="SIO" value="sio"/>
-			<spinnerItem name="VR" value="vr"/>
+			<spinnerItem name="BFQ" value="bfq"/> 
+			<spinnerItem name="CFQ" value="cfq"/> 
+			<spinnerItem name="DEADLINE" value="deadline"/> 
+			<spinnerItem name="NOOP" value="noop"/> 
+			<spinnerItem name="ROW" value="row"/> 
+			<spinnerItem name="SIO" value="sio"/> 
+			<spinnerItem name="VR" value="vr"/> 
+			<spinnerItem name="ZEN" value="zen"/> 
 		</spinner>
 
 	</settingsPane>
@@ -712,8 +715,7 @@
 		<checkbox description="Here you can turn on/off kernel built in gestures! See OP for instructions/ask in forum."
 			name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="Gestures switch"/>
 
-		<button description="Click to reset gestures to default, or update with new one from dev. Gesture file will be added to `/data/` only if it is missing." 
-			name="Reset gestures" action="push-actions/reset_gestures" label="Reset Gestures"/>
+		<button description="Click to reset gestures to default, or update with new one from dev. Gesture file will be added to '/data/' only if it is missing." name="Reset gestures" action="push-actions/reset_gestures" label="Reset Gestures"/>
 
 	</settingsPane>
 
@@ -757,6 +759,7 @@
 	</settingsPane>
 
 	<settingsPane description="Master headphone gain (amplification) settings, thanks to Gokhanmoral!" name="Headphone Amplification">
+
 		<spinner description="Headphone amplifier level (0-3 which corresponds to 0dB, 1.5dB, 3dB, 6dB)"
 			name="Headphone Amplifier" action="soundgasm_hp">
 			<spinnerItem name="Disabled/Reset" value="0"/> 
@@ -852,29 +855,26 @@
 
 <settingsTab name="Other">
 
-	<settingsPane description="Here you can restore Home Key config before installing any other JB Sammy Kernel, you must push this button or Home Key will not work with other kernel."
+	<settingsPane description="Here you can restore Home Key configuration before installing any other JB Sammy Kernel, you must push this button or Home Key will not work with other kernel."
 			name="Home Key Restore to JB Sammy default">
 
-		<button description="Before installing any other JB SAMMY 'LEAK' kernel, use this to restore Home Key, if you will reboot again with my kernel, you will have to push button again, to restore the key before installing different JB SAMMY kernel, if you stay with my kernel, ignore this button!" 
-			name="Restore home key for other kernels" action="push-actions/home_key_restore" label="Restore Home Key NOW"/>
+		<button description="Before installing any other JB SAMMY 'LEAK' kernel, use this to restore Home Key, if you will reboot again with my kernel, you will have to push button again, to restore the key before installing different JB SAMMY kernel, if you stay with my kernel, ignore this button!" name="Restore home key for other kernels" action="push-actions/home_key_restore" label="Restore Home Key NOW"/>
 
 	</settingsPane>
 
 	<settingsPane description="Here you can activate some script, which will automatically run in the background, at a specified time." name="cron">
 
-		<spinner description="Main switch for cron tasker. If you set this to OFF, then all tasks below have no effect!" 
+		<spinner description="Main switch for Cron Tasker. If you set this to OFF, then all tasks below have no effect!" 
 			name="CRON TASK MAIN SWITCH" action="crontab">
 			<spinnerItem name="Cron ON" value="on"/> 
 			<spinnerItem name="Cron OFF" value="off"/> 
 		</spinner>
 
-		<button description="Use this button to test if this 'Cron Task'-service is ONLINE and supported! If main switch is ON, and service is OFFLINE, then ROM Busybox is not supporting Cron. Update Busybox or ROM for this to work." 
-			name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
+		<button description="Use this button to test if this 'Cron Task service' is ONLINE and supported! If main switch is ON, and service is OFFLINE, then ROM Busybox is not supporting Cron. Update Busybox or ROM for this to work." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
 
-		<button description="Use this button to RESET the scripts and jobs from kernel, to refresh the configuration. This will clear all your custom changes!" 
-			name="CRON RESET" action="push-actions/crontab_reset" label="RESET CRON"/>
+		<button description="Use this button to RESET the scripts and jobs from kernel, to refresh the configuration. This will clear all your custom changes!" name="CRON RESET" action="push-actions/crontab_reset" label="RESET CRON"/>
 
-		<checkbox description="Cron to clear file-cache every hour, but only if CPU is resting (IDLE) and more then 50% of your memory is used! This will free RAM from unused buffers and cache."
+		<checkbox description="Cron to clear file-cache every hour, but only if CPU is resting (IDLE) and more than 50% of your memory is used! This will free RAM from unused buffers and cache."
 			name="Clean file-cache" action="generic_cortex /tmp/cron_drop_cache" label="RAM cache clean every Hour"/>
 
 		<checkbox description="Cron to update AD-BLOCKER every week at SAT 6:00AM UTC time, from official site. The script will check, if you are connected with the internet, otherwise it will try to use WIFI! Script will turn wifi, wait for connection and update, then when it's finished it will turn WIFI off. If there's no connection, an error will be written in the log."
@@ -889,28 +889,23 @@
 		<checkbox description="Cron to zipalign app's every day at 4:50AM, only if CPU is resting (IDLE)! This can help to reduce errors, bugs, applications FC, and improve applications load speed. WARNING! Bakcup all apps before use! This process will remove apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing! USE it AT YOUR OWN RISK and update the broken applications!"
 			name="Zipalign Task" action="generic_cortex /tmp/cron_zipalign" label="Zipalign Task Every 4:50AM"/>
 
-		<button description="Use this button to check if Cron Task Jobs are done as requested. This will show the log for all finished jobs." 
-			name="Test Cron Task jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
+		<button description="Use this button to check if Cron Task Jobs are done as requested. This will show the log for all finished jobs." name="Test Cron Task jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
 
 	</settingsPane>
 
 	<settingsPane description="Here you can find some settings/options for your apps." name="Apps">
 
-		<button description="Push to Reinstall/Update STweaks app. Here you can Reinstall/Update your STweak app to one that's added in the kernel. It will be installed to /system and if you had STweaks in /data, it will be removed. Application will close and you'll have it back from kernel in 5sec." 
-			name="STweaks Reinstall/Update" action="push-actions/stweaks_update" label="STweaks Reinstall/Update"/>
+		<button description="Push to Reinstall/Update STweaks app. Here you can Reinstall/Update your STweak app to one that's added in the kernel. It will be installed to /system and if you had STweaks in /data, it will be removed. Application will close and you'll have it back from kernel in 5sec." name="STweaks Reinstall/Update" action="push-actions/stweaks_update" label="STweaks Reinstall/Update"/>
 
-		<button description="Click here to start fixing. Here you can run Fix Permissions, Zipalign, and Database Optimization scripts with one click! Please click one time only, scripts will finish in max 2~3min, no reboot is needed." name="FIX PERMISIONS + ZIP ALIGN + DB OPTIMIZE" 
-			name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
+		<button description="Click here to start fixing. Here you can run Fix Permissions, please click one time only, scripts will finish in max 2~3min, no reboot is needed." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it's OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." 
-			name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it's OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
-		<button description="Click here to start applications Database Optimization. Compacting, cleaning and reindexing will take max 2min." 
-			name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
+		<button description="Click here to start applications Database Optimization. Compacting, cleaning and indexing will take max 2min." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
 	</settingsPane>
 
-	<settingsPane description="Wifi Settings" name="Wifi">
+	<settingsPane description="WIFI Settings" name="WIFI">
 
 		<spinner description="WIFI supplicant scan interval. Here you can set the time in sec for WIFI to look for access points when ON. Higher the range, less battery used by WIFI! If you want WIFI to be forced OFF on screen OFF, Turn Force WIFI OFF Tweak in Cortex TAB, also if cortex process is ON, then it will be set automatically to 360sec on Screen OFF, so set your range for screen ON!"
 			name="WIFI supplicant scan interval" action="supplicant_scan_interval">
@@ -921,14 +916,13 @@
 			<spinnerItem name="Set WIFI SCAN 360Sec" value="360"/> 
 		</spinner>
 
-		<button description="Clean WIFI DHCP IP Lease. Push the botton to activate!" 
-			name="Clean WIFI Lease" action="push-actions/fix_wifi" label="Clean WIFI Lease"/>
+		<button description="Clean WIFI DHCP IP Lease. Push the button to activate!" name="Clean WIFI Lease" action="push-actions/fix_wifi" label="Clean WIFI Lease"/>
 
 	</settingsPane>
 
-	<settingsPane description='Here you can find GPS and NTP settings/options.' name="GPS - NTP">
+	<settingsPane description="Here you can find GPS and NTP settings/options." name="GPS - NTP">
 
-		<spinner description="GPS-Time-Zone for faster GPS lock! Use your region ... !" 
+		<spinner description="GPS-Time-Zone for faster GPS lock! Use your region!" 
 			name="GPS Region" action="gpsregion">
 			<spinnerItem name="No GPS Zone changes (default)" value="No_GPS_Zone_changes"/> 
 			<spinnerItem name="Set Asia" value="Asia"/> 
@@ -940,11 +934,9 @@
 			<spinnerItem name="Restore original ROM gps.conf" value="Original_ROM_GPS_Restored"/> 
 		</spinner>
 
-		<button description="Click to see your current GPS ZONE" 
-			name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
+		<button description="Click to see your current GPS ZONE" name="GPS ZONE" action="push-actions/gpszonecheck" label="GPS ZONE CHECK"/>
 
-		<button description="Update time via NTP server" 
-			name="UPDATE TIME" action="push-actions/time_update" label="UPDATE TIME"/>
+		<button description="Update time via NTP server" name="UPDATE TIME" action="push-actions/time_update" label="UPDATE TIME"/>
 
 	</settingsPane>
 
@@ -960,8 +952,7 @@
 		<checkbox description="If checked, Mass-Storage-SDCARDS will be auto-mounted when USB connected. then you can transfer files on high speed from PC to device. (Default: On)"
 			name="Auto Mount USB Drives" action="generic_cortex /tmp/auto_mount_sd" label="Auto Mount USB Drives"/>
 
-		<button description="Dual Mount-SDCARD and MMC via USB. After USB is disconnected, Dual Mount is disabled! This tweak is working automatically. Plug USB, turn off the screen and then turn ON, and you get working mounts. To scan your new MEDIA files, use some app to force Media Scan." 
-			name="DUAL MOUNT" action="push-actions/dualmount" label="Dual Mount"/>
+		<button description="Dual Mount-SDCARD and MMC via USB. After USB is disconnected, Dual Mount is disabled! This tweak is working automatically. Plug USB, turn off the screen and then turn ON, and you get working mounts. To scan your new MEDIA files, use some app to force Media Scan." name="DUAL MOUNT" action="push-actions/dualmount" label="Dual Mount"/>
 
 	</settingsPane>
 
@@ -979,22 +970,19 @@
 			name="Battery USB Charge Current" action="chargecurrent 3" 
 			unit="mA" min="450" reversed="false" step="50" max="750"/>
 
-		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, then the battery percentage should be fine." 
-			name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
+		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
-		<checkbox description="If checked, BetterBatteryStatus will report discrete (non-overlapping) wakelock statistics." 
-			name="Discrete Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wakelock Stats"/> 
+		<checkbox description="If checked, BetterBatteryStatus will report discrete (non-overlapping) wake lock statistics." 
+			name="Discrete Wake lock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wake lock Stats"/> 
 
 	</settingsPane>
 
 	<settingsPane description='Here you can Add/Update/Remove AD Blocker! You need ROOT to do the tweak! If you want to update the blocker, you can push the "UPDATE AD NOW" button, to get the new one installed! If you install a new ROM, and you want to use AD BLOCKER, then push "UPDATE AD NOW" and REBOOT. If you need to REMOVE AD-BLOCKER use the REMOVE button and REBOOT' 
 			name="AD Blocker">
 
-		<button description="ADD/UPDATE AD BLOCKER" 
-			name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
+		<button description="ADD/UPDATE AD BLOCKER" name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
 
-		<button description="REMOVE AD Blocker" 
-			name="AD-B REMOVE" action="push-actions/ad_restore" label="REMOVE AD-B NOW"/>
+		<button description="REMOVE AD Blocker" name="AD-B REMOVE" action="push-actions/ad_restore" label="REMOVE AD-B NOW"/>
 
 	</settingsPane>
 
@@ -1012,26 +1000,21 @@
 
 	</settingsPane>
 
-	<settingsPane description="Fixes filesystem if needed ..." name="FS">
+	<settingsPane description="Fixes file system only if needed!" name="FS">
 
-		<button description="DATA and CACHE file system check and repair on boot. !WARNING! This is a VERY DANGEROUS option! Before activating it DO A FULL BACKUP with Titanium Backup or any kind of backup application! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still can't boot, you will have to format DATA file system via recovery! USE IT AT YOUR OWN RISK! THIS FUNCTION IS NOT A TOY! YOU HAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it's OFF. It's also one time action, push the button to Activate, push again to Abort!" 
-			name="FIX File System on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
+		<button description="DATA and CACHE file system check and repair on boot. !WARNING! This is a VERY DANGEROUS option! Before activating it DO A FULL BACKUP with Titanium Backup or any kind of backup application! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still can't boot, you will have to format DATA file system via recovery! USE IT AT YOUR OWN RISK! THIS FUNCTION IS NOT A TOY! YOU HAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it's OFF. It's also one time action, push the button to Activate, push again to Abort!" name="FIX File System on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON/OFF"/>
 
-		<button description="Clean the media cache on your sdcard. Push once to clean, push again to abort. You have to reboot for action to work!" 
-			name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
+		<button description="Clean the media cache on your sdcard. Push once to clean, push again to abort. You have to reboot for action to work!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON/OFF"/>
 
 	</settingsPane>
 
 	<settingsPane description="Remove OR Reinstall ROOT! You can have a ROOTED or not ROOTED phone." name="Root">
 
-		<button description="Root Install. Click to install ROOT (SuperUser) + ROM busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! This function depends on CORTEX process to be enabled!" 
-			name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
+		<button description="Root Install. Click to install ROOT (SuperUser) + ROM Busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! This function depends on CORTEX process to be enabled!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
 
-		<button description="Root Remove/Uninstall. Click to remove Any ROOT installed + busybox (kernel's busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." 
-			name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
+		<button description="Root Remove/Uninstall. Click to remove Any ROOT installed + Busybox (kernel's Busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
 
-		<button description="Root check. Click to see if you have ROOT or not" 
-			name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
+		<button description="Root check. Click to see if you have ROOT or not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
 
 		<checkbox description="If box is checked, root will be installed on the next restart." 
 			name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
@@ -1042,68 +1025,69 @@
 
 <settingsTab name="Tweaks">
 
-	<settingsPane description="This script will manipulate many kernel settings, based on chosen STweaks profile+settings and on screen state (ON/OFF) and we call it 'CortexBrain'. To reset the kernel-settings, after you disable a tweak, you must reboot!" name="CortexBrain  Tweaks">
+	<settingsPane description="This script will manipulate many kernel settings, based on chosen STweaks profile + settings and on screen state (ON/OFF) and we call it 'CortexBrain'. To reset the kernel-settings, after you disable a tweak, you must reboot!"
+ 			name="CortexBrain  Tweaks">
 
-		<spinner description='Enable or Disable the "background-process" from "CortexBrain". If you disable it, you will lose the function that set different settings for screen state (ON/OFF).'
+		<spinner description="Enable or Disable the 'background-process' from 'CortexBrain'. If you disable it, you will lose the function that set different settings for screen state (ON/OFF)."
 			name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
 			<spinnerItem name="Enable" value="1"/> 
 			<spinnerItem name="Disable" value="0"/> 
 		</spinner>
 
-		<button description="Click to see if the 'Cortexbrain-Background-Process' is running or not." name="Check Background-Process" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
+		<button description="Click to see if the 'CortexBrain-Background-Process' is running or not." name="Check Background-Process" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<spinner description='Here you can control android logger "logcat". If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. If USB/Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug. Depends on Cortexbrain-Background-Process to be enabled!'
+		<spinner description="Here you can control android logger 'logcat'. If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. If USB/Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug. Depends on CortexBrain-Background-Process to be enabled!"
 			name="Android Logger control" action="android_logger">
 			<spinnerItem name="AUTO" value="auto"/> 
 			<spinnerItem name="DEBUG" value="debug"/> 
 			<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
-		<checkbox description='Enable or Disable the "Wifi turns off while screen is off" function. Depends on Cortexbrain-Background-Process to be enabled!'
+		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off' function. Depends on CortexBrain-Background-Process to be enabled!"
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-		<seekBar description='Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if "Auto-Wifi" is Enabled!' 
+		<seekBar description="Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if 'Auto-Wifi' is Enabled!" 
 			name="WIFI Turn Off Delay (in sec)" action="generic /tmp/cortexbrain_auto_tweak_wifi_sleep_delay"
 			unit="sec" min="0" reversed="false" step="30" max="300"/>
 
                 <!--checkbox description="Here you can allow WIFI to use LOW PWR when Screen is turned OFF. When screen is back ON, WIFI turns back to high PWR). If not set, WIFI uses HIGH PWR and get fast WIFI transfers on screen OFF"
                         name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
 
-		<checkbox description='Enable or Disable "sync brightnes with the battery discharge" (less battery = less brightnes). Depends on Cortexbrain-Background-Process!'
+		<checkbox description="Enable or Disable 'sync brightness with the battery discharge' (less battery = less brightness). Depends on CortexBrain-Background-Process!"
 			name="Sync-Brightness" action="generic_cortex /tmp/cortexbrain_auto_sync_brightness" label="Sync-Brightness"/>
 
-		<checkbox description='Enable or Disable "less set brightnes". Depends on Cortexbrain-Background-Process!'
+		<checkbox description="Enable or Disable 'less set brightness'. Depends on CortexBrain-Background-Process!"
 			name="Less-Brightness" action="generic_cortex /tmp/cortexbrain_auto_less_brightness" label="Less-Brightness"/>
 
-		<seekBar description='Here you can set a value for less brightnes. Works only if "Less-Brightness" is enabled!' 
+		<seekBar description="Here you can set a value for less brightness. Works only if 'Less-Brightness' is enabled!" 
 			name="Set value (0 - 100)" action="generic /tmp/cortexbrain_less_brightness"
 			unit="" min="0" reversed="false" step="5" max="255"/>
 
-		<checkbox description='Enable or Disable "Firewall-Tweaks".'
+		<checkbox description="Enable or Disable 'Firewall-Tweaks'."
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-		<checkbox description='Enable or Disable "TCP-Tweaks".'
+		<checkbox description="Enable or Disable 'TCP-Tweaks'."
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description='Enable or Disable "IPv6 Network". (Default: OFF)'
+		<checkbox description="Enable or Disable 'IPv6 Network'. (Default: OFF)"
 			name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/>
 
-		<checkbox description='Enable or Disable "CPU-Tweaks".'
+		<checkbox description="Enable or Disable 'CPU-Tweaks'."
 			name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-		<checkbox description='Enable or Disable "Memory-Tweaks".'
+		<checkbox description="Enable or Disable 'Memory-Tweaks'."
 			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-		<checkbox description='Enable or Disable "Battery-Tweaks".'
+		<checkbox description="Enable or Disable 'Battery-Tweaks'."
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description='Enable or Disable "System-Tweak".'
+		<checkbox description="Enable or Disable 'System-Tweak'."
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-		<checkbox description='Enable or Disable "Kernel-Tweaks".'
+		<checkbox description="Enable or Disable 'Kernel-Tweaks'."
 			name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-		<checkbox description='Enable or Disable "I/O-Tweaks".'
+		<checkbox description="Enable or Disable 'I/O-Tweaks'."
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
 
 	</settingsPane>
@@ -1114,20 +1098,15 @@
 
 	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="STweaks Profiles.">
 
-		<button description="extreme_battery.profile" 
-			name="extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
+		<button description="extreme_battery.profile" name="extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
 
-		<button description="battery.profile" 
-			name="battery.profile" action="push-actions/config_backup_restore 3" label="BATTERY"/>
+		<button description="battery.profile" name="battery.profile" action="push-actions/config_backup_restore 3" label="BATTERY"/>
 
-		<button description="default.profile" 
-			name="default.profile" action="push-actions/config_backup_restore 4" label="DEFAULT"/>
+		<button description="default.profile" name="default.profile" action="push-actions/config_backup_restore 4" label="DEFAULT"/>
 
-		<button description="performance.profile" 
-			name="performance.profile" action="push-actions/config_backup_restore 5" label="PERFORMANCE"/>
+		<button description="performance.profile" name="performance.profile" action="push-actions/config_backup_restore 5" label="PERFORMANCE"/>
 
-		<button description="extreme_performance.profile" 
-			name="extreme_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREME PERFORMANCE"/>
+		<button description="extreme_performance.profile" name="extreme_performance.profile" action="push-actions/config_backup_restore 7" label="EXTREME PERFORMANCE"/>
 
 	</settingsPane>
 
@@ -1135,13 +1114,11 @@
 
 <settingsTab name="BACKUP/RESTORE">
 
-	<settingsPane description="Here you can backup/restore your profile after installing new kernel. When you restore your config, please wait till this app restarts with the new settings. Some settings will work only after reboot! Restore will take up to 30 sec, just wait here!" name="STweaks Settings Backup/Restore">
+	<settingsPane description="Here you can backup/restore your profile after installing new kernel. When you restore your configuration, please wait till this app restarts with the new settings. Some settings will work only after reboot! Restore will take up to 30 sec, just wait here!" name="STweaks Settings Backup/Restore">
 
-		<button description="Backup STweaks User Settings!" 
-			name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
+		<button description="Backup STweaks User Settings!" name="Settings Backup" action="push-actions/config_backup_restore 1" label="BACKUP NOW"/>
 
-		<button description="Restore STweaks User Settings!" 
-			name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
+		<button description="Restore STweaks User Settings!" name="Settings Restore" action="push-actions/config_backup_restore 2" label="RESTORE NOW"/>
 
 	</settingsPane>
 
@@ -1151,17 +1128,13 @@
 
 	<settingsPane description="Dual-Boot Settings. WARNING! No confirmation will be asked for reboot buttons!" name="Dual-Boot Settings">
 
-		<button description="Reboot into custom recovery which let you configure, clone or backup the 2nd ROM" 
-			name="Reboot into ROM Recovery" action="reboot-into 0" label="Reboot into recovery"/>
+		<button description="Reboot into custom recovery which let you configure, clone or backup the 2nd ROM" name="Reboot into ROM Recovery" action="reboot-into 0" label="Reboot into recovery"/>
 
-		<button description="Reboot into 1st ROM" 
-			name="Reboot into 1st ROM" action="reboot-into 1" label="Reboot into 1st ROM"/>
+		<button description="Reboot into 1st ROM" name="Reboot into 1st ROM" action="reboot-into 1" label="Reboot into 1st ROM"/>
 
-		<button description="Reboot into 2nd ROM" 
-			name="Reboot into 2nd ROM" action="reboot-into 2" label="Reboot into 2nd ROM"/>
+		<button description="Reboot into 2nd ROM" name="Reboot into 2nd ROM" action="reboot-into 2" label="Reboot into 2nd ROM"/>
 
-		<checkbox description="Check this if you don't want boot logo to be shown. If this options is checked boot logo will not be shown even if you have 2ndROM installed." 
-			name="No boot-logo" action="no-boot-logo" label="No boot-logo"/>
+		<checkbox description="Check this if you don't want boot logo to be shown. If this options is checked boot logo will not be shown even if you have 2ndROM installed." name="No boot-logo" action="no-boot-logo" label="No boot-logo"/>
 
 		<spinner description="Default ROM to boot into. If you don't have 2nd ROM installed, 1st ROM will be booted. If you press the home or volume-down buttons during the boot logo the alternative ROM will be booted, i.e. 1st ROM will be booted if the default ROM selection is the 2nd ROM." 
 			name="Default ROM" action="defaultrom">
@@ -1177,11 +1150,9 @@
 
 	<settingsPane description="Debug to SD-Card (/sdcard) ..." name="Bug-Report">
 
-		<button description="Bug-Report for Kernel" 
-			name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
+		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
 
-		<button description="Bug-Report for Apps" 
-			name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
+		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
 
 	</settingsPane>
 
@@ -1191,8 +1162,7 @@
 
 	<settingsPane description="Check if there is a new kernel-update available." name="Kernel-Update">
 
-		<button description="Check for Update" 
-			name="Kernel-Update" action="push-actions/kernel_check" label="KERNEL-CHECK"/>
+		<button description="Check for Update" name="Kernel-Update" action="push-actions/kernel_check" label="KERNEL-CHECK"/>
 
 	</settingsPane>
 

@@ -38,13 +38,6 @@ dirty_writeback_centisecs_default=1000;
 dirty_expire_centisecs_battery=0;
 dirty_writeback_centisecs_battery=0;
 
-# =========
-# Renice - kernel thread responsible for managing the swap memory and logs
-# =========
-# (re)nice: a higher nice value means a low priority [-20 -> 20]
-#renice 15 -p `pgrep -f "kswapd0"`;
-#renice 15 -p `pgrep -f "logcat"`;
-
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
 
@@ -367,70 +360,6 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $down_avg_load_tmp ]; then	
 			down_avg_load_tmp="/dev/null";
 		fi;
-		target_loads_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/target_loads";
-		if [ ! -e $target_loads_tmp ]; then	
-			target_loads_tmp="/dev/null";
-		fi;
-		go_hispeed_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/go_hispeed_load";
-		if [ ! -e $go_hispeed_load_tmp ]; then	
-			go_hispeed_load_tmp="/dev/null";
-		fi;
-		unplug_load_cpu1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/unplug_load_cpu1";
-		if [ ! -e $unplug_load_cpu1_tmp ]; then	
-			unplug_load_cpu1_tmp="/dev/null";
-		fi;
-		unplug_load_cpu2_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/unplug_load_cpu2";
-		if [ ! -e $unplug_load_cpu2_tmp ]; then	
-			unplug_load_cpu2_tmp="/dev/null";
-		fi;
-		unplug_load_cpumore_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/unplug_load_cpumore";
-		if [ ! -e $unplug_load_cpumore_tmp ]; then	
-			unplug_load_cpumore_tmp="/dev/null";
-		fi;
-		hot_add_sampling_periods_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_add_sampling_periods";
-		if [ ! -e $hot_add_sampling_periods_tmp ]; then	
-			hot_add_sampling_periods_tmp="/dev/null";
-		fi;
-		hot_add_sampling_periods_suspended_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_add_sampling_periods_suspended";
-		if [ ! -e $hot_add_sampling_periods_suspended_tmp ]; then	
-			hot_add_sampling_periods_suspended_tmp="/dev/null";
-		fi;
-		hot_remove_sampling_periods_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_remove_sampling_periods";
-		if [ ! -e $hot_remove_sampling_periods_tmp ]; then	
-			hot_remove_sampling_periods_tmp="/dev/null";
-		fi;
-		hot_remove_sampling_periods_suspended_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hot_remove_sampling_periods_suspended";
-		if [ ! -e $hot_remove_sampling_periods_suspended_tmp ]; then	
-			hot_remove_sampling_periods_suspended_tmp="/dev/null";
-		fi;
-		above_hispeed_delay_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/above_hispeed_delay";
-		if [ ! -e $above_hispeed_delay_tmp ]; then	
-			above_hispeed_delay_tmp="/dev/null";
-		fi;
-		min_sample_time_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_sample_time";
-		if [ ! -e $min_sample_time_tmp ]; then	
-			min_sample_time_tmp="/dev/null";
-		fi;
-		timer_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_rate";
-		if [ ! -e $timer_rate_tmp ]; then	
-			timer_rate_tmp="/dev/null";
-		fi;
-		timer_rate_suspended_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_rate_suspended";
-		if [ ! -e $timer_rate_suspended_tmp ]; then	
-			timer_rate_suspended_tmp="/dev/null";
-		fi;
-		timer_slack_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_slack";
-		if [ ! -e $timer_slack_tmp ]; then	
-			timer_slack_tmp="/dev/null";
-		fi;
-		boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boost";
-		if [ ! -e $boost_tmp ]; then	
-			boost_tmp="/dev/null";
-		fi;
-		boostpulse_duration_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostpulse_duration";
-		if [ ! -e $boostpulse_duration_tmp ]; then	
-			boostpulse_duration_tmp="/dev/null";
-		fi;
 
 		# power_performance
 		if [ "$power_performance" == 1 ]; then
@@ -479,19 +408,6 @@ CPU_GOV_TWEAKS()
 			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
 			echo "0" > $hotplug_lock_tmp;			
-			echo "$target_loads_sleep" > $target_loads_tmp;
-			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
-			echo "$unplug_load_cpu1_sleep" > $unplug_load_cpu1_tmp;
-			echo "$unplug_load_cpu2_sleep" > $unplug_load_cpu2_tmp;
-			echo "$unplug_load_cpumore_sleep" > $unplug_load_cpumore_tmp;
-			echo "$hot_add_sampling_periods_sleep" > $hot_add_sampling_periods_tmp;
-			echo "$hot_remove_sampling_periods_sleep" > $hot_remove_sampling_periods_tmp;
-			echo "$above_hispeed_delay_sleep" > $above_hispeed_delay_tmp;
-			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
-			echo "$timer_rate_sleep" > $timer_rate_tmp;
-			echo "$timer_slack_sleep" > $timer_slack_tmp;
-			echo "$boost_sleep" > $boost_tmp;
-			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
 
 		# awake-settings
 		else
@@ -529,23 +445,6 @@ CPU_GOV_TWEAKS()
 			echo "$max_cpu_lock" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
 			echo "0" > $hotplug_lock_tmp;
-			echo "$target_loads" > $target_loads_tmp;
-			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
-			echo "$unplug_load_cpu1" > $unplug_load_cpu1_tmp;
-			echo "$unplug_load_cpu2" > $unplug_load_cpu2_tmp;
-			echo "$unplug_load_cpumore" > $unplug_load_cpumore_tmp;
-			echo "$hot_add_sampling_periods" > $hot_add_sampling_periods_tmp;
-			echo "$hot_add_sampling_periods_suspended" > $hot_add_sampling_periods_suspended_tmp;
-			echo "$hot_remove_sampling_periods" > $hot_remove_sampling_periods_tmp;
-			echo "$hot_remove_sampling_periods_suspended" > $hot_remove_sampling_periods_suspended_tmp;
-			echo "$above_hispeed_delay" > $above_hispeed_delay_tmp;
-			echo "$min_sample_time" > $min_sample_time_tmp;
-			echo "$timer_rate" > $timer_rate_tmp;
-			echo "$timer_rate_suspended" > $timer_rate_suspended_tmp;
-			echo "$timer_slack" > $timer_slack_tmp;
-			echo "$boost" > $boost_tmp;
-			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
-
 		fi;
 
 		# reset
@@ -660,7 +559,7 @@ DISABLE_WIFI()
 					sleep 10;
 					if [ `cat /data/.siyah/wifi_helper` == "0" ]; then
 						# user did not turned screen on, so keep waiting
-						SLEEP_TIME=$(($cortexbrain_auto_tweak_wifi_sleep_delay - 10));
+						SLEEP_TIME=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 						log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 						sleep $SLEEP_TIME;
 						if [ `cat /data/.siyah/wifi_helper` == "0" ]; then
@@ -740,7 +639,7 @@ ENABLE_GESTURES()
 
 DISABLE_GESTURES()
 {
-	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != "0" ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != "0" ] || [ "$gesture_tweak" == off ]; then
+	if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != 0 ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != 0 ] || [ "$gesture_tweak" == off ]; then
 		pkill -f "/data/gesture_set.sh";
 		pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 	fi;
@@ -828,7 +727,7 @@ SYNC_BRIGHTNESS()
 		LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
-		NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS*LEVEL/100 ));
+		NEW_BRIGHTNESS=$(( $MAX_BRIGHTNESS * $LEVEL / 100 ));
 		if [ "$NEW_BRIGHTNESS" -le "$OLD_BRIGHTNESS" ]; then
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
@@ -843,8 +742,8 @@ LESS_BRIGHTNESS()
 	if [ "$cortexbrain_auto_less_brightness" == on ]; then
 		MAX_BRIGHTNESS=`cat /sys/class/backlight/panel/max_brightness`;
 		OLD_BRIGHTNESS=`cat /sys/class/backlight/panel/brightness`;
-		NEW_BRIGHTNESS=$(( MAX_BRIGHTNESS-cortexbrain_less_brightness ));
-		if [ "$NEW_BRIGHTNESS" -ge "0" ]; then
+		NEW_BRIGHTNESS=$(( $MAX_BRIGHTNESS - $cortexbrain_less_brightness ));
+		if [ "$NEW_BRIGHTNESS" -ge 0 ]; then
 			echo "$NEW_BRIGHTNESS" > /sys/class/backlight/panel/brightness;
 		fi;
 		log -p i -t $FILE_NAME "*** LESS_BRIGHTNESS ***";
@@ -968,7 +867,7 @@ GAMMA_FIX()
 ENABLEMASK()
 {
 	local state="$1";
-	if [ "${state}" == "awake" ]; then 
+	if [ "${state}" == "awake" ]; then
 		echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 	elif [ "${state}" == "sleep" ]; then
 		echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
@@ -1041,6 +940,7 @@ AWAKE_MODE()
 	NMI "enable";
 
 	SYNC_BRIGHTNESS;
+
 	LESS_BRIGHTNESS;
 
 	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
@@ -1080,7 +980,7 @@ SLEEP_MODE()
 	SWAPPINESS;
 
 	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-	if [ $CHARGING == 0 ]; then
+	if [ "$CHARGING" == 0 ]; then
 
 		ENABLE_WIFI_PM;
 

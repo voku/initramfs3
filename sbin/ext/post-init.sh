@@ -14,7 +14,7 @@ if [ ! -d /data/.siyah ]; then
 	$BB mkdir -p /data/.siyah;
 fi;
 
-# reset config-backup-restore 
+# reset config-backup-restore
 if [ -f /data/.siyah/restore_running ]; then
 	rm -f /data/.siyah/restore_running;
 fi;
