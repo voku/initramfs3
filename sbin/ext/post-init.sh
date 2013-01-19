@@ -145,7 +145,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB rm -f /data/.siyah/booting;
 
 	# change USB mode MTP or Mass Storage
-	/res/customconfig/actions/usb-mode ${usb_mode};
+	$BB sh /res/uci.sh usb-mode ${usb_mode};
 )&
 
 (
@@ -153,7 +153,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# JB Low Sound Fix.
 	# ###############################################################
 
-	sleep 30;
+	sleep 50;
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
 	MIUI_JB=0;
 	JELLY=0;
