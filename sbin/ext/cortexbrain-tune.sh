@@ -878,9 +878,11 @@ fi;
 KSMCTL() {
 	case x${1} in
 		xstop)
+			log -p i -t $FILE_NAME "*** ksm: stop ***";
 			echo 0 > /sys/kernel/mm/ksm/run;
 		;;
 		xstart)
+			log -p i -t $FILE_NAME "*** ksm: start ${2} ${3} ***";
 			echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
 			echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
 			echo 1 > /sys/kernel/mm/ksm/run;
@@ -906,35 +908,25 @@ INCREASE_NPAGES() {
 ADJUST_KSM() {
 	local free=`FREE_MEM`;
 	if [ $free -gt $thres ]; then
-		log -p i -t $FILE_NAME "$free > $thres, stop ksm";
+		log -p i -t $FILE_NAME "*** ksm: $free > $thres ***";
+		npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
 		KSMCTL "stop";
 		return 1;
-	fi;
-	log -p i -t $FILE_NAME "*** ksm: $free < $thres, start ksm ***"
-	if [ $free -lt $thres ]; then
-		npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
-		log -p i -t $FILE_NAME "*** ksm: $free < $thres, boost ***";
 	else
 		npages=`INCREASE_NPAGES $KSM_NPAGES_DECAY`;
-		log -p i -t $FILE_NAME "*** ksm: $free > $thres, decay ***";
+		log -p i -t $FILE_NAME "*** ksm: $free < $thres ***"
+		KSMCTL "start" $npages $sleep;
+		return 0;
 	fi;
-	KSMCTL start $npages $sleep;
-	log -p i -t $FILE_NAME "*** ksm: KSMCTL start $npages $sleep ***";
-	return 0;
-}
-
-NOTHING() {
-	:
 }
 
 LOOP() {
-	trap NOTHING SIGUSR1;
-	while [ 1 ]; do
+	(while [ 1 ]; do
 		cat /sys/power/wait_for_fb_wake;
 		sleep $KSM_MONITOR_INTERVAL &
 		wait $!;
 		ADJUST_KSM;
-	done;
+	done &);
 }
 LOOP;
 
