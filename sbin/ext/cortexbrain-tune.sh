@@ -852,6 +852,91 @@ ENABLEMASK()
 	log -p i -t $FILE_NAME "*** ENABLEMASK ${state} ***: done";
 }
 
+# need testing ... ported from http://gitorious.org/ksm-control-scripts/ksm-control-scripts/
+KSM_MONITOR_INTERVAL=60;
+KSM_NPAGES_BOOST=300;
+KSM_NPAGES_DECAY=50;
+
+KSM_NPAGES_MIN=32;
+KSM_NPAGES_MAX=1000;
+KSM_SLEEP_MSEC=10;
+
+KSM_THRES_COEF=30;
+KSM_THRES_CONST=2048;
+
+total=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`
+npages=0
+sleep=$(( $KSM_SLEEP_MSEC * 16 * 1024 * 1024 / $total ));
+if [ $sleep -le 10 ]; then
+	sleep=10;
+fi;
+thres=$(( $total * $KSM_THRES_COEF / 100 ));
+if [ $KSM_THRES_CONST -gt $thres ]; then
+	thres=$KSM_THRES_CONST;
+fi;
+
+KSMCTL() {
+	case x${1} in
+		xstop)
+			echo 0 > /sys/kernel/mm/ksm/run;
+		;;
+		xstart)
+			echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
+			echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
+			echo 1 > /sys/kernel/mm/ksm/run;
+		;;
+	esac
+}
+
+FREE_MEM() {
+	awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo;
+}
+
+INCREASE_NPAGES() {
+	local delta=${1:-0};
+	npages=$(( $npages + $delta ));
+	if [ $npages -lt $KSM_NPAGES_MIN ]; then
+		npages=$KSM_NPAGES_MIN;
+	elif [ $npages -gt $KSM_NPAGES_MAX ]; then
+		npages=$KSM_NPAGES_MAX;
+	fi;
+	echo $npages;
+}
+
+ADJUST() {
+	local free=`FREE_MEM`;
+	if [ $free -gt $thres ]; then
+		log -p i -t $FILE_NAME "$free > $thres, stop ksm";
+		KSMCTL stop;
+		return 1;
+	fi;
+	log -p i -t $FILE_NAME "*** ksm: $free < $thres, start ksm ***"
+	if [ $free -lt $thres ]; then
+		npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
+		log -p i -t $FILE_NAME "*** ksm: $free < $thres, boost ***";
+	else
+		npages=`INCREASE_NPAGES $KSM_NPAGES_DECAY`;
+		log -p i -t $FILE_NAME "*** ksm: $free > $thres, decay ***";
+	fi;
+	KSMCTL start $npages $sleep;
+	log -p i -t $FILE_NAME "*** ksm: KSMCTL start $npages $sleep ***";
+	return 0;
+}
+
+NOTHING() {
+	:
+}
+
+LOOP() {
+	trap NOTHING SIGUSR1;
+	while true; do
+		sleep $KSM_MONITOR_INTERVAL &
+		wait $!;
+		ADJUST;
+	done;
+}
+
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
