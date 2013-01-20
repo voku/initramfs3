@@ -866,8 +866,9 @@ KSM_THRES_COEF=30;
 KSM_THRES_CONST=2048;
 
 total=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`
+total=$(( $total / 1024 ));
 npages=0
-sleep=$(( $KSM_SLEEP_MSEC * 16 * 1024 * 1024 / $total ));
+sleep=$(( $KSM_SLEEP_MSEC * 16 * 1024 / $total ));
 if [ $sleep -le $KSM_SLEEP_MIN ]; then
 	sleep=$KSM_SLEEP_MIN;
 fi;
