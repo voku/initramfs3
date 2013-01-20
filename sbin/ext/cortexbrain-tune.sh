@@ -887,6 +887,7 @@ KSMCTL() {
 			echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
 			echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
 			echo 1 > /sys/kernel/mm/ksm/run;
+			renice 10 -p "`pidof ksmd`";
 		;;
 	esac
 }
