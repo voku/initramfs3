@@ -193,6 +193,7 @@ cortexbrain_auto_tweak_wifi=off
 cortexbrain_auto_tweak_wifi_sleep_delay=30
 wifi_pwr=off
 android_logger=auto
+cortexbrain_ksm_control=off
 cortexbrain_firewall=on
 cortexbrain_tcp=on
 cortexbrain_ipv6=off
