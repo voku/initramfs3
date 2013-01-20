@@ -758,8 +758,8 @@ DELAY()
 	local delay="$wakeup_delay";
 	if [ ! -e /data/.siyah/booting ]; then
 		if [ "${state}" == "sleep" ]; then
-			if [ "$wakeup_delay" == 0 ]; then
-				delay=3;
+			if [ "$wakeup_delay" -le 5 ]; then
+				delay=5;
 			fi;
 		fi;
 
