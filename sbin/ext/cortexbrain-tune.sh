@@ -903,11 +903,11 @@ INCREASE_NPAGES() {
 	echo $npages;
 }
 
-ADJUST() {
+ADJUST_KSM() {
 	local free=`FREE_MEM`;
 	if [ $free -gt $thres ]; then
 		log -p i -t $FILE_NAME "$free > $thres, stop ksm";
-		KSMCTL stop;
+		KSMCTL "stop";
 		return 1;
 	fi;
 	log -p i -t $FILE_NAME "*** ksm: $free < $thres, start ksm ***"
@@ -929,12 +929,14 @@ NOTHING() {
 
 LOOP() {
 	trap NOTHING SIGUSR1;
-	while true; do
+	while [ 1 ]; do
+		cat /sys/power/wait_for_fb_wake;
 		sleep $KSM_MONITOR_INTERVAL &
 		wait $!;
-		ADJUST;
+		ADJUST_KSM;
 	done;
 }
+LOOP;
 
 
 # ==============================================================
@@ -961,6 +963,8 @@ AWAKE_MODE()
 	TOUCH_KEYS_CORRECTION;
 
 	MOUNT_SD_CARD;
+
+	ADJUST_KSM;
 
 	echo "$pwm_val" > /sys/vibrator/pwm_val;
 
@@ -1021,6 +1025,8 @@ SLEEP_MODE()
 	BLN_CORRECTION;
 
 	CROND_SAFETY;
+
+	KSMCTL "stop";
 
 	SWAPPINESS;
 
