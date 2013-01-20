@@ -859,7 +859,8 @@ KSM_NPAGES_DECAY=50;
 
 KSM_NPAGES_MIN=32;
 KSM_NPAGES_MAX=1000;
-KSM_SLEEP_MSEC=10;
+KSM_SLEEP_MSEC=200;
+KSM_SLEEP_MIN=2000;
 
 KSM_THRES_COEF=30;
 KSM_THRES_CONST=2048;
@@ -867,8 +868,8 @@ KSM_THRES_CONST=2048;
 total=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`
 npages=0
 sleep=$(( $KSM_SLEEP_MSEC * 16 * 1024 * 1024 / $total ));
-if [ $sleep -le 10 ]; then
-	sleep=10;
+if [ $sleep -le $KSM_SLEEP_MIN ]; then
+	sleep=$KSM_SLEEP_MIN;
 fi;
 thres=$(( $total * $KSM_THRES_COEF / 100 ));
 if [ $KSM_THRES_CONST -gt $thres ]; then
