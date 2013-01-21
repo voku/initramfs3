@@ -542,6 +542,88 @@ FIREWALL_TWEAKS()
 FIREWALL_TWEAKS;
 
 # ==============================================================
+# KSM-TWEAKS
+# ==============================================================
+if [ "$cortexbrain_ksm_control" == on ]; then
+	KSM_MONITOR_INTERVAL=60;
+	KSM_NPAGES_BOOST=300;
+	KSM_NPAGES_DECAY=50;
+
+	KSM_NPAGES_MIN=32;
+	KSM_NPAGES_MAX=1000;
+	KSM_SLEEP_MSEC=200;
+	KSM_SLEEP_MIN=2000;
+
+	KSM_THRES_COEF=30;
+	KSM_THRES_CONST=2048;
+
+	npages=0;
+	total=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`;
+	thres=$(( $total * $KSM_THRES_COEF / 100 ));
+	if [ $KSM_THRES_CONST -gt $thres ]; then
+		thres=$KSM_THRES_CONST;
+	fi;
+	total=$(( $total / 1024 ));
+	sleep=$(( $KSM_SLEEP_MSEC * 16 * 1024 / $total ));
+	if [ $sleep -le $KSM_SLEEP_MIN ]; then
+		sleep=$KSM_SLEEP_MIN;
+	fi;
+
+	KSMCTL() {
+		case x${1} in
+			xstop)
+				log -p i -t $FILE_NAME "*** ksm: stop ***";
+				echo 0 > /sys/kernel/mm/ksm/run;
+			;;
+			xstart)
+				log -p i -t $FILE_NAME "*** ksm: start ${2} ${3} ***";
+				echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
+				echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
+				echo 1 > /sys/kernel/mm/ksm/run;
+				renice 10 -p "`pidof ksmd`";
+			;;
+		esac
+	}
+
+	FREE_MEM() {
+		awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo;
+	}
+
+	INCREASE_NPAGES() {
+		local delta=${1:-0};
+		npages=$(( $npages + $delta ));
+		if [ $npages -lt $KSM_NPAGES_MIN ]; then
+			npages=$KSM_NPAGES_MIN;
+		elif [ $npages -gt $KSM_NPAGES_MAX ]; then
+			npages=$KSM_NPAGES_MAX;
+		fi;
+		echo $npages;
+	}
+
+	ADJUST_KSM() {
+		local free=`FREE_MEM`;
+		if [ $free -gt $thres ]; then
+			log -p i -t $FILE_NAME "*** ksm: $free > $thres ***";
+			npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
+			KSMCTL "stop";
+			return 1;
+		else
+			npages=`INCREASE_NPAGES $KSM_NPAGES_DECAY`;
+			log -p i -t $FILE_NAME "*** ksm: $free < $thres ***"
+			KSMCTL "start" $npages $sleep;
+			return 0;
+		fi;
+	}
+
+	(while [ 1 ]; do
+		cat /sys/power/wait_for_fb_wake;
+		sleep $KSM_MONITOR_INTERVAL &
+		wait $!;
+		ADJUST_KSM;
+	done &);
+fi;
+
+# ==============================================================
 # SCREEN-FUNCTIONS
 # ==============================================================
 
@@ -676,8 +758,8 @@ DELAY()
 	local delay="$wakeup_delay";
 	if [ ! -e /data/.siyah/booting ]; then
 		if [ "${state}" == "sleep" ]; then
-			if [ "$wakeup_delay" == 0 ]; then
-				delay=3;
+			if [ "$wakeup_delay" -le 5 ]; then
+				delay=5;
 			fi;
 		fi;
 
@@ -877,6 +959,10 @@ AWAKE_MODE()
 
 	MOUNT_SD_CARD;
 
+	if [ "$cortexbrain_ksm_control" == on ]; then
+		ADJUST_KSM;
+	fi;
+
 	echo "$pwm_val" > /sys/vibrator/pwm_val;
 
 	BOOST_DELAY;
@@ -911,66 +997,81 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
+	# !!! do not delete this !!!
+	echo "0" > /tmp/early_wakeup;
+	(while [ 1 ]; do
+		cat /sys/power/wait_for_fb_wake;
+		echo "1" > /tmp/early_wakeup;
+		exit;
+	done &);
+
 	DELAY "sleep";
 
-	# we only read the config when screen goes off ...
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
+	if [ `cat /tmp/early_wakeup` == 0 ]; then
 
-	ENABLEMASK "sleep";
+		# we only read the config when screen goes off ...
+		PROFILE=`cat /data/.siyah/.active.profile`;
+		. /data/.siyah/$PROFILE.profile;
 
-	if [ "$cortexbrain_cpu" == on ]; then
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	fi;
+		ENABLEMASK "sleep";
 
-	MALI_TIMEOUT "sleep";
-
-	KERNEL_SCHED "sleep";
-
-	GESTURES "sleep";
-
-	IPV6;
-
-	BATTERY_TWEAKS;
-
-	BLN_CORRECTION;
-
-	CROND_SAFETY;
-
-	SWAPPINESS;
-
-	CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
-	if [ "$CHARGING" == 0 ]; then
 		if [ "$cortexbrain_cpu" == on ]; then
-			echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			CPU_GOV_TWEAKS "sleep";
+			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		fi;
 
-		echo "80" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		MALI_TIMEOUT "sleep";
 
-		echo "$sleep_scheduler" > /sys/block/mmcblk0/queue/scheduler;
-		echo "$sleep_scheduler" > /sys/block/mmcblk1/queue/scheduler;
+		KERNEL_SCHED "sleep";
 
-		echo "50" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "50" > /sys/module/stand_hotplug/parameters/load_l1;
+		GESTURES "sleep";
 
-		# set settings for battery -> don't wake up "pdflush daemon"
-		echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
-		echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
+		IPV6;
 
-		echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+		BATTERY_TWEAKS;
+
+		BLN_CORRECTION;
+
+		CROND_SAFETY;
+
+		if [ "$cortexbrain_ksm_control" == on ]; then
+			KSMCTL "stop";
+		fi;
+
+		SWAPPINESS;
+
+		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+		if [ "$CHARGING" == 0 ]; then
+			if [ "$cortexbrain_cpu" == on ]; then
+				echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+				echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				CPU_GOV_TWEAKS "sleep";
+			fi;
+
+			echo "80" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
+			echo "$sleep_scheduler" > /sys/block/mmcblk0/queue/scheduler;
+			echo "$sleep_scheduler" > /sys/block/mmcblk1/queue/scheduler;
+
+			echo "50" > /sys/module/stand_hotplug/parameters/load_h0;
+			echo "50" > /sys/module/stand_hotplug/parameters/load_l1;
+
+			# set settings for battery -> don't wake up "pdflush daemon"
+			echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
+			echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
+
+			echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 		
-		WIFI "sleep";
+			WIFI "sleep";
 
-		log -p i -t $FILE_NAME "*** SLEEP mode ***";
+			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 
-		LOGGER "sleep";
-	else
-		echo "USB CABLE CONNECTED! No real sleep mode!"
-		log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
+			LOGGER "sleep";
+		else
+			echo "USB CABLE CONNECTED! No real sleep mode!"
+			log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
+		fi;
 	fi;
 }
 
