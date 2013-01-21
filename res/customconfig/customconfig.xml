@@ -529,6 +529,11 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
+		<checkbox description="Enable or Disable 'KSM-Control'. This merge some memory but need cpu-power ..."
+			name="KSM-Control" action="generic_cortex /tmp/cortexbrain_ksm_control" label="KSM-Control"/>
+
+		<button description="KSM state check" name="KSM STATS" action="push-actions/ksmstats" label="KSM STATS"/>
+
 	</settingsPane>
 
 </settingsTab>
@@ -1073,9 +1078,6 @@
 
 		<checkbox description="Enable or Disable 'Memory-Tweaks'."
 			name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
-
-		<checkbox description="Enable or Disable 'KSM-Control'. This merge some memory but need cpu-power ..."
-			name="KSM-Control" action="generic_cortex /tmp/cortexbrain_ksm_control" label="KSM-Control"/>
 
 		<checkbox description="Enable or Disable 'Battery-Tweaks'."
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
