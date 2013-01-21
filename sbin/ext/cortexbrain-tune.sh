@@ -107,6 +107,7 @@ IO_TWEAKS()
 
 		echo "15" > /proc/sys/fs/lease-break-time;
 		echo "524288" > /proc/sys/fs/file-max;
+		echo "1048576" > /proc/sys/fs/nr_open;
 		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
 		echo "256" > /proc/sys/fs/inotify/max_user_instances;
 		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
@@ -473,8 +474,8 @@ MEMORY_TWEAKS()
 	if [ "$cortexbrain_memory" == on ]; then
 		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
 		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-		echo "15" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "20" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "70" > /proc/sys/vm/dirty_background_ratio; # default: 10
+		echo "90" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
@@ -865,6 +866,10 @@ KERNEL_SCHED()
 		echo "20000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
+	elif [ "${state}" == "test" ]; then
+		echo "36000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "6000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		echo "3000000" > /proc/sys/kernel/sched_min_granularity_ns;
 	fi;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
