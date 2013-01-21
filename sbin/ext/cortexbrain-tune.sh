@@ -26,14 +26,6 @@ echo "0" > /data/.siyah/wifi_helper;
 echo "0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
-# default settings (1000 = 10 seconds)
-dirty_expire_centisecs_default=1000;
-dirty_writeback_centisecs_default=1000;
-
-# battery settings
-dirty_expire_centisecs_battery=0;
-dirty_writeback_centisecs_battery=0;
-
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
 
@@ -472,8 +464,6 @@ fi;
 MEMORY_TWEAKS()
 {
 	if [ "$cortexbrain_memory" == on ]; then
-		echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
-		echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
 		echo "70" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "90" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
@@ -979,9 +969,6 @@ AWAKE_MODE()
 
 	BOOST_DELAY;
 
-	echo "$dirty_expire_centisecs_default" > /proc/sys/vm/dirty_expire_centisecs;
-	echo "$dirty_writeback_centisecs_default" > /proc/sys/vm/dirty_writeback_centisecs;
-
 	echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
 	echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
 
@@ -1071,10 +1058,6 @@ SLEEP_MODE()
 
 			echo "50" > /sys/module/stand_hotplug/parameters/load_h0;
 			echo "50" > /sys/module/stand_hotplug/parameters/load_l1;
-
-			# set settings for battery -> don't wake up "pdflush daemon"
-			echo "$dirty_expire_centisecs_battery" > /proc/sys/vm/dirty_expire_centisecs;
-			echo "$dirty_writeback_centisecs_battery" > /proc/sys/vm/dirty_writeback_centisecs;
 
 			echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 		
