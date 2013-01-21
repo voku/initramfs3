@@ -840,15 +840,18 @@ SWAPPINESS()
 IPV6()
 {
 	local CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
+	local state='';
 	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 		sysctl -w net.ipv6.conf.all.disable_ipv6=0;
-		log -p i -t $FILE_NAME "*** IPV6 ***: enabled";
+		state='enabled';
 	else
 		echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 		sysctl -w net.ipv6.conf.all.disable_ipv6=1;
-		log -p i -t $FILE_NAME "*** IPV6 ***: disabled";
+		state='disabled';
 	fi;
+
+	log -p i -t $FILE_NAME "*** IPV6 ***: ${state}";
 }
 
 KERNEL_SCHED()
