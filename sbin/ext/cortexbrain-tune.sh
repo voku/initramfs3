@@ -951,7 +951,8 @@ AWAKE_MODE()
 
 	ENABLEMASK "awake";
 
-	KERNEL_SCHED "awake";
+	# disabled for testing ...
+	#KERNEL_SCHED "awake";
 
 	MEGA_BOOST_CPU_TWEAKS;
 
@@ -1027,7 +1028,8 @@ SLEEP_MODE()
 
 		MALI_TIMEOUT "sleep";
 
-		KERNEL_SCHED "sleep";
+		# disabled for testing ...
+		#KERNEL_SCHED "sleep";
 
 		GESTURES "sleep";
 
