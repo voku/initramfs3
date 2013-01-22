@@ -110,6 +110,11 @@ case "${debug_to_sd}" in
 			done;
 			SEPARATOR;
 
+			# Scheduler
+			echo "Scheduler-Info:" >> $DEBUG_FILE;
+			cat /proc/sched_debug >> $DEBUG_FILE;
+			SEPARATOR;
+
 			# NET
 			echo "NET-Info:" >> $DEBUG_FILE;
 			ifconfig pdp0 >> $DEBUG_FILE;
@@ -144,12 +149,15 @@ case "${debug_to_sd}" in
 			# Processes
 			echo "Process-Info:" >> $DEBUG_FILE;
 			top -b -n 1 >> $DEBUG_FILE;
-			ps -wTl >> $DEBUG_FILE;
+			ps -w >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# dmesg
 			echo "dmesg-Info:" >> $DEBUG_FILE;
 			dmesg >> $DEBUG_FILE;
+			SEPARATOR;
+			echo "dmesg-Error:" >> $DEBUG_FILE;
+			dmesg | grep -i "Error" >> $DEBUG_FILE;
 			SEPARATOR;
 		)&
 		echo "All Data collected and ready at $DEBUG_FILE";
