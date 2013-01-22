@@ -26,6 +26,10 @@ echo "0" > /data/.siyah/wifi_helper;
 echo "0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
+# init sleeprun for first script load.
+mount -o remount,rw /
+echo "1" > /tmp/sleeprun;
+
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
 
@@ -71,7 +75,7 @@ IO_TWEAKS()
 
 			if [ "$scheduler" == "sio" ] || [ "$scheduler" == "zen" ]; then
 				if [ -e $i/queue/nr_requests ]; then
-					echo "20" > $i/queue/nr_requests; # default: 128
+					echo "128" > $i/queue/nr_requests; # default: 128
 				fi;
 			fi;
 
@@ -97,7 +101,7 @@ IO_TWEAKS()
 			echo "$cortexbrain_read_ahead_kb" > $i/read_ahead_kb;
 		done;
 
-		echo "15" > /proc/sys/fs/lease-break-time;
+		echo "10" > /proc/sys/fs/lease-break-time;
 		echo "524288" > /proc/sys/fs/file-max;
 		echo "1048576" > /proc/sys/fs/nr_open;
 		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
@@ -116,7 +120,8 @@ KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
 		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-		sysctl -w vm.panic_on_oom=0;
+		echo "0" > /proc/sys/vm/panic_on_oom;
+		echo "10" > /proc/sys/kernel/panic;
 		echo "65536" > /proc/sys/kernel/msgmax;
 		echo "2048" > /proc/sys/kernel/msgmni;
 		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
@@ -467,7 +472,7 @@ MEMORY_TWEAKS()
 		echo "70" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "90" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
@@ -495,13 +500,13 @@ TCP_TWEAKS()
 		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-		echo "262144" > /proc/sys/net/core/wmem_max;
+		echo "524288" > /proc/sys/net/core/wmem_max;
 		echo "524288" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
 		echo "262144" > /proc/sys/net/core/wmem_default;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "4096 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
+		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
@@ -748,18 +753,10 @@ MOUNT_SD_CARD()
 # set delay to prevent mp3-music shattering when screen turned ON
 DELAY()
 {
-	local state="$1";
-	local delay="$wakeup_delay";
 	if [ ! -e /data/.siyah/booting ]; then
-		if [ "${state}" == "sleep" ]; then
-			if [ "$wakeup_delay" -le 5 ]; then
-				delay=5;
-			fi;
-		fi;
-
-		if [ "$delay" != 0 ]; then
+		if [ "$wakeup_delay" != 0 ]; then
 			log -p i -t $FILE_NAME "*** DELAY ${delay}sec ***";
-			sleep $delay;
+			sleep $wakeup_delay;
 		fi;
 	fi;
 }
@@ -940,55 +937,57 @@ ENABLEMASK()
 # ==============================================================
 AWAKE_MODE()
 {
-	LOGGER "awake";
+	if [ `cat /tmp/sleeprun` == 1 ]; then
 
-	DELAY "awake";
+		LOGGER "awake";
 
-	ENABLEMASK "awake";
+		DELAY;
 
-	# disabled for testing ...
-	#KERNEL_SCHED "awake";
+		ENABLEMASK "awake";
 
-	MEGA_BOOST_CPU_TWEAKS;
+		KERNEL_SCHED "awake";
 
-	WIFI "awake";
+		MEGA_BOOST_CPU_TWEAKS;
 
-	GESTURES "awake";
+		WIFI "awake";
 
-	GAMMA_FIX;
+		GESTURES "awake";
 
-	TOUCH_KEYS_CORRECTION;
+		GAMMA_FIX;
 
-	MOUNT_SD_CARD;
+		TOUCH_KEYS_CORRECTION;
 
-	if [ "$cortexbrain_ksm_control" == on ]; then
-		ADJUST_KSM;
+		MOUNT_SD_CARD;
+
+		if [ "$cortexbrain_ksm_control" == on ]; then
+			ADJUST_KSM;
+		fi;
+
+		echo "$pwm_val" > /sys/vibrator/pwm_val;
+
+		BOOST_DELAY;
+
+		echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
+		echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
+
+		echo "100" > /proc/sys/vm/vfs_cache_pressure;
+
+		CPU_GOV_TWEAKS "awake";
+
+		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+
+		echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
+		echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
+
+		if [ "$cortexbrain_cpu" == on ]; then
+			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		fi;
+
+		MALI_TIMEOUT "awake";
+
+		log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 	fi;
-
-	echo "$pwm_val" > /sys/vibrator/pwm_val;
-
-	BOOST_DELAY;
-
-	echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
-	echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
-
-	echo "20" > /proc/sys/vm/vfs_cache_pressure;
-
-	CPU_GOV_TWEAKS "awake";
-
-	echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-
-	echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
-	echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
-
-	if [ "$cortexbrain_cpu" == on ]; then
-		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	fi;
-
-	MALI_TIMEOUT "awake";
-
-	log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 }
 
 # ==============================================================
@@ -996,15 +995,10 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-	# !!! do not delete this !!!
-	echo "0" > /tmp/early_wakeup;
-	(while [ 1 ]; do
-		cat /sys/power/wait_for_fb_wake;
-		echo "1" > /tmp/early_wakeup;
-		exit;
-	done &);
+	mount -o remount,rw /
+	echo "0" > /tmp/sleeprun;
 
-	DELAY "sleep";
+	DELAY;
 
 	if [ `cat /tmp/early_wakeup` == 0 ]; then
 
@@ -1035,7 +1029,7 @@ SLEEP_MODE()
 
 		if [ "$cortexbrain_ksm_control" == on ]; then
 			KSMCTL "stop";
-		else 
+		else
 			echo 2 > /sys/kernel/mm/ksm/run;
 		fi;
 
@@ -1070,6 +1064,11 @@ SLEEP_MODE()
 			echo "USB CABLE CONNECTED! No real sleep mode!"
 			log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
 		fi;
+
+		echo "1" > /tmp/sleeprun;
+
+	else
+		log -p i -t $FILE_NAME "*** Early WakeUp detected! SLEEP aborted! ***";
 	fi;
 }
 
@@ -1089,6 +1088,8 @@ if [ "$cortexbrain_background_process" == 1 ] && [ `pgrep -f "cat /sys/power/wai
 
 		# SLEEP state. All system to power save
 		cat /sys/power/wait_for_fb_sleep > /dev/null 2>&1;
+		sleep 3;
+		/sbin/ext/wakecheck.sh;
 		SLEEP_MODE;
 	done &);
 else
