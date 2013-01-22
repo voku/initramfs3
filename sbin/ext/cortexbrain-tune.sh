@@ -1066,6 +1066,7 @@ SLEEP_MODE()
 		fi;
 
 		echo "1" > /tmp/sleeprun;
+		pkill -f "cat /sys/power/wait_for_fb_wake"
 
 	else
 		log -p i -t $FILE_NAME "*** Early WakeUp detected! SLEEP aborted! ***";
