@@ -845,15 +845,19 @@ IPV6()
 KERNEL_SCHED()
 {
 	local state="$1";
+
 	if [ "${state}" == "awake" ]; then
-		echo "18000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "3000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "0" > /proc/sys/kernel/sched_child_runs_first;
+		echo "1000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "100000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	elif [ "${state}" == "sleep" ]; then
-		echo "20000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-		echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "1" > /proc/sys/kernel/sched_child_runs_first;
+		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	fi;
+	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
 }
