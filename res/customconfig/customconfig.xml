@@ -265,8 +265,8 @@
 		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Nightmare, Conservative, Scary, Sleepy) (default is 60000)"
 			name="sampling_rate" action="generic /tmp/sampling_rate" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
-			name="hotplug_sampling_rate" action="generic /tmp/hotplug_sampling_rate" unit=" uS" min="0" reversed="false" step="1000" max="120000"/>
+		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
+			name="hotplug_sampling_rate" action="generic /tmp/hotplug_sampling_rate" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
 
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor" action="generic /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
@@ -280,7 +280,7 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 20000)"
 			name="down_sample_time" action="generic /tmp/down_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
+		<!--seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
 			name="hotplug_freq_1_1" action="genericfreq /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
@@ -296,7 +296,7 @@
 			name="hotplug_compare_level" action="generic /tmp/hotplug_compare_level">
 			<spinnerItem name="History Load Based" value="0"/> 
 			<spinnerItem name="Current Load Based" value="1"/> 
-		</spinner>
+		</spinner-->
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
 			name="freq_step" action="generic /tmp/freq_step" unit="%" min="0" reversed="false" step="1" max="100"/>
@@ -387,8 +387,8 @@
 		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Nightmare, Conservative, Scary, Sleepy) (default is 70000)"
 			name="sampling_rate_sleep" action="generic /tmp/sampling_rate_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 15000)"
-			name="hotplug_sampling_rate_sleep" action="generic /tmp/hotplug_sampling_rate_sleep" unit=" uS" min="0" reversed="false" step="1000" max="120000"/>
+		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 15000)"
+			name="hotplug_sampling_rate_sleep" action="generic /tmp/hotplug_sampling_rate_sleep" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
 
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor_sleep" action="generic /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
@@ -402,7 +402,7 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 10000)" 
 			name="down_sample_time_sleep" action="generic /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hot plug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
+		<!--seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hot plug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
 			name="hotplug_freq_1_1_sleep" action="genericfreq /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
@@ -418,7 +418,7 @@
 			name="hotplug_compare_level_sleep" action="generic /tmp/hotplug_compare_level_sleep">
 			<spinnerItem name="History Load Based" value="0"/> 
 			<spinnerItem name="Current Load Based" value="1"/> 
-		</spinner>
+		</spinner-->
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 40)"
 			name="freq_step_sleep" action="generic /tmp/freq_step_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
