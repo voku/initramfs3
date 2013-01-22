@@ -1,12 +1,12 @@
 #!/sbin/busybox sh
 
-# $1 - "oom_config"
+# $1 - "oom_config_screen_on"
 # $2 - value=
 
 if [ "a$2" != "a" ]; then
-	oom_config=$2;
+	oom_config_screen_on=$2;
 
-	case "${oom_config}" in
+	case "${oom_config_screen_on}" in
 	very_light)
 		echo "512,1024,1280,2048,3072,4096" > /sys/module/lowmemorykiller/parameters/minfree;
 		echo "128" > /sys/module/lowmemorykiller/parameters/cost;
@@ -33,10 +33,10 @@ if [ "a$2" != "a" ]; then
 		echo "32768" > /proc/sys/vm/mmap_min_addr;
 	;;
 	*)
-		oom_config=medium;
+		oom_config_screen_on=medium;
 	;;
 	esac;
 fi;
 
-echo ${oom_config};
+echo ${oom_config_screen_on};
 
