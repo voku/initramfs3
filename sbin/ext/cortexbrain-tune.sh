@@ -853,10 +853,6 @@ KERNEL_SCHED()
 		echo "20000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_min_granularity_ns;
-	elif [ "${state}" == "test" ]; then
-		echo "36000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "6000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
-		echo "3000000" > /proc/sys/kernel/sched_min_granularity_ns;
 	fi;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
@@ -1014,8 +1010,7 @@ SLEEP_MODE()
 
 		MALI_TIMEOUT "sleep";
 
-		# disabled for testing ...
-		#KERNEL_SCHED "sleep";
+		KERNEL_SCHED "sleep";
 
 		GESTURES "sleep";
 
