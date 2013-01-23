@@ -4,14 +4,17 @@
 	<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-		<seekBar description="Maximum CPU-Speed. ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! CPU Frequency step by 50.000 kHz are valid from 100.000 kHz to 1.200.000 kHz! (Default: 1.200.000 kHz)" 
-			name="Max Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
+		<seekBar description="Maximum Normal CPU-Speed. CPU Frequency steps by 50.000 kHz from 100.000 kMz to 1.200.000 kHz! if you want to use OC speeds set here 1.2Ghz! and tune the OC bar! if here speed is lower than MAX '1.2Ghz', OC bar is ignored! (Default: 1.200.000 kHz)" 
+			name="Max Normal Frequency" action="genericfreq_normal /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+
+		<seekBar description="Overclock CPU Speed. To use OC you must set the Normal CPU speed to MAX '1.2Ghz' or this setting ignored! CPU Frequency steps by 100.000 kHz from 1.200.000 kMz to 1.600.000 kHz! ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! 1.6 Ghz is unstable on 85% of devices, try on your own risk (Default: 1.200.000 kHz)"
+			name="Max OC Frequency" action="genericfreq_oc /tmp/scaling_max_freq_oc" unit="kHz" min="1200000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 50000KHz are valid from 100.000 kHz to 1.200.000 kHz! (Default: 200.000 kHz)" 
 			name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
 
 		<seekBar description="Maximum CPU-Boost, when you touch the screen. This is also limited by above Max/Min CPU-Speed! (Default: 500.000 kHz)"
-			name="Max Touch-Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="50000" max="800000"/>
+			name="Max Touch Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="50000" max="800000"/>
 
 		<seekBar description="Minimum Frequency until second core will not be turned on, regardless of thresholds. (Default: 600.000 kHz)" 
 			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 

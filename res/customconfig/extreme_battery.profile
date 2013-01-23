@@ -1,4 +1,5 @@
 scaling_max_freq=1000000
+scaling_max_freq_oc=1200000
 scaling_min_freq=100000
 smooth_level0=24
 scaling_governor=conservative

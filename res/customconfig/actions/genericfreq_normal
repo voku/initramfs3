@@ -2,6 +2,9 @@
 
 if [ "a$2" != "a" ]; then
 
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
 	filename=$(basename $2);
 
 	if [ "a$3" == "a" ]; then
@@ -18,7 +21,11 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 
 		if [ -f $2 ]; then
-			echo "$newfreq" > $2;
+			if [ "$newfreq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
+				echo "$scaling_max_freq_oc" > $2;
+			else
+				echo "$newfreq" > $2;
+			fi;
 		fi;
 	fi;
 fi;
