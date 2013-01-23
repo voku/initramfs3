@@ -13,7 +13,7 @@
 		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 50000KHz are valid from 100.000 kHz to 1.200.000 kHz! (Default: 200.000 kHz)" 
 			name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
 
-		<seekBar description="Maximum CPU-Boost, when you touch the screen. This is also limited by above Max/Min CPU-Speed! (Default: 500.000 kHz)"
+		<seekBar description="When you touch the screen, CPU freq will jump UP to set value and go DOWN if no more to do, if CPU freq already above the value, then no change. (Default: 500.000 kHz)"
 			name="Max Touch Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="50000" max="800000"/>
 
 		<seekBar description="Minimum Frequency until second core will not be turned on, regardless of thresholds. (Default: 600.000 kHz)" 
