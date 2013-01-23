@@ -1,9 +1,8 @@
 #!/sbin/busybox sh
 
-# use this script only if you are tuning existing file!
-# script check if $2 really exist.
-
 if [ "a$2" != "a" ]; then
+
+	mount -o remount,rw /
 
 	filename=$(basename $2);
 
@@ -15,9 +14,20 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 		evalcmd='eval "echo \$$filename"';
 		eval $evalcmd;
-		if [ -f $2 ]; then
-			echo "$3" > $2;
-		fi;
 	fi;
+
+	case "$3" in
+		off)
+			echo 0 > /sys/kernel/mm/ksm/run;
+			echo 2 > /sys/kernel/mm/ksm/run;
+			echo "off" > /tmp/ksm;
+		;;
+		on)
+			if [ `cat /tmp/ksm` == "off" ]; then
+				/sbin/ext/cortexbrain-tune.sh;
+				echo "on" > /tmp/ksm;
+			fi;
+		;;
+	esac;
 fi;
 

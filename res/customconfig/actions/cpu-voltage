@@ -12,7 +12,7 @@ else
 	evalcmd='eval "echo \$CPUVOLT$2"';
 	eval $evalcmd;
 
-	if [ "$cpu_voltage_switch" == on ]; then
+	if [ "$cpu_voltage_switch" == "on" ]; then
 		echo "100000 $CPUVOLT27" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 		echo "150000 $CPUVOLT26" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 		echo "200000 $CPUVOLT25" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
