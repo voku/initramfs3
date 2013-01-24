@@ -1,5 +1,8 @@
 #!/sbin/busybox sh
 
+# use this script if you want cortex to do something based on profile
+# this script only set new value in profile for cortex.
+
 if [ "a$2" != "a" ]; then
 
 	filename=$(basename $2);
@@ -12,16 +15,6 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 		evalcmd='eval "echo \$$filename"';
 		eval $evalcmd;
-		if [ -f $2 ]; then
-			case "$3" in
-				off)
-					#Trigger for on boot placed in sbin/ext/post-init.sh
-				;;
-				on)
-					#Trigger for on boot placed in sbin/ext/post-init.sh
-				;;
-			esac;
-		fi;
 	fi;
 fi;
 

@@ -109,8 +109,6 @@ case "${zramtweaks}" in
 			echo "1" > /sys/block/zram0/reset;
 			echo "1" > /sys/block/zram1/reset;
 			echo "1" > /sys/block/zram2/reset;
-			# setting swappines
-			echo "0" > /proc/sys/vm/swappiness;
 		fi;
 	;;
 	*)

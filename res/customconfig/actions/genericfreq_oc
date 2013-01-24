@@ -1,8 +1,5 @@
 #!/sbin/busybox sh
 
-# use this script only if you are tuning existing file!
-# script check if $2 really exist.
-
 if [ "a$2" != "a" ]; then
 
 	filename=$(basename $2);
@@ -15,8 +12,9 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 		evalcmd='eval "echo \$$filename"';
 		eval $evalcmd;
-		if [ -f $2 ]; then
-			echo "$3" > $2;
+		MAX_FREQ_NOW=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`;
+		if [ "$MAX_FREQ_NOW" == "1200000" ] || [ "$MAX_FREQ_NOW" -ge "1200000" ]; then
+				echo "$3" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		fi;
 	fi;
 fi;

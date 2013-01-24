@@ -10,8 +10,6 @@ on fs
 
 # Tweaks For ROM
     setprop ro.telephony.call_ring.delay 0
-    setprop ro.lge.proximity.delay 25
-    setprop mot.proximity.delay 25
     setprop dalvik.vm.execution-mode int:jit
     setprop persist.adb.notify 0
     setprop pm.sleep_mode 1
@@ -19,10 +17,9 @@ on fs
     setprop ro.kernel.checkjni 0
 
 # Video Tuning
-    setprop ro.media.enc.jpeg.quality 70,90,100
+    setprop ro.media.enc.jpeg.quality 100,100,100
     setprop ro.media.dec.jpeg.memcap 8000000
     setprop ro.media.enc.hprof.vid.bps 8000000
-    setprop ro.config.hw_quickpoweron true
     setprop persist.sys.use_dithering 1
     setprop video.accelerate.hw 1
     setprop debug.performance.tuning 1
@@ -35,11 +32,6 @@ on fs
     setprop ro.ril.hsdpa.category 10
     setprop ro.ril.enable.a53 1
     setprop ro.ril.hsupa.category 5
-    setprop media.stagefright.enable-player true
-    setprop media.stagefright.enable-meta true
-    setprop media.stagefright.enable-scan false
-    setprop media.stagefright.enable-http true
-    setprop ro.mot.eri.losalert.delay 1000
     setprop ro.ril.disable.power.collapse 0
 
 # Define TCP buffer sizes for various networks

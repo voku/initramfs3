@@ -12,21 +12,19 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 		evalcmd='eval "echo \$$filename"';
 		eval $evalcmd;
-		if [ -f $2 ]; then
-			case "$3" in
-				off)
-					pkill -f "gesture_set.sh";
-					pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
-					echo "0" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
-				;;
-				on)
-					echo "1" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
-					pkill -f "gesture_set.sh";
-					pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
-					/sbin/busybox sh /data/gesture_set.sh;
-				;;
-			esac;
-		fi;
+		case "$3" in
+			off)
+				pkill -f "gesture_set.sh";
+				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
+				echo "0" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
+			;;
+			on)
+				echo "1" > /sys/devices/virtual/sec/sec_touchscreen/gestures_enabled;
+				pkill -f "gesture_set.sh";
+				pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
+				/sbin/busybox sh /data/gesture_set.sh;
+			;;
+		esac;
 	fi;
 fi;
 

@@ -6,7 +6,7 @@
 if [ "a$2" == "a" ]; then
 	echo "$supplicant_scan_interval";
 else
-    supplicant_scan_interval=$2;
+	supplicant_scan_interval=$2;
 	echo "$supplicant_scan_interval";
 fi;
 
