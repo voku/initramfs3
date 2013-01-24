@@ -201,7 +201,8 @@ CM_AOKP_10_JB=0;
 
 [ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ "`/sbin/busybox grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ  /system/build.prop`" ] && JBSAMMY=1;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
 B2G=`$BB ls /system/b2g | wc -l`;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
 # has to be negative! for SAMMY ICS ROM to get his init files.
