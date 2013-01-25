@@ -34,6 +34,26 @@ $BB chown root:system /sys/devices/system/cpu/ -R;
 $BB chmod 0777 /data/anr -R;
 $BB chown system:system /data/anr -R;
 
+# fixing sdcards
+LOG_SDCARDS="/log-sdcards";
+$BB echo "FIXING STORAGE" > $LOG_SDCARDS;
+
+if [ -e /dev/block/mmcblk1p1 ]; then
+	$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+	$BB sh -c "/sbin/fsck_msdos -p -f /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
+else
+	$BB echo "EXTERNAL SDCARD NOT EXIST" >> $LOG_SDCARDS;
+fi;
+
+$BB echo "INTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+$BB sh -c "/sbin/fsck_msdos -p -f /dev/block/mmcblk0p11" >> $LOG_SDCARDS;
+$BB echo "DONE" >> $LOG_SDCARDS;
+
+# prevent from media storage to dig in clockworkmod backup dir
+$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+sync;
+$BB umount -l /mnt/tmp;
+
 # Start ROM VM boot!
 sync;
 start;

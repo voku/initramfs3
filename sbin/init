@@ -69,9 +69,6 @@ mknod /dev/block/loop0 b 7 0
 
 # dual boot check and run
 $BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
-$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
-sync;
-$BB umount -l /mnt/tmp;
 $BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
 if [ -e /mnt/tmp/.nextboot ]; then
@@ -361,17 +358,9 @@ USER_ACTIONS()
 	fi;
 }
 
-SDCARDS_FIX()
-{
-	LOG_SDCARDS="/log-sdcards";
-	$BB sh -c "/sbin/fsck_msdos -p -f /dev/block/vold/259:3" > $LOG_SDCARDS
-	$BB sh -c "/sbin/fsck_msdos -p -f /dev/block/vold/179:25" >> $LOG_SDCARDS
-}
-
 BOOTROM()
 {
 	PARTITION_TUNING;
-	SDCARDS_FIX;
 	USER_ACTIONS;
 	$BB rm -f /sbin/mount;
 	exec /sbin/init.samsung;
