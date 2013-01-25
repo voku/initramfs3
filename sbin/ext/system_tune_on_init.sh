@@ -11,13 +11,11 @@ for m in $($BB mount | grep ext[3-4] | cut -d " " -f3); do
 	$BB mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0 $m;
 done;
 
-$BB mount -o remount,rw,nosuid,nodev,discard /cache;
-$BB mount -o remount,rw,nosuid,nodev,discard /data;
+$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /cache;
+$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /data;
 $BB mount -o remount,rw /system;
 
 $BB mount -t rootfs -o remount,rw rootfs;
-$BB mount -o remount,rw /data
-$BB mount -o remount,rw /cache
 
 # cleaning
 $BB rm -rf /cache/lost+found/* 2> /dev/null;

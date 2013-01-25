@@ -53,6 +53,11 @@ chmod 777 /proc/sys/vm/mmap_min_addr;
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh; 
 
+if [ ! -d /system/etc/init.d ]; then
+	mkdir /system/etc/init.d/
+	chmod 755 /system/etc/init.d/ -R
+fi;
+
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
 	. /data/.siyah/$PROFILE.profile;
