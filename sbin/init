@@ -408,6 +408,7 @@ elif [ "$B2G" == "1" ]; then
 elif [ "$JBSAMMY" == "1" ]; then
 	echo "2" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
+	echo "1" > /tmp/jbsammy_installed;
 
 	# FIX HOME BUTTON JBSAMMY 
 	GPIOKEYS="/system/usr/keylayout/gpio-keys.kl";

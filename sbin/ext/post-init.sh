@@ -149,6 +149,13 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB rm -f /data/.siyah/booting;
 
+	# Temp fix for sound bug at JB Sammy ROMS.
+	if [ `cat /tmp/jbsammy_installed` == "1" ] then
+		$BB sh /res/uci.sh enable_mask 1;
+		$BB sh /res/uci.sh enable_mask_sleep 1;
+	fi;
+	echo "0" > /tmp/jbsammy_installed;
+
 	# change USB mode MTP or Mass Storage
 	$BB sh /res/uci.sh usb-mode ${usb_mode};
 )&
