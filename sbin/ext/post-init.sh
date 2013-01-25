@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-BB="/sbin/busybox";
+BB=/sbin/busybox
 
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
@@ -53,6 +53,7 @@ chmod 777 /proc/sys/vm/mmap_min_addr;
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh; 
 
+# create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then
 	mkdir /system/etc/init.d/
 	chmod 755 /system/etc/init.d/ -R
@@ -63,10 +64,10 @@ fi;
 	. /data/.siyah/$PROFILE.profile;
 
 	MIUI_JB=0;
-	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 
 	if [ $init_d == on ] || [ "$MIUI_JB" == 1 ]; then
-		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
+		$BB sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
 
@@ -150,7 +151,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	$BB rm -f /data/.siyah/booting;
 
 	# Temp fix for sound bug at JB Sammy ROMS.
-	if [ `cat /tmp/jbsammy_installed` == "1" ] then
+	JB_ROM=`cat /tmp/jbsammy_installed`;
+	if [ "$JB_ROM" == "1" ] then
 		$BB sh /res/uci.sh enable_mask 1;
 		$BB sh /res/uci.sh enable_mask_sleep 1;
 	fi;

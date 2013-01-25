@@ -196,6 +196,7 @@ S4A=0;
 JBSAMMY=0;
 CM_AOKP_10_JB=0;
 $BB echo "0" > /tmp/jbsammy_installed;
+$BB chmod 666 /tmp/jbsammy_installed;
 
 [ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ "`$BB grep -i android-htc-rev /system/build.prop`" ] && S4A=1;

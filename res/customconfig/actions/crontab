@@ -10,6 +10,9 @@ if [ "a$2" != "a" ]; then
 	case "${crontab}" in
 		on)
 			if [ -e /system/xbin/busybox ] || [ -e /system/bin/busybox ]; then
+				# stop if was running
+				pkill -f "crond";
+
 				# starting crontab service
 				/res/crontab_service/service.sh
 
