@@ -9,6 +9,12 @@ else
         echo "$soundgasm_hp";
 fi;
 
+if [ -e /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg ]; then
+	debug_path=/sys/kernel/debug
+elif [ -e /d/asoc/U1-YMU823/mc1n2.6-003a/codec_reg ]; then
+	debug_path=/d
+fi;
+
 case "$soundgasm_hp" in
 	0)
 		if [ -e /data/.siyah/sound_hp_boost ]; then
@@ -16,8 +22,8 @@ case "$soundgasm_hp" in
 			kmemhelper -t short -n mc1n2_vol_hpgain -o 2 0;
 			kmemhelper -t short -n mc1n2_vol_hpgain -o 4 0;
 			kmemhelper -t short -n mc1n2_vol_hpgain -o 6 0;
-			echo "1e 1" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
-			echo "1e 0" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+			echo "1e 1" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+			echo "1e 0" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
 			rm -f /data/.siyah/sound_hp_boost;
 		fi;
 	;;
@@ -26,8 +32,8 @@ case "$soundgasm_hp" in
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 2 384;
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 4 384;
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 6 384;
-		echo "1e 1" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
-		echo "1e 0" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+		echo "1e 1" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+		echo "1e 0" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
 		echo "boosted" > /data/.siyah/sound_hp_boost;
 	;;
 	2)
@@ -35,8 +41,8 @@ case "$soundgasm_hp" in
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 2 768;
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 4 768;
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 6 768;
-		echo "1e 1" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
-		echo "1e 0" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+		echo "1e 1" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+		echo "1e 0" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
 		echo "boosted" > /data/.siyah/sound_hp_boost;
 	;;
 	3)
@@ -44,8 +50,8 @@ case "$soundgasm_hp" in
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 2 1536;
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 4 1536;
 		kmemhelper -t short -n mc1n2_vol_hpgain -o 6 1536;
-		echo "1e 1" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
-		echo "1e 0" > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+		echo "1e 1" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
+		echo "1e 0" > $debug_path/asoc/U1-YMU823/mc1n2.6-003a/codec_reg;
 		echo "boosted" > /data/.siyah/sound_hp_boost;
 	;;
 	*)
