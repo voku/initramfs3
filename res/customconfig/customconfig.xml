@@ -1109,7 +1109,9 @@
 
 <settingsTab name="PROFILES">
 
-	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="STweaks Profiles.">
+	<button description="This displays your currently used profile." name="Profile Check" action="push-actions/profile" label="Profile Check"/>
+
+	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="STweaks Profiles">
 
 		<button description="extreme_battery.profile" name="extreme_battery.profile" action="push-actions/config_backup_restore 6" label="EXTREME BATTERY"/>
 
