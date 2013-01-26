@@ -9,6 +9,28 @@ $BB mount -t sysfs sysfs /sys;
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
 
+$BB mount -t ext4 /dev/block/mmcblk0p12 /system;
+
+JBSAMMY=0;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
+[ "`/sbin/busybox grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
+
+if [ "$JBSAMMY" == "1" ]; then
+
+	$BB mount -o remount,rw /system;
+
+	GPIOKEYS="/system/usr/keylayout/gpio-keys.kl";
+	if [ -e $GPIOKEYS ]; then
+		KHCOUNT=`cat $GPIOKEYS | grep "102" -c`;
+		if [ $KHCOUNT == 1 ]; then
+			$BB sed -i 's/102/172/g' $GPIOKEYS;
+		fi;
+	fi;
+fi;
+
+sync;
+$BB umount -l /system;
+
 if grep -q bootmode=2 /proc/cmdline; then
 	# recovery mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;
@@ -210,11 +232,6 @@ CM_AOKP_10_JB=`$BB ls /system/bin/wfd | wc -l`;
 
 # one more time set "/" rw just for good sleep
 $BB mount -t rootfs -o remount,rw rootfs;
-
-# Home Key Auto restore control
-$BB echo "DM Kernel Installed" > /system/etc/dm_kernel;
-$BB cp /res/misc/payload/install-recovery.sh /system/etc/
-$BB chmod 755 /system/etc/install-recovery.sh
 
 #############################
 # Partition global tuning!

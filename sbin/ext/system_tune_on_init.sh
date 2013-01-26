@@ -22,21 +22,22 @@ $BB rm -rf /cache/lost+found/* 2> /dev/null;
 $BB rm -rf /data/lost+found/* 2> /dev/null;
 $BB rm -rf /data/tombstones/* 2> /dev/null;
 $BB rm -rf /data/anr/* 2> /dev/null;
-$BB chmod 400 /data/tombstones -R;
-$BB chown drm:drm /data/tombstones -R;
+$BB chmod -R 400 /data/tombstones;
+$BB chown -R drm:drm /data/tombstones;
 
 # critical Permissions fix
-$BB chmod 0777 /dev/cpuctl/ -R;
-$BB chmod 0766 /data/anr/ -R;
-$BB chmod 0777 /data/system/inputmethod/ -R;
-$BB chmod 0777 /sys/devices/system/cpu/ -R;
-$BB chown root:system /sys/devices/system/cpu/ -R;
-$BB chmod 0777 /data/anr -R;
-$BB chown system:system /data/anr -R;
+$BB chmod -R 0777 /dev/cpuctl/;
+$BB chmod -R 0766 /data/anr/;
+$BB chmod -R 0777 /data/system/inputmethod/;
+$BB chmod -R 0777 /sys/devices/system/cpu/;
+$BB chown -R root:system /sys/devices/system/cpu/;
+$BB chmod -R 0777 /data/anr;
+$BB chown -R system:system /data/anr;
 
 # fixing sdcards
-LOG_SDCARDS="/log-sdcards";
-$BB echo "FIXING STORAGE" > $LOG_SDCARDS;
+LOG_SDCARDS=/log-sdcards
+$BB date > $LOG_SDCARDS;
+$BB echo "FIXING STORAGE" >> $LOG_SDCARDS;
 
 if [ -e /dev/block/mmcblk1p1 ]; then
 	$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
