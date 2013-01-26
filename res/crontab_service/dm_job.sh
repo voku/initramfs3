@@ -2,9 +2,15 @@
 
 # Created By Dorimanx and Dairinin
 
-BB=/system/xbin/busybox
+if [ -e /system/xbin/busybox ]; then
+	BB=/system/xbin/busybox
+elif [ -e /system/bin/busybox ]; then
+	BB=/system/bin/busybox
+else
+	BB=not_supported
+fi;
 
-if [ "a$1" != "a" ] && [ -e /system/xbin/busybox ]; then
+if [ "a$1" != "a" ] && [ -e "$BB" ]; then
 	cron_localtime () {
 		local localtime=$1;
 		shift;
