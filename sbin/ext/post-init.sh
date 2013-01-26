@@ -31,7 +31,7 @@ fi;
 [ ! -f /data/.siyah/extreme_performance.profile ] && cp -a /res/customconfig/extreme_performance.profile /data/.siyah/extreme_performance.profile;
 [ ! -f /data/.siyah/extreme_battery.profile ] && cp -a /res/customconfig/extreme_battery.profile /data/.siyah/extreme_battery.profile;
 
-$BB chmod 0777 /data/.siyah/ -R;
+$BB chmod -R 0777 /data/.siyah/;
 
 . /res/customconfig/customconfig-helper;
 read_defaults;
@@ -47,8 +47,8 @@ echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 
 # oom and mem perm fix
-chmod 777 /sys/module/lowmemorykiller/parameters/cost;
-chmod 777 /proc/sys/vm/mmap_min_addr;
+$BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
+$BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh; 
@@ -56,7 +56,7 @@ nohup /sbin/ext/cortexbrain-tune.sh;
 # create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then
 	mkdir /system/etc/init.d/
-	chmod 755 /system/etc/init.d/ -R
+	$BB chmod -R 755 /system/etc/init.d/;
 fi;
 
 (
@@ -110,7 +110,7 @@ echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 
 # for ntfs automounting
 mkdir /mnt/ntfs;
-chmod 777 /mnt/ntfs/ -R;
+$BB chmod -R 777 /mnt/ntfs/;
 mount -t tmpfs -o mode=0777,gid=1000 tmpfs /mnt/ntfs
 
 $BB sh /sbin/ext/properties.sh;
@@ -130,7 +130,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 (
 	# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
 	$BB mount -o remount,rw rootfs;
-	$BB chown root:system /res/customconfig/actions/ -R;
+	$BB chown -R root:system /res/customconfig/actions/;
 	$BB chmod 6755 /res/customconfig/actions/*;
 	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 	$BB chmod 6755 /res/no-push-on-boot/*;
@@ -152,7 +152,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 	# Temp fix for sound bug at JB Sammy ROMS.
 	JB_ROM=`cat /tmp/jbsammy_installed`;
-	if [ "$JB_ROM" == "1" ] then
+	if [ "$JB_ROM" == "1" ]; then
 		$BB sh /res/uci.sh enable_mask 1;
 		$BB sh /res/uci.sh enable_mask_sleep 1;
 	fi;

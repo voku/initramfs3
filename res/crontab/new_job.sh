@@ -2,11 +2,13 @@
 
 # Created By Dorimanx and Dairinin
 
+BB=/system/xbin/busybox
+
 if [ "a$1" != "a" ] && [ -e /system/xbin/busybox ]; then
 	cron_localtime () {
 		local localtime=$1;
 		shift;
-		date -u --date=@$(date --date="$localtime" +%s) "+%-M %-H * * *    $*";
+		$BB date -u --date=@$($BB date --date="$localtime" +%s) "+%-M %-H * * *    $*";
 	}
 
 	plan_cron_job () {
