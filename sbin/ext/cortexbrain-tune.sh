@@ -27,8 +27,11 @@ echo "0" > /data/.siyah/wifi_helper_awake;
 chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
 
 # init sleeprun for first script load.
+# init for ksm
 mount -o remount,rw /
 echo "1" > /tmp/sleeprun;
+echo "0" > /tmp/ksm;
+chmod 666 /tmp/*;
 
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
@@ -723,7 +726,6 @@ GESTURES()
 	local state="$1";
 	if [ "${state}" == "awake" ]; then
 		if [ "$gesture_tweak" == on ]; then
-			echo "1" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 			nohup /sbin/busybox sh /data/gesture_set.sh;
@@ -733,7 +735,6 @@ GESTURES()
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		fi;
-		echo "0" > /sys/devices/virtual/misc/touch_gestures/gestures_enabled;
 	fi;
 
 	log -p i -t $FILE_NAME "*** GESTURE ***: ${state}";

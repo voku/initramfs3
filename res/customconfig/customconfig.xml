@@ -1109,7 +1109,11 @@
 
 <settingsTab name="PROFILES">
 
-	<button description="This displays your currently used profile." name="Profile Check" action="push-actions/profile" label="Profile Check"/>
+	<settingsPane description="You can check what profile is used right now." name="Online Profile">
+
+		<button description="This displays your currently used profile." name="Profile Check" action="push-actions/profile" label="Profile Check"/>
+
+	</settingsPane>
 
 	<settingsPane description="Here you can choose some profiles. You can also switch the default profiles (battery, default, performance) via Kernel-Recovery." name="STweaks Profiles">
 

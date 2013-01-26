@@ -20,12 +20,13 @@ if [ "a$2" != "a" ]; then
 		off)
 			echo 0 > /sys/kernel/mm/ksm/run;
 			echo 2 > /sys/kernel/mm/ksm/run;
-			echo "off" > /tmp/ksm;
+			echo "0" > /tmp/ksm;
 		;;
 		on)
-			if [ `cat /tmp/ksm` == "off" ]; then
+			KSM_STATUS=`cat /tmp/ksm`;
+			if [ "$KSM_STATUS" == "0" ]; then
 				/sbin/ext/cortexbrain-tune.sh;
-				echo "on" > /tmp/ksm;
+				echo "1" > /tmp/ksm;
 			fi;
 		;;
 	esac;

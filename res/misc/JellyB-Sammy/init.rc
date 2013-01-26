@@ -52,7 +52,7 @@ loglevel 3
 
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0771 system cache
+    mkdir /cache 0770 system cache
     mkdir /config 0500 root root
     mkdir /preload 0771 system system
 
@@ -129,7 +129,7 @@ on post-fs
 
 # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0771 /cache
+    chmod 0770 /cache
 
 # This may have been created by the recovery system with odd permissions
     chown system cache /cache/recovery
@@ -228,7 +228,13 @@ on post-fs-data
     mkdir /data/drm 0770 drm drm
 
 #[ SEC_MM_DRM
-# DRM directory creation
+    # [ save OMA DB, when upgrading from GB to UPGRADE
+    mkdir /data/system/databases 0771 system system
+    copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
+    chown system system /data/system/databases/drmdatabase.db
+    chmod 0774 /data/system/databases/drmdatabase.db
+    # ]
+    # DRM directory creation
     mkdir /system/etc/security/.drm 0775
     chown root root /system/etc/security/.drm
     chmod 0775 /system/etc/security/.drm
@@ -413,6 +419,9 @@ on boot
     chown system radio /sys/class/sec/sec_touchscreen/tsp_config_version
     chown system radio /sys/class/sec/sec_touchscreen/tsp_touchtype
 
+# permission for HDMI audio path
+    chown media audio /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
+
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
 
@@ -508,7 +517,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 0660 root radio
     socket rild-debug stream 0660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log
+    group radio cache inet misc audio sdcard_rw log
     onrestart restart cpboot-daemon
 
 service DR-daemon /system/bin/ddexe
@@ -669,12 +678,6 @@ on property:ro.dumpstate.dmesg=1
 
 on property:sys.boot_completed=1
     stop bootanim
-
-# Boot tasks
-#service boot_scripts /sbin/boot/boot_scripts.sh
-#    class core
-#    user root
-#    oneshot
 
 service postinit /sbin/ext/post-init.sh
     class core
