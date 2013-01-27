@@ -258,10 +258,6 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $sampling_down_factor_tmp ]; then
 			sampling_down_factor_tmp="/dev/null";
 		fi;
-		local sampling_up_factor_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_up_factor";
-		if [ ! -e $sampling_up_factor_tmp ]; then
-			sampling_up_factor_tmp="/dev/null";
-		fi;
 		local down_differential_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_differential";
 		if [ ! -e $down_differential_tmp ]; then
 			down_differential_tmp="/dev/null";
@@ -373,13 +369,13 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $freq_cpu1on_tmp ]; then
 			freq_cpu1on_tmp="/dev/null";
 		fi;
-		local hotplug_on_s_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_on_s";
-		if [ ! -e $hotplug_on_s_tmp ]; then
-			hotplug_on_s_tmp="/dev/null";
+		local hotplug_on_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_on";
+		if [ ! -e $hotplug_on_tmp ]; then
+			hotplug_on_tmp="/dev/null";
 		fi;
-		local second_core_on_s_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/second_core_on_s";
-		if [ ! -e $second_core_on_s_tmp ]; then
-			second_core_on_s_tmp="/dev/null";
+		local second_core_on_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/second_core_on";
+		if [ ! -e $second_core_on_tmp ]; then
+			second_core_on_tmp="/dev/null";
 		fi;
 		local trans_load_h0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0";
 		if [ ! -e $trans_load_h0_tmp ]; then
@@ -438,7 +434,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
 			echo "$sampling_down_factor_sleep" > $sampling_down_factor_tmp;
-			echo "$sampling_up_factor_sleep" > $sampling_up_factor_tmp;
 			echo "$down_differential_sleep" > $down_differential_tmp;
 			echo "$freq_step_sleep" > $freq_step_tmp;
 			echo "$freq_step_dec_sleep" > $freq_step_dec_tmp;
@@ -464,8 +459,8 @@ CPU_GOV_TWEAKS()
 			echo "$hotplug_lock_sleep" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock_sleep" > $hotplug_lock_tmp;
 			echo "$freq_cpu1on_sleep" > $freq_cpu1on_tmp;
-			echo "$hotplug_on_s_sleep" > $hotplug_on_s_tmp;
-			echo "$second_core_on_s_sleep" > $second_core_on_s_tmp;
+			echo "$hotplug_on_sleep" > $hotplug_on_tmp;
+			echo "$second_core_on_sleep" > $second_core_on_tmp;
 			echo "$trans_load_h0_scroff" > $trans_load_h0_scroff_tmp;
 			echo "$trans_load_h1_scroff" > $trans_load_h1_scroff_tmp;
 			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
@@ -481,7 +476,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;
-			echo "$sampling_up_factor" > $sampling_up_factor_tmp;
 			echo "$down_differential" > $down_differential_tmp;
 			echo "$freq_step" > $freq_step_tmp;
 			echo "$freq_step_dec" > $freq_step_dec_tmp;
@@ -507,8 +501,8 @@ CPU_GOV_TWEAKS()
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock" > $hotplug_lock_tmp;
-			echo "$hotplug_on_s" > $hotplug_on_s_tmp;
-			echo "$second_core_on_s" > $second_core_on_s_tmp;
+			echo "$hotplug_on" > $hotplug_on_tmp;
+			echo "$second_core_on" > $second_core_on_tmp;
 			echo "$trans_load_h0" > $trans_load_h0_scroff_tmp;
 			echo "$trans_load_h1" > $trans_load_h1_scroff_tmp;
 			echo "$trans_load_l1" > $trans_load_l1_scroff_tmp;
