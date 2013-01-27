@@ -226,56 +226,114 @@
 			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
 
-		<spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
+		<!--spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ)" 
 			name="Hotplug CPU Lock" action="generic_cortex /tmp/hotplug_lock">
 			<spinnerItem name="Dual core mode" value="2"/> 
 			<spinnerItem name="Single core mode" value="1"/> 
 			<spinnerItem name="Auto" value="0"/> 
-		</spinner>
+		</spinner-->
 
 		<button description="Use this button to push all new changes to GOV core in real time! the sleep tuning will be auto added on screen off, to screen off gov." name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
 
-		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 40)"
-			name="up_threshold_at_min_freq" action="generic_cortex /tmp/up_threshold_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
+	</settingsPane>
+
+	<settingsPane description="Global Govs Configuration, see descriptions" name="GLOBAL GOV CONFIGURATON">
 
 		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy)  (default is 75)"
 			name="up_threshold" action="generic_cortex /tmp/up_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
 
+		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 60000)"
+			name="sampling_rate" action="generic_cortex /tmp/sampling_rate" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+
+		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 5)"
+			name="sampling_down_factor" action="generic_cortex /tmp/sampling_down_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
+
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
+			name="freq_step" action="generic_cortex /tmp/freq_step" unit="%" min="0" reversed="false" step="1" max="100"/>
+
+		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 5)"
+			name="down_differential" action="generic_cortex /tmp/down_differential" unit=" int" min="1" reversed="false" step="1" max="80"/>
+
+		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 400000)"
+			name="freq_for_responsiveness" action="genericfreq /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+
+		<seekBar description="The frequency at which governor scales CPU up. Load >= inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 70)"
+			name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+
+		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Only for lulzActiveQ, Nightmare) (default is 50)"
+			name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+
+		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate*up_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ) (default is 10)"
+			name="cpu_up_rate" action="generic_cortex /tmp/cpu_up_rate" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="No of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate*down_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ) (default is 20)"
+			name="cpu_down_rate" action="generic_cortex /tmp/cpu_down_rate" unit="%" min="1" reversed="false" step="1" max="100"/>
+
 		<seekBar description="This is same as the 'up_threshold' found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (default is 40)"
 			name="down_threshold" action="generic_cortex /tmp/down_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+	</settingsPane>
+
+	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
+			name="check_rate" action="generic_cortex /tmp/check_rate" unit="%" min="0" reversed="false" step="25" max="300"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 200)"
+			name="check_rate_cpuon" action="generic_cortex /tmp/check_rate_cpuon" unit="%" min="0" reversed="false" step="100" max="1000"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 300000)"
+			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
+
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 20)"
+			name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 5)"
+			name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
+
+		<checkbox description="Enable/Disable HotPlug (Only for Nightmare) (default is ON)"
+			name="hotplug_on_s" action="generic_cortex /tmp/hotplug_on_s" label="HotPlug Control"/>
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 40)"
 			name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Load >= inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 80)"
-			name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Only for lulzActiveQ, Nightmare) (default is 60)"
-			name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU up. Avg Load >= up_avg_load: Cpu Hotplug IN. (Only for Nightmare) (default is 65)"
-			name="up_avg_load" action="generic_cortex /tmp/up_avg_load" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only for Nightmare) (default is 30)"
-			name="down_avg_load" action="generic_cortex /tmp/down_avg_load" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate*up_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 10)"
-			name="cpu_up_rate" action="generic_cortex /tmp/cpu_up_rate" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="No of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate*down_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 20)"
-			name="cpu_down_rate" action="generic_cortex /tmp/cpu_down_rate" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Nightmare, Conservative, Scary, Sleepy) (default is 60000)"
-			name="sampling_rate" action="generic_cortex /tmp/sampling_rate" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
-
-		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
-			name="hotplug_sampling_rate" action="generic_cortex /tmp/hotplug_sampling_rate" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
-
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 1)"
-			name="sampling_down_factor" action="generic_cortex /tmp/sampling_down_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
+		<checkbox description="Enable/Disable Secondary CPU (Only for Nightmare) (default is ON)"
+			name="second_core_on_s" action="generic_cortex /tmp/second_core_on_s" label="Sec Core Control"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit=" int" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit=" int" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit=" int" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 10)"
+			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit=" int" min="0" reversed="false" step="1" max="20"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
+			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="10"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 0)"
+			name="user_lock" action="generic_cortex /tmp/user_lock" unit=" int" min="0" reversed="false" step="1" max="2"/>
+
+	</settingsPane>
+
+	<settingsPane description="Pegasusq Gov Configuration, see descriptions" name="PEGASUSQ GOV CONFIGURATON">
+
+		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 40)"
+			name="up_threshold_at_min_freq" action="generic_cortex /tmp/up_threshold_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+	</settingsPane>
+
+	<settingsPane description="LulzActiveQ Gov Configuration, see descriptions" name="LULZACTIVEQ GOV CONFIGURATON">
+
+		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
+			name="hotplug_sampling_rate" action="generic_cortex /tmp/hotplug_sampling_rate" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
 
 		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 40000)"
 			name="up_sample_time" action="generic_cortex /tmp/up_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
@@ -283,44 +341,11 @@
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 20000)"
 			name="down_sample_time" action="generic_cortex /tmp/down_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<!--seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
-			name="hotplug_freq_1_1" action="genericfreq /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
-			name="hotplug_freq_2_0" action="genericfreq /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
-			name="hotplug_rq_1_1" action="generic_cortex /tmp/hotplug_rq_1_1" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
-			name="hotplug_rq_2_0" action="generic_cortex /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<spinner description="Set the HOT PLUG Compare Level to turn on the Second Core/Frequency scale. 0 = History Load Based (Default), 1 = Current Load Based. (Only for Nightmare)" 
-			name="hotplug_compare_level" action="generic_cortex /tmp/hotplug_compare_level">
-			<spinnerItem name="History Load Based" value="0"/> 
-			<spinnerItem name="Current Load Based" value="1"/> 
-		</spinner-->
-
-		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
-			name="freq_step" action="generic_cortex /tmp/freq_step" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 5)"
-			name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 5)"
-			name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 5)"
-			name="down_differential" action="generic_cortex /tmp/down_differential" unit=" int" min="1" reversed="false" step="1" max="80"/>
-
 		<seekBar description="No of scale up steps when load >= inc_cpu_load. (Only for lulzActiveQ) (default is 2)"
 			name="pump_up_step" action="generic_cortex /tmp/pump_up_step" unit="step" min="0" reversed="false" step="1" max="16"/>
 
 		<seekBar description="No of scale down steps when load less than dec_cpu_load. (Only for lulzActiveQ) (default is 1)"
 			name="pump_down_step" action="generic_cortex /tmp/pump_down_step" unit="step" min="0" reversed="false" step="1" max="16"/>
-
-		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 400000)"
-			name="freq_for_responsiveness" action="genericfreq /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 		<seekBar description="Steps in frequency table to be used when screen-off. Example: If available freqs are 1600 1400 1200 1000 800 500 200 100 (L0 to L7) and screen_off_min_step=5 then 100,200 and 500 (L5 to L7) will be used during screen-off depending on the demand. (Only for lulzActiveQ) (default is 11)"
 			name="screen_off_min_step" action="generic_cortex /tmp/screen_off_min_step" unit="step" min="1" reversed="false" step="1" max="30"/>
@@ -329,6 +354,22 @@
 			name="hispeed_freq" action="genericfreq /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 	</settingsPane>
+
+	<!--settingsPane description="HotPlug CPU Configuration, see descriptions" name="HOTPLUG GOV CONFIGURATON">
+
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ) (default is 500000)"
+			name="hotplug_freq_1_1" action="genericfreq /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ) (default is 200000)"
+			name="hotplug_freq_2_0" action="genericfreq /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+
+		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ) (default is 100)"
+			name="hotplug_rq_1_1" action="generic_cortex /tmp/hotplug_rq_1_1" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+
+		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ) (default is 100)"
+			name="hotplug_rq_2_0" action="generic_cortex /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+
+	</settingsPane-->
 
 </settingsTab>
 
@@ -350,104 +391,151 @@
 			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
 
-		<spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
+		<!--spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
 			name="Hotplug CPU Lock Sleep Mode" action="generic_cortex /tmp/hotplug_lock_sleep">
 			<spinnerItem name="Dual core mode" value="2"/> 
 			<spinnerItem name="Single core mode" value="1"/> 
 			<spinnerItem name="Auto" value="0"/> 
-		</spinner>
+		</spinner-->
 
-		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 70)"
-			name="up_threshold_at_min_freq_sleep" action="generic_cortex /tmp/up_threshold_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+	</settingsPane>
 
-		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 70)"
+	<settingsPane description="Global Govs Configuration, see descriptions" name="GLOBAL GOV CONFIGURATON">
+
+		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy)  (default is 75)"
 			name="up_threshold_sleep" action="generic_cortex /tmp/up_threshold_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="This is same as the 'up_threshold' found for the ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (default is 30)"
-			name="down_threshold_sleep" action="generic_cortex /tmp/down_threshold_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and down_differential. (Only for Nightmare) (default is 60)"
-			name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU up. Load >= inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 70)"
-			name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Only for lulzActiveQ, Nightmare) (default is 70)"
-			name="dec_cpu_load_sleep" action="generic_cortex /tmp/dec_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU up. Avg Load >= up_avg_load: Cpu Hotplug IN. (Only for Nightmare) (default is 65)"
-			name="up_avg_load_sleep" action="generic_cortex /tmp/up_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only for Nightmare) (default is 30)"
-			name="down_avg_load_sleep" action="generic_cortex /tmp/down_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate*up_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 20)"
-			name="cpu_up_rate_sleep" action="generic_cortex /tmp/cpu_up_rate_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="No of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate*down_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 20)"
-			name="cpu_down_rate_sleep" action="generic_cortex /tmp/cpu_down_rate_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Nightmare, Conservative, Scary, Sleepy) (default is 70000)"
+		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 60000)"
 			name="sampling_rate_sleep" action="generic_cortex /tmp/sampling_rate_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
-
-		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 15000)"
-			name="hotplug_sampling_rate_sleep" action="generic_cortex /tmp/hotplug_sampling_rate_sleep" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
-
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
-			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 1)"
 			name="sampling_down_factor_sleep" action="generic_cortex /tmp/sampling_down_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
-		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 60000)" 
-			name="up_sample_time_sleep" action="generic_cortex /tmp/up_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
-
-		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 10000)" 
-			name="down_sample_time_sleep" action="generic_cortex /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
-
-		<!--seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hot plug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 500000)"
-			name="hotplug_freq_1_1_sleep" action="genericfreq /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 200000)"
-			name="hotplug_freq_2_0_sleep" action="genericfreq /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
-			name="hotplug_rq_1_1_sleep" action="generic_cortex /tmp/hotplug_rq_1_1_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ, Nightmare) (default is 100)"
-			name="hotplug_rq_2_0_sleep" action="generic_cortex /tmp/hotplug_rq_2_0_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core/Frequency scale. 0 = History Load Based (Default), 1 = Current Load Based. (Only for Nightmare)" 
-			name="hotplug_compare_level_sleep" action="generic_cortex /tmp/hotplug_compare_level_sleep">
-			<spinnerItem name="History Load Based" value="0"/> 
-			<spinnerItem name="Current Load Based" value="1"/> 
-		</spinner-->
-
-		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 40)"
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
 			name="freq_step_sleep" action="generic_cortex /tmp/freq_step_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 10)"
-			name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 10)"
-			name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 5)"
 			name="down_differential_sleep" action="generic_cortex /tmp/down_differential_sleep" unit=" int" min="1" reversed="false" step="1" max="80"/>
 
-		<seekBar description="No of scale up steps when load >= inc_cpu_load. (Only for lulzActiveQ) (default is 1)"
-			name="pump_up_step_sleep" action="generic_cortex /tmp/pump_up_step_sleep" unit="step" min="0" reversed="false" step="1" max="16"/>
-
-		<seekBar description="No of scale down steps when load less than dec_cpu_load. (Only for lulzActiveQ) (default is 3)"
-			name="pump_down_step_sleep" action="generic_cortex /tmp/pump_down_step_sleep" unit="step" min="0" reversed="false" step="1" max="16"/>
-
-		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 200000)"
+		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 400000)"
 			name="freq_for_responsiveness_sleep" action="genericfreq /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
-		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 400000)"
+		<seekBar description="The frequency at which governor scales CPU up. Load >= inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 80)" 
+			name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+
+		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Only for lulzActiveQ, Nightmare) (default is 60)"
+			name="dec_cpu_load_sleep" action="generic_cortex /tmp/dec_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+
+		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate*up_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ) (default is 10)"
+			name="cpu_up_rate_sleep" action="generic_cortex /tmp/cpu_up_rate_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="No of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate*down_sample_time micro seconds are spend at a frequency. (Only for lulzActiveQ, PegasusQ) (default is 20)"
+			name="cpu_down_rate_sleep" action="generic_cortex /tmp/cpu_down_rate_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="This is same as the 'up_threshold' found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (default is 40)"
+			name="down_threshold_sleep" action="generic_cortex /tmp/down_threshold_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+	</settingsPane>
+
+	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
+			name="check_rate_sleep" action="generic_cortex /tmp/check_rate_sleep" unit="%" min="0" reversed="false" step="25" max="300"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 200)"
+			name="check_rate_cpuon_sleep" action="generic_cortex /tmp/check_rate_cpuon_sleep" unit="%" min="0" reversed="false" step="100" max="1000"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2400)"
+			name="check_rate_scroff" action="generic_cortex /tmp/check_rate_scroff" unit="%" min="0" reversed="false" step="100" max="3000"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 300000)"
+			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
+
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 20)"
+			name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 5)" 
+			name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
+
+		<checkbox description="Enable/Disable HotPlug (Only for Nightmare) (default is ON)"
+			name="hotplug_on_s_sleep" action="generic_cortex /tmp/hotplug_on_s_sleep" label="HotPlug Control"/>
+
+		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 40)"
+			name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
+			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
+
+		<checkbox description="Enable/Disable Secondary CPU (Only for Nightmare) (default is ON)"
+			name="second_core_on_s_sleep" action="generic_cortex /tmp/second_core_on_s_sleep" label="Sec Core Control"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
+			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 10)"
+			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="20"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
+			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="10"/>
+
+		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 0)"
+			name="user_lock_sleep" action="generic_cortex /tmp/user_lock_sleep" unit=" int" min="0" reversed="false" step="1" max="2"/>
+
+	</settingsPane>
+
+	<settingsPane description="Pegasusq Gov Configuration, see descriptions" name="PEGASUSQ GOV CONFIGURATON">
+
+		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal up_threshold is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between up_threshold_at_min_freq and down_differential. (Only for PegasusQ) (default is 40)"
+			name="up_threshold_at_min_freq_sleep" action="generic_cortex /tmp/up_threshold_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+	</settingsPane>
+
+	<settingsPane description="LulzActiveQ Gov Configuration, see descriptions" name="LULZACTIVEQ GOV CONFIGURATON">
+
+		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
+			name="hotplug_sampling_rate_sleep" action="generic_cortex /tmp/hotplug_sampling_rate_sleep" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
+
+		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 40000)"
+			name="up_sample_time_sleep" action="generic_cortex /tmp/up_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+
+		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 20000)"
+			name="down_sample_time_sleep" action="generic_cortex /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+
+		<seekBar description="No of scale up steps when load >= inc_cpu_load. (Only for lulzActiveQ) (default is 2)" 
+			name="pump_up_step_sleep" action="generic_cortex /tmp/pump_up_step_sleep" unit="step" min="0" reversed="false" step="1" max="16"/>
+
+		<seekBar description="No of scale down steps when load less than dec_cpu_load. (Only for lulzActiveQ) (default is 1)"
+			name="pump_down_step_sleep" action="generic_cortex /tmp/pump_down_step_sleep" unit="step" min="0" reversed="false" step="1" max="16"/>
+
+		<seekBar description="Steps in frequency table to be used when screen-off. Example: If available freqs are 1600 1400 1200 1000 800 500 200 100 (L0 to L7) and screen_off_min_step=5 then 100,200 and 500 (L5 to L7) will be used during screen-off depending on the demand. (Only for lulzActiveQ) (default is 11)"
+			name="screen_off_min_step_sleep" action="generic_cortex /tmp/screen_off_min_step_sleep" unit="step" min="1" reversed="false" step="1" max="30"/>
+
+		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 1200000)"
 			name="hispeed_freq_sleep" action="genericfreq /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 	</settingsPane>
+
+	<!--settingsPane description="HotPlug CPU Configuration, see descriptions" name="HOTPLUG GOV CONFIGURATON">
+
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ) (default is 500000)"
+			name="hotplug_freq_1_1_sleep" action="genericfreq /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ) (default is 200000)"
+			name="hotplug_freq_2_0_sleep" action="genericfreq /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+
+		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ) (default is 100)"
+			name="hotplug_rq_1_1_sleep" action="generic_cortex /tmp/hotplug_rq_1_1_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+
+		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ) (default is 100)"
+			name="hotplug_rq_2_0_sleep" action="generic_cortex /tmp/hotplug_rq_2_0_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+
+	</settingsPane-->
 
 </settingsTab>
 

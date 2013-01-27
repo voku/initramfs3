@@ -321,9 +321,9 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $hotplug_rq_2_0_tmp ]; then
 			hotplug_rq_2_0_tmp="/dev/null";
 		fi;
-		local hotplug_compare_level_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_compare_level";
-		if [ ! -e $hotplug_compare_level_tmp ]; then
-			hotplug_compare_level_tmp="/dev/null";
+		local check_rate_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/check_rate_scroff";
+		if [ ! -e $check_rate_scroff_tmp ]; then
+			check_rate_scroff_tmp="/dev/null";
 		fi;
 		local freq_up_brake_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_up_brake";
 		if [ ! -e $freq_up_brake_tmp ]; then
@@ -358,16 +358,64 @@ CPU_GOV_TWEAKS()
 			dvfs_debug_tmp="/dev/null";
 		fi;
 		local hotplug_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_lock";
-		if [ ! -e $hotplug_lock_tmp ]; then	
+		if [ ! -e $hotplug_lock_tmp ]; then
 			hotplug_lock_tmp="/dev/null";
 		fi;
-		local up_avg_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_avg_load";
-		if [ ! -e $up_avg_load_tmp ]; then	
-			up_avg_load_tmp="/dev/null";
+		local check_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/check_rate";
+		if [ ! -e $check_rate_tmp ]; then
+			check_rate_tmp="/dev/null";
 		fi;
-		local down_avg_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_avg_load";
-		if [ ! -e $down_avg_load_tmp ]; then	
-			down_avg_load_tmp="/dev/null";
+		local check_rate_cpuon_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/check_rate_cpuon";
+		if [ ! -e $check_rate_cpuon_tmp ]; then
+			check_rate_cpuon_tmp="/dev/null";
+		fi;
+		local freq_cpu1on_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_cpu1on";
+		if [ ! -e $freq_cpu1on_tmp ]; then
+			freq_cpu1on_tmp="/dev/null";
+		fi;
+		local hotplug_on_s_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_on_s";
+		if [ ! -e $hotplug_on_s_tmp ]; then
+			hotplug_on_s_tmp="/dev/null";
+		fi;
+		local second_core_on_s_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/second_core_on_s";
+		if [ ! -e $second_core_on_s_tmp ]; then
+			second_core_on_s_tmp="/dev/null";
+		fi;
+		local trans_load_h0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0";
+		if [ ! -e $trans_load_h0_tmp ]; then
+			trans_load_h0_tmp="/dev/null";
+		fi;
+		local trans_load_h1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h1";
+		if [ ! -e $trans_load_h1_tmp ]; then
+			trans_load_h1_tmp="/dev/null";
+		fi;
+		local trans_load_l1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_l1";
+		if [ ! -e $trans_load_l1_tmp ]; then
+			trans_load_l1_tmp="/dev/null";
+		fi;
+		local trans_load_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_rq";
+		if [ ! -e $trans_load_rq_tmp ]; then
+			trans_load_rq_tmp="/dev/null";
+		fi;
+		local trans_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_rq";
+		if [ ! -e $trans_rq_tmp ]; then
+			trans_rq_tmp="/dev/null";
+		fi;
+		local user_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/user_lock";
+		if [ ! -e $user_lock_tmp ]; then
+			user_lock_tmp="/dev/null";
+		fi;
+		local trans_load_h0_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0_scroff";
+		if [ ! -e $trans_load_h0_scroff_tmp ]; then
+			trans_load_h0_scroff_tmp="/dev/null";
+		fi;
+		local trans_load_h1_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h1_scroff";
+		if [ ! -e $trans_load_h1_scroff_tmp ]; then
+			trans_load_h1_scroff_tmp="/dev/null";
+		fi;
+		local trans_load_l1_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_l1_scroff";
+		if [ ! -e $trans_load_l1_scroff_tmp ]; then
+			trans_load_l1_scroff_tmp="/dev/null";
 		fi;
 
 		# performance-settings
@@ -394,27 +442,35 @@ CPU_GOV_TWEAKS()
 			echo "$down_differential_sleep" > $down_differential_tmp;
 			echo "$freq_step_sleep" > $freq_step_tmp;
 			echo "$freq_step_dec_sleep" > $freq_step_dec_tmp;
-			echo "$freq_for_responsiveness_sleep" > $freq_responsiveness_tmp;			
+			echo "$freq_for_responsiveness_sleep" > $freq_responsiveness_tmp;
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$up_sample_time_sleep" > $up_sample_time_tmp;
 			echo "$down_sample_time_sleep" > $down_sample_time_tmp;
-			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;				
+			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
 			echo "$hotplug_sampling_rate_sleep" > $hotplug_sampling_rate_tmp;
 			echo "$hotplug_freq_1_1_sleep" > $hotplug_freq_1_1_tmp;
 			echo "$hotplug_freq_2_0_sleep" > $hotplug_freq_2_0_tmp;
 			echo "$hotplug_rq_1_1_sleep" > $hotplug_rq_1_1_tmp;
 			echo "$hotplug_rq_2_0_sleep" > $hotplug_rq_2_0_tmp;
-			echo "$hotplug_compare_level_sleep" > $hotplug_compare_level_tmp;
+			echo "$check_rate_scroff" > $check_rate_scroff_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
 			echo "$pump_up_step_sleep" > $pump_up_step_tmp;
 			echo "$pump_down_step_sleep" > $pump_down_step_tmp;
-			echo "$up_avg_load_sleep" > $up_avg_load_tmp;
-			echo "$down_avg_load_sleep" > $down_avg_load_tmp;			
+			echo "$check_rate_sleep" > $check_rate_tmp;
+			echo "$check_rate_cpuon_sleep" > $check_rate_cpuon_tmp;
 			echo "0" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock_sleep" > $min_cpu_lock_tmp;
-			echo "$hotplug_lock_sleep" > $hotplug_lock_tmp;			
+			echo "$hotplug_lock_sleep" > $hotplug_lock_tmp;
+			echo "$freq_cpu1on_sleep" > $freq_cpu1on_tmp;
+			echo "$hotplug_on_s_sleep" > $hotplug_on_s_tmp;
+			echo "$second_core_on_s_sleep" > $second_core_on_s_tmp;
+			echo "$trans_load_h0_scroff" > $trans_load_h0_scroff_tmp;
+			echo "$trans_load_h1_scroff" > $trans_load_h1_scroff_tmp;
+			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
+			echo "$trans_rq_sleep" > $trans_rq_tmp;
+			echo "$user_lock_sleep" > $user_lock_tmp;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -429,28 +485,35 @@ CPU_GOV_TWEAKS()
 			echo "$down_differential" > $down_differential_tmp;
 			echo "$freq_step" > $freq_step_tmp;
 			echo "$freq_step_dec" > $freq_step_dec_tmp;
-			echo "$freq_for_responsiveness" > $freq_responsiveness_tmp;			
+			echo "$freq_for_responsiveness" > $freq_responsiveness_tmp;
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$up_sample_time" > $up_sample_time_tmp;
 			echo "$down_sample_time" > $down_sample_time_tmp;
-			echo "$hispeed_freq" > $hispeed_freq_tmp;				
+			echo "$hispeed_freq" > $hispeed_freq_tmp;
 			echo "$hotplug_sampling_rate" > $hotplug_sampling_rate_tmp;
 			echo "$hotplug_freq_1_1" > $hotplug_freq_1_1_tmp;
 			echo "$hotplug_freq_2_0" > $hotplug_freq_2_0_tmp;
 			echo "$hotplug_rq_1_1" > $hotplug_rq_1_1_tmp;
 			echo "$hotplug_rq_2_0" > $hotplug_rq_2_0_tmp;
-			echo "$hotplug_compare_level" > $hotplug_compare_level_tmp;
+			echo "$freq_cpu1on" > $freq_cpu1on_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
 			echo "$pump_up_step" > $pump_up_step_tmp;
 			echo "$pump_down_step" > $pump_down_step_tmp;
-			echo "$up_avg_load" > $up_avg_load_tmp;
-			echo "$down_avg_load" > $down_avg_load_tmp;
+			echo "$check_rate" > $check_rate_tmp;
+			echo "$check_rate_cpuon" > $check_rate_cpuon_tmp;
 			echo "$screen_off_min_step" > $screen_off_min_step_tmp;
 			echo "0" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock" > $min_cpu_lock_tmp;
-			echo "$hotplug_lock" > $hotplug_lock_tmp;	
+			echo "$hotplug_lock" > $hotplug_lock_tmp;
+			echo "$hotplug_on_s" > $hotplug_on_s_tmp;
+			echo "$second_core_on_s" > $second_core_on_s_tmp;
+			echo "$trans_load_h0" > $trans_load_h0_scroff_tmp;
+			echo "$trans_load_h1" > $trans_load_h1_scroff_tmp;
+			echo "$trans_load_l1" > $trans_load_l1_scroff_tmp;
+			echo "$trans_rq" > $trans_rq_tmp;
+			echo "$user_lock" > $user_lock_tmp;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
