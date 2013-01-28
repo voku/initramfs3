@@ -29,20 +29,40 @@ if [ ! -e /data/crontab/custom_jobs ]; then
 	$BB chmod 777 /data/crontab/custom_jobs;
 fi;
 
+# check if new SuperSU exist in kernel
+NEW_SU=0;
+if [ -e /system/app/SuperSU.apk ]; then
+	su_app_md5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`
+	su_app_md5sum_kernel=`cat /res/SuperSU_md5`;
+	if [ "$su_app_md5sum" != "$su_app_md5sum_kernel" ]; then
+		NEW_SU=1;
+	else
+		NEW_SU=0;
+	fi;
+fi;
+
 if [ "$install_root" == "on" ]; then
-	if [ -e /system/xbin/su ]; then
-		echo "Superuser already exists";
+	if [ -e /system/xbin/su ] && [ "$NEW_SU" == "0" ]; then
+		echo "SuperSU already exists and updated";
 	else
 		# clean su traces
 		$BB rm -f /system/bin/su > /dev/null 2>&1;
 		$BB rm -f /system/xbin/su > /dev/null 2>&1;
+		$BB rm -f /system/bin/.ext/su > /dev/null 2>&1;
 		$BB mkdir /system/xbin > /dev/null 2>&1;
 		$BB chmod 755 /system/xbin;
 
 		# extract SU binary
+		if [ ! -d /system/bin/.ext ]; then
+			$BB mkdir /system/bin/.ext;
+			$BB chmod 777 /system/bin/.ext;
+		fi;
+		$BB cp -a /res/misc/payload/su /system/bin/.ext/su;
 		$BB cp -a /res/misc/payload/su /system/xbin/su;
 		$BB chown 0.0 /system/xbin/su;
 		$BB chmod 6755 /system/xbin/su;
+		$BB chown 0.0 /system/bin/.ext/su;
+		$BB chmod 6755 /system/bin/.ext/su;
 
 		# clean super user old apps
 		$BB rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
@@ -111,7 +131,7 @@ GMTWEAKS()
 {
 
 	if [ -f /system/app/STweaks.apk ]; then
-		stmd5sum=`/sbin/busybox md5sum /system/app/STweaks.apk | /sbin/busybox awk '{print $1}'`
+		stmd5sum=`$BB md5sum /system/app/STweaks.apk | /sbin/busybox awk '{print $1}'`
 		stmd5sum_kernel=`cat /res/stweaks_md5`;
 		if [ "$stmd5sum" != "$stmd5sum_kernel" ]; then
 			$BB rm -f /system/app/STweaks.apk > /dev/null 2>&1;

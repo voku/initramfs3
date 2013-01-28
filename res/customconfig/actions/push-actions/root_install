@@ -17,10 +17,16 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 		fi;
 
 		# extract SU binary
+		if [ ! -d /system/bin/.ext ]; then
+			$BB mkdir /system/bin/.ext;
+			$BB chmod 777 /system/bin/.ext;
+		fi;
+		$BB cp -a /res/misc/payload/su /system/bin/.ext/su;
 		$BB cp -a /res/misc/payload/su /system/xbin/su;
-		$BB chown root:root /system/xbin/su;
+		$BB chown 0.0 /system/xbin/su;
 		$BB chmod 6755 /system/xbin/su;
-		$BB ln -s /system/xbin/su /system/bin/su;
+		$BB chown 0.0 /system/bin/.ext/su;
+		$BB chmod 6755 /system/bin/.ext/su;
 
 		# clean super user old apps
 		$BB rm -f /system/app/Superuser.apk > /dev/null 2>&1;
