@@ -254,6 +254,10 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $down_threshold_tmp ]; then
 			down_threshold_tmp="/dev/null";
 		fi;
+		local sampling_up_factor_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_up_factor";
+		if [ ! -e $sampling_up_factor_tmp ]; then
+			sampling_up_factor_tmp="/dev/null";
+		fi;
 		local sampling_down_factor_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_factor";
 		if [ ! -e $sampling_down_factor_tmp ]; then
 			sampling_down_factor_tmp="/dev/null";
@@ -433,6 +437,7 @@ CPU_GOV_TWEAKS()
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_min_freq_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
+			echo "$sampling_up_factor_sleep" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor_sleep" > $sampling_down_factor_tmp;
 			echo "$down_differential_sleep" > $down_differential_tmp;
 			echo "$freq_step_sleep" > $freq_step_tmp;
@@ -475,6 +480,7 @@ CPU_GOV_TWEAKS()
 			echo "$up_threshold_at_min_freq" > $up_threshold_min_freq_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
+			echo "$sampling_up_factor" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;
 			echo "$down_differential" > $down_differential_tmp;
 			echo "$freq_step" > $freq_step_tmp;
