@@ -288,7 +288,7 @@
 		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
 			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/-->
 
-		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 10)"
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 5)"
 			name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 5)"
