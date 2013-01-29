@@ -34,21 +34,46 @@ $BB chown -R root:system /sys/devices/system/cpu/;
 $BB chmod -R 0777 /data/anr;
 $BB chown -R system:system /data/anr;
 
-# fixing sdcards
+MIUI_JB=0;
+JELLY=0;
+JBSAMMY=0;
+CM_AOKP_10_JB=0;
+
+[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
+JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
+CM_AOKP_10_JB=`$BB ls /system/bin/wfd | wc -l`;
+
 LOG_SDCARDS=/log-sdcards
-$BB date > $LOG_SDCARDS;
-$BB echo "FIXING STORAGE" >> $LOG_SDCARDS;
+FIX_BINARY=/system/bin/fsck_msdos
 
-if [ -e /dev/block/mmcblk1p1 ]; then
-	$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
-	$BB sh -c "/sbin/fsck_msdos -p -f /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
+SDCARD_FIX()
+{
+	# fixing sdcards
+	$BB date > $LOG_SDCARDS;
+	$BB echo "FIXING STORAGE" >> $LOG_SDCARDS;
+
+	if [ -e /dev/block/mmcblk1p1 ]; then
+		$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+		$BB sh -c "$FIX_BINARY -p -f /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
+	else
+		$BB echo "EXTERNAL SDCARD NOT EXIST" >> $LOG_SDCARDS;
+	fi;
+
+	$BB echo "INTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+	$BB sh -c "$FIX_BINARY -p -f /dev/block/mmcblk0p11" >> $LOG_SDCARDS;
+	$BB echo "DONE" >> $LOG_SDCARDS;
+}
+
+if [ -e /system/bin/fsck_msdos ]; then
+	SDCARD_FIX;
+elif [ "$MIUI_JB" == "1" ] || [ "$JELLY" == "1" ] || [ "$JBSAMMY" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ]; then
+	FIX_BINARY=/sbin/fsck_msdos
+	SDCARD_FIX;
 else
-	$BB echo "EXTERNAL SDCARD NOT EXIST" >> $LOG_SDCARDS;
+	$BB echo "CANT FIX SDCARDS, REPORT TO DM" > $LOG_SDCARDS;
 fi;
-
-$BB echo "INTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
-$BB sh -c "/sbin/fsck_msdos -p -f /dev/block/mmcblk0p11" >> $LOG_SDCARDS;
-$BB echo "DONE" >> $LOG_SDCARDS;
 
 # prevent from media storage to dig in clockworkmod backup dir
 $BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
