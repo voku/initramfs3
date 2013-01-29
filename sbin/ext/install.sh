@@ -31,7 +31,7 @@ fi;
 
 # check if new SuperSU exist in kernel
 NEW_SU=0;
-if [ -e /system/app/SuperSU.apk ]; then
+if [ -e /system/app/SuperSU.apk ] || [ -e /system/app/Superuser.apk ]; then
 	su_app_md5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`
 	su_app_md5sum_kernel=`cat /res/SuperSU_md5`;
 	if [ "$su_app_md5sum" != "$su_app_md5sum_kernel" ]; then
