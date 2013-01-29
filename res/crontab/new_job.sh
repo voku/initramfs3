@@ -2,9 +2,15 @@
 
 # Created By Dorimanx and Dairinin
 
-BB=/system/xbin/busybox
+if [ -e /system/xbin/busybox ]; then
+	BB=/system/xbin/busybox
+elif [ -e /system/bin/busybox ]; then
+	BB=/system/bin/busybox
+else
+	BB=not_supported
+fi;
 
-if [ "a$1" != "a" ] && [ -e /system/xbin/busybox ]; then
+if [ "a$1" != "a" ] && [ -e "$BB" ]; then
 	cron_localtime () {
 		local localtime=$1;
 		shift;
@@ -27,7 +33,7 @@ if [ "a$1" != "a" ] && [ -e /system/xbin/busybox ]; then
 	}
 	plan_cron_job $1 $2
 else
-	if [ ! -e /system/xbin/busybox ]; then
+	if [ ! -e /system/xbin/busybox ] || [ ! -e /system/bin/busybox ]; then
 		echo "You dont have busybox that support cron service, update and try again";
 	else
 		echo "input time and script to run, example: "05:00" "/sbin/busybox sh YOUR SCRIPT PATH HERE" , this will run 'Your Script' at 05:00AM by cron";

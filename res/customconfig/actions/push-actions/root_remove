@@ -2,51 +2,55 @@
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
+
+BB=/sbin/busybox
+
 	if [ -f /system/xbin/su ]; then
-			/sbin/busybox mount -o remount,rw /dev/block/mmcblk0p9 /system;
-			/sbin/busybox mount -t rootfs -o remount,rw rootfs;
-			/sbin/busybox rm -f /system/bin/su > /dev/null 2>&1;
-			/sbin/busybox rm -f /system/xbin/su > /dev/null 2>&1;
+			$BB mount -o remount,rw /dev/block/mmcblk0p9 /system;
+			$BB mount -t rootfs -o remount,rw rootfs;
+			$BB rm -f /system/bin/su > /dev/null 2>&1;
+			$BB rm -f /system/xbin/su > /dev/null 2>&1;
+			$BB rm -f /system/bin/.ext/su > /dev/null 2>&1;
 			# some roms have a busybox with su applet
 			if [ -e /system/xbin/busybox ]; then
-				/sbin/busybox mv /system/xbin/busybox /system/xbin/boxman;
-				/sbin/busybox rm -f /system/xbin/busybox;
+				$BB mv /system/xbin/busybox /system/xbin/boxman;
+				$BB rm -f /system/xbin/busybox;
 			fi
 
 			if [ -e /system/bin/busybox ]; then
-				/sbin/busybox mv /system/bin/busybox /system/bin/boxman;
-				/sbin/busybox rm -f /system/bin/busybox;
+				$BB mv /system/bin/busybox /system/bin/boxman;
+				$BB rm -f /system/bin/busybox;
 			fi
 
-			/sbin/busybox ln -s /sbin/busybox /system/xbin/busybox;
+			$BB ln -s /sbin/busybox /system/xbin/busybox;
 
 			# I need to remove this as well for Garanti CepBank app
 			if [ -e /system/xbin/which ]; then
-				/sbin/busybox mv /system/xbin/which /system/xbin/waswhich-bkp;
-				/sbin/busybox rm -f /system/xbin/which;
+				$BB mv /system/xbin/which /system/xbin/waswhich-bkp;
+				$BB rm -f /system/xbin/which;
 			fi
 
 			# SuperUser, superuser Superuser SuperUser whatever...
-			/sbin/busybox rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
-			/sbin/busybox rm -rf /data/dalvik-cache/*chainfire?supersu.apk* > /dev/null 2>&1;
-			/sbin/busybox rm -rf /data/dalvik-cache/?uper?u* > /dev/null 2>&1;
+			$BB rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
+			$BB rm -rf /data/dalvik-cache/*chainfire?supersu.apk* > /dev/null 2>&1;
+			$BB rm -rf /data/dalvik-cache/?uper?u* > /dev/null 2>&1;
 
-			/sbin/busybox rm -f /system/app/Superuser.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /system/app/SuperSU.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
+			$BB rm -f /system/app/Superuser.apk > /dev/null 2>&1;
+			$BB rm -f /system/app/SuperSU.apk > /dev/null 2>&1;
+			$BB rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
+			$BB rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
+			$BB rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
 
-			/sbin/busybox rm -f /data/app/Superuse*.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
-			/sbin/busybox rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
+			$BB rm -f /data/app/Superuse*.apk > /dev/null 2>&1;
+			$BB rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
+			$BB rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
+			$BB rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
 
-			/sbin/busybox rm -rf /data/data/eu.chainfire.supersu > /dev/null 2>&1;
-			/sbin/busybox rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
+			$BB rm -rf /data/data/eu.chainfire.supersu > /dev/null 2>&1;
+			$BB rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
 
-			/sbin/busybox mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1;
-			/sbin/busybox mount -t rootfs -o remount,ro rootfs > /dev/null 2>&1;
+			$BB mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1;
+			$BB mount -t rootfs -o remount,ro rootfs > /dev/null 2>&1;
 	fi;
 	pkill -f "com.noshufou.android.su";
 	pkill -f "eu.chinfire.supersu";

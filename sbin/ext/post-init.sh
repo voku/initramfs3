@@ -50,6 +50,10 @@ echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
 $BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
 $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
+# some nice thing for dev
+$BB ln -s /sys/devices/system/cpu/cpu0/cpufreq /cpufreq;
+$BB ln -s /sys/devices/system/cpu/cpufreq/ /cpugov;
+
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh; 
 
