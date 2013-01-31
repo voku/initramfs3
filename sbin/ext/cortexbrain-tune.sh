@@ -373,13 +373,9 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $freq_cpu1on_tmp ]; then
 			freq_cpu1on_tmp="/dev/null";
 		fi;
-		local hotplug_on_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_on";
-		if [ ! -e $hotplug_on_tmp ]; then
-			hotplug_on_tmp="/dev/null";
-		fi;
-		local second_core_on_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/second_core_on";
-		if [ ! -e $second_core_on_tmp ]; then
-			second_core_on_tmp="/dev/null";
+		local freq_cpu1off_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_cpu1off";
+		if [ ! -e $freq_cpu1off_tmp ]; then
+			freq_cpu1off_tmp="/dev/null";
 		fi;
 		local trans_load_h0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0";
 		if [ ! -e $trans_load_h0_tmp ]; then
@@ -400,10 +396,6 @@ CPU_GOV_TWEAKS()
 		local trans_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_rq";
 		if [ ! -e $trans_rq_tmp ]; then
 			trans_rq_tmp="/dev/null";
-		fi;
-		local user_lock_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/user_lock";
-		if [ ! -e $user_lock_tmp ]; then
-			user_lock_tmp="/dev/null";
 		fi;
 		local trans_load_h0_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0_scroff";
 		if [ ! -e $trans_load_h0_scroff_tmp ]; then
@@ -464,13 +456,11 @@ CPU_GOV_TWEAKS()
 			echo "$hotplug_lock_sleep" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock_sleep" > $hotplug_lock_tmp;
 			echo "$freq_cpu1on_sleep" > $freq_cpu1on_tmp;
-			echo "$hotplug_on_sleep" > $hotplug_on_tmp;
-			echo "$second_core_on_sleep" > $second_core_on_tmp;
+			echo "$freq_cpu1off_sleep" > $freq_cpu1off_tmp;
 			echo "$trans_load_h0_scroff" > $trans_load_h0_scroff_tmp;
 			echo "$trans_load_h1_scroff" > $trans_load_h1_scroff_tmp;
 			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
 			echo "$trans_rq_sleep" > $trans_rq_tmp;
-			echo "$user_lock_sleep" > $user_lock_tmp;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -497,6 +487,7 @@ CPU_GOV_TWEAKS()
 			echo "$hotplug_rq_1_1" > $hotplug_rq_1_1_tmp;
 			echo "$hotplug_rq_2_0" > $hotplug_rq_2_0_tmp;
 			echo "$freq_cpu1on" > $freq_cpu1on_tmp;
+			echo "$freq_cpu1off" > $freq_cpu1off_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
 			echo "$pump_up_step" > $pump_up_step_tmp;
 			echo "$pump_down_step" > $pump_down_step_tmp;
@@ -507,13 +498,10 @@ CPU_GOV_TWEAKS()
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock" > $hotplug_lock_tmp;
-			echo "$hotplug_on" > $hotplug_on_tmp;
-			echo "$second_core_on" > $second_core_on_tmp;
 			echo "$trans_load_h0" > $trans_load_h0_scroff_tmp;
 			echo "$trans_load_h1" > $trans_load_h1_scroff_tmp;
 			echo "$trans_load_l1" > $trans_load_l1_scroff_tmp;
 			echo "$trans_rq" > $trans_rq_tmp;
-			echo "$user_lock" > $user_lock_tmp;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
