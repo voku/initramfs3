@@ -29,9 +29,9 @@ if [ ! -e /data/crontab/custom_jobs ]; then
 	$BB chmod 777 /data/crontab/custom_jobs;
 fi;
 
-# check if new SuperSU exist in kernel
+# check if new SuperSU exist in kernel, and if Superuser installed, then replace with new SuperSu.
 NEW_SU=0;
-if [ -e /system/app/SuperSU.apk ] || [ -e /system/app/Superuser.apk ]; then
+if [ -e /system/app/SuperSU.apk ]; then
 	su_app_md5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`
 	su_app_md5sum_kernel=`cat /res/SuperSU_md5`;
 	if [ "$su_app_md5sum" != "$su_app_md5sum_kernel" ]; then
@@ -39,6 +39,10 @@ if [ -e /system/app/SuperSU.apk ] || [ -e /system/app/Superuser.apk ]; then
 	else
 		NEW_SU=0;
 	fi;
+fi;
+
+if [ -e /system/app/Superuser.apk ]; then
+	NEW_SU=1;
 fi;
 
 if [ "$install_root" == "on" ]; then
