@@ -83,8 +83,8 @@
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<seekBar description="Sets the sched_mc value which changes the CPU scheduler behavior for multi-core systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before second core will start. Setting it to 2 will bias task wake-ups to semi-idle CPU package for power savings. (Default: 0)" 
-			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
+		<!--seekBar description="Sets the sched_mc value which changes the CPU scheduler behavior for multi-core systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be fully loaded before second core will start. Setting it to 2 will bias task wake-ups to semi-idle CPU package for power savings. (Default: 0)" 
+			name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/-->
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (Default: 80%)" 
 			name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" 
@@ -285,10 +285,10 @@
 		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 600)"
 			name="check_rate_cpuon" action="generic_cortex /tmp/check_rate_cpuon" unit="%" min="0" reversed="false" step="100" max="3000"/-->
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
+		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 800000)"
 			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
+		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (Only for Nightmare) (default is 800000)"
 			name="freq_cpu1off" action="generic_cortex /tmp/freq_cpu1off" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 5)"
@@ -300,19 +300,19 @@
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 60)"
 			name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 20)"
 			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit=" int" min="1" reversed="false" step="1" max="100"/>
+		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit=" int" min="1" reversed="false" step="1" max="100"/-->
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (default is 20)"
 			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and its load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (default is 20)"
 			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit=" int" min="0" reversed="false" step="1" max="50"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
+		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and its load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (default is 2)"
 			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="2"/>
 
 	</settingsPane>
@@ -445,10 +445,10 @@
 		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2400)"
 			name="check_rate_scroff" action="generic_cortex /tmp/check_rate_scroff" unit="%" min="0" reversed="false" step="100" max="3000"/-->
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
+		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 800000)"
 			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
+		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 800000)"
 			name="freq_cpu1off_sleep" action="generic_cortex /tmp/freq_cpu1off_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 20)"
@@ -461,19 +461,19 @@
 			name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 20)"
 			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
-			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
+		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
+			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/-->
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 20)"
 			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 10)"
+		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and its load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (default is 10)"
 			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="50"/>
 
-		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
+		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and its load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (default is 2)"
 			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="2"/>
 
 	</settingsPane>
