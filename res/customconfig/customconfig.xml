@@ -286,10 +286,10 @@
 			name="check_rate_cpuon" action="generic_cortex /tmp/check_rate_cpuon" unit="%" min="0" reversed="false" step="100" max="3000"/-->
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
-			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="mHz" min="100000" reversed="false" step="100000" max="1500000">
+			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
-			name="freq_cpu1off" action="generic_cortex /tmp/freq_cpu1off" unit="mHz" min="100000" reversed="false" step="100000" max="1500000">
+			name="freq_cpu1off" action="generic_cortex /tmp/freq_cpu1off" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 5)"
 			name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
@@ -301,10 +301,10 @@
 			name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit=" int" min="1" reversed="false" step="1" max="100">
+			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit=" int" min="1" reversed="false" step="1" max="100">
+			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
 			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit=" int" min="1" reversed="false" step="1" max="100"/>
@@ -313,7 +313,7 @@
 			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit=" int" min="0" reversed="false" step="1" max="50"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
-			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="10">
+			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="10"/>
 
 	</settingsPane>
 
@@ -446,10 +446,10 @@
 			name="check_rate_scroff" action="generic_cortex /tmp/check_rate_scroff" unit="%" min="0" reversed="false" step="100" max="3000"/-->
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
-			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000">
+			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 800000)"
-			name="freq_cpu1off_sleep" action="generic_cortex /tmp/freq_cpu1off_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000">
+			name="freq_cpu1off_sleep" action="generic_cortex /tmp/freq_cpu1off_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 20)"
 			name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
@@ -462,19 +462,19 @@
 
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit=" int" min="1" reversed="false" step="1" max="100">
+			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
-			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit=" int" min="1" reversed="false" step="1" max="100">
+			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit=" int" min="1" reversed="false" step="1" max="100">
+			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 10)"
-			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="20">
+			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="20"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
-			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="10">
+			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="10"/>
 
 	</settingsPane>
 
