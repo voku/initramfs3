@@ -313,7 +313,7 @@
 			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit=" int" min="0" reversed="false" step="1" max="50"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
-			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="10"/>
+			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="2"/>
 
 	</settingsPane>
 
@@ -471,10 +471,10 @@
 			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 10)"
-			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="20"/>
+			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="50"/>
 
 		<seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2)"
-			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="10"/>
+			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="2"/>
 
 	</settingsPane>
 
