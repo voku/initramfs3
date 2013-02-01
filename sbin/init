@@ -9,28 +9,6 @@ $BB mount -t sysfs sysfs /sys;
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
 
-$BB mount -t ext4 /dev/block/mmcblk0p12 /system;
-
-JBSAMMY=0;
-[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
-
-if [ "$JBSAMMY" == "1" ]; then
-
-	$BB mount -o remount,rw /system;
-
-	GPIO_KEYS=/system/usr/keylayout/gpio-keys.kl
-
-	if [ -e $GPIO_KEYS ]; then
-		if $BB grep -q 102 $GPIO_KEYS; then
-			$BB sed -i 's/102/172/g' $GPIO_KEYS;
-		fi;
-		sync;
-	fi;
-fi;
-
-$BB umount -l /system;
-
 if $BB grep -q bootmode=2 /proc/cmdline; then
 	# recovery mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;
