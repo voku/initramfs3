@@ -9,9 +9,7 @@ $BB mount -t sysfs sysfs /sys;
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
 
-# add system nod and mount the system for home key fix
-mknod /dev/block/mmcblk0p9 b 259 1
-$BB mount -t ext4 /dev/block/mmcblk0p9 /system;
+$BB mount -t ext4 /dev/block/mmcblk0p12 /system;
 
 JBSAMMY=0;
 [ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
@@ -85,7 +83,7 @@ mknod /dev/input/event8 c 13 72
 mknod /dev/input/event9 c 13 73
 mknod /dev/ashmem c 10 61
 mknod /dev/block/mmcblk0p7 b 179 7
-#mknod /dev/block/mmcblk0p9 b 259 1 #moved up to fix home key
+mknod /dev/block/mmcblk0p9 b 259 1
 mknod /dev/block/mmcblk0p10 b 259 2
 mknod /dev/block/mmcblk0p11 b 259 3
 mknod /dev/block/mmcblk0p12 b 259 4
