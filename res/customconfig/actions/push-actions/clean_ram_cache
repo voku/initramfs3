@@ -1,0 +1,17 @@
+#!/sbin/busybox sh
+
+(
+	MEM_FREE=`free | grep Mem | awk '{ print $4 }'`;
+	echo "FREE BEFORE $MEM_FREE" > /tmp/ram_clean;
+	chmod 777 /tmp/ram_clean;
+	sync;
+	sysctl -w vm.drop_caches=3 > /dev/null 2>&1;
+	sysctl -w vm.drop_caches=1 > /dev/null 2>&1;
+	sync;
+	MEM_FREE_AFTER=`free | grep Mem | awk '{ print $4 }'`;
+	echo "FREE AFTER $MEM_FREE_AFTER" >> /tmp/ram_clean;
+
+	RAM_LOG=`cat /tmp/ram_clean`;
+	echo "$RAM_LOG";
+)&
+

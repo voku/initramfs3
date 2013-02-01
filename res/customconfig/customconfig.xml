@@ -593,6 +593,8 @@
 			<spinnerItem name="exterminate" value="exterminate"/> 
 		</spinner>
 
+		<button description="Clean RAM Cache, this will release all cached and buffered RAM" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
+
 		<spinner description="ZRAM Module settings. Here you can shut down ZRAM or add more compressed RAM for your system." 
 			name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
