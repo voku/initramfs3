@@ -46,7 +46,7 @@ JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
 CM_AOKP_10_JB=`$BB ls /system/bin/wfd | wc -l`;
 
 LOG_SDCARDS=/log-sdcards
-FIX_BINARY=/system/bin/fsck_msdos
+FIX_BINARY=/sbin/fsck_msdos
 
 SDCARD_FIX()
 {
@@ -66,10 +66,10 @@ SDCARD_FIX()
 	$BB echo "DONE" >> $LOG_SDCARDS;
 }
 
-if [ -e /system/bin/fsck_msdos ]; then
+if [ "$MIUI_JB" == "1" ] || [ "$JELLY" == "1" ] || [ "$JBSAMMY" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ]; then
 	SDCARD_FIX;
-elif [ "$MIUI_JB" == "1" ] || [ "$JELLY" == "1" ] || [ "$JBSAMMY" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ]; then
-	FIX_BINARY=/sbin/fsck_msdos
+elif [ -e /system/bin/fsck_msdos ]; then
+	FIX_BINARY=/system/bin/fsck_msdos
 	SDCARD_FIX;
 else
 	$BB echo "CANT FIX SDCARDS, REPORT TO DM" > $LOG_SDCARDS;
