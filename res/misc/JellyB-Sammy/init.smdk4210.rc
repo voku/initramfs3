@@ -143,7 +143,9 @@ on fs
     mount ext4 /res/dev/system /system noatime wait rw
     exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait check_spo rw
+    exec sfsck /dev/block/mmcblk0p12 ext4
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait rw
+    exec sfsck /dev/block/mmcblk0p1 ext4
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait check_spo rw
     exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait check_spo encryptable=/efs/metadata rw

@@ -128,6 +128,7 @@ on fs
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait nodelalloc
 
     mkdir /efs
+    exec sfsck /dev/block/mmcblk0p1 ext4
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
     chown radio system /efs
     chmod 0771 /efs

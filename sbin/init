@@ -311,8 +311,9 @@ PARTITION_TUNING()
 		# check cache
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 		$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | grep 'clean'" > $LOG_CACHE_TMP;
-		if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
+		if [ "a`cat $LOG_CACHE_TMP`" == "a" ] || [ "`cat $LOG_CACHE_TMP`" == "Filesystem state:         clean with errors" ]; then
 			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+			$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 		else
 			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
 		fi;
@@ -320,8 +321,9 @@ PARTITION_TUNING()
 		# check data
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
 		$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | grep 'clean'" > $LOG_DATA_TMP;
-		if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+		if [ "a`cat $LOG_DATA_TMP`" == "a" ] || [ "`cat $LOG_DATA_TMP`" == "Filesystem state:         clean with errors" ]; then
 			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA 2>&1;
+			$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 		else
 			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
 		fi;
