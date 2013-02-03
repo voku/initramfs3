@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-BB="/sbin/busybox";
+BB=/sbin/busybox
 
 if [ ! -f /data/.siyah/efsbackup.tar.gz ]; then
 	$BB mkdir /data/.siyah;

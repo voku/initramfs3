@@ -21,11 +21,6 @@ on init
     mount /tmp /tmp tmpfs
 
 on fs
-#    mount ext4 /dev/block/mmcblk0p9 /system noatime wait
-
-#    mkdir /efs
-#    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
-
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /dev/block/mmcblk0p10
     
@@ -37,8 +32,7 @@ on boot
     chown system media_rw /sys/class/mdnie/mdnie/mode
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
     chown system media_rw /sys/class/mdnie/mdnie/scenario
-    write /sys/class/mdnie/mdnie/scenario 0
-    write /sys/class/mdnie/mdnie/mode 0
+    write /sys/class/mdnie/mdnie/scenario 4
 
     ifup lo
     hostname localhost

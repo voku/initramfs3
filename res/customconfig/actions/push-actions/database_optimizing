@@ -1,4 +1,4 @@
-#!/sbin/busybox
+#!/sbin/busybox sh
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (

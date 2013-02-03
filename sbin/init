@@ -9,29 +9,7 @@ $BB mount -t sysfs sysfs /sys;
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
 
-$BB mount -t ext4 /dev/block/mmcblk0p12 /system;
-
-JBSAMMY=0;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
-
-if [ "$JBSAMMY" == "1" ]; then
-
-	$BB mount -o remount,rw /system;
-
-	GPIOKEYS="/system/usr/keylayout/gpio-keys.kl";
-	if [ -e $GPIOKEYS ]; then
-		KHCOUNT=`cat $GPIOKEYS | grep "102" -c`;
-		if [ $KHCOUNT == 1 ]; then
-			$BB sed -i 's/102/172/g' $GPIOKEYS;
-		fi;
-	fi;
-fi;
-
-sync;
-$BB umount -l /system;
-
-if grep -q bootmode=2 /proc/cmdline; then
+if $BB grep -q bootmode=2 /proc/cmdline; then
 	# recovery mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 	$BB cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
@@ -39,7 +17,7 @@ if grep -q bootmode=2 /proc/cmdline; then
 	exec /sbin/init.recovery;
 fi;
 
-if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
+if $BB grep -q 1 /sys/class/power_supply/battery/batt_lp_charging; then
 	# low power mode
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 	$BB cp /res/images/recovery-icon.png /res/images/icon_clockwork.png;
@@ -311,8 +289,9 @@ PARTITION_TUNING()
 		# check cache
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 		$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | grep 'clean'" > $LOG_CACHE_TMP;
-		if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
+		if [ "a`cat $LOG_CACHE_TMP`" == "a" ] || [ "`cat $LOG_CACHE_TMP`" == "Filesystem state:         clean with errors" ]; then
 			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+			$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
 		else
 			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
 		fi;
@@ -320,8 +299,9 @@ PARTITION_TUNING()
 		# check data
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
 		$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | grep 'clean'" > $LOG_DATA_TMP;
-		if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+		if [ "a`cat $LOG_DATA_TMP`" == "a" ] || [ "`cat $LOG_DATA_TMP`" == "Filesystem state:         clean with errors" ]; then
 			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA 2>&1;
+			$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 		else
 			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
 		fi;

@@ -1,9 +1,10 @@
 #!/sbin/busybox sh
 
 mount -t rootfs -o remount,rw rootfs
-ln -s /sbin/recovery /sbin/busybox
 
 ln -s /sbin/busybox /sbin/sh
+
+BB=/sbin/busybox
 
 # protecting fuelgauge reset trigger.
 chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
@@ -22,6 +23,38 @@ cat /res/etc/recovery.fstab > /etc/recovery.fstab
 
 #start adbd
 stop tvout
+
+mkdir /efs
+# efs check and fix, do not change.
+$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'Filesystem state' | grep 'clean'" > /tmp/efs_check;
+if [ "a`cat /tmp/efs_check`" == "a" ] || [ "`cat /tmp/efs_check`" == "Filesystem state:         clean with errors" ]; then
+	$BB umount -l /efs;
+	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
+	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
+	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
+else
+	echo "efs OK" > /tmp/efs_check;
+fi;
+
+$BB mount -t ext4 /dev/block/mmcblk0p9 /system;
+
+JBSAMMY=0;
+[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
+
+if [ "$JBSAMMY" == "1" ]; then
+	$BB mount -o remount,rw /system;
+	GPIO_KEYS=/system/usr/keylayout/gpio-keys.kl
+
+	if [ -e $GPIO_KEYS ]; then
+		if grep -q 102 $GPIO_KEYS; then
+			$BB sed -i 's/102/172/g' $GPIO_KEYS;
+		fi;
+		sync;
+	fi;
+fi;
+
+$BB umount -l /system;
 
 rm /cache
 mkdir /cache
@@ -43,8 +76,8 @@ mkdir /secondrom_system
 
 echo "75" > /sys/vibrator/pwm_val
 
-if /sbin/busybox [ -f /cache/recovery/command ]; then
-	/sbin/busybox cp /res/keys-samsung /res/keys
+if $BB [ -f /cache/recovery/command ]; then
+	$BB cp /res/keys-samsung /res/keys
 	recovery-samsung
 else
 	echo 1 > /sbin/recovery-is-running

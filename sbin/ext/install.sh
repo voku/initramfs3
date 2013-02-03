@@ -29,7 +29,7 @@ if [ ! -e /data/crontab/custom_jobs ]; then
 	$BB chmod 777 /data/crontab/custom_jobs;
 fi;
 
-# check if new SuperSU exist in kernel
+# check if new SuperSU exist in kernel, and if Superuser installed, then replace with new SuperSu.
 NEW_SU=0;
 if [ -e /system/app/SuperSU.apk ]; then
 	su_app_md5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`
@@ -39,6 +39,10 @@ if [ -e /system/app/SuperSU.apk ]; then
 	else
 		NEW_SU=0;
 	fi;
+fi;
+
+if [ -e /system/app/Superuser.apk ]; then
+	NEW_SU=1;
 fi;
 
 if [ "$install_root" == "on" ]; then
@@ -131,7 +135,7 @@ GMTWEAKS()
 {
 
 	if [ -f /system/app/STweaks.apk ]; then
-		stmd5sum=`$BB md5sum /system/app/STweaks.apk | /sbin/busybox awk '{print $1}'`
+		stmd5sum=`$BB md5sum /system/app/STweaks.apk | $BB awk '{print $1}'`
 		stmd5sum_kernel=`cat /res/stweaks_md5`;
 		if [ "$stmd5sum" != "$stmd5sum_kernel" ]; then
 			$BB rm -f /system/app/STweaks.apk > /dev/null 2>&1;
