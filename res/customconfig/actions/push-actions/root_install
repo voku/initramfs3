@@ -3,7 +3,7 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
 	if [ ! -e /system/xbin/su ]; then
-		BB=/sbin/busybox;
+		BB=/sbin/busybox
 
 		# extract Payload with root files
 		$BB mount -o remount,rw /system;

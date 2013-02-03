@@ -76,8 +76,8 @@ mkdir /secondrom_system
 
 echo "75" > /sys/vibrator/pwm_val
 
-if /sbin/busybox [ -f /cache/recovery/command ]; then
-	/sbin/busybox cp /res/keys-samsung /res/keys
+if $BB [ -f /cache/recovery/command ]; then
+	$BB cp /res/keys-samsung /res/keys
 	recovery-samsung
 else
 	echo 1 > /sbin/recovery-is-running

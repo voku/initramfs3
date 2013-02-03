@@ -174,7 +174,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
 	MIUI_JB=0;
 	JELLY=0;
-	[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
+	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 	[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 		if [ "$jb_sound_fix" == "on" ]; then

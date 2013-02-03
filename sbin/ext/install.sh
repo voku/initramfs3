@@ -135,7 +135,7 @@ GMTWEAKS()
 {
 
 	if [ -f /system/app/STweaks.apk ]; then
-		stmd5sum=`$BB md5sum /system/app/STweaks.apk | /sbin/busybox awk '{print $1}'`
+		stmd5sum=`$BB md5sum /system/app/STweaks.apk | $BB awk '{print $1}'`
 		stmd5sum_kernel=`cat /res/stweaks_md5`;
 		if [ "$stmd5sum" != "$stmd5sum_kernel" ]; then
 			$BB rm -f /system/app/STweaks.apk > /dev/null 2>&1;

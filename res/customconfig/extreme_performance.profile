@@ -184,6 +184,7 @@ dyn_brightness=off
 crontab=on
 cron_drop_cache=off
 ad_block_update=off
+cron_db_optimizing=off
 cron_clear_app_cache=on
 cron_fix_permissions=off
 cron_zipalign=on
