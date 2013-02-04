@@ -156,8 +156,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	# Temp fix for sound bug at JB Sammy ROMS.
 	JB_ROM=`cat /tmp/jbsammy_installed`;
 	if [ "$JB_ROM" == "1" ]; then
-		$BB sh /res/uci.sh enable_mask 1;
-		$BB sh /res/uci.sh enable_mask_sleep 1;
+		$BB sh /res/uci.sh generic /sys/module/cpuidle_exynos4/parameters/enable_mask 1;
+		$BB sh /res/uci.sh generic_cortex /tmp/enable_mask_sleep 1;
 	fi;
 	echo "0" > /tmp/jbsammy_installed;
 

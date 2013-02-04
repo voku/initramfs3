@@ -76,7 +76,7 @@
 		</spinner>
 
 		<spinner description="Sets the CPU Idle Mode (Sleep Mode). For best stability use Idle + LPA. (Default: AFTR only)" 
-			name="CPU Idle Mode (Sleep Mode)" action="generic /tmp/enable_mask_sleep">
+			name="CPU Idle Mode (Sleep Mode)" action="generic_cortex /tmp/enable_mask_sleep">
 			<spinnerItem name="AFTR + LPA" value="3"/> 
 			<spinnerItem name="Idle + LPA" value="2"/> 
 			<spinnerItem name="AFTR only" value="1"/> 
@@ -920,8 +920,8 @@
 
 		<spinner description="Led timeout. Select 'Use ROM defaults' if your ROM already has led timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use led fadeout effect." 
 			name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
-			<spinnerItem name="Use ROM defaults (disabled)" value="-1"/> 
-			<spinnerItem name="No timeout" value="0"/> 
+			<spinnerItem name="Use ROM defaults (disabled)" value="0"/> 
+			<spinnerItem name="No timeout" value="9999999"/> 
 			<spinnerItem name="1 sec" value="1000"/> 
 			<spinnerItem name="3 sec" value="3000"/> 
 			<spinnerItem name="6 sec" value="6000"/> 

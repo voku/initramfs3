@@ -949,10 +949,10 @@ TOUCH_KEYS_CORRECTION()
 		echo "1" > /sys/class/misc/notification/dyn_brightness;
 	fi;
 
-	if [ "$led_timeout_ms" == -1 ]; then
-		echo "-1" > /sys/class/misc/notification/led_timeout_ms;
+	if [ "$led_timeout_ms" == 0 ]; then
+		echo "0" > /sys/class/misc/notification/led_timeout_ms;
 	else
-		/res/uci.sh led_timeout_ms $led_timeout_ms;
+		/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
 	fi;
 
 	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - ${led_timeout_ms}ms ***";
@@ -1061,13 +1061,13 @@ SLEEP_MODE()
 
 	DELAY;
 
+	ENABLEMASK "sleep";
+
 	if [ `cat /tmp/early_wakeup` == 0 ]; then
 
 		# we only read the config when screen goes off ...
 		PROFILE=`cat /data/.siyah/.active.profile`;
 		. /data/.siyah/$PROFILE.profile;
-
-		ENABLEMASK "sleep";
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
