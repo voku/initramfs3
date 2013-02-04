@@ -85,6 +85,7 @@ trans_load_h0=20
 trans_load_h1=100
 trans_load_l1=20
 trans_load_rq=20
+trans_rq=2
 up_threshold_at_min_freq_sleep=70
 up_threshold_sleep=70
 down_threshold_sleep=30
