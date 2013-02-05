@@ -76,7 +76,7 @@
 		</spinner>
 
 		<spinner description="Sets the CPU Idle Mode (Sleep Mode). For best stability use Idle + LPA. (Default: AFTR only)" 
-			name="CPU Idle Mode (Sleep Mode)" action="generic /tmp/enable_mask_sleep">
+			name="CPU Idle Mode (Sleep Mode)" action="generic_cortex /tmp/enable_mask_sleep">
 			<spinnerItem name="AFTR + LPA" value="3"/> 
 			<spinnerItem name="Idle + LPA" value="2"/> 
 			<spinnerItem name="AFTR only" value="1"/> 
@@ -121,85 +121,85 @@
 		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
 		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1450 mV)"
-			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1350" reversed="false" step="25" max="1500"/>
 
 		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1400 mV)"
 			name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1375 mV)"
-			name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1350 mV)"
+			name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1250" reversed="false" step="25" max="1450"/>
 
-		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1350 mV)"
-			name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1275" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1300 mV)"
+			name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1200" reversed="false" step="25" max="1400"/>
 
-		<seekBar description="CPU Voltage for 1200 MHz. (Default: 1300 mV)"
-			name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1225" reversed="false" step="25" max="1350"/>
+		<seekBar description="CPU Voltage for 1200 MHz. (Default: 1250 mV)"
+			name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1150" reversed="false" step="25" max="1350"/>
 
-		<seekBar description="CPU Voltage for 1152 MHz. (Default: 1275 mV)"
-			name="CPU Voltage 1152 MHz" action="cpu-voltage 6" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+		<seekBar description="CPU Voltage for 1152 MHz. (Default: 1200 mV)"
+			name="CPU Voltage 1152 MHz" action="cpu-voltage 6" unit="mV" min="1100" reversed="false" step="25" max="1300"/>
 
-		<seekBar description="CPU Voltage for 1100 MHz. (Default: 1250 mV)"
-			name="CPU Voltage 1100 MHz" action="cpu-voltage 7" unit="mV" min="1175" reversed="false" step="25" max="1300"/>
+		<seekBar description="CPU Voltage for 1100 MHz. (Default: 1200 mV)"
+			name="CPU Voltage 1100 MHz" action="cpu-voltage 7" unit="mV" min="1100" reversed="false" step="25" max="1300"/>
 
-		<seekBar description="CPU Voltage for 1052 MHz. (Default: 1225 mV)"
-			name="CPU Voltage 1052 MHz" action="cpu-voltage 8" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+		<seekBar description="CPU Voltage for 1052 MHz. (Default: 1150 mV)"
+			name="CPU Voltage 1052 MHz" action="cpu-voltage 8" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
 
-		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1200 mV)"
-			name="CPU Voltage 1000 MHz" action="cpu-voltage 9" unit="mV" min="1125" reversed="false" step="25" max="1250"/>
+		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1150 mV)"
+			name="CPU Voltage 1000 MHz" action="cpu-voltage 9" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
 
-		<seekBar description="CPU Voltage for 952 MHz. (Default: 1150 mV)"
-			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+		<seekBar description="CPU Voltage for 952 MHz. (Default: 1100 mV)"
+			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1000" reversed="false" step="25" max="1200"/>
 
-		<seekBar description="CPU Voltage for 900 MHz. (Default: 1125 mV)"
-			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1050" reversed="false" step="25" max="1175"/>
+		<seekBar description="CPU Voltage for 900 MHz. (Default: 1100 mV)"
+			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1000" reversed="false" step="25" max="1200"/>
 
-		<seekBar description="CPU Voltage for 852 MHz. (Default: 1100 mV)"
-			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+		<seekBar description="CPU Voltage for 852 MHz. (Default: 1050 mV)"
+			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="950" reversed="false" step="25" max="1150"/>
 
-		<seekBar description="CPU Voltage for 800 MHz. (Default: 1075 mV)"
-			name="CPU Voltage 800 MHz" action="cpu-voltage 13" unit="mV" min="1000" reversed="false" step="25" max="1125"/>
+		<seekBar description="CPU Voltage for 800 MHz. (Default: 1050 mV)"
+			name="CPU Voltage 800 MHz" action="cpu-voltage 13" unit="mV" min="950" reversed="false" step="25" max="1150"/>
 
-		<seekBar description="CPU Voltage for 750 MHz. (Default: 1050 mV)"
-			name="CPU Voltage 750 MHz" action="cpu-voltage 14" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 750 MHz. (Default: 1025 mV)"
+			name="CPU Voltage 750 MHz" action="cpu-voltage 14" unit="mV" min="925" reversed="false" step="25" max="1125"/>
 
 		<seekBar description="CPU Voltage for 700 MHz. (Default: 1025 mV)"
-			name="CPU Voltage 700MHz" action="cpu-voltage 15" unit="mV" min="950" reversed="false" step="25" max="1075"/>
+			name="CPU Voltage 700MHz" action="cpu-voltage 15" unit="mV" min="925" reversed="false" step="25" max="1125"/>
 
-		<seekBar description="CPU Voltage for 650 MHz. (Default: 1025 mV)"
-			name="CPU Voltage 650 MHz" action="cpu-voltage 16" unit="mV" min="925" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 650 MHz. (Default: 1000 mV)"
+			name="CPU Voltage 650 MHz" action="cpu-voltage 16" unit="mV" min="900" reversed="false" step="25" max="1100"/>
 
-		<seekBar description="CPU Voltage for 600 MHz. (Default: 1025 mV)"
-			name="CPU Voltage 600 MHz" action="cpu-voltage 17" unit="mV" min="925" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 600 MHz. (Default: 1000 mV)"
+			name="CPU Voltage 600 MHz" action="cpu-voltage 17" unit="mV" min="900" reversed="false" step="25" max="1100"/>
 
-		<seekBar description="CPU Voltage for 550 MHz. (Default: 1000 mV)"
-			name="CPU Voltage 550 MHz" action="cpu-voltage 18" unit="mV" min="900" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 550 MHz. (Default: 975 mV)"
+			name="CPU Voltage 550 MHz" action="cpu-voltage 18" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 500 MHz. (Default: 1000 mV)"
-			name="CPU Voltage 500 MHz" action="cpu-voltage 19" unit="mV" min="900" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 500 MHz. (Default: 975 mV)"
+			name="CPU Voltage 500 MHz" action="cpu-voltage 19" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 450 MHz. (Default: 975 mV)"
-			name="CPU Voltage 450 MHz" action="cpu-voltage 20" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 450 MHz" action="cpu-voltage 20" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 400 MHz. (Default: 975 mV)"
-			name="CPU Voltage 400 MHz" action="cpu-voltage 21" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 400 MHz" action="cpu-voltage 21" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 350 MHz. (Default: 975 mV)"
-			name="CPU Voltage 350 MHz" action="cpu-voltage 22" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 350 MHz" action="cpu-voltage 22" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 300 MHz. (Default: 975 mV)"
-			name="CPU Voltage 300 MHz" action="cpu-voltage 23" unit="mV" min="900" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 300 MHz" action="cpu-voltage 23" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 250 MHz. (Default: 950 mV)"
-			name="CPU Voltage 250 MHz" action="cpu-voltage 24" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+			name="CPU Voltage 250 MHz" action="cpu-voltage 24" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 		<seekBar description="CPU Voltage for 200 MHz. (Default: 950 mV)"
-			name="CPU Voltage 200 MHz" action="cpu-voltage 25" unit="mV" min="875" reversed="false" step="25" max="1000"/>
+			name="CPU Voltage 200 MHz" action="cpu-voltage 25" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 		<seekBar description="CPU Voltage for 150 MHz. (Default: 925 mV)"
-			name="CPU Voltage 150 MHz" action="cpu-voltage 26" unit="mV" min="850" reversed="false" step="25" max="975"/>
+			name="CPU Voltage 150 MHz" action="cpu-voltage 26" unit="mV" min="825" reversed="false" step="25" max="1025"/>
 
 		<seekBar description="CPU Voltage for 100 MHz. (Default: 925 mV)"
-			name="CPU Voltage 100 MHz" action="cpu-voltage 27" unit="mV" min="850" reversed="false" step="25" max="975"/>
+			name="CPU Voltage 100 MHz" action="cpu-voltage 27" unit="mV" min="825" reversed="false" step="25" max="1025"/>
 
 	</settingsPane>
 
@@ -242,13 +242,13 @@
 		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 60000)"
 			name="sampling_rate" action="generic_cortex /tmp/sampling_rate" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 5)"
+		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 1)"
 			name="sampling_down_factor" action="generic_cortex /tmp/sampling_down_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
 			name="freq_step" action="generic_cortex /tmp/freq_step" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 5)"
+		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 1)"
 			name="down_differential" action="generic_cortex /tmp/down_differential" unit=" int" min="1" reversed="false" step="1" max="80"/>
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 400000)"
@@ -276,17 +276,11 @@
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 150)"
-			name="check_rate" action="generic_cortex /tmp/check_rate" unit="%" min="0" reversed="false" step="25" max="600"/-->
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 1000000)"
+			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 600)"
-			name="check_rate_cpuon" action="generic_cortex /tmp/check_rate_cpuon" unit="%" min="0" reversed="false" step="100" max="3000"/-->
-
-		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 1000000)"
-			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
-
-		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (Only for Nightmare) (default is 700000)"
-			name="freq_cpu1off" action="generic_cortex /tmp/freq_cpu1off" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
+		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (Only for Nightmare) (default is 700000)"
+			name="freq_cpu1off" action="generic_cortex /tmp/freq_cpu1off" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 5)"
 			name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
@@ -297,17 +291,17 @@
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 60)"
 			name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 20)"
-			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit=" int" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 20)"
+			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit=" int" min="1" reversed="false" step="1" max="100"/-->
+			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit="%" min="1" reversed="false" step="1" max="100"/-->
 
-		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (default is 20)"
-			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit=" int" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (default is 20)"
+			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and its load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (default is 20)"
-			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit=" int" min="0" reversed="false" step="1" max="50"/>
+			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit="%" min="0" reversed="false" step="1" max="50"/>
 
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and its load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (default is 2)"
 			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="2"/>
@@ -433,20 +427,11 @@
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 150)"
-			name="check_rate_sleep" action="generic_cortex /tmp/check_rate_sleep" unit="%" min="0" reversed="false" step="25" max="600"/-->
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 600000)"
+			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 600)"
-			name="check_rate_cpuon_sleep" action="generic_cortex /tmp/check_rate_cpuon_sleep" unit="%" min="0" reversed="false" step="100" max="1000"/-->
-
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 2400)"
-			name="check_rate_scroff" action="generic_cortex /tmp/check_rate_scroff" unit="%" min="0" reversed="false" step="100" max="3000"/-->
-
-		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 600000)"
-			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
-
-		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 500000)"
-			name="freq_cpu1off_sleep" action="generic_cortex /tmp/freq_cpu1off_sleep" unit="mHz" min="100000" reversed="false" step="100000" max="1500000"/>
+		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 500000)"
+			name="freq_cpu1off_sleep" action="generic_cortex /tmp/freq_cpu1off_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 10)"
 			name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
@@ -457,18 +442,17 @@
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 60)"
 			name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-
-		<seekBar description="When 2nd core is offline, If frequency average is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 20)"
-			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 20)"
+			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
-			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/-->
+			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/-->
 
-		<seekBar description="When 2nd core is online, If frequency average is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 20)"
-			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit=" int" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 20)"
+			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and its load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (default is 10)"
-			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="50"/>
+			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit="%" min="0" reversed="false" step="1" max="50"/>
 
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and its load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (default is 2)"
 			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="2"/>
@@ -920,8 +904,8 @@
 
 		<spinner description="Led timeout. Select 'Use ROM defaults' if your ROM already has led timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use led fadeout effect." 
 			name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
-			<spinnerItem name="Use ROM defaults (disabled)" value="-1"/> 
-			<spinnerItem name="No timeout" value="0"/> 
+			<spinnerItem name="Use ROM defaults (disabled)" value="0"/> 
+			<spinnerItem name="No timeout" value="9999999"/> 
 			<spinnerItem name="1 sec" value="1000"/> 
 			<spinnerItem name="3 sec" value="3000"/> 
 			<spinnerItem name="6 sec" value="6000"/> 
