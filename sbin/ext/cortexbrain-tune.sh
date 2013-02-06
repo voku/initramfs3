@@ -412,6 +412,12 @@ CPU_GOV_TWEAKS()
 
 		# performance-settings
 		if [ "${state}" == "performance" ]; then
+			echo "0" > $min_cpu_lock_tmp;
+			echo "0" > $hotplug_lock_tmp;
+			echo "200000" > $freq_cpu1on_tmp;
+			echo "200000" > $freq_cpu1off_tmp;
+			echo "10" > $trans_load_h0_tmp;
+			echo "10" > $trans_load_l1_tmp;
 			echo "20000" > $sampling_rate_tmp;
 			echo "10" > $cpu_up_rate_tmp;
 			echo "10" > $cpu_down_rate_tmp;
@@ -498,9 +504,9 @@ CPU_GOV_TWEAKS()
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock" > $hotplug_lock_tmp;
-			echo "$trans_load_h0" > $trans_load_h0_scroff_tmp;
-			echo "$trans_load_h1" > $trans_load_h1_scroff_tmp;
-			echo "$trans_load_l1" > $trans_load_l1_scroff_tmp;
+			echo "$trans_load_h0" > $trans_load_h0_tmp;
+			echo "$trans_load_h1" > $trans_load_h1_tmp;
+			echo "$trans_load_l1" > $trans_load_l1_tmp;
 			echo "$trans_rq" > $trans_rq_tmp;
 		fi;
 
