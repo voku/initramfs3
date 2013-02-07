@@ -78,7 +78,7 @@ IO_TWEAKS()
 
 			if [ "$scheduler" == "sio" ] || [ "$scheduler" == "zen" ]; then
 				if [ -e $i/queue/nr_requests ]; then
-					echo "128" > $i/queue/nr_requests; # default: 128
+					echo "64" > $i/queue/nr_requests; # default: 128
 				fi;
 			fi;
 
@@ -104,7 +104,7 @@ IO_TWEAKS()
 			echo "$cortexbrain_read_ahead_kb" > $i/read_ahead_kb;
 		done;
 
-		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "20" > /proc/sys/fs/lease-break-time;
 		echo "524288" > /proc/sys/fs/file-max;
 		echo "1048576" > /proc/sys/fs/nr_open;
 		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
@@ -124,7 +124,7 @@ KERNEL_TWEAKS()
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
 		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		echo "0" > /proc/sys/vm/panic_on_oom;
-		echo "10" > /proc/sys/kernel/panic;
+		echo "30" > /proc/sys/kernel/panic;
 		echo "65536" > /proc/sys/kernel/msgmax;
 		echo "2048" > /proc/sys/kernel/msgmni;
 		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
@@ -412,6 +412,12 @@ CPU_GOV_TWEAKS()
 
 		# performance-settings
 		if [ "${state}" == "performance" ]; then
+			echo "0" > $min_cpu_lock_tmp;
+			echo "0" > $hotplug_lock_tmp;
+			echo "200000" > $freq_cpu1on_tmp;
+			echo "200000" > $freq_cpu1off_tmp;
+			echo "10" > $trans_load_h0_tmp;
+			echo "10" > $trans_load_l1_tmp;
 			echo "20000" > $sampling_rate_tmp;
 			echo "10" > $cpu_up_rate_tmp;
 			echo "10" > $cpu_down_rate_tmp;
@@ -498,9 +504,9 @@ CPU_GOV_TWEAKS()
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock" > $hotplug_lock_tmp;
-			echo "$trans_load_h0" > $trans_load_h0_scroff_tmp;
-			echo "$trans_load_h1" > $trans_load_h1_scroff_tmp;
-			echo "$trans_load_l1" > $trans_load_l1_scroff_tmp;
+			echo "$trans_load_h0" > $trans_load_h0_tmp;
+			echo "$trans_load_h1" > $trans_load_h1_tmp;
+			echo "$trans_load_l1" > $trans_load_l1_tmp;
 			echo "$trans_rq" > $trans_rq_tmp;
 		fi;
 
@@ -523,14 +529,14 @@ fi;
 MEMORY_TWEAKS()
 {
 	if [ "$cortexbrain_memory" == on ]; then
-		echo "70" > /proc/sys/vm/dirty_background_ratio; # default: 10
-		echo "90" > /proc/sys/vm/dirty_ratio; # default: 20
+		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
+		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "128 128" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -909,7 +915,7 @@ KERNEL_SCHED()
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	elif [ "${state}" == "sleep" ]; then
 		echo "1" > /proc/sys/kernel/sched_child_runs_first;
-		echo "10000000" > /proc/sys/kernel/sched_latency_ns;
+		echo "5000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	fi;
@@ -1005,6 +1011,9 @@ AWAKE_MODE()
 
 		MEGA_BOOST_CPU_TWEAKS;
 
+		echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
+		echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
+
 		WIFI "awake";
 
 		GESTURES "awake";
@@ -1022,9 +1031,6 @@ AWAKE_MODE()
 		echo "$pwm_val" > /sys/vibrator/pwm_val;
 
 		BOOST_DELAY;
-
-		echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
-		echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
 
 		echo "100" > /proc/sys/vm/vfs_cache_pressure;
 
@@ -1059,15 +1065,15 @@ SLEEP_MODE()
 	mount -o remount,rw /
 	echo "0" > /tmp/sleeprun;
 
+	# we only read the config when screen goes off ...
+	PROFILE=`cat /data/.siyah/.active.profile`;
+	. /data/.siyah/$PROFILE.profile;
+
 	DELAY;
 
 	ENABLEMASK "sleep";
 
 	if [ `cat /tmp/early_wakeup` == 0 ]; then
-
-		# we only read the config when screen goes off ...
-		PROFILE=`cat /data/.siyah/.active.profile`;
-		. /data/.siyah/$PROFILE.profile;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;

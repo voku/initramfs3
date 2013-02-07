@@ -71,12 +71,12 @@ if [ "$install_root" == "on" ]; then
 		# clean super user old apps
 		$BB rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
 		$BB rm -f /system/app/?uper?u.apk > /dev/null 2>&1;
-		$BB rm -f /system/app/*chainfire?supersu*.apk > /dev/null 2>&1;
+		$BB rm -f /system/app/*chainfire?supersu.apk > /dev/null 2>&1;
 		$BB rm -f /data/app/*uper?ser.apk > /dev/null 2>&1;
 		$BB rm -f /data/app/?uper?u.apk > /dev/null 2>&1;
-		$BB rm -f /data/app/*chainfire?supersu*.apk > /dev/null 2>&1;
+		$BB rm -f /data/app/*chainfire?supersu.apk > /dev/null 2>&1;
 		$BB rm -f /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1;
-		$BB rm -f /data/dalvik-cache/*chainfire?supersu*.apk* > /dev/null 2>&1;
+		$BB rm -f /data/dalvik-cache/*chainfire?supersu.apk* > /dev/null 2>&1;
 		$BB rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
 		$BB rm -rf /data/data/eu.chinfire.supersu > /dev/null 2>&1;
 
@@ -84,6 +84,15 @@ if [ "$install_root" == "on" ]; then
 		$BB cp -a /res/misc/payload/SuperSU.apk /system/app/SuperSU.apk;
 		$BB chown 0.0 /system/app/SuperSU.apk;
 		$BB chmod 644 /system/app/SuperSU.apk;
+
+		if [ ! -e /data/app/*chainfire?supersu.pr*.apk ]; then
+			if [ -e /data/system/chain_pro.apk_bkp ]; then
+				mv /data/system/chain_pro.apk_bkp /system/app/eu.chainfire.supersu.pro-1.apk;
+				chmod 644 /system/app/eu.chainfire.supersu.pro-1.apk;
+		else
+				echo "no su pro" > /dev/null 2>&1;
+			fi;
+		fi;
 
 		# restore witch if exist
 		if [ -e /system/xbin/waswhich-bkp ]; then
