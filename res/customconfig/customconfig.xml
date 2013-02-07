@@ -578,7 +578,7 @@
 			name="Dirty Background ratio" action="generic /proc/sys/vm/dirty_background_ratio" unit="%" min="10" reversed="false" step="5" max="100"/>
 
 		<seekBar description="Dirty real time memory buffer, more you set, more memory will be used for write buffer for real time operations, buffer is released on need to free RAM (default 20)"
-			name="Dirty ratio" action="/proc/sys/vm/dirty_ratio" unit="%" min="5" reversed="false" step="10" max="100"/>
+			name="Dirty ratio" action="generic /proc/sys/vm/dirty_ratio" unit="%" min="10" reversed="false" step="5" max="100"/>
 
 		<button description="Clean RAM Cache, this will release all cached and buffered RAM" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
 
