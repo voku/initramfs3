@@ -33,6 +33,13 @@ echo "1" > /tmp/sleeprun;
 echo "0" > /tmp/ksm;
 chmod 666 /tmp/*;
 
+# check if dumpsys exist in ROM
+if [ -e /system/bin/dumpsys ]; then
+	DUMPSYS=1;
+else
+	DUMPSYS=0;
+fi;
+
 # replace kernel version info for repacked kernels
 cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
 
@@ -536,7 +543,7 @@ MEMORY_TWEAKS()
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "4096" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -909,12 +916,10 @@ KERNEL_SCHED()
 	local state="$1";
 
 	if [ "${state}" == "awake" ]; then
-		echo "0" > /proc/sys/kernel/sched_child_runs_first;
 		echo "1000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "100000" > /proc/sys/kernel/sched_min_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	elif [ "${state}" == "sleep" ]; then
-		echo "1" > /proc/sys/kernel/sched_child_runs_first;
 		echo "5000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
@@ -1073,7 +1078,14 @@ SLEEP_MODE()
 
 	ENABLEMASK "sleep";
 
-	if [ `cat /tmp/early_wakeup` == 0 ]; then
+	if [ "$DUMPSYS" == 1 ]; then
+		# check the call state, not on call = 0, on call = 2
+		CALL_STATE=`dumpsys telephony.registry | grep mCallState= | cut -c 3-14`;
+	else
+		CALL_STATE="mCallState=0";
+	fi;
+
+	if [ `cat /tmp/early_wakeup` == 0 ] && [ "$CALL_STATE" == "mCallState=0" ]; then
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -1100,6 +1112,9 @@ SLEEP_MODE()
 		fi;
 
 		SWAPPINESS;
+
+		echo "1" > /tmp/sleeprun;
+		pkill -f "cat /sys/power/wait_for_fb_wake"
 
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" == 0 ]; then
@@ -1130,12 +1145,9 @@ SLEEP_MODE()
 			echo "USB CABLE CONNECTED! No real sleep mode!"
 			log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
 		fi;
-
-		echo "1" > /tmp/sleeprun;
-		pkill -f "cat /sys/power/wait_for_fb_wake"
-
 	else
-		log -p i -t $FILE_NAME "*** Early WakeUp detected! SLEEP aborted! ***";
+		log -p i -t $FILE_NAME "*** Early WakeUp, or on Call! SLEEP aborted! ***";
+
 	fi;
 }
 
@@ -1151,7 +1163,7 @@ if [ "$cortexbrain_background_process" == 1 ] && [ `pgrep -f "cat /sys/power/wai
 		# AWAKE State. all system ON
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
 		AWAKE_MODE;
-		sleep 3;
+		sleep 5;
 
 		# SLEEP state. All system to power save
 		cat /sys/power/wait_for_fb_sleep > /dev/null 2>&1;

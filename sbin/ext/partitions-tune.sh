@@ -16,7 +16,7 @@ for i in $DM; do
 	fi;
 
 	if [ -e $i/queue/read_ahead_kb ]; then
-		echo "2048" >  $i/queue/read_ahead_kb;
+		echo "2048" > $i/queue/read_ahead_kb;
 	fi;
 
 	if [ -e $i/queue/iosched/writes_starved ]; then
@@ -39,4 +39,7 @@ else
 	mount -o remount,utf8 /mnt/sdcard;
 	mount -o remount,utf8 /mnt/emmc;
 fi;
+
+# correct touch keys light, if rom mess user configuration
+/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
 

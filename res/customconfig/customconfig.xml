@@ -142,19 +142,19 @@
 			name="CPU Voltage 1100 MHz" action="cpu-voltage 7" unit="mV" min="1125" reversed="false" step="25" max="1325"/>
 
 		<seekBar description="CPU Voltage for 1052 MHz. (Default: 1200 mV)"
-			name="CPU Voltage 1052 MHz" action="cpu-voltage 8" unit="mV" min="1000" reversed="false" step="25" max="1300"/>
+			name="CPU Voltage 1052 MHz" action="cpu-voltage 8" unit="mV" min="1100" reversed="false" step="25" max="1300"/>
 
 		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1175 mV)"
 			name="CPU Voltage 1000 MHz" action="cpu-voltage 9" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
 
-		<seekBar description="CPU Voltage for 952 MHz. (Default: 1150 mV)"
-			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
+		<seekBar description="CPU Voltage for 952 MHz. (Default: 1175 mV)"
+			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
 
-		<seekBar description="CPU Voltage for 900 MHz. (Default: 1125 mV)"
-			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
+		<seekBar description="CPU Voltage for 900 MHz. (Default: 1150 mV)"
+			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
 
-		<seekBar description="CPU Voltage for 852 MHz. (Default: 1100 mV)"
-			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="1000" reversed="false" step="25" max="1200"/>
+		<seekBar description="CPU Voltage for 852 MHz. (Default: 1125 mV)"
+			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
 
 		<seekBar description="CPU Voltage for 800 MHz. (Default: 1075 mV)"
 			name="CPU Voltage 800 MHz" action="cpu-voltage 13" unit="mV" min="975" reversed="false" step="25" max="1175"/>
@@ -574,10 +574,10 @@
 			<spinnerItem name="exterminate" value="exterminate"/> 
 		</spinner>
 
-		<seekBar description="Dirty background memory buffer, more you set, more memory will be used for write buffer for background operations, buffer is released on need to free RAM (default 20)"
+		<seekBar description="Dirty background memory buffer, more you set, more memory will be used for write buffer for background operations, buffer is released on need to free RAM (default 60)"
 			name="Dirty Background ratio" action="generic /proc/sys/vm/dirty_background_ratio" unit="%" min="10" reversed="false" step="5" max="100"/>
 
-		<seekBar description="Dirty real time memory buffer, more you set, more memory will be used for write buffer for real time operations, buffer is released on need to free RAM (default 20)"
+		<seekBar description="Dirty real time memory buffer, more you set, more memory will be used for write buffer for real time operations, buffer is released on need to free RAM (default 80)"
 			name="Dirty ratio" action="generic /proc/sys/vm/dirty_ratio" unit="%" min="10" reversed="false" step="5" max="100"/>
 
 		<button description="Clean RAM Cache, this will release all cached and buffered RAM" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
