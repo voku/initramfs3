@@ -42,6 +42,16 @@ if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
+# STweaks check su only at /system/xbin/su make it so
+if [ -e /system/xbin/su ]; then
+	echo "root for STweaks found";
+elif [ -e /system/bin/su ]; then
+	cp /system/bin/su /system/xbin/su;
+	chmod 6755 /system/xbin/su;
+else
+	echo "ROM without ROOT";
+fi;
+
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
