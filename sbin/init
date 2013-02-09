@@ -138,6 +138,10 @@ SECROM_FUNCTION_AOSP()
 {
 	# init.rc style JB/CM/AOKP
 	if [ "$SECONDROM" == "1" ]; then
+		if [ -e /mnt/.secondrom/.secondrom/data.img ]; then
+			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/data.img" > /fix_data_log;
+			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/cache.img" > /fix_cache_log;
+		fi;
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		$BB rm /init.rc.2;
 	else
@@ -150,6 +154,10 @@ SECROM_FUNCTION_SAMMY()
 {
 	# init.rc style SAMMY ICS
 	if [ "$SECONDROM" == "1" ]; then
+		if [ -e /mnt/.secondrom/.secondrom/data.img ]; then
+			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/data.img" > /fix_data_log;
+			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/cache.img" > /fix_cache_log;
+		fi;
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		$BB mv /init.rc.2 /init.rc
 	else
