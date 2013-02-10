@@ -287,7 +287,15 @@ CPU_GOV_TWEAKS()
 		fi;
 		if [ ! -e $freq_responsiveness_tmp ]; then
 			freq_responsiveness_tmp="/dev/null";
-		fi;		
+		fi;
+		local freq_for_calc_incr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_incr";
+		if [ ! -e $freq_for_calc_incr_tmp ]; then
+			freq_for_calc_incr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_incr";
+		fi;
+		local freq_for_calc_decr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_decr";
+		if [ ! -e $freq_for_calc_decr_tmp ]; then
+			freq_for_calc_decr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_decr";
+		fi;
 		local inc_cpu_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load";
 		if [ ! -e $inc_cpu_load_tmp ]; then
 			inc_cpu_load_tmp="/dev/null";
@@ -448,6 +456,8 @@ CPU_GOV_TWEAKS()
 			echo "$freq_step_sleep" > $freq_step_tmp;
 			echo "$freq_step_dec_sleep" > $freq_step_dec_tmp;
 			echo "$freq_for_responsiveness_sleep" > $freq_responsiveness_tmp;
+			echo "$freq_for_calc_incr_sleep" > $freq_for_calc_incr_tmp;
+			echo "$freq_for_calc_decr_sleep" > $freq_for_calc_decr_tmp;
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$up_sample_time_sleep" > $up_sample_time_tmp;
@@ -489,6 +499,8 @@ CPU_GOV_TWEAKS()
 			echo "$freq_step" > $freq_step_tmp;
 			echo "$freq_step_dec" > $freq_step_dec_tmp;
 			echo "$freq_for_responsiveness" > $freq_responsiveness_tmp;
+			echo "$freq_for_calc_incr" > $freq_for_calc_incr_tmp;
+			echo "$freq_for_calc_decr" > $freq_for_calc_decr_tmp;
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$up_sample_time" > $up_sample_time_tmp;
