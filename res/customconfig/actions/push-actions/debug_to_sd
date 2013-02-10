@@ -14,11 +14,26 @@ DEBUG_FILE_LOGCAT="/sdcard/dorimanx_debug_logcat";
 case "${debug_to_sd}" in
 	1)
 		(
-			SEPARATOR() {
+			PROFILE=`cat /data/.siyah/.active.profile`;
+			. /data/.siyah/$PROFILE.profile;
+
+			SEPARATOR()
+			{
 				echo "" >> $DEBUG_FILE;
 				echo " ---------------------------- " >> $DEBUG_FILE;
 				echo "" >> $DEBUG_FILE;
 			}
+
+			# more debug
+			echo "1" > /sys/module/ump/parameters/ump_debug_level;
+			echo "1" > /sys/module/mali/parameters/mali_debug_level;
+			echo "1" > /sys/module/kernel/parameters/initcall_debug;
+			echo "2" > /sys/module/lowmemorykiller/parameters/debug_level;
+			echo "1" > /sys/module/earlysuspend/parameters/debug_mask;
+			echo "1" > /sys/module/alarm/parameters/debug_mask;
+			echo "1" > /sys/module/alarm_dev/parameters/debug_mask;
+			echo "1" > /sys/module/binder/parameters/debug_mask;
+			echo "1" > /sys/module/xt_qtaguid/parameters/debug_mask;
 
 			echo "" > $DEBUG_FILE;
 			echo " --- DEBUG from "`date`" --- " >> $DEBUG_FILE;
@@ -159,6 +174,18 @@ case "${debug_to_sd}" in
 			echo "dmesg-Error:" >> $DEBUG_FILE;
 			dmesg | grep -i "Error" >> $DEBUG_FILE;
 			SEPARATOR;
+
+			if [ "$logger" == "off" ]; then 
+				echo "0" > /sys/module/ump/parameters/ump_debug_level;
+				echo "0" > /sys/module/mali/parameters/mali_debug_level;
+				echo "0" > /sys/module/kernel/parameters/initcall_debug;
+				echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+				echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
+				echo "0" > /sys/module/alarm/parameters/debug_mask;
+				echo "0" > /sys/module/alarm_dev/parameters/debug_mask;
+				echo "0" > /sys/module/binder/parameters/debug_mask;
+				echo "0" > /sys/module/xt_qtaguid/parameters/debug_mask;
+			fi;
 		)&
 		echo "All Data collected and ready at $DEBUG_FILE";
 	;;
