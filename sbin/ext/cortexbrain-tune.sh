@@ -925,6 +925,19 @@ IPV6()
 	log -p i -t $FILE_NAME "*** IPV6 ***: ${state}";
 }
 
+NET()
+{
+	local state="$1";
+
+	if [ "${state}" == "awake" ]; then
+		echo "1800" > /proc/sys/net/ipv4/tcp_keepalive_time;
+	elif [ "${state}" == "sleep" ]; then
+		echo "7200" > /proc/sys/net/ipv4/tcp_keepalive_time;
+	fi;
+
+	log -p i -t $FILE_NAME "*** NET ***: ${state}";	
+}
+
 KERNEL_SCHED()
 {
 	local state="$1";
@@ -1028,6 +1041,8 @@ AWAKE_MODE()
 
 		KERNEL_SCHED "awake";
 
+		NET "awake";
+
 		MEGA_BOOST_CPU_TWEAKS;
 
 		echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
@@ -1108,6 +1123,8 @@ SLEEP_MODE()
 		MALI_TIMEOUT "sleep";
 
 		KERNEL_SCHED "sleep";
+
+		NET "sleep";
 
 		GESTURES "sleep";
 
