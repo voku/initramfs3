@@ -624,84 +624,80 @@ FIREWALL_TWEAKS;
 # ==============================================================
 # KSM-TWEAKS
 # ==============================================================
-KSM_MONITOR_INTERVAL=60;
-KSM_NPAGES_BOOST=300;
-KSM_NPAGES_DECAY=50;
-
-KSM_NPAGES_MIN=32;
-KSM_NPAGES_MAX=1000;
-KSM_SLEEP_MSEC=200;
-KSM_SLEEP_MIN=2000;
-
-KSM_THRES_COEF=30;
-KSM_THRES_CONST=2048;
-
-npages=0;
-total=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`;
-thres=$(( $total * $KSM_THRES_COEF / 100 ));
-
-if [ $KSM_THRES_CONST -gt $thres ]; then
-	thres=$KSM_THRES_CONST;
-fi;
-
-total=$(( $total / 1024 ));
-sleep=$(( $KSM_SLEEP_MSEC * 16 * 1024 / $total ));
-
-if [ $sleep -le $KSM_SLEEP_MIN ]; then
-	sleep=$KSM_SLEEP_MIN;
-fi;
-
-KSMCTL()
-{
-	case x${1} in
-		xstop)
-			log -p i -t $FILE_NAME "*** ksm: stop ***";
-			echo 0 > /sys/kernel/mm/ksm/run;
-		;;
-		xstart)
-			log -p i -t $FILE_NAME "*** ksm: start ${2} ${3} ***";
-			echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
-			echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
-			echo 1 > /sys/kernel/mm/ksm/run;
-			renice 10 -p "`pidof ksmd`";
-		;;
-	esac
-}
-
-FREE_MEM()
-{
-	awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo;
-}
-
-INCREASE_NPAGES()
-{
-	local delta=${1:-0};
-	npages=$(( $npages + $delta ));
-	if [ $npages -lt $KSM_NPAGES_MIN ]; then
-		npages=$KSM_NPAGES_MIN;
-	elif [ $npages -gt $KSM_NPAGES_MAX ]; then
-		npages=$KSM_NPAGES_MAX;
-	fi;
-	echo $npages;
-}
-
-ADJUST_KSM()
-{
-	local free=`FREE_MEM`;
-	if [ $free -gt $thres ]; then
-		log -p i -t $FILE_NAME "*** ksm: $free > $thres ***";
-		npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
-		KSMCTL "stop";
-		return 1;
-	else
-		npages=`INCREASE_NPAGES $KSM_NPAGES_DECAY`;
-		log -p i -t $FILE_NAME "*** ksm: $free < $thres ***"
-		KSMCTL "start" $npages $sleep;
-		return 0;
-	fi;
-}
-
 if [ "$cortexbrain_ksm_control" == on ]; then
+	KSM_NPAGES_BOOST=300;
+	KSM_NPAGES_DECAY=50;
+
+	KSM_NPAGES_MIN=32;
+	KSM_NPAGES_MAX=1000;
+	KSM_SLEEP_MSEC=200;
+	KSM_SLEEP_MIN=2000;
+
+	KSM_THRES_COEF=30;
+	KSM_THRES_CONST=2048;
+
+	KSM_NPAGES=0;
+	KSM_TOTAL=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`;
+	KSM_THRES=$(( $KSM_TOTAL * $KSM_THRES_COEF / 100 ));
+
+	if [ $KSM_THRES_CONST -gt $KSM_THRES ]; then
+		KSM_THRES=$KSM_THRES_CONST;
+	fi;
+
+	KSM_TOTAL=$(( $KSM_TOTAL / 1024 ));
+	KSM_SLEEP=$(( $KSM_SLEEP_MSEC * 16 * 1024 / $KSM_TOTAL ));
+
+	if [ $KSM_SLEEP -le $KSM_SLEEP_MIN ]; then
+		KSM_SLEEP=$KSM_SLEEP_MIN;
+	fi;
+
+	KSMCTL()
+	{
+		case x${1} in
+			xstop)
+				log -p i -t $FILE_NAME "*** ksm: stop ***";
+				echo 0 > /sys/kernel/mm/ksm/run;
+			;;
+			xstart)
+				log -p i -t $FILE_NAME "*** ksm: start ${2} ${3} ***";
+				echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
+				echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
+				echo 1 > /sys/kernel/mm/ksm/run;
+				renice 10 -p "`pidof ksmd`";
+			;;
+			esac
+	}
+
+	INCREASE_NPAGES()
+	{
+		local delta=${1:-0};
+
+		KSM_NPAGES=$(( $KSM_NPAGES + $delta ));
+		if [ $KSM_NPAGES -lt $KSM_NPAGES_MIN ]; then
+			KSM_NPAGES=$KSM_NPAGES_MIN;
+		elif [ $KSM_NPAGES -gt $KSM_NPAGES_MAX ]; then
+			KSM_NPAGES=$KSM_NPAGES_MAX;
+		fi;
+
+		echo $KSM_NPAGES;
+	}
+
+	ADJUST_KSM()
+	{
+		local free=`awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo;`
+
+		if [ $free -gt $KSM_THRES ]; then
+			log -p i -t $FILE_NAME "*** ksm: $free > $KSM_THRES ***";
+			npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
+			KSMCTL "stop";
+			return 1;
+		else
+			npages=`INCREASE_NPAGES $KSM_NPAGES_DECAY`;
+			log -p i -t $FILE_NAME "*** ksm: $free < $KSM_THRES ***"
+			KSMCTL "start" $KSM_NPAGES $KSM_SLEEP;
+			return 0;
+		fi;
+	}
 	ADJUST_KSM;
 fi;
 
