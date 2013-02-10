@@ -1054,7 +1054,7 @@ AWAKE_MODE()
 
 		MOUNT_SD_CARD;
 
-		if [ "$cortexbrain_ksm_control" == on ]; then
+		if [ "$cortexbrain_ksm_control" == on ] && [ "$KSM_TOTAL" != "" ]; then
 			ADJUST_KSM;
 		fi;
 
