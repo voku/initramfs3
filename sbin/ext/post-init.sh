@@ -5,7 +5,7 @@ BB=/sbin/busybox
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
-# boot booster
+# boot booster start
 echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
@@ -40,6 +40,10 @@ $BB chmod -R 0777 /data/.siyah/;
 . /res/customconfig/customconfig-helper;
 read_defaults;
 read_config;
+
+# custom boot booster stage 1
+echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
@@ -162,6 +166,10 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB sh /res/uci.sh restore;
 
+	# custom boot booster stage 2
+	echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
 	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
 	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
@@ -178,6 +186,18 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 	# change USB mode MTP or Mass Storage
 	$BB sh /res/uci.sh usb-mode ${usb_mode};
+
+	# custom boot booster stage 3 normalize
+	if [ "$booster_sleep_max" != "0" ]; then
+		sleep $booster_sleep_max;
+	fi;
+
+	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	if [ "$scaling_max_freq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
+		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	else
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	fi;
 )&
 
 (

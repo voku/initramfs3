@@ -1,3 +1,5 @@
+boot_boost=1200000
+booster_sleep_max=60
 scaling_max_freq=1200000
 scaling_max_freq_oc=1200000
 scaling_min_freq=200000

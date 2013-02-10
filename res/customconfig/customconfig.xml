@@ -1,6 +1,17 @@
 <settingsRoot>
 <settingsTab name="CPU">
 
+	<settingsPane description="Boot Booster Control, here you can set boot CPU frequency, and set time to stay on that CPU frequency, then normalize to profile settings."
+			name="BOOT CPU Frequency">
+
+		<seekBar description="Boot booster frequency, CPU will hold single 'min/max' frequency when ROM booting, and keep it till booster delay timeout will be over, DEAR USER! if your CPU cant handle 1.5Ghz or 1.6Ghz, setting it here will STUCK/SOD your device on boot!, till you reset profiles via recovery! (default 1.200.000 kHz)"
+			name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
+
+		<seekBar description="Delay CPU frequency normalization to speed up ROM boot, then set 'min/max' according to user profile (defult 60sec)"
+			name="Delay CPU frequency normalization" action="generic_cortex /tmp/booster_sleep_max" unit="sec" min="0" reversed="false" step="30" max="120"/>
+
+	</settingsPane>
+
 	<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
