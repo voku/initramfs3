@@ -1093,12 +1093,12 @@ SLEEP_MODE()
 
 	if [ "$DUMPSYS" == 1 ]; then
 		# check the call state, not on call = 0, on call = 2
-		CALL_STATE=`dumpsys telephony.registry | grep "mCallState=" | cut -c 14-15`;
+		CALL_STATE=`dumpsys telephony.registry | awk '/mCallState/ {print $1}'`;
 	else
-		CALL_STATE=0;
+		CALL_STATE="mCallState=0";
 	fi;
 
-	if [ `cat /tmp/early_wakeup` == 0 ] && [ "$CALL_STATE" == 0 ]; then
+	if [ `cat /tmp/early_wakeup` == 0 ] && [ "$CALL_STATE" == "mCallState=0" ]; then
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
