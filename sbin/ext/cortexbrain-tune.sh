@@ -567,6 +567,8 @@ TCP_TWEAKS()
 		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
 		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
+		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes;
+		echo "20" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
 		echo "524288" > /proc/sys/net/core/wmem_max;
 		echo "524288" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
