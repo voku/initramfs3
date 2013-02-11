@@ -44,6 +44,8 @@ read_config;
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "0" > /tmp/uci_done;
+chmod 666 /tmp/uci_done;
 
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
@@ -165,10 +167,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB sh /res/uci.sh restore;
-
-	# custom boot booster stage 2
-	echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
@@ -198,6 +197,16 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	else
 		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	fi;
+)&
+
+(
+	# custom boot booster stage 2
+	while [ "`cat /tmp/uci_done`" != "1" ]; do
+		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "Waiting For UCI to finish";
+		sleep 10;
+	done;
 )&
 
 (
