@@ -12,6 +12,7 @@
 /dev/video4               0666   system     system
 /dev/s5p-jpeg             0666   system     camera
 /dev/video14              0666   system     system
+# Rotator
 /dev/video21              0666   system     system
 /dev/pmem                 0660   system     graphics
 /dev/pmem_gpu1            0660   system     graphics
