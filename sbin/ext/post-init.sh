@@ -5,6 +5,10 @@ BB=/sbin/busybox
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
+# boot booster start
+echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;
@@ -36,6 +40,12 @@ $BB chmod -R 0777 /data/.siyah/;
 . /res/customconfig/customconfig-helper;
 read_defaults;
 read_config;
+
+# custom boot booster stage 1
+echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+echo "0" > /tmp/uci_done;
+chmod 666 /tmp/uci_done;
 
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
@@ -157,6 +167,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB sh /res/uci.sh restore;
+	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
@@ -174,6 +185,28 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 	# change USB mode MTP or Mass Storage
 	$BB sh /res/uci.sh usb-mode ${usb_mode};
+
+	# custom boot booster stage 3 normalize
+	if [ "$booster_sleep_max" != "0" ]; then
+		sleep $booster_sleep_max;
+	fi;
+
+	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	if [ "$scaling_max_freq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
+		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	else
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	fi;
+)&
+
+(
+	# custom boot booster stage 2
+	while [ "`cat /tmp/uci_done`" != "1" ]; do
+		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "Waiting For UCI to finish";
+		sleep 10;
+	done;
 )&
 
 (

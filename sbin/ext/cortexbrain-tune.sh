@@ -287,7 +287,15 @@ CPU_GOV_TWEAKS()
 		fi;
 		if [ ! -e $freq_responsiveness_tmp ]; then
 			freq_responsiveness_tmp="/dev/null";
-		fi;		
+		fi;
+		local freq_for_calc_incr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_incr";
+		if [ ! -e $freq_for_calc_incr_tmp ]; then
+			freq_for_calc_incr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_incr";
+		fi;
+		local freq_for_calc_decr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_decr";
+		if [ ! -e $freq_for_calc_decr_tmp ]; then
+			freq_for_calc_decr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_decr";
+		fi;
 		local inc_cpu_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load";
 		if [ ! -e $inc_cpu_load_tmp ]; then
 			inc_cpu_load_tmp="/dev/null";
@@ -448,6 +456,8 @@ CPU_GOV_TWEAKS()
 			echo "$freq_step_sleep" > $freq_step_tmp;
 			echo "$freq_step_dec_sleep" > $freq_step_dec_tmp;
 			echo "$freq_for_responsiveness_sleep" > $freq_responsiveness_tmp;
+			echo "$freq_for_calc_incr_sleep" > $freq_for_calc_incr_tmp;
+			echo "$freq_for_calc_decr_sleep" > $freq_for_calc_decr_tmp;
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$up_sample_time_sleep" > $up_sample_time_tmp;
@@ -489,6 +499,8 @@ CPU_GOV_TWEAKS()
 			echo "$freq_step" > $freq_step_tmp;
 			echo "$freq_step_dec" > $freq_step_dec_tmp;
 			echo "$freq_for_responsiveness" > $freq_responsiveness_tmp;
+			echo "$freq_for_calc_incr" > $freq_for_calc_incr_tmp;
+			echo "$freq_for_calc_decr" > $freq_for_calc_decr_tmp;
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$up_sample_time" > $up_sample_time_tmp;
@@ -857,15 +869,22 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		if [ "$scaling_max_freq" == 1200000 ] && [ "$scaling_max_freq_oc" -ge 1200000 ]; then
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		elif [ "$scaling_max_freq" -ge 1000000 ]; then
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		else
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		fi;
 
 		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
+	else
+		MAX_FREQ=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`;
+		echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 	fi;
 }
 
@@ -1015,13 +1034,13 @@ ENABLEMASK()
 # ==============================================================
 AWAKE_MODE()
 {
+	ENABLEMASK "awake";
+
 	if [ `cat /tmp/sleeprun` == 1 ]; then
 
 		LOGGER "awake";
 
 		DELAY;
-
-		ENABLEMASK "awake";
 
 		KERNEL_SCHED "awake";
 
@@ -1061,11 +1080,14 @@ AWAKE_MODE()
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 
 			if [ "$scaling_max_freq" == 1200000 ] && [ "$scaling_max_freq_oc" -ge 1200000 ]; then
 				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 			else
 				echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 			fi;
 		fi;
 
@@ -1089,7 +1111,6 @@ SLEEP_MODE()
 
 	DELAY;
 
-	# TODO -> we maybe don't reset this, if screen goes on again ... because of "/tmp/sleeprun" 
 	ENABLEMASK "sleep";
 
 	if [ "$DUMPSYS" == 1 ]; then
@@ -1098,20 +1119,20 @@ SLEEP_MODE()
 		if [ "$CALL_STATE" == "mCallState=0" ]; then
 			CALL_STATE=0;
 		else
-			CALL_STATE=1;
+			CALL_STATE=2;
 		fi;
 	else
 		CALL_STATE=0;
 	fi;
 
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
-	local TMP_H2W_STATE=`cat /sys/class/switch/h2w/state`;
-	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$TMP_H2W_STATE" == 0 ] && [ "$CALL_STATE" == 0 ]; then
+	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
 		echo "1" > /tmp/sleeprun;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 		fi;
 
 		MALI_TIMEOUT "sleep";
@@ -1168,12 +1189,12 @@ SLEEP_MODE()
 			log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
 		fi;
 	else
-		log -p i -t $FILE_NAME "*** Early WakeUp (${TMP_EARLY_WAKEUP}), on call (${CALL_STATE}) or music (${TMP_H2W_STATE})! SLEEP aborted! ***";
+		log -p i -t $FILE_NAME "*** Early WakeUp (${TMP_EARLY_WAKEUP}), or on call (${CALL_STATE})! SLEEP aborted! ***";
+
 	fi;
-	
+
 	# kill wait_for_fb_wake generated by /sbin/ext/wakecheck.sh
 	pkill -f "cat /sys/power/wait_for_fb_wake"
-
 }
 
 # ==============================================================

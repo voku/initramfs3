@@ -1,6 +1,17 @@
 <settingsRoot>
 <settingsTab name="CPU">
 
+	<settingsPane description="Boot Booster Control, here you can set boot CPU frequency, and set time to stay on that CPU frequency, then normalize to profile settings."
+			name="BOOT CPU Frequency">
+
+		<seekBar description="Boot booster frequency, CPU will hold single 'min/max' frequency when ROM booting, and keep it till booster delay timeout will be over, DEAR USER! if your CPU cant handle 1.5Ghz or 1.6Ghz, setting it here will STUCK/SOD your device on boot!, till you reset profiles via recovery! (default 1.200.000 kHz)"
+			name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
+
+		<seekBar description="Delay CPU frequency normalization to speed up ROM boot, then set 'min/max' according to user profile (defult 60sec)"
+			name="Delay CPU frequency normalization" action="generic_cortex /tmp/booster_sleep_max" unit="sec" min="0" reversed="false" step="30" max="120"/>
+
+	</settingsPane>
+
 	<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
@@ -276,6 +287,12 @@
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
+		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
+			name="freq_for_calc_incr" action="generic_cortex /tmp/freq_for_calc_incr" unit="kHz" min="50000" reversed="false" step="25000" max="400000"/>
+
+		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
+			name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="125000" reversed="false" step="25000" max="400000"/>
+
 		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 1000000)"
 			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
@@ -427,6 +444,12 @@
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
+		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
+			name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="50000" reversed="false" step="25000" max="400000"/>
+
+		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
+			name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="125000" reversed="false" step="25000" max="400000"/>
+
 		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 600000)"
 			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
@@ -559,6 +582,7 @@
 		<spinner description="Here you can set the level of 'low mem management' by kernel lowmemkiller function, more aggressive, then more free RAM but more killed apps."
 			name="OOM Level Tuning - screen on" action="oom_config_screen_on">
 			<spinnerItem name="light" value="light"/> 
+			<spinnerItem name="low" value="low"/> 
 			<spinnerItem name="medium" value="medium"/> 
 			<spinnerItem name="default" value="default"/> 
 			<spinnerItem name="aggressive" value="aggressive"/> 
@@ -568,6 +592,7 @@
 		<spinner description="Here you can set the level of 'low mem management' by kernel lowmemkiller function, more aggressive, then more free RAM but more killed apps."
 			name="OOM Level Tuning - screen off" action="oom_config_screen_off">
 			<spinnerItem name="light" value="light"/> 
+			<spinnerItem name="low" value="low"/> 
 			<spinnerItem name="medium" value="medium"/> 
 			<spinnerItem name="default" value="default"/> 
 			<spinnerItem name="aggressive" value="aggressive"/> 
