@@ -224,9 +224,10 @@ on post-fs-data
     mkdir /data/ssh/empty 0700 root root
     mkdir /data/radio 0770 radio radio
 
-
-# create dalvik-cache, so as to enforce our permissions
+# create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
+    chown system system /data/dalvik-cache
+    chmod 0771 /data/dalvik-cache
 
 # create resource-cache and double-check the perms
     mkdir /data/resource-cache 0771 system system
@@ -396,7 +397,7 @@ on property:ro.debuggable=1
 # adbd is controlled via property triggers in init.<platform>.usb.rc
 service adbd /sbin/adbd
     class core
-    socket adbd stream 0660 system system
+    socket adbd stream 660 system system
     disabled
     seclabel u:r:adbd:s0
 
@@ -430,8 +431,8 @@ service debuggerd /system/bin/debuggerd
 
 service ril-daemon /system/bin/rild
     class main
-    socket rild stream 0660 root radio
-    socket rild-debug stream 0660 radio system
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log
 
@@ -443,7 +444,7 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 0660 root system
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
@@ -463,17 +464,17 @@ service media /system/bin/mediaserver
 service bootanim /system/bin/bootanimation
     class main
     user graphics
-    group graphics system
+    group graphics
     disabled
     oneshot
 
 service installd /system/bin/installd
     class main
-    socket installd stream 0600 system system
+    socket installd stream 600 system system
 
 service racoon /system/bin/racoon
     class main
-    socket racoon stream 0600 system system
+    socket racoon stream 600 system system
 # IKE uses UDP port 500. Racoon will setuid to vpn after binding the port.
     group vpn net_admin inet
     disabled
@@ -481,7 +482,7 @@ service racoon /system/bin/racoon
 
 service mtpd /system/bin/mtpd
     class main
-    socket mtpd stream 0600 system system
+    socket mtpd stream 600 system system
     user vpn
     group vpn net_admin inet net_raw
     disabled
@@ -491,7 +492,7 @@ service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
     group keystore drmrpc
-    socket keystore stream 0666
+    socket keystore stream 666
 
 service dumpstate /system/bin/dumpstate -s
     class main
