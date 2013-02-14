@@ -1,4 +1,4 @@
-# CyanogenMod Extras
+# CyanogenMod and AOKP Extras
 
 on init
     export ANDROID_CACHE /cache
@@ -11,7 +11,6 @@ on post-fs-data
     chmod 0771 /cache/dalvik-cache
 
 on boot
-# Run sysinit
     start sysinit
 
     chown system system /sys/block/mmcblk0/queue/scheduler
@@ -34,7 +33,6 @@ on property:service.adb.tcp.port=5555
 on property:service.adb.tcp.port=-1
     stop adbd
     start adbd
-
 
 # sysinit (/system/etc/init.d)
 service sysinit /system/bin/sysinit
