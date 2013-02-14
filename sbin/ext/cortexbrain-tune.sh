@@ -234,6 +234,14 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $sampling_rate_tmp ]; then
 			sampling_rate_tmp="/dev/null";
 		fi;
+		local trans_latency_one_core_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_latency_one_core";
+		if [ ! -e $trans_latency_one_core_tmp ]; then
+			trans_latency_one_core_tmp="/dev/null";
+		fi;
+		local trans_latency_two_cores_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_latency_two_cores";
+		if [ ! -e $trans_latency_two_cores_tmp ]; then
+			trans_latency_two_cores_tmp="/dev/null";
+		fi;
 		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate";
 		if [ ! -e $cpu_up_rate_tmp ]; then
 			cpu_up_rate_tmp="/dev/null";
@@ -444,6 +452,8 @@ CPU_GOV_TWEAKS()
 		# sleep-settings
 		elif [ "${state}" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
+			echo "$trans_latency_one_core_sleep" > $trans_latency_one_core_tmp;
+			echo "$trans_latency_two_cores_sleep" > $trans_latency_two_cores_tmp;
 			echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
@@ -487,6 +497,8 @@ CPU_GOV_TWEAKS()
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
+			echo "$trans_latency_one_core" > $trans_latency_one_core_tmp;
+			echo "$trans_latency_two_cores" > $trans_latency_two_cores_tmp;
 			echo "$cpu_up_rate" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
