@@ -31,7 +31,7 @@
 			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
-		<spinner description="This sets the smooth scaling level which prevents Ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of Ondemand, HYPER, Sleepy, Scary and PegasusQ, Nightmare governors (default is Disabled, let gov to do the calculation)." 
+		<!--spinner description="This sets the smooth scaling level which prevents Ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of Ondemand, HYPER, Sleepy, Scary and PegasusQ, Nightmare governors (default is Disabled, let gov to do the calculation)." 
 			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
 			<spinnerItem name="Disabled" value="0"/> 
 			<spinnerItem name="1200 MHz" value="4"/> 
@@ -46,7 +46,7 @@
 			<spinnerItem name="200 MHz" value="24"/> 
 			<spinnerItem name="150 MHz" value="25"/> 
 			<spinnerItem name="100 MHz" value="26"/> 
-		</spinner>
+		</spinner-->
 
 		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800MHz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800MHz, second core will be DISABLED! (Default: 20)" 
 			name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
@@ -158,13 +158,13 @@
 		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1175 mV)"
 			name="CPU Voltage 1000 MHz" action="cpu-voltage 9" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
 
-		<seekBar description="CPU Voltage for 952 MHz. (Default: 1175 mV)"
+		<seekBar description="CPU Voltage for 952 MHz. (Default: 1150 mV)"
 			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
 
-		<seekBar description="CPU Voltage for 900 MHz. (Default: 1150 mV)"
+		<seekBar description="CPU Voltage for 900 MHz. (Default: 1125 mV)"
 			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
 
-		<seekBar description="CPU Voltage for 852 MHz. (Default: 1125 mV)"
+		<seekBar description="CPU Voltage for 852 MHz. (Default: 1100 mV)"
 			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
 
 		<seekBar description="CPU Voltage for 800 MHz. (Default: 1075 mV)"
@@ -173,7 +173,7 @@
 		<seekBar description="CPU Voltage for 750 MHz. (Default: 1050 mV)"
 			name="CPU Voltage 750 MHz" action="cpu-voltage 14" unit="mV" min="950" reversed="false" step="25" max="1150"/>
 
-		<seekBar description="CPU Voltage for 700 MHz. (Default: 1025 mV)"
+		<seekBar description="CPU Voltage for 700 MHz. (Default: 1050 mV)"
 			name="CPU Voltage 700MHz" action="cpu-voltage 15" unit="mV" min="925" reversed="false" step="25" max="1125"/>
 
 		<seekBar description="CPU Voltage for 650 MHz. (Default: 1025 mV)"
@@ -185,7 +185,7 @@
 		<seekBar description="CPU Voltage for 550 MHz. (Default: 1000 mV)"
 			name="CPU Voltage 550 MHz" action="cpu-voltage 18" unit="mV" min="900" reversed="false" step="25" max="1100"/>
 
-		<seekBar description="CPU Voltage for 500 MHz. (Default: 1000 mV)"
+		<seekBar description="CPU Voltage for 500 MHz. (Default: 975 mV)"
 			name="CPU Voltage 500 MHz" action="cpu-voltage 19" unit="mV" min="900" reversed="false" step="25" max="1100"/>
 
 		<seekBar description="CPU Voltage for 450 MHz. (Default: 975 mV)"
