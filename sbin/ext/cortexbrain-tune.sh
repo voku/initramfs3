@@ -449,6 +449,11 @@ CPU_GOV_TWEAKS()
 			echo "20" > $up_threshold_min_freq_tmp;
 			echo "100" > $freq_step_tmp;
 			echo "800000" > $freq_responsiveness_tmp;
+			echo "50000" > $sampling_rate_tmp;
+			echo "40000" > $trans_latency_one_core_tmp;
+			echo "40000" > $trans_latency_two_cores_tmp;
+			echo "800000" > $freq_cpu1on_tmp;
+			echo "400000" > $freq_cpu1off_tmp;
 		# sleep-settings
 		elif [ "${state}" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
@@ -488,6 +493,7 @@ CPU_GOV_TWEAKS()
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock_sleep" > $min_cpu_lock_tmp;
 			echo "$hotplug_lock_sleep" > $hotplug_lock_tmp;
+			echo "$screen_off_min_step" > $screen_off_min_step_tmp;
 			echo "$freq_cpu1on_sleep" > $freq_cpu1on_tmp;
 			echo "$freq_cpu1off_sleep" > $freq_cpu1off_tmp;
 			echo "$trans_load_h0_scroff" > $trans_load_h0_scroff_tmp;
@@ -530,7 +536,6 @@ CPU_GOV_TWEAKS()
 			echo "$pump_down_step" > $pump_down_step_tmp;
 			echo "$check_rate" > $check_rate_tmp;
 			echo "$check_rate_cpuon" > $check_rate_cpuon_tmp;
-			echo "$screen_off_min_step" > $screen_off_min_step_tmp;
 			echo "0" > $max_cpu_lock_tmp;
 			echo "0" > $dvfs_debug_tmp;
 			echo "$hotplug_lock" > $min_cpu_lock_tmp;
