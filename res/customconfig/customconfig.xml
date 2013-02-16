@@ -450,10 +450,10 @@
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
 			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
-		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when one core is online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 60000)"
+		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when one core is online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 70000)"
 			name="trans_latency_one_core_sleep" action="generic_cortex /tmp/trans_latency_one_core_sleep" unit="nS" min="10000" reversed="false" step="1000" max="150000"/>
 
-		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when two cores are online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 60000)"
+		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when two cores are online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 70000)"
 			name="trans_latency_two_cores_sleep" action="generic_cortex /tmp/trans_latency_two_cores_sleep" unit="nS" min="10000" reversed="false" step="1000" max="150000"/>
 
 		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
