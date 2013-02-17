@@ -42,6 +42,7 @@ JBSAMMY=0;
 [ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
 [ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
 [ "`$BB grep -i ro.build.PDA=I9100XWLSD /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100JHLS4 /system/build.prop`" ] && JBSAMMY=1;
 
 if [ "$JBSAMMY" == "1" ]; then
 	$BB mount -o remount,rw /system;

@@ -1,9 +1,12 @@
 #!/sbin/busybox sh
 
+BB=/sbin/busybox
+
 JBSAMMY=0;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
-[ "`/sbin/busybox grep -i ro.build.PDA=I9100XWLSD /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100XWLSD /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100JHLS4 /system/build.prop`" ] && JBSAMMY=1;
 
 if [ "$JBSAMMY" == 1 ]; then
 
