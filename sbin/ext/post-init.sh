@@ -9,6 +9,9 @@ $BB sh /sbin/ext/system_tune_on_init.sh;
 echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
+# set default JB mmap_min_addr value
+echo "32768" > /proc/sys/vm/mmap_min_addr;
+
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;

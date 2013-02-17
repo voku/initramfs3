@@ -84,8 +84,6 @@ NOBOOTLOGO=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
-sync;
-$BB umount -l /mnt/tmp;
 
 if [ "$SECONDROM" == "0" ]; then
 	if [ "$NOBOOTLOGO" == "0" ]; then
@@ -134,14 +132,25 @@ else
 	ln -s /dev/block/mmcblk0p7 /res/dev/cache;
 fi;
 
+# mounting system!
+$BB mount -t ext4 /res/dev/system /system;
+
+# fixing second rom partitions
+if [ "$SECONDROM" == "1" ]; then
+	if [ -e /mnt/tmp/.secondrom/data.img ]; then
+		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/data.img" > /fix_data_log;
+		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/cache.img" > /fix_cache_log;
+	fi;
+fi;
+
+sync;
+# umount /dev/block/mmcblk0p11 internal sdcard
+$BB umount -l /mnt/tmp;
+
 SECROM_FUNCTION_AOSP()
 {
 	# init.rc style JB/CM/AOKP
 	if [ "$SECONDROM" == "1" ]; then
-		if [ -e /mnt/.secondrom/.secondrom/data.img ]; then
-			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/data.img" > /fix_data_log;
-			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/cache.img" > /fix_cache_log;
-		fi;
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		$BB rm /init.rc.2;
 	else
@@ -154,10 +163,6 @@ SECROM_FUNCTION_SAMMY()
 {
 	# init.rc style SAMMY ICS
 	if [ "$SECONDROM" == "1" ]; then
-		if [ -e /mnt/.secondrom/.secondrom/data.img ]; then
-			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/data.img" > /fix_data_log;
-			$BB sh -c "/sbin/e2fsck -p /mnt/.secondrom/.secondrom/cache.img" > /fix_cache_log;
-		fi;
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		$BB mv /init.rc.2 /init.rc
 	else
@@ -165,9 +170,6 @@ SECROM_FUNCTION_SAMMY()
 		$BB rm /init.rc.2;
 	fi;
 }
-
-# mounting system!
-$BB mount -t ext4 /res/dev/system /system;
 
 # linking /system/bin to /bin for crond
 ln -s /system/bin/ /bin
