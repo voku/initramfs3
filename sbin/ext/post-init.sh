@@ -169,7 +169,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	echo "booting" > /data/.siyah/booting;
 	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 	pkill -f "com.gokhanmoral.stweaks.app";
-	$BB sh /res/uci.sh restore;
+	nohup $BB sh /res/uci.sh restore;
 	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location

@@ -14,6 +14,9 @@ read_defaults;
 # read the config from the active profile
 read_config;
 
+UCI_PID=`pgrep "uci.sh"`;
+renice -n 15 -p $UCI_PID;
+
 case "${1}" in
 	rename)
     	rename_profile "${2}" "${3}";
