@@ -103,7 +103,7 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/ump/parameters/ump_debug_level;
 	echo "0" > /sys/module/mali/parameters/mali_debug_level;
 	echo "0" > /sys/module/kernel/parameters/initcall_debug;
-	echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+#	echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
 	echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
 	echo "0" > /sys/module/alarm/parameters/debug_mask;
 	echo "0" > /sys/module/alarm_dev/parameters/debug_mask;

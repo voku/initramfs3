@@ -31,23 +31,6 @@
 			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
-		<!--spinner description="This sets the smooth scaling level which prevents Ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of Ondemand, HYPER, Sleepy, Scary and PegasusQ, Nightmare governors (default is Disabled, let gov to do the calculation)." 
-			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
-			<spinnerItem name="Disabled" value="0"/> 
-			<spinnerItem name="1200 MHz" value="4"/> 
-			<spinnerItem name="1000 MHz" value="8"/> 
-			<spinnerItem name="800 MHz" value="12"/> 
-			<spinnerItem name="500 MHz" value="18"/> 
-			<spinnerItem name="450 MHz" value="19"/> 
-			<spinnerItem name="400 MHz" value="20"/> 
-			<spinnerItem name="350 MHz" value="21"/> 
-			<spinnerItem name="300 MHz" value="22"/> 
-			<spinnerItem name="250 MHz" value="23"/> 
-			<spinnerItem name="200 MHz" value="24"/> 
-			<spinnerItem name="150 MHz" value="25"/> 
-			<spinnerItem name="100 MHz" value="26"/> 
-		</spinner-->
-
 		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800MHz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800MHz, second core will be DISABLED! (Default: 20)" 
 			name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
 
@@ -227,19 +210,12 @@
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
-			<spinnerItem name="nightmare" value="nightmare"/>
+			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
-
-		<!--spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ)" 
-			name="Hotplug CPU Lock" action="generic_cortex /tmp/hotplug_lock">
-			<spinnerItem name="Dual core mode" value="2"/> 
-			<spinnerItem name="Single core mode" value="1"/> 
-			<spinnerItem name="Auto" value="0"/> 
-		</spinner-->
 
 		<button description="Use this button to push all new changes to GOV core in real time! the sleep tuning will be auto added on screen off, to screen off gov." name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
 
@@ -317,9 +293,6 @@
 		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 20)"
 			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit="%" min="1" reversed="false" step="1" max="100"/-->
-
 		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (default is 20)"
 			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit="%" min="1" reversed="false" step="1" max="100"/>
 
@@ -340,9 +313,6 @@
 
 	<settingsPane description="LulzActiveQ Gov Configuration, see descriptions" name="LULZACTIVEQ GOV CONFIGURATON">
 
-		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
-			name="hotplug_sampling_rate" action="generic_cortex /tmp/hotplug_sampling_rate" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
-
 		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 40000)"
 			name="up_sample_time" action="generic_cortex /tmp/up_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
@@ -355,29 +325,10 @@
 		<seekBar description="No of scale down steps when load less than dec_cpu_load. (Only for lulzActiveQ) (default is 1)"
 			name="pump_down_step" action="generic_cortex /tmp/pump_down_step" unit="step" min="0" reversed="false" step="1" max="16"/>
 
-		<seekBar description="Steps in frequency table to be used when screen-off. Example: If available freqs are 1600 1400 1200 1000 800 500 200 100 (L0 to L7) and screen_off_min_step=5 then 100,200 and 500 (L5 to L7) will be used during screen-off depending on the demand. (Only for lulzActiveQ) (default is 11)"
-			name="screen_off_min_step" action="generic_cortex /tmp/screen_off_min_step" unit="step" min="1" reversed="false" step="1" max="30"/>
-
 		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 1200000)"
 			name="hispeed_freq" action="genericfreq /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 	</settingsPane>
-
-	<!--settingsPane description="HotPlug CPU Configuration, see descriptions" name="HOTPLUG GOV CONFIGURATON">
-
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ) (default is 500000)"
-			name="hotplug_freq_1_1" action="genericfreq /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ) (default is 200000)"
-			name="hotplug_freq_2_0" action="genericfreq /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_1_1" action="generic_cortex /tmp/hotplug_rq_1_1" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_2_0" action="generic_cortex /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-	</settingsPane-->
 
 </settingsTab>
 
@@ -392,19 +343,12 @@
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
-			<spinnerItem name="nightmare" value="nightmare"/>
+			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
-
-		<!--spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
-			name="Hotplug CPU Lock Sleep Mode" action="generic_cortex /tmp/hotplug_lock_sleep">
-			<spinnerItem name="Dual core mode" value="2"/> 
-			<spinnerItem name="Single core mode" value="1"/> 
-			<spinnerItem name="Auto" value="0"/> 
-		</spinner-->
 
 	</settingsPane>
 
@@ -480,9 +424,6 @@
 		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 20)"
 			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
-			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/-->
-
 		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 20)"
 			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
 
@@ -503,9 +444,6 @@
 
 	<settingsPane description="LulzActiveQ Gov Configuration, see descriptions" name="LULZACTIVEQ GOV CONFIGURATON">
 
-		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
-			name="hotplug_sampling_rate_sleep" action="generic_cortex /tmp/hotplug_sampling_rate_sleep" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
-
 		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 60000)"
 			name="up_sample_time_sleep" action="generic_cortex /tmp/up_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
 
@@ -525,22 +463,6 @@
 			name="hispeed_freq_sleep" action="genericfreq /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
 
 	</settingsPane>
-
-	<!--settingsPane description="HotPlug CPU Configuration, see descriptions" name="HOTPLUG GOV CONFIGURATON">
-
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ) (default is 500000)"
-			name="hotplug_freq_1_1_sleep" action="genericfreq /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ) (default is 200000)"
-			name="hotplug_freq_2_0_sleep" action="genericfreq /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_1_1_sleep" action="generic_cortex /tmp/hotplug_rq_1_1_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_2_0_sleep" action="generic_cortex /tmp/hotplug_rq_2_0_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-	</settingsPane-->
 
 </settingsTab>
 
@@ -572,7 +494,7 @@
 		</spinner>
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. (Default: NOOP)"
-			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
+			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic_cortex /tmp/sleep_scheduler">
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="CFQ" value="cfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
@@ -629,17 +551,17 @@
 
 		<spinner description="If you have enabled swap, then the higher a number set here, the more the system will swap. (Default: 0)"
 			name="swappiness" action="generic /proc/sys/vm/swappiness">
-			<spinnerItem name="0" value="0"/>
-			<spinnerItem name="10" value="10"/>                                                                                               		
-			<spinnerItem name="20" value="20"/>
-			<spinnerItem name="30" value="30"/>
-			<spinnerItem name="40" value="40"/>
-			<spinnerItem name="50" value="50"/>
-			<spinnerItem name="60" value="60"/>
-			<spinnerItem name="70" value="70"/>
-			<spinnerItem name="80" value="80"/>
-			<spinnerItem name="90" value="90"/>
-			<spinnerItem name="100" value="100"/>
+			<spinnerItem name="0" value="0"/> 
+			<spinnerItem name="10" value="10"/> 
+			<spinnerItem name="20" value="20"/> 
+			<spinnerItem name="30" value="30"/> 
+			<spinnerItem name="40" value="40"/> 
+			<spinnerItem name="50" value="50"/> 
+			<spinnerItem name="60" value="60"/> 
+			<spinnerItem name="70" value="70"/> 
+			<spinnerItem name="80" value="80"/> 
+			<spinnerItem name="90" value="90"/> 
+			<spinnerItem name="100" value="100"/> 
 		</spinner>
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
@@ -923,9 +845,9 @@
 
 		<spinner description="This setting will set led behavior for BLN." 
 			name="BLN Effect" action="bln_switch">
-			<spinnerItem name="Steady" value="0"/>
-			<spinnerItem name="Breathing" value="1"/>
-			<spinnerItem name="Blinking" value="2"/>
+			<spinnerItem name="Steady" value="0"/> 
+			<spinnerItem name="Breathing" value="1"/> 
+			<spinnerItem name="Blinking" value="2"/> 
 		</spinner>
 
 		<spinner description="Notification timeout" 
@@ -1073,9 +995,9 @@
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or MTP." 
 			name="USB mass storage mode" action="usb-mode">
-			<spinnerItem name="Default" value="default"/>
-			<spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/>
-			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
+			<spinnerItem name="Default" value="default"/> 
+			<spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/> 
+			<spinnerItem name="Force MTP Mode" value="mtp-adb"/> 
 		</spinner>
 
 		<checkbox description="If checked, Mass-Storage-SDCARDS will be auto-mounted when USB connected. then you can transfer files on high speed from PC to device. (Default: On)"
@@ -1178,9 +1100,6 @@
 		<seekBar description="Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if 'Auto-Wifi' is Enabled! (dynamic by cortex)." 
 			name="WIFI Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi_sleep_delay"
 			unit="sec" min="0" reversed="false" step="30" max="300"/>
-
-                <!--checkbox description="Here you can allow WIFI to use LOW PWR when Screen is turned OFF. When screen is back ON, WIFI turns back to high PWR). If not set, WIFI uses HIGH PWR and get fast WIFI transfers on screen OFF"
-                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
 
 		<checkbox description="Enable or Disable 'ICMP only Firewall-Tweaks' (reboot needed)."
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
