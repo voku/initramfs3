@@ -178,6 +178,9 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	$BB rm -f /data/.siyah/booting;
 
+	# update cpu tunig after profiles load
+	$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
+
 	# Temp fix for sound bug at JB Sammy ROMS.
 	JB_ROM=`cat /tmp/jbsammy_installed`;
 	if [ "$JB_ROM" == "1" ]; then

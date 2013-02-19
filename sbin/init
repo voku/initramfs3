@@ -214,6 +214,10 @@ $BB chmod 666 /tmp/jbsammy_installed;
 [ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
 [ "`$BB grep -i ro.build.PDA=I9100XWLSD /system/build.prop`" ] && JBSAMMY=1;
 [ "`$BB grep -i ro.build.PDA=I9100JHLS4 /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100XXMS1 /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100ZCLSF /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100ZCLSH /system/build.prop`" ] && JBSAMMY=1;
+
 
 B2G=`$BB ls /system/b2g | wc -l`;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
