@@ -3,5 +3,6 @@
 /sbin/busybox rm /init
 /sbin/busybox mv /boot /init
 cd /
+sync
 exec /init
 
