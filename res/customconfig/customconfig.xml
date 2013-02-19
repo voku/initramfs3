@@ -903,13 +903,6 @@
 
 <settingsTab name="Other">
 
-	<settingsPane description="Here you can restore Home Key configuration before installing any other JB Sammy Kernel, you must push this button or Home Key will not work with other kernel."
-			name="Home Key Restore to JB Sammy default">
-
-		<button description="Before installing any other JB SAMMY 'LEAK' kernel, use this to restore Home Key, if you will reboot again with my kernel, you will have to push button again, to restore the key before installing different JB SAMMY kernel, if you stay with my kernel, ignore this button!" name="Restore home key for other kernels" action="push-actions/home_key_restore" label="Restore Home Key NOW"/>
-
-	</settingsPane>
-
 	<settingsPane description="Here you can activate some script, which will automatically run in the background, at a specified time." name="cron">
 
 		<spinner description="Main switch for Cron Tasker. If you set this to OFF, then all tasks below have no effect!" 
