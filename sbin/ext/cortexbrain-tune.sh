@@ -973,7 +973,7 @@ KERNEL_SCHED()
 		echo "100000" > /proc/sys/kernel/sched_min_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	elif [ "${state}" == "sleep" ]; then
-		echo "500000" > /proc/sys/kernel/sched_latency_ns;
+		echo "5000000" > /proc/sys/kernel/sched_latency_ns;
 		echo "100000" > /proc/sys/kernel/sched_min_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	fi;
