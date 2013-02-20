@@ -854,6 +854,7 @@ DELAY()
 			sleep $wakeup_delay;
 		fi;
 	fi;
+	log -p i -t $FILE_NAME "*** NO DELAY ***";
 }
 
 MALI_TIMEOUT()

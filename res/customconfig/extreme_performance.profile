@@ -1,5 +1,5 @@
 boot_boost=1500000
-booster_sleep_max=90
+wakeup_boost=6
 scaling_max_freq=1200000
 scaling_max_freq_oc=1500000
 scaling_min_freq=200000
@@ -19,7 +19,6 @@ scaling_max_suspend_freq=600000
 scaling_min_suspend_freq=200000
 standby_freq=200000
 wakeup_delay=0
-wakeup_boost=6
 cpu_voltage_switch=off
 CPUVOLT1=1450
 CPUVOLT2=1400

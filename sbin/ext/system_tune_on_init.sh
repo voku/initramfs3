@@ -12,7 +12,7 @@ for m in $($BB mount | grep ext[3-4] | cut -d " " -f3); do
 done;
 
 $BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /cache;
-$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /data;
+$BB mount -o remount,rw,nosuid,nodev,discard /data;
 $BB mount -o remount,rw /system;
 
 $BB mount -t rootfs -o remount,rw rootfs;
@@ -27,7 +27,6 @@ $BB chown -R drm:drm /data/tombstones;
 
 # critical Permissions fix
 $BB chmod -R 0777 /dev/cpuctl/;
-$BB chmod -R 0766 /data/anr/;
 $BB chmod -R 0777 /data/system/inputmethod/;
 $BB chmod -R 0777 /sys/devices/system/cpu/;
 $BB chown -R root:system /sys/devices/system/cpu/;
@@ -40,8 +39,9 @@ JBSAMMY=0;
 CM_AOKP_10_JB=0;
 
 [ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
-[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
+if [ `cat /tmp/sammy_rom` == "1" ]; then
+	JBSAMMY=1;
+fi;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
 CM_AOKP_10_JB=`$BB ls /system/bin/wfd | wc -l`;
 
@@ -81,6 +81,8 @@ sync;
 $BB umount -l /mnt/tmp;
 
 # Start ROM VM boot!
-sync;
 start;
+
+# start adb shell
+start adbd;
 

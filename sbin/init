@@ -207,6 +207,8 @@ JBSAMMY=0;
 CM_AOKP_10_JB=0;
 $BB echo "0" > /tmp/jbsammy_installed;
 $BB chmod 666 /tmp/jbsammy_installed;
+$BB echo "0" > /tmp/sammy_rom;
+$BB chmod 666 /tmp/sammy_rom;
 
 [ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ "`$BB grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
@@ -335,14 +337,10 @@ USER_ACTIONS()
 			if [ "$CM_AOKP_10_JB" == "1" ] || [ "$JELLY" == "1" ]; then
 				$BB cp -a /sbin/adbd.cm10-1 /sbin/adbd;
 				$BB chmod 755 /sbin/adbd;
-				start adbd;
-			else
-				start adbd;
 			fi;
 		else
 			$BB cp -a /sbin/adbd.jb /sbin/adbd;
 			$BB chmod 755 /sbin/adbd;
-			start adbd;
 		fi;
 	fi;
 
@@ -354,7 +352,7 @@ USER_ACTIONS()
 		mkdir /sdcardtmp;
 		$BB chmod 777 /sdcardtmp;
 		$BB mount -t vfat /dev/block/mmcblk0p11 /sdcardtmp;
-		$BB rm /system/run_fix_media;
+		$BB rm -f /system/run_fix_media;
 
 		if [ -e /sdcard/Android/data/ ]; then
 			$BB rm -rf /sdcardtmp/Android/data/com.cooliris.media;
@@ -421,7 +419,10 @@ elif [ "$JBSAMMY" == "1" ]; then
 	$BB cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
 	$BB cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
-	echo "1" > /tmp/jbsammy_installed;
+	$BB echo "1" > /tmp/jbsammy_installed; # for post-init.sh
+	# for system_tune_on_init.sh and for res/crontab_service/service.sh
+	$BB echo "1" > /tmp/sammy_rom;
+	setprop debug.sf.hw 1
 
 	GPIO_KEYS=/system/usr/keylayout/gpio-keys.kl
 	if [ -e $GPIO_KEYS ]; then
@@ -441,6 +442,7 @@ elif [ "$CM_AOKP_10_JB" == "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
 	echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
+	setprop debug.sf.hw 1
 
 	SECROM_FUNCTION_AOSP;
 

@@ -5,10 +5,6 @@ BB=/sbin/busybox
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
-# boot booster start
-echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-echo "1200000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-
 # set default JB mmap_min_addr value
 echo "32768" > /proc/sys/vm/mmap_min_addr;
 
@@ -40,6 +36,12 @@ fi;
 
 $BB chmod -R 0777 /data/.siyah/;
 
+# for dev testing
+PROFILES=`$BB ls -A1 /data/.siyah/*.profile`;
+for p in $PROFILES; do
+cp $p $p.test;
+done;
+
 . /res/customconfig/customconfig-helper;
 read_defaults;
 read_config;
@@ -47,8 +49,6 @@ read_config;
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-echo "0" > /tmp/uci_done;
-chmod 666 /tmp/uci_done;
 
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
@@ -77,8 +77,15 @@ $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 $BB ln -s /sys/devices/system/cpu/cpu0/cpufreq /cpufreq;
 $BB ln -s /sys/devices/system/cpu/cpufreq/ /cpugov;
 
-# Cortex parent should be ROOT/INIT and not STweaks
-nohup /sbin/ext/cortexbrain-tune.sh; 
+# enable kmem interface for everyone by GM
+echo "0" > /proc/sys/kernel/kptr_restrict;
+
+# Cortex parent should be ROOT/INIT and not STweaks, and set root access to script.
+$BB chmod 6755 /sbin/ext/cortexbrain-tune.sh;
+nohup /sbin/ext/cortexbrain-tune.sh;
+
+# enable screen color mode
+echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 
 # create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then
@@ -104,6 +111,7 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/mali/parameters/mali_debug_level;
 	echo "0" > /sys/module/kernel/parameters/initcall_debug;
 #	echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+	echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 	echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
 	echo "0" > /sys/module/alarm/parameters/debug_mask;
 	echo "0" > /sys/module/alarm_dev/parameters/debug_mask;
@@ -120,9 +128,7 @@ $BB chmod -R 755 /lib;
 	sleep 30;
 	# order of modules load is important.
 	$BB insmod /lib/modules/j4fs.ko;
-
-	sleep 5;
-	mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
+	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 	$BB insmod /lib/modules/Si4709_driver.ko;
 	$BB insmod /lib/modules/usbserial.ko;
 	$BB insmod /lib/modules/ftdi_sio.ko;
@@ -131,9 +137,6 @@ $BB chmod -R 755 /lib;
 	$BB insmod /lib/modules/asix.ko;
 	$BB insmod /lib/modules/cifs.ko;
 )&
-
-# disable cpuidle log
-echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en;
 
 # for ntfs automounting
 mkdir /mnt/ntfs;
@@ -151,76 +154,68 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
-# enable kmem interface for everyone by GM
-echo "0" > /proc/sys/kernel/kptr_restrict;
-
 (
-	# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
-	$BB mount -o remount,rw rootfs;
-	$BB chown -R root:system /res/customconfig/actions/;
-	$BB chmod 6755 /res/customconfig/actions/*;
-	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
-	$BB chmod 6755 /res/no-push-on-boot/*;
-
-	# set root access script.
-	$BB chmod 6755 /sbin/ext/cortexbrain-tune.sh;
-
-	# apply STweaks settings
-	echo "booting" > /data/.siyah/booting;
-	echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
-	pkill -f "com.gokhanmoral.stweaks.app";
-	nohup $BB sh /res/uci.sh restore;
-	echo "1" > /tmp/uci_done;
-
-	# restore all the PUSH Button Actions back to there location
-	$BB mount -o remount,rw rootfs;
-	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-	pkill -f "com.gokhanmoral.stweaks.app";
-	$BB rm -f /data/.siyah/booting;
-
-	# update cpu tunig after profiles load
-	$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
-
-	# Temp fix for sound bug at JB Sammy ROMS.
-	JB_ROM=`cat /tmp/jbsammy_installed`;
-	if [ "$JB_ROM" == "1" ]; then
-		$BB sh /res/uci.sh generic /sys/module/cpuidle_exynos4/parameters/enable_mask 1;
-		$BB sh /res/uci.sh generic_cortex /tmp/enable_mask_sleep 1;
-	fi;
-	echo "0" > /tmp/jbsammy_installed;
-
-	# change USB mode MTP or Mass Storage
-	$BB sh /res/uci.sh usb-mode ${usb_mode};
-
-	# custom boot booster stage 3 normalize
-	if [ "$booster_sleep_max" != "0" ]; then
-		sleep $booster_sleep_max;
-	fi;
-
-	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	if [ "$scaling_max_freq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
-		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	else
-		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	fi;
-)&
-
-(
-	# custom boot booster stage 2
+	echo 0 > /tmp/uci_done;
+	chmod 666 /tmp/uci_done;
+	# custom boot booster
 	while [ "`cat /tmp/uci_done`" != "1" ]; do
 		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
-		sleep 10;
-	done;
+		sleep 20;
+        done;
 )&
+
+
+# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
+$BB mount -o remount,rw rootfs;
+$BB chown -R root:system /res/customconfig/actions/;
+$BB chmod -R 6755 /res/customconfig/actions/;
+$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+$BB chmod 6755 /res/no-push-on-boot/*;
+
+# apply STweaks settings
+echo "booting" > /data/.siyah/booting;
+chmod 777 /data/.siyah/booting;
+pkill -f "com.gokhanmoral.stweaks.app";
+nohup $BB sh /res/uci.sh restore;
+echo "1" > /tmp/uci_done;
+
+# restore all the PUSH Button Actions back to there location
+$BB mount -o remount,rw rootfs;
+$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
+pkill -f "com.gokhanmoral.stweaks.app";
+$BB rm -f /data/.siyah/booting;
+
+# update cpu tunig after profiles load
+$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
+
+# Temp fix for sound bug at JB Sammy ROMS.
+JB_ROM=`cat /tmp/jbsammy_installed`;
+if [ "$JB_ROM" == "1" ]; then
+	$BB sh /res/uci.sh generic /sys/module/cpuidle_exynos4/parameters/enable_mask 1;
+	$BB sh /res/uci.sh generic_cortex /tmp/enable_mask_sleep 1;
+fi;
+echo "0" > /tmp/jbsammy_installed;
+
+# change USB mode MTP or Mass Storage
+$BB sh /res/uci.sh usb-mode ${usb_mode};
+
+echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+if [ "$scaling_max_freq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
+	echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+else
+	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+fi;
 
 (
 	# ###############################################################
 	# JB Low Sound Fix.
 	# ###############################################################
 
-	sleep 50;
+	sleep 20;
+
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
 	MIUI_JB=0;
 	JELLY=0;
@@ -240,15 +235,9 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 )&
 
 (
-	while [ "`cat /proc/loadavg | cut -c1`" -ge "3" ]; do
-		echo "Waiting For CPU to cool down";
-		sleep 30;
-	done;
-
 	PIDOFACORE=`pgrep -f "android.process.acore"`;
 	for i in $PIDOFACORE; do
 		echo "-800" > /proc/${i}/oom_score_adj;
-		renice -15 -p $i;
 		log -p i -t boot "*** do not kill -> android.process.acore ***";
 	done;
 
