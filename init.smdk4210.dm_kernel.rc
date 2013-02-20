@@ -9,7 +9,7 @@ on boot
 on fs
 
 # Tweaks For ROM
-    setprop ro.telephony.call_ring.delay 0
+    setprop ro.telephony.call_ring.delay 800
     setprop dalvik.vm.execution-mode int:jit
     setprop persist.adb.notify 0
     setprop pm.sleep_mode 1
@@ -32,7 +32,7 @@ on fs
     setprop ro.ril.hsdpa.category 10
     setprop ro.ril.enable.a53 1
     setprop ro.ril.hsupa.category 5
-    setprop ro.ril.disable.power.collapse 0
+    setprop ro.ril.disable.power.collapse 1
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
