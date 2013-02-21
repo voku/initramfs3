@@ -1122,6 +1122,23 @@
 
 </settingsTab>
 
+<settingsTab name="MODULES">
+
+	<settingsPane description="Here you can load on boot, kernel modules, that will allow some extra functions." name="Kernel Modules">
+
+		<checkbox description="Enable or Disable Usb to Serial Modules, this will allow you to use usb to serial adapter to connect to ROUTERS and SWITCHES via console port. effect only after reboot!"
+			name="USB to Serial" action="generic_cortex /tmp/usbserial_module" label="Usb to Serial Modules"/>
+
+		<checkbox description="Enable or Disable Usb to Network Module, this will allow to use, limited number of usb to network card adapters, no support, and no info, if will work, effect only after reboot!"
+			name="USB to NetStick" action="generic_cortex /tmp/usbnet_module" label="USB to Net Stick"/>
+
+		<checkbox description="Enable or Disable CIFS Module, will allow to use apps that can mount internal storage and publish over network, user can access data/system over network, no support, effect only after reboot!"
+			name="CIFS Module" action="generic_cortex /tmp/cifs_module" label="CIFS Module"/>
+
+	</settingsPane>
+
+</settingsTab>
+
 <settingsTab name="PROFILES">
 
 	<settingsPane description="You can check what profile is used right now." name="Online Profile">

@@ -130,12 +130,19 @@ $BB chmod -R 755 /lib;
 	$BB insmod /lib/modules/j4fs.ko;
 	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 	$BB insmod /lib/modules/Si4709_driver.ko;
-	$BB insmod /lib/modules/usbserial.ko;
-	$BB insmod /lib/modules/ftdi_sio.ko;
-	$BB insmod /lib/modules/pl2303.ko;
-	$BB insmod /lib/modules/usbnet.ko;
-	$BB insmod /lib/modules/asix.ko;
-	$BB insmod /lib/modules/cifs.ko;
+
+	if [ "$usbserial_module" == "on" ]; then
+		$BB insmod /lib/modules/usbserial.ko;
+		$BB insmod /lib/modules/ftdi_sio.ko;
+		$BB insmod /lib/modules/pl2303.ko;
+	fi;
+	if [ "$usbnet_module" == "on" ]; then
+		$BB insmod /lib/modules/usbnet.ko;
+		$BB insmod /lib/modules/asix.ko;
+	fi;
+	if [ "$cifs_module" == "on" ]; then
+		$BB insmod /lib/modules/cifs.ko;
+	fi;
 )&
 
 # for ntfs automounting
