@@ -152,6 +152,19 @@ case "${debug_to_sd}" in
 			cat /proc/partitions >> $DEBUG_FILE;
 			SEPARATOR;
 
+			# Partitions status
+			echo "DATA Partition" >> $DEBUG_FILE;
+			/sbin/tune2fs -l /res/dev/data | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
+			echo "SYSTEM Partition" >> $DEBUG_FILE;
+			/sbin/tune2fs -l /res/dev/system | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
+			echo "CACHE Partition" >> $DEBUG_FILE;
+			/sbin/tune2fs -l /res/dev/cache | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
+			echo "EFS Partition" >> $DEBUG_FILE;
+			/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
+			echo "Preloaded Partition" >> $DEBUG_FILE;
+			/sbin/tune2fs -l /dev/block/mmcblk0p12 | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
+			SEPARATOR;
+
 			# System
 			echo "System-Info:" >> $DEBUG_FILE;
 			echo "sysctl:" >> $DEBUG_FILE;

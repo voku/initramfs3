@@ -1207,6 +1207,13 @@
 
 	</settingsPane>
 
+	<settingsPane description="Show Storage status, you can see if you have errors in system/data/cache/efs/preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." 
+		name="Partitions Scan">
+
+		<button description="Use this to check your data/system/cache/efs/preloaded for errors, this will not FIX any errors, just check!, to fix, backup your files with some backups app, then push the data/cache fix button located at OTHER TAB, use it in your own risk!, some data will be lost! you will need to restore broken apps + data, in case of boot loop, then reinstall ROM, if still stuck on boot, wipe and install again! it's BEST to have clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
+
+	</settingsPane>
+
 </settingsTab>
 
 <settingsTab name="KERNEL-UPDATE">

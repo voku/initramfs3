@@ -57,7 +57,7 @@ mkdir /secondrom_system
 echo "75" > /sys/vibrator/pwm_val
 echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey
 
-if $BB [ -f /cache/recovery/command ]; then
+if [ -f /cache/recovery/command ]; then
 	$BB cp /res/keys-samsung /res/keys
 	recovery-samsung
 else
