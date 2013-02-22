@@ -890,7 +890,7 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
-		if [ "$scaling_max_freq" == 1200000 ] && [ "$scaling_max_freq_oc" -ge 1200000 ]; then
+		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		elif [ "$scaling_max_freq" -ge 1000000 ]; then
@@ -1105,7 +1105,7 @@ AWAKE_MODE()
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 
-			if [ "$scaling_max_freq" == 1200000 ] && [ "$scaling_max_freq_oc" -ge 1200000 ]; then
+			if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
 				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 			else
