@@ -9,7 +9,7 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 	else
 		newfreq=$3;
-		if [ "$newfreq" == "850000" ] || [ "$newfreq" == "950000" ] || [ "$newfreq" == "1050000" ] || [ "$newfreq" == "1150000" ]; then
+		if [ "$newfreq" == "850000" ] || [ "$newfreq" == "950000" ]; then
 			newfreq=$(($newfreq + 2000));
 		fi;
 

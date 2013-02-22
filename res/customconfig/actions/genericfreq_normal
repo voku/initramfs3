@@ -12,7 +12,7 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 	else
 		newfreq=$3;
-		if [ "$newfreq" == "850000" ] || [ "$newfreq" == "950000" ] || [ "$newfreq" == "1050000" ] || [ "$newfreq" == "1150000" ]; then
+		if [ "$newfreq" == "850000" ] || [ "$newfreq" == "950000" ]; then
 			newfreq=$(($newfreq + 2000));
 		fi;
 		evalcmd='eval "$filename=$newfreq"';
@@ -21,7 +21,7 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 
 		if [ -f $2 ]; then
-			if [ "$newfreq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
+			if [ "$newfreq" == "1000000" ] && [ "$scaling_max_freq_oc" -ge "1000000" ]; then
 				echo "$scaling_max_freq_oc" > $2;
 			else
 				echo "$newfreq" > $2;

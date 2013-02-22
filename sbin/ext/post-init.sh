@@ -171,9 +171,16 @@ $BB sh /sbin/ext/properties.sh;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
 		sleep 20;
-        done;
-)&
+	done;
 
+	# restore normal freq.
+	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+	if [ "$scaling_max_freq" == "1000000" ] && [ "$scaling_max_freq_oc" -ge "1000000" ]; then
+		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	else
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	fi;
+)&
 
 # Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
 $BB mount -o remount,rw rootfs;
@@ -208,13 +215,6 @@ echo "0" > /tmp/jbsammy_installed;
 
 # change USB mode MTP or Mass Storage
 $BB sh /res/uci.sh usb-mode ${usb_mode};
-
-echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-if [ "$scaling_max_freq" == "1200000" ] && [ "$scaling_max_freq_oc" -ge "1200000" ]; then
-	echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-else
-	echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-fi;
 
 (
 	# ###############################################################
