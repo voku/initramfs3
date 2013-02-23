@@ -33,6 +33,10 @@ echo "1" > /tmp/sleeprun;
 echo "0" > /tmp/ksm;
 chmod 666 /tmp/*;
 
+# set initial vm.dirty vales
+echo "1000" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
+
 # check if dumpsys exist in ROM
 if [ -e /system/bin/dumpsys ]; then
 	DUMPSYS=1;
@@ -111,12 +115,12 @@ IO_TWEAKS()
 			echo "$cortexbrain_read_ahead_kb" > $i/read_ahead_kb;
 		done;
 
-		echo "20" > /proc/sys/fs/lease-break-time;
-		echo "524288" > /proc/sys/fs/file-max;
+		echo "10" > /proc/sys/fs/lease-break-time;
+		echo "84331" > /proc/sys/fs/file-max;
 		echo "1048576" > /proc/sys/fs/nr_open;
-		echo "32000" > /proc/sys/fs/inotify/max_queued_events;
-		echo "256" > /proc/sys/fs/inotify/max_user_instances;
-		echo "10240" > /proc/sys/fs/inotify/max_user_watches;
+		echo "16384" > /proc/sys/fs/inotify/max_queued_events;
+		echo "128" > /proc/sys/fs/inotify/max_user_instances;
+		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -132,14 +136,14 @@ KERNEL_TWEAKS()
 		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		echo "0" > /proc/sys/vm/panic_on_oom;
 		echo "30" > /proc/sys/kernel/panic;
-		echo "65536" > /proc/sys/kernel/msgmax;
-		echo "2048" > /proc/sys/kernel/msgmni;
-		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+		echo "8192" > /proc/sys/kernel/msgmax;
+		echo "1189" > /proc/sys/kernel/msgmni;
+		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
 		echo "500 512000 64 2048" > /proc/sys/kernel/sem;
-		echo "2097152" > /proc/sys/kernel/shmall;
-		echo "268435456" > /proc/sys/kernel/shmmax;
-		echo "524288" > /proc/sys/kernel/threads-max;
+		echo "524288" > /proc/sys/kernel/shmall;
+		echo "33554432" > /proc/sys/kernel/shmmax;
+		echo "13180" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	fi;
@@ -568,11 +572,12 @@ MEMORY_TWEAKS()
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "96 96" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		# must be set 8192 or more, mem stability critical value
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -598,13 +603,13 @@ TCP_TWEAKS()
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
 		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes;
 		echo "20" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
-		echo "524288" > /proc/sys/net/core/wmem_max;
-		echo "524288" > /proc/sys/net/core/rmem_max;
+		echo "1048576" > /proc/sys/net/core/wmem_max;
+		echo "1048576" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
 		echo "262144" > /proc/sys/net/core/wmem_default;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem;
+		echo "262144 524288 1048576" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "262144 524288 1048576" > /proc/sys/net/ipv4/tcp_rmem;
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
@@ -853,6 +858,7 @@ DELAY()
 			sleep $wakeup_delay;
 		fi;
 	fi;
+	log -p i -t $FILE_NAME "*** NO DELAY ***";
 }
 
 MALI_TIMEOUT()
@@ -884,7 +890,7 @@ MEGA_BOOST_CPU_TWEAKS()
 		echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
 
-		if [ "$scaling_max_freq" == 1200000 ] && [ "$scaling_max_freq_oc" -ge 1200000 ]; then
+		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		elif [ "$scaling_max_freq" -ge 1000000 ]; then
@@ -968,7 +974,7 @@ KERNEL_SCHED()
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	elif [ "${state}" == "sleep" ]; then
 		echo "5000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
+		echo "100000" > /proc/sys/kernel/sched_min_granularity_ns;
 		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
 	fi;
 	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
@@ -1099,7 +1105,7 @@ AWAKE_MODE()
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 
-			if [ "$scaling_max_freq" == 1200000 ] && [ "$scaling_max_freq_oc" -ge 1200000 ]; then
+			if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
 				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 			else

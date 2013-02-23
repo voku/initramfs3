@@ -9,15 +9,15 @@ BB=/sbin/busybox
 # protecting fuelgauge reset trigger.
 chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
 
-rm /emmc
+rm -rf /emmc
 mkdir /emmc
 chmod 777 /emmc
 
-rm /sdcard
+rm -rf /sdcard
 mkdir /sdcard
 chmod 777 /sdcard
 
-rm /etc
+rm -rf /etc
 mkdir /etc
 cat /res/etc/recovery.fstab > /etc/recovery.fstab
 
@@ -36,28 +36,7 @@ else
 	echo "efs OK" > /tmp/efs_check;
 fi;
 
-$BB mount -t ext4 /dev/block/mmcblk0p9 /system;
-
-JBSAMMY=0;
-[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLSD /system/build.prop`" ] && JBSAMMY=1;
-
-if [ "$JBSAMMY" == "1" ]; then
-	$BB mount -o remount,rw /system;
-	GPIO_KEYS=/system/usr/keylayout/gpio-keys.kl
-
-	if [ -e $GPIO_KEYS ]; then
-		if grep -q 102 $GPIO_KEYS; then
-			$BB sed -i 's/102/172/g' $GPIO_KEYS;
-		fi;
-		sync;
-	fi;
-fi;
-
-$BB umount -l /system;
-
-rm /cache
+rm -rf /cache
 mkdir /cache
 chmod 777 /cache
 mount -t ext4 /dev/block/mmcblk0p7 /cache
@@ -69,18 +48,20 @@ cd /
 mkdir -p /mnt/.secondrom
 mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
 mkdir /mnt/.secondrom/.secondrom
-rm /secondrom_cache
+rm -rf /secondrom_cache
 mkdir /secondrom_cache
 mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
 mkdir /secondrom_data
 mkdir /secondrom_system
 
 echo "75" > /sys/vibrator/pwm_val
+echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey
 
-if $BB [ -f /cache/recovery/command ]; then
+if [ -f /cache/recovery/command ]; then
 	$BB cp /res/keys-samsung /res/keys
 	recovery-samsung
 else
 	echo 1 > /sbin/recovery-is-running
 	recovery
 fi;
+

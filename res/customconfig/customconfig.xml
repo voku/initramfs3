@@ -7,46 +7,30 @@
 		<seekBar description="Boot booster frequency, CPU will hold single 'min/max' frequency when ROM booting, and keep it till booster delay timeout will be over, DEAR USER! if your CPU cant handle 1.5Ghz or 1.6Ghz, setting it here will STUCK/SOD your device on boot!, till you reset profiles via recovery! (default 1.200.000 kHz)"
 			name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Delay CPU frequency normalization to speed up ROM boot, then set 'min/max' according to user profile (defult 60sec)"
-			name="Delay CPU frequency normalization" action="generic_cortex /tmp/booster_sleep_max" unit="sec" min="0" reversed="false" step="30" max="120"/>
+		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, all is set back to normal."
+			name="Cortex Wakeup Boost" action="generic_cortex /tmp/wakeup_boost"
+			unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
 	</settingsPane>
 
 	<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." 
 			name="CPU Global Settings">
 
-		<seekBar description="Maximum Normal CPU-Speed. CPU Frequency steps by 50.000 kHz from 100.000 kMz to 1.200.000 kHz! if you want to use OC speeds set here 1.2Ghz! and tune the OC bar! if here speed is lower than MAX '1.2Ghz', OC bar is ignored! (Default: 1.200.000 kHz)" 
-			name="Max Normal Frequency" action="genericfreq_normal /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+		<seekBar description="Maximum Normal CPU-Speed. CPU Frequency steps by 50.000 kHz from 100.000 kMz to 1.000.000 kHz! if you want to use OC speeds set here 1.0Ghz! and tune the OC bar! if here speed is lower than MAX '1.0Ghz', OC bar is ignored! (Default: 1.000.000 kHz)" 
+			name="Max Normal Frequency" action="genericfreq_normal /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="Overclock CPU Speed. To use OC you must set the Normal CPU speed to MAX '1.2Ghz' or this setting ignored! CPU Frequency steps by 100.000 kHz from 1.200.000 kMz to 1.600.000 kHz! ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! 1.6 Ghz is unstable on 85% of devices, try on your own risk (Default: 1.200.000 kHz)"
-			name="Max OC Frequency" action="genericfreq_oc /tmp/scaling_max_freq_oc" unit="kHz" min="1200000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Overclock CPU Speed. To use OC you must set the Normal CPU speed to MAX '1.0Ghz' or this setting ignored! CPU Frequency steps by 100.000 kHz from 1.000.000 kMz to 1.600.000 kHz! ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! 1.6 Ghz is unstable on 85% of devices, try on your own risk (Default: 1.200.000 kHz)"
+			name="Max OC Frequency" action="genericfreq_oc /tmp/scaling_max_freq_oc" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 50000KHz are valid from 100.000 kHz to 1.200.000 kHz! (Default: 200.000 kHz)" 
-			name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1600000"/>
+		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 50000KHz are valid from 100.000 kHz to 1.000.000 kHz! (Default: 200.000 kHz)" 
+			name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="When you touch the screen, CPU freq will jump UP to set value and go DOWN if no more to do, if CPU freq already above the value, then no change. (Default: 500.000 kHz)"
+		<seekBar description="When you touch the screen, CPU freq will jump UP to set value and go DOWN if no more to do, if CPU freq already above the value, then no change. if you set below 500.000 kHz it's may effect stability and SOD the GPU, so if any problem set to default. (Default: 500.000 kHz)"
 			name="Max Touch Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="50000" max="800000"/>
 
 		<seekBar description="Minimum Frequency until second core will not be turned on, regardless of thresholds. (Default: 600.000 kHz)" 
 			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
-			unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<!--spinner description="This sets the smooth scaling level which prevents Ondemand based governors to jump directly to maximum frequency, with load spikes. This setting will only change the behavior of Ondemand, HYPER, Sleepy, Scary and PegasusQ, Nightmare governors (default is Disabled, let gov to do the calculation)." 
-			name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
-			<spinnerItem name="Disabled" value="0"/> 
-			<spinnerItem name="1200 MHz" value="4"/> 
-			<spinnerItem name="1000 MHz" value="8"/> 
-			<spinnerItem name="800 MHz" value="12"/> 
-			<spinnerItem name="500 MHz" value="18"/> 
-			<spinnerItem name="450 MHz" value="19"/> 
-			<spinnerItem name="400 MHz" value="20"/> 
-			<spinnerItem name="350 MHz" value="21"/> 
-			<spinnerItem name="300 MHz" value="22"/> 
-			<spinnerItem name="250 MHz" value="23"/> 
-			<spinnerItem name="200 MHz" value="24"/> 
-			<spinnerItem name="150 MHz" value="25"/> 
-			<spinnerItem name="100 MHz" value="26"/> 
-		</spinner-->
+			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800MHz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800MHz, second core will be DISABLED! (Default: 20)" 
 			name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
@@ -107,16 +91,12 @@
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="Minimum STANDBY (music playing and screen off) CPU speed. If music still shutter, rise frequency to 300000kHz/400000kHz. (Default: 200.000 kHz)"
-			name="scaling_min_standby_freq" action="genericfreq /tmp/standby_freq"
+			name="scaling_min_standby_freq" action="generic_cortex_freq /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 		<seekBar description="For developer debug only! You can add small delay to cortex wakeup/sleep script. This will delay all function changes and the wakeup! (Default: 0)" 
 			name="Cortex Wakeup Delay" action="generic_cortex /tmp/wakeup_delay"
 			unit="Sec" min="0" reversed="false" step="1" max="5"/>
-
-		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, all is set back to normal."
-			name="Cortex Wakeup Boost" action="generic_cortex /tmp/wakeup_boost"
-			unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
 	</settingsPane>
 
@@ -124,93 +104,87 @@
 
 <settingsTab name="CPU-VOLTAGE">
 
-	<settingsPane description="CPU Voltage Controls. Frequencies above 1200MHz are not allowed to be modified via STweaks. Voltage Range is 850~1350mV. Lower/higher is NOT SUPPORTED. All is done to prevent BUGS and SODS. USE this interface AT YOUR OWN RISK! If you get SOD before you can load this interface and can't fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV!" name="CPU Voltage Controls">
+	<settingsPane description="CPU Voltage Controls. Voltage Range is 825~1500mV. Lower/higher are NOT SUPPORTED. All is done to prevent BUGS and SODS. USE this interface AT YOUR OWN RISK! If you get SOD before you can load this interface and can't fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV/OV!" name="CPU Voltage Controls">
 
 		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, don't tick this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" 
 			name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
 		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
-		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1450 mV)"
-			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1350" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1400 mV)"
+			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1400 mV)"
-			name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1375 mV)"
+			name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1275" reversed="false" step="25" max="1475"/>
 
-		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1375 mV)"
-			name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1275" reversed="false" step="25" max="1475"/>
+		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1325 mV)"
+			name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1225" reversed="false" step="25" max="1425"/>
 
-		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1350 mV)"
-			name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1250" reversed="false" step="25" max="1450"/>
+		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1300 mV)"
+			name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1200" reversed="false" step="25" max="1400"/>
 
 		<seekBar description="CPU Voltage for 1200 MHz. (Default: 1275 mV)"
 			name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1175" reversed="false" step="25" max="1375"/>
 
-		<seekBar description="CPU Voltage for 1152 MHz. (Default: 1250 mV)"
-			name="CPU Voltage 1152 MHz" action="cpu-voltage 6" unit="mV" min="1150" reversed="false" step="25" max="1350"/>
-
 		<seekBar description="CPU Voltage for 1100 MHz. (Default: 1225 mV)"
-			name="CPU Voltage 1100 MHz" action="cpu-voltage 7" unit="mV" min="1125" reversed="false" step="25" max="1325"/>
-
-		<seekBar description="CPU Voltage for 1052 MHz. (Default: 1200 mV)"
-			name="CPU Voltage 1052 MHz" action="cpu-voltage 8" unit="mV" min="1100" reversed="false" step="25" max="1300"/>
+			name="CPU Voltage 1100 MHz" action="cpu-voltage 6" unit="mV" min="1125" reversed="false" step="25" max="1325"/>
 
 		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1175 mV)"
-			name="CPU Voltage 1000 MHz" action="cpu-voltage 9" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
+			name="CPU Voltage 1000 MHz" action="cpu-voltage 7" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
 
 		<seekBar description="CPU Voltage for 952 MHz. (Default: 1150 mV)"
-			name="CPU Voltage 952 MHz" action="cpu-voltage 10" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
+			name="CPU Voltage 952 MHz" action="cpu-voltage 8" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
 
 		<seekBar description="CPU Voltage for 900 MHz. (Default: 1125 mV)"
-			name="CPU Voltage 900 MHz" action="cpu-voltage 11" unit="mV" min="1050" reversed="false" step="25" max="1250"/>
+			name="CPU Voltage 900 MHz" action="cpu-voltage 9" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
 
 		<seekBar description="CPU Voltage for 852 MHz. (Default: 1100 mV)"
-			name="CPU Voltage 852 MHz" action="cpu-voltage 12" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
+			name="CPU Voltage 852 MHz" action="cpu-voltage 10" unit="mV" min="1000" reversed="false" step="25" max="1200"/>
 
 		<seekBar description="CPU Voltage for 800 MHz. (Default: 1075 mV)"
-			name="CPU Voltage 800 MHz" action="cpu-voltage 13" unit="mV" min="975" reversed="false" step="25" max="1175"/>
+			name="CPU Voltage 800 MHz" action="cpu-voltage 11" unit="mV" min="975" reversed="false" step="25" max="1175"/>
 
 		<seekBar description="CPU Voltage for 750 MHz. (Default: 1050 mV)"
-			name="CPU Voltage 750 MHz" action="cpu-voltage 14" unit="mV" min="950" reversed="false" step="25" max="1150"/>
+			name="CPU Voltage 750 MHz" action="cpu-voltage 12" unit="mV" min="950" reversed="false" step="25" max="1150"/>
 
 		<seekBar description="CPU Voltage for 700 MHz. (Default: 1050 mV)"
-			name="CPU Voltage 700MHz" action="cpu-voltage 15" unit="mV" min="925" reversed="false" step="25" max="1125"/>
+			name="CPU Voltage 700MHz" action="cpu-voltage 13" unit="mV" min="950" reversed="false" step="25" max="1150"/>
 
 		<seekBar description="CPU Voltage for 650 MHz. (Default: 1025 mV)"
-			name="CPU Voltage 650 MHz" action="cpu-voltage 16" unit="mV" min="925" reversed="false" step="25" max="1125"/>
+			name="CPU Voltage 650 MHz" action="cpu-voltage 14" unit="mV" min="925" reversed="false" step="25" max="1125"/>
 
 		<seekBar description="CPU Voltage for 600 MHz. (Default: 1025 mV)"
-			name="CPU Voltage 600 MHz" action="cpu-voltage 17" unit="mV" min="925" reversed="false" step="25" max="1125"/>
+			name="CPU Voltage 600 MHz" action="cpu-voltage 15" unit="mV" min="925" reversed="false" step="25" max="1125"/>
 
 		<seekBar description="CPU Voltage for 550 MHz. (Default: 1000 mV)"
-			name="CPU Voltage 550 MHz" action="cpu-voltage 18" unit="mV" min="900" reversed="false" step="25" max="1100"/>
+			name="CPU Voltage 550 MHz" action="cpu-voltage 16" unit="mV" min="900" reversed="false" step="25" max="1100"/>
 
 		<seekBar description="CPU Voltage for 500 MHz. (Default: 975 mV)"
-			name="CPU Voltage 500 MHz" action="cpu-voltage 19" unit="mV" min="900" reversed="false" step="25" max="1100"/>
+			name="CPU Voltage 500 MHz" action="cpu-voltage 17" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 450 MHz. (Default: 975 mV)"
-			name="CPU Voltage 450 MHz" action="cpu-voltage 20" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+			name="CPU Voltage 450 MHz" action="cpu-voltage 18" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 400 MHz. (Default: 975 mV)"
-			name="CPU Voltage 400 MHz" action="cpu-voltage 21" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+			name="CPU Voltage 400 MHz" action="cpu-voltage 19" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 350 MHz. (Default: 975 mV)"
-			name="CPU Voltage 350 MHz" action="cpu-voltage 22" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+			name="CPU Voltage 350 MHz" action="cpu-voltage 20" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 300 MHz. (Default: 975 mV)"
-			name="CPU Voltage 300 MHz" action="cpu-voltage 23" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+			name="CPU Voltage 300 MHz" action="cpu-voltage 21" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 250 MHz. (Default: 950 mV)"
-			name="CPU Voltage 250 MHz" action="cpu-voltage 24" unit="mV" min="850" reversed="false" step="25" max="1050"/>
+			name="CPU Voltage 250 MHz" action="cpu-voltage 22" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 		<seekBar description="CPU Voltage for 200 MHz. (Default: 950 mV)"
-			name="CPU Voltage 200 MHz" action="cpu-voltage 25" unit="mV" min="850" reversed="false" step="25" max="1050"/>
+			name="CPU Voltage 200 MHz" action="cpu-voltage 23" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 		<seekBar description="CPU Voltage for 150 MHz. (Default: 925 mV)"
-			name="CPU Voltage 150 MHz" action="cpu-voltage 26" unit="mV" min="825" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 150 MHz" action="cpu-voltage 24" unit="mV" min="825" reversed="false" step="25" max="1025"/>
 
 		<seekBar description="CPU Voltage for 100 MHz. (Default: 925 mV)"
-			name="CPU Voltage 100 MHz" action="cpu-voltage 27" unit="mV" min="825" reversed="false" step="25" max="1025"/>
+			name="CPU Voltage 100 MHz" action="cpu-voltage 25" unit="mV" min="825" reversed="false" step="25" max="1025"/>
 
 	</settingsPane>
 
@@ -227,19 +201,12 @@
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
-			<spinnerItem name="nightmare" value="nightmare"/>
+			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
-
-		<!--spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ)" 
-			name="Hotplug CPU Lock" action="generic_cortex /tmp/hotplug_lock">
-			<spinnerItem name="Dual core mode" value="2"/> 
-			<spinnerItem name="Single core mode" value="1"/> 
-			<spinnerItem name="Auto" value="0"/> 
-		</spinner-->
 
 		<button description="Use this button to push all new changes to GOV core in real time! the sleep tuning will be auto added on screen off, to screen off gov." name="GOV Policy Install" action="push-actions/cpu_tuning_update" label="Push CPU Tuning To GOV Core"/>
 
@@ -247,25 +214,25 @@
 
 	<settingsPane description="Global Govs Configuration, see descriptions" name="GLOBAL GOV CONFIGURATON">
 
-		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy)  (default is 75)"
+		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 75)"
 			name="up_threshold" action="generic_cortex /tmp/up_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 60000)"
-			name="sampling_rate" action="generic_cortex /tmp/sampling_rate" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+			name="sampling_rate" action="generic_cortex /tmp/sampling_rate" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 1)"
-			name="sampling_down_factor" action="generic_cortex /tmp/sampling_down_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
+			name="sampling_down_factor" action="generic_cortex /tmp/sampling_down_factor" unit="int" min="1" reversed="false" step="1" max="10"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
-			name="freq_step" action="generic_cortex /tmp/freq_step" unit="%" min="0" reversed="false" step="1" max="100"/>
+			name="freq_step" action="generic_cortex /tmp/freq_step" unit="%" min="5" reversed="false" step="1" max="100"/>
 
 		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 1)"
-			name="down_differential" action="generic_cortex /tmp/down_differential" unit=" int" min="1" reversed="false" step="1" max="80"/>
+			name="down_differential" action="generic_cortex /tmp/down_differential" unit="int" min="1" reversed="false" step="1" max="80"/>
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 400000)"
-			name="freq_for_responsiveness" action="genericfreq /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+			name="freq_for_responsiveness" action="generic_cortex_freq /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Load >= inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 70)"
+		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 70)"
 			name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Only for lulzActiveQ, Nightmare) (default is 50)"
@@ -288,18 +255,18 @@
 			name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
 		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when one core is online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 60000)"
-			name="trans_latency_one_core" action="generic_cortex /tmp/trans_latency_one_core" unit="nS" min="10000" reversed="false" step="1000" max="150000"/>
+			name="trans_latency_one_core" action="generic_cortex /tmp/trans_latency_one_core" unit="nS" min="10000" reversed="false" step="10000" max="130000"/>
 
 		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when two cores are online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 60000)"
-			name="trans_latency_two_cores" action="generic_cortex /tmp/trans_latency_two_cores" unit="nS" min="10000" reversed="false" step="1000" max="150000"/>
+			name="trans_latency_two_cores" action="generic_cortex /tmp/trans_latency_two_cores" unit="nS" min="10000" reversed="false" step="10000" max="130000"/>
 
 		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
-			name="freq_for_calc_incr" action="generic_cortex /tmp/freq_for_calc_incr" unit="kHz" min="50000" reversed="false" step="25000" max="400000"/>
+			name="freq_for_calc_incr" action="generic_cortex /tmp/freq_for_calc_incr" unit="kHz" min="50000" reversed="false" step="50000" max="400000"/>
 
 		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
-			name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="125000" reversed="false" step="25000" max="400000"/>
+			name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="150000" reversed="false" step="50000" max="400000"/>
 
-		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 1000000)"
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is 'big or equal' freq_cpu1on and load average is 'big or equal' trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 1000000)"
 			name="freq_cpu1on" action="generic_cortex /tmp/freq_cpu1on" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (Only for Nightmare) (default is 700000)"
@@ -308,17 +275,14 @@
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 15)"
 			name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 15)"
+		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Only for Nightmare) (default is 15)"
 			name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 60)"
 			name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on and load average is >= trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is 'big or equal' freq_cpu1on and load average is 'big or equal' trans_load_h0 2nd core will turn on. (Only for Nightmare) (default is 20)"
 			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 20)"
-			name="trans_load_h1" action="generic_cortex /tmp/trans_load_h1" unit="%" min="1" reversed="false" step="1" max="100"/-->
 
 		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off and load average is less than trans_load_l1, 2nd core will turn off. (default is 20)"
 			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit="%" min="1" reversed="false" step="1" max="100"/>
@@ -327,7 +291,7 @@
 			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit="%" min="0" reversed="false" step="1" max="50"/>
 
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and its load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (default is 2)"
-			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit=" int" min="0" reversed="false" step="1" max="2"/>
+			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit="int" min="0" reversed="false" step="1" max="2"/>
 
 	</settingsPane>
 
@@ -340,44 +304,22 @@
 
 	<settingsPane description="LulzActiveQ Gov Configuration, see descriptions" name="LULZACTIVEQ GOV CONFIGURATON">
 
-		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
-			name="hotplug_sampling_rate" action="generic_cortex /tmp/hotplug_sampling_rate" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
-
 		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 40000)"
-			name="up_sample_time" action="generic_cortex /tmp/up_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+			name="up_sample_time" action="generic_cortex /tmp/up_sample_time" unit="uS" min="1000" reversed="false" step="1000" max="120000"/>
 
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 20000)"
-			name="down_sample_time" action="generic_cortex /tmp/down_sample_time" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+			name="down_sample_time" action="generic_cortex /tmp/down_sample_time" unit="uS" min="1000" reversed="false" step="1000" max="120000"/>
 
-		<seekBar description="No of scale up steps when load >= inc_cpu_load. (Only for lulzActiveQ) (default is 2)"
+		<seekBar description="No of scale up steps when load 'big or equal' inc_cpu_load. (Only for lulzActiveQ) (default is 2)"
 			name="pump_up_step" action="generic_cortex /tmp/pump_up_step" unit="step" min="0" reversed="false" step="1" max="16"/>
 
 		<seekBar description="No of scale down steps when load less than dec_cpu_load. (Only for lulzActiveQ) (default is 1)"
 			name="pump_down_step" action="generic_cortex /tmp/pump_down_step" unit="step" min="0" reversed="false" step="1" max="16"/>
 
-		<seekBar description="Steps in frequency table to be used when screen-off. Example: If available freqs are 1600 1400 1200 1000 800 500 200 100 (L0 to L7) and screen_off_min_step=5 then 100,200 and 500 (L5 to L7) will be used during screen-off depending on the demand. (Only for lulzActiveQ) (default is 11)"
-			name="screen_off_min_step" action="generic_cortex /tmp/screen_off_min_step" unit="step" min="1" reversed="false" step="1" max="30"/>
-
 		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 1200000)"
-			name="hispeed_freq" action="genericfreq /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+			name="hispeed_freq" action="generic_cortex_freq /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 	</settingsPane>
-
-	<!--settingsPane description="HotPlug CPU Configuration, see descriptions" name="HOTPLUG GOV CONFIGURATON">
-
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ) (default is 500000)"
-			name="hotplug_freq_1_1" action="genericfreq /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ) (default is 200000)"
-			name="hotplug_freq_2_0" action="genericfreq /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_1_1" action="generic_cortex /tmp/hotplug_rq_1_1" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_2_0" action="generic_cortex /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-	</settingsPane-->
 
 </settingsTab>
 
@@ -392,43 +334,36 @@
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
-			<spinnerItem name="nightmare" value="nightmare"/>
+			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
 			<spinnerItem name="sleepy" value="sleepy"/> 
 		</spinner>
 
-		<!--spinner description="Sets the number of CPUs to be used in hot plugging. (only for PegasusQ, LuLzActiveQ, Nightmare)" 
-			name="Hotplug CPU Lock Sleep Mode" action="generic_cortex /tmp/hotplug_lock_sleep">
-			<spinnerItem name="Dual core mode" value="2"/> 
-			<spinnerItem name="Single core mode" value="1"/> 
-			<spinnerItem name="Auto" value="0"/> 
-		</spinner-->
-
 	</settingsPane>
 
 	<settingsPane description="Global Govs Configuration, see descriptions" name="GLOBAL GOV CONFIGURATON">
 
-		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy)  (default is 75)"
+		<seekBar description="Measured as percentage, when load on CPU is equal to above up threshold, CPU is scaled Up. Lower value - early scale up, and vice-verse. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 75)"
 			name="up_threshold_sleep" action="generic_cortex /tmp/up_threshold_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Measured in uS and actual meaning being Sampling Interval, this factor determines how often the governor should poll for CPU usage in terms of frequency and load percentage to make scaling decisions - either scale CPU Up or scale it Down. (Only for HYPER, OnDemand, Intellimand, PegasusQ, Conservative, Scary, Sleepy) (default is 70000)"
-			name="sampling_rate_sleep" action="generic_cortex /tmp/sampling_rate_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+			name="sampling_rate_sleep" action="generic_cortex /tmp/sampling_rate_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). Setting to 1 makes no difference and causes CPU to immediately scale down from highest frequency. Sampling down factor is NOT valid for lower frequencies and low load conditions. Note that CPU is scaled up to max frequency when max_load_freq is greater than up_threshold*current frequency. (or to cur_freq + (freq_step * policy.max_freq) whichever is smaller) Max_load_freq is an arbitrary frequency calculated as the maximum of load_frequencies. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Conservartive, Nightmare, Scary, Sleepy) (default is 1)"
-			name="sampling_down_factor_sleep" action="generic_cortex /tmp/sampling_down_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
+			name="sampling_down_factor_sleep" action="generic_cortex /tmp/sampling_down_factor_sleep" unit="int" min="1" reversed="false" step="1" max="10"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches up_threshold or inc_cpu_load. (Only for HYPER, Ondemand, PegasusQ, Nightmare, Conservative, Scary) (default is 30)"
 			name="freq_step_sleep" action="generic_cortex /tmp/freq_step_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="After spending sampling_down_factor*sampling_rate micro seconds at maximum frequency on high load, governor samples the load again to calculate an approx target frequency to scale-down-to which should not trigger up_threshold in the next sample. (Triggering up threshold may cause jumping to max frequency again). Max_load_freq is checked against (up_threshold - down_differential) * current frequency. If found to be smaller, CPU is scaled down to a target frequency as described above. Down_differential also act as the factor to prevent aggressive scale down. (Only for HYPER, Ondemand, Intellimand, PegasusQ, Sleepy) (default is 1)"
-			name="down_differential_sleep" action="generic_cortex /tmp/down_differential_sleep" unit=" int" min="1" reversed="false" step="1" max="80"/>
+			name="down_differential_sleep" action="generic_cortex /tmp/down_differential_sleep" unit="int" min="1" reversed="false" step="1" max="80"/>
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (default is 200000)"
-			name="freq_for_responsiveness_sleep" action="genericfreq /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+			name="freq_for_responsiveness_sleep" action="generic_cortex_freq /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Load >= inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 80)" 
+		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Only for lulzActiveQ, Nightmare) (default is 80)" 
 			name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Only for lulzActiveQ, Nightmare) (default is 70)"
@@ -448,21 +383,21 @@
 	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
 
 		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Only for Nightmare) (default is 1)"
-			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
+			name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit="int" min="1" reversed="false" step="1" max="10"/>
 
 		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when one core is online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 70000)"
-			name="trans_latency_one_core_sleep" action="generic_cortex /tmp/trans_latency_one_core_sleep" unit="nS" min="10000" reversed="false" step="1000" max="150000"/>
+			name="trans_latency_one_core_sleep" action="generic_cortex /tmp/trans_latency_one_core_sleep" unit="nS" min="10000" reversed="false" step="10000" max="150000"/>
 
 		<seekBar description="This is the delay of CPU that makes decisions on what to do about the frequency when two cores are online. too long transition latency of HW, fallback to performance governor! if you don't know what it means, please don't change! (Only for Nightmare) (default is 70000)"
-			name="trans_latency_two_cores_sleep" action="generic_cortex /tmp/trans_latency_two_cores_sleep" unit="nS" min="10000" reversed="false" step="1000" max="150000"/>
+			name="trans_latency_two_cores_sleep" action="generic_cortex /tmp/trans_latency_two_cores_sleep" unit="nS" min="10000" reversed="false" step="10000" max="150000"/>
 
 		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
-			name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="50000" reversed="false" step="25000" max="400000"/>
+			name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="50000" reversed="false" step="50000" max="400000"/>
 
 		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200000 Khz. if you don't know what it means, please don't change! (Only for Nightmare) (default is 200000)"
-			name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="125000" reversed="false" step="25000" max="400000"/>
+			name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="150000" reversed="false" step="50000" max="400000"/>
 
-		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 600000)"
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is 'big or equal' freq_cpu1on_sleep and load average is 'big or equal' trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 600000)"
 			name="freq_cpu1on_sleep" action="generic_cortex /tmp/freq_cpu1on_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1500000"/>
 
 		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 500000)"
@@ -471,17 +406,14 @@
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Only for Nightmare) (default is 15)"
 			name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load >= inc_cpu_load. (Only for Nightmare) (default is 15)"
+		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Only for Nightmare) (default is 15)"
 			name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (default is 60)"
 			name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="When 2nd core is offline, If frequency of 1st core is >= freq_cpu1on_sleep and load average is >= trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 20)"
+		<seekBar description="When 2nd core is offline, If frequency of 1st core is 'big or equal' freq_cpu1on_sleep and load average is 'big or equal' trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (default is 20)"
 			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<!--seekBar description="Description will be added by Alucard soon. (Only for Nightmare) (default is 100)"
-			name="trans_load_h1_scroff" action="generic_cortex /tmp/trans_load_h1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/-->
 
 		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_cpu1off_sleep and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (default is 20)"
 			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
@@ -503,16 +435,13 @@
 
 	<settingsPane description="LulzActiveQ Gov Configuration, see descriptions" name="LULZACTIVEQ GOV CONFIGURATON">
 
-		<!--seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on. (Only for lulzActiveQ) (default is 40000)"
-			name="hotplug_sampling_rate_sleep" action="generic_cortex /tmp/hotplug_sampling_rate_sleep" unit=" uS" min="0" reversed="false" step="1000" max="120000"/-->
-
 		<seekBar description="Sampling time to scale cpu up. (Only for lulzActiveQ) (default is 60000)"
-			name="up_sample_time_sleep" action="generic_cortex /tmp/up_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+			name="up_sample_time_sleep" action="generic_cortex /tmp/up_sample_time_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
 		<seekBar description="Sampling time to scale cpu down. (Only for lulzActiveQ) (default is 10000)"
-			name="down_sample_time_sleep" action="generic_cortex /tmp/down_sample_time_sleep" unit=" uS" min="1000" reversed="false" step="1000" max="120000"/>
+			name="down_sample_time_sleep" action="generic_cortex /tmp/down_sample_time_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
-		<seekBar description="No of scale up steps when load >= inc_cpu_load. (Only for lulzActiveQ) (default is 1)"
+		<seekBar description="No of scale up steps when load 'big or equal' inc_cpu_load. (Only for lulzActiveQ) (default is 1)"
 			name="pump_up_step_sleep" action="generic_cortex /tmp/pump_up_step_sleep" unit="step" min="0" reversed="false" step="1" max="16"/>
 
 		<seekBar description="No of scale down steps when load less than dec_cpu_load. (Only for lulzActiveQ) (default is 3)"
@@ -522,25 +451,9 @@
 			name="screen_off_min_step_sleep" action="generic_cortex /tmp/screen_off_min_step_sleep" unit="step" min="1" reversed="false" step="1" max="30"/>
 
 		<seekBar description="lulzActiveQ: Input boost will automatically jump the phone to the hispeed_freq when you touch the screen to help prevent lag. (Only for lulzActiveQ) (default is 400000)"
-			name="hispeed_freq_sleep" action="genericfreq /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
+			name="hispeed_freq_sleep" action="generic_cortex_freq /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
 	</settingsPane>
-
-	<!--settingsPane description="HotPlug CPU Configuration, see descriptions" name="HOTPLUG GOV CONFIGURATON">
-
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hot plug IN Second Core. Higher value corresponds to delay in turning on second core. (Only for lulzActiveQ, PegasusQ) (default is 500000)"
-			name="hotplug_freq_1_1_sleep" action="genericfreq /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hot plug OUT Second Core. Lower value corresponds to delay in turning off second core. (Only for lulzActiveQ, PegasusQ) (default is 200000)"
-			name="hotplug_freq_2_0_sleep" action="genericfreq /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="50000" max="1200000"/>
-
-		<seekBar description="Threshold run queue length for second core to turn on. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_1_1_sleep" action="generic_cortex /tmp/hotplug_rq_1_1_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-		<seekBar description="Threshold run queue length for second core to turn off. (Only for lulzActiveQ, PegasusQ) (default is 100)"
-			name="hotplug_rq_2_0_sleep" action="generic_cortex /tmp/hotplug_rq_2_0_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
-
-	</settingsPane-->
 
 </settingsTab>
 
@@ -559,7 +472,7 @@
 			<spinnerItem name="4096 kb" value="4096"/> 
 		</spinner>
 
-		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard. (Default: ZEN)"
+		<spinner description="This will set the default AWAKE I/O scheduler for internal, system, data and external sdcard, for best stability use ROW here. (Default: ROW)"
 			name="Default Awake I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="CFQ" value="cfq"/> 
@@ -569,10 +482,11 @@
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="VR" value="vr"/> 
 			<spinnerItem name="ZEN" value="zen"/> 
+			<spinnerItem name="FIFO" value="fifo"/> 
 		</spinner>
 
 		<spinner description="This will set the STANDBY/DEEPSLEEP I/O scheduler for internal, system, data and external sdcard. (Default: NOOP)"
-			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic /sys/block/mmcblk0/queue/sleep_scheduler">
+			name="STANDBY/DEEPSLEEP I/O Scheduler" action="generic_cortex /tmp/sleep_scheduler">
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="CFQ" value="cfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
@@ -581,6 +495,7 @@
 			<spinnerItem name="SIO" value="sio"/> 
 			<spinnerItem name="VR" value="vr"/> 
 			<spinnerItem name="ZEN" value="zen"/> 
+			<spinnerItem name="FIFO" value="fifo"/> 
 		</spinner>
 
 	</settingsPane>
@@ -629,22 +544,22 @@
 
 		<spinner description="If you have enabled swap, then the higher a number set here, the more the system will swap. (Default: 0)"
 			name="swappiness" action="generic /proc/sys/vm/swappiness">
-			<spinnerItem name="0" value="0"/>
-			<spinnerItem name="10" value="10"/>                                                                                               		
-			<spinnerItem name="20" value="20"/>
-			<spinnerItem name="30" value="30"/>
-			<spinnerItem name="40" value="40"/>
-			<spinnerItem name="50" value="50"/>
-			<spinnerItem name="60" value="60"/>
-			<spinnerItem name="70" value="70"/>
-			<spinnerItem name="80" value="80"/>
-			<spinnerItem name="90" value="90"/>
-			<spinnerItem name="100" value="100"/>
+			<spinnerItem name="0" value="0"/> 
+			<spinnerItem name="10" value="10"/> 
+			<spinnerItem name="20" value="20"/> 
+			<spinnerItem name="30" value="30"/> 
+			<spinnerItem name="40" value="40"/> 
+			<spinnerItem name="50" value="50"/> 
+			<spinnerItem name="60" value="60"/> 
+			<spinnerItem name="70" value="70"/> 
+			<spinnerItem name="80" value="80"/> 
+			<spinnerItem name="90" value="90"/> 
+			<spinnerItem name="100" value="100"/> 
 		</spinner>
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<checkbox description="Enable or Disable 'KSM-Control'. This merge some memory but need cpu-power ..."
+		<checkbox description="Enable or Disable 'KSM-Control'. This merge some memory but need cpu-power"
 			name="KSM-Control" action="generic_ksm /tmp/cortexbrain_ksm_control" label="KSM-Control"/>
 
 		<button description="KSM state check" name="KSM STATS" action="push-actions/ksmstats" label="KSM STATS"/>
@@ -682,7 +597,7 @@
 			<spinnerItem name="62 MHz" value="62"/> 
 		</spinner>
 
-		<spinner description="Changes the third GPU frequency step. WARNING! 400 MHz needs 1100 mV ~ 1200 mV. Above 1200 mV you risk to burn your chip!" 
+		<spinner description="Changes the third GPU frequency step. WARNING! 400 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 3" action="gpu-freq 3">
 			<spinnerItem name="400 MHz" value="400"/> 
 			<spinnerItem name="330 MHz" value="330"/> 
@@ -692,7 +607,7 @@
 			<spinnerItem name="108 MHz" value="108"/> 
 		</spinner>
 
-		<spinner description="Changes the fourth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV ~ 1200 mV. Above 1200 mV you risk to burn your chip!" 
+		<spinner description="Changes the fourth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 4" action="gpu-freq 4">
 			<spinnerItem name="520 MHz" value="520"/> 
 			<spinnerItem name="440 MHz" value="440"/> 
@@ -703,7 +618,7 @@
 			<spinnerItem name="160 MHz" value="160"/> 
 		</spinner>
 
-		<spinner description="Changes the fifth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV ~ 1200 mV. Above 1200 mV you risk to burn your chip!" 
+		<spinner description="Changes the fifth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 5" action="gpu-freq 5">
 			<spinnerItem name="520 MHz" value="520"/> 
 			<spinnerItem name="440 MHz" value="440"/> 
@@ -923,9 +838,9 @@
 
 		<spinner description="This setting will set led behavior for BLN." 
 			name="BLN Effect" action="bln_switch">
-			<spinnerItem name="Steady" value="0"/>
-			<spinnerItem name="Breathing" value="1"/>
-			<spinnerItem name="Blinking" value="2"/>
+			<spinnerItem name="Steady" value="0"/> 
+			<spinnerItem name="Breathing" value="1"/> 
+			<spinnerItem name="Blinking" value="2"/> 
 		</spinner>
 
 		<spinner description="Notification timeout" 
@@ -980,13 +895,6 @@
 </settingsTab>
 
 <settingsTab name="Other">
-
-	<settingsPane description="Here you can restore Home Key configuration before installing any other JB Sammy Kernel, you must push this button or Home Key will not work with other kernel."
-			name="Home Key Restore to JB Sammy default">
-
-		<button description="Before installing any other JB SAMMY 'LEAK' kernel, use this to restore Home Key, if you will reboot again with my kernel, you will have to push button again, to restore the key before installing different JB SAMMY kernel, if you stay with my kernel, ignore this button!" name="Restore home key for other kernels" action="push-actions/home_key_restore" label="Restore Home Key NOW"/>
-
-	</settingsPane>
 
 	<settingsPane description="Here you can activate some script, which will automatically run in the background, at a specified time." name="cron">
 
@@ -1073,9 +981,9 @@
 
 		<spinner description="Change USB connection mode. Either leave it as default or force it to mass storage mode (you will see your sdcards as disks) or MTP." 
 			name="USB mass storage mode" action="usb-mode">
-			<spinnerItem name="Default" value="default"/>
-			<spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/>
-			<spinnerItem name="Force MTP Mode" value="mtp-adb"/>
+			<spinnerItem name="Default" value="default"/> 
+			<spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/> 
+			<spinnerItem name="Force MTP Mode" value="mtp-adb"/> 
 		</spinner>
 
 		<checkbox description="If checked, Mass-Storage-SDCARDS will be auto-mounted when USB connected. then you can transfer files on high speed from PC to device. (Default: On)"
@@ -1102,11 +1010,11 @@
 		<button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for that period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="push-actions/reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
 
 		<checkbox description="If checked, BetterBatteryStatus will report discrete (non-overlapping) wake lock statistics." 
-			name="Discrete Wake lock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wake lock Stats"/> 
+			name="Discrete Wake lock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Discrete Wake lock Stats"/>
 
 	</settingsPane>
 
-	<settingsPane description='Here you can Add/Update/Remove AD Blocker! You need ROOT to do the tweak! If you want to update the blocker, you can push the "UPDATE AD NOW" button, to get the new one installed! If you install a new ROM, and you want to use AD BLOCKER, then push "UPDATE AD NOW" and REBOOT. If you need to REMOVE AD-BLOCKER use the REMOVE button and REBOOT' 
+	<settingsPane description="Here you can Add/Update/Remove AD Blocker! You need ROOT to do the tweak! If you want to update the blocker, you can push the 'UPDATE AD NOW' button, to get the new one installed! If you install a new ROM, and you want to use AD BLOCKER, then push 'UPDATE AD NOW' and REBOOT. If you need to REMOVE AD-BLOCKER use the REMOVE button and REBOOT"
 			name="AD Blocker">
 
 		<button description="ADD/UPDATE AD BLOCKER" name="AD-B UPDATE/ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
@@ -1179,9 +1087,6 @@
 			name="WIFI Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi_sleep_delay"
 			unit="sec" min="0" reversed="false" step="30" max="300"/>
 
-                <!--checkbox description="Here you can allow WIFI to use LOW PWR when Screen is turned OFF. When screen is back ON, WIFI turns back to high PWR). If not set, WIFI uses HIGH PWR and get fast WIFI transfers on screen OFF"
-                        name="Wifi Low PWR Switch" action="generic_cortex /tmp/wifi_pwr" label="Wifi Low PWR"/-->
-
 		<checkbox description="Enable or Disable 'ICMP only Firewall-Tweaks' (reboot needed)."
 			name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
@@ -1208,6 +1113,23 @@
 
 		<checkbox description="Enable or Disable 'I/O-Tweaks' (reboot needed)."
 			name="I/O-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="I/O-Tweaks"/>
+
+	</settingsPane>
+
+</settingsTab>
+
+<settingsTab name="MODULES">
+
+	<settingsPane description="Here you can load on boot, kernel modules, that will allow some extra functions." name="Kernel Modules">
+
+		<checkbox description="Enable or Disable Usb to Serial Modules, this will allow you to use usb to serial adapter to connect to ROUTERS and SWITCHES via console port. effect only after reboot!"
+			name="USB to Serial" action="generic_cortex /tmp/usbserial_module" label="Usb to Serial Modules"/>
+
+		<checkbox description="Enable or Disable Usb to Network Module, this will allow to use, limited number of usb to network card adapters, no support, and no info, if will work, effect only after reboot!"
+			name="USB to NetStick" action="generic_cortex /tmp/usbnet_module" label="USB to Net Stick"/>
+
+		<checkbox description="Enable or Disable CIFS Module, will allow to use apps that can mount internal storage and publish over network, user can access data/system over network, no support, effect only after reboot!"
+			name="CIFS Module" action="generic_cortex /tmp/cifs_module" label="CIFS Module"/>
 
 	</settingsPane>
 
@@ -1273,11 +1195,18 @@
 
 <settingsTab name="BUG-REPORT">
 
-	<settingsPane description="Debug to SD-Card (/sdcard) ..." name="Bug-Report">
+	<settingsPane description="Debug to SD-Card (/sdcard)" name="Bug-Report">
 
 		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
 
 		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
+
+	</settingsPane>
+
+	<settingsPane description="Show Storage status, you can see if you have errors in system/data/cache/efs/preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." 
+		name="Partitions Scan">
+
+		<button description="Use this to check your data/system/cache/efs/preloaded for errors, this will not FIX any errors, just check!, to fix, backup your files with some backups app, then push the data/cache fix button located at OTHER TAB, use it in your own risk!, some data will be lost! you will need to restore broken apps + data, in case of boot loop, then reinstall ROM, if still stuck on boot, wipe and install again! it's BEST to have clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
 
 	</settingsPane>
 
