@@ -422,7 +422,6 @@ elif [ "$JBSAMMY" == "1" ]; then
 	$BB echo "1" > /tmp/jbsammy_installed; # for post-init.sh
 	# for system_tune_on_init.sh and for res/crontab_service/service.sh
 	$BB echo "1" > /tmp/sammy_rom;
-	setprop debug.sf.hw 1
 
 	GPIO_KEYS=/system/usr/keylayout/gpio-keys.kl
 	if [ -e $GPIO_KEYS ]; then
@@ -442,7 +441,6 @@ elif [ "$CM_AOKP_10_JB" == "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
 	echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
-	setprop debug.sf.hw 1
 
 	SECROM_FUNCTION_AOSP;
 
