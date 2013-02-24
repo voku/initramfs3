@@ -968,16 +968,16 @@ KERNEL_SCHED()
 {
 	local state="$1";
 
+	# this is the correct order to input this settings, every value will be x2 after set
 	if [ "${state}" == "awake" ]; then
-		echo "24000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "3000000" > /proc/sys/kernel/sched_min_granularity_ns;
-		echo "4000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		sysctl -w kernel.sched_wakeup_granularity_ns=2000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_min_granularity_ns=1500000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_latency_ns=12000000 > /dev/null 2>&1;
 	elif [ "${state}" == "sleep" ]; then
-		echo "12000000" > /proc/sys/kernel/sched_latency_ns;
-		echo "1500000" > /proc/sys/kernel/sched_min_granularity_ns;
-		echo "2000000" > /proc/sys/kernel/sched_wakeup_granularity_ns;
+		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
 	fi;
-	echo "-1" > /proc/sys/kernel/sched_rt_runtime_us;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
 }
