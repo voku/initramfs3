@@ -205,8 +205,6 @@ AOSP=1;
 S4A=0;
 JBSAMMY=0;
 CM_AOKP_10_JB=0;
-$BB echo "0" > /tmp/jbsammy_installed;
-$BB chmod 666 /tmp/jbsammy_installed;
 $BB echo "0" > /tmp/sammy_rom;
 $BB chmod 666 /tmp/sammy_rom;
 
@@ -419,7 +417,6 @@ elif [ "$JBSAMMY" == "1" ]; then
 	$BB cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
 	$BB cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
-	$BB echo "1" > /tmp/jbsammy_installed; # for post-init.sh
 	# for system_tune_on_init.sh and for res/crontab_service/service.sh
 	$BB echo "1" > /tmp/sammy_rom;
 
