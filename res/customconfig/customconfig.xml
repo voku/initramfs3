@@ -526,11 +526,11 @@
 			<spinnerItem name="exterminate" value="exterminate"/> 
 		</spinner>
 
-		<seekBar description="Dirty background memory buffer, more you set, more memory will be used for write buffer for background operations, buffer is released on need to free RAM (default 60)"
-			name="Dirty Background ratio" action="generic /proc/sys/vm/dirty_background_ratio" unit="%" min="10" reversed="false" step="5" max="100"/>
+		<seekBar description="Dirty background memory buffer, more you set, more memory will be used for write buffer for background operations, buffer is released on need to free RAM (default 10)"
+			name="Dirty Background ratio" action="generic /proc/sys/vm/dirty_background_ratio" unit="%" min="5" reversed="false" step="5" max="25"/>
 
-		<seekBar description="Dirty real time memory buffer, more you set, more memory will be used for write buffer for real time operations, buffer is released on need to free RAM (default 80)"
-			name="Dirty ratio" action="generic /proc/sys/vm/dirty_ratio" unit="%" min="10" reversed="false" step="5" max="100"/>
+		<seekBar description="Dirty real time memory buffer, more you set, more memory will be used for write buffer for real time operations, buffer is released on need to free RAM (default 10)"
+			name="Dirty ratio" action="generic /proc/sys/vm/dirty_ratio" unit="%" min="5" reversed="false" step="5" max="50"/>
 
 		<button description="Clean RAM Cache, this will release all cached and buffered RAM" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
 
@@ -569,7 +569,7 @@
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency/voltage/steps/utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1000mV and 1000mV." 
+	<settingsPane description="GPU Frequency/voltage/steps/utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 950mV, 950mV, 1000mV, 1000mV and 1000mV." 
 			name="GPU Control">
 
 		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you don't use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" 
@@ -584,8 +584,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="62 MHz" value="62"/> 
-			<spinnerItem name="54 MHz" value="54"/> 
 		</spinner>
 
 		<spinner description="Changes the second GPU frequency step" name="GPU Frequency Step 2" action="gpu-freq 2">
@@ -594,7 +592,6 @@
 			<spinnerItem name="200 MHz" value="200"/> 
 			<spinnerItem name="160 MHz" value="160"/> 
 			<spinnerItem name="108 MHz" value="108"/> 
-			<spinnerItem name="62 MHz" value="62"/> 
 		</spinner>
 
 		<spinner description="Changes the third GPU frequency step. WARNING! 400 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
@@ -814,7 +811,7 @@
 	<settingsPane description="More headphone amplification + speaker amplification + Mic gain" name="Volume Levels and Gain Control">
 
 		<seekBar description="Headphone amplification level"
-			name="Analog headphone level" action="sound_volume 1" unit="dB" min="-10" reversed="false" step="2" max="20"/>
+			name="Analog headphone level" action="sound_volume 1" unit="dB" min="-12" reversed="false" step="4" max="20"/>
 
 		<seekBar description="Headphone gain power level"
 			name="Analog headphone gain" action="sound_volume 4" unit="dB" min="-6" reversed="false" step="1" max="6"/>
@@ -823,7 +820,7 @@
 			name="Mic gain Level" action="sound_volume 2" unit="dB" min="-12" reversed="false" step="4" max="12"/>
 
 		<seekBar description="Analog speaker level"
-			name="Speaker level" action="sound_volume 3" unit="dB" min="-12" reversed="false" step="4" max="12"/>
+			name="Speaker level" action="sound_volume 3" unit="dB" min="-8" reversed="false" step="4" max="20"/>
 
 	</settingsPane>
 
