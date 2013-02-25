@@ -4,6 +4,7 @@ scaling_max_freq=1000000
 scaling_max_freq_oc=1000000
 scaling_min_freq=400000
 tsp_touch_freq=200000
+tsp_touch_dyn=1
 freq_min=500000
 load_h0=20
 load_l1=20
