@@ -21,13 +21,7 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
-# wifi timer helpers
-echo "0" > /data/.siyah/wifi_helper;
-echo "0" > /data/.siyah/wifi_helper_awake;
-chmod 777 /data/.siyah/wifi_helper /data/.siyah/wifi_helper_awake;
-
-# init sleeprun for first script load.
-# init for ksm
+# init sleeprun for first script load & ksm
 mount -o remount,rw /
 echo "1" > /tmp/sleeprun;
 echo "0" > /tmp/ksm;
@@ -183,13 +177,11 @@ BATTERY_TWEAKS()
 			log -p i -t $FILE_NAME "battery-calibration done ...";
 		fi;
 
-		if [ "$power_reduce" == on ]; then
-			# LCD Power-Reduce
-			if [ -e /sys/class/lcd/panel/power_reduce ]; then
+		# LCD Power-Reduce
+		if [ -e /sys/class/lcd/panel/power_reduce ]; then
+			if [ "$power_reduce" == on ]; then
 				echo "1" > /sys/class/lcd/panel/power_reduce;
-			fi;
-		else
-			if [ -e /sys/class/lcd/panel/power_reduce ]; then
+			else
 				echo "0" > /sys/class/lcd/panel/power_reduce;
 			fi;
 		fi;
@@ -731,19 +723,19 @@ WIFI_PM()
 {
 	local state="$1";
 	if [ "${state}" == "sleep" ]; then
-		if [ "$wifi_pwr" == on ]; then
-			if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-				echo "1" > /sys/module/dhd/parameters/wifi_pm;
-			fi;
-		fi;
+		#if [ "$wifi_pwr" == on ]; then
+		#	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+		#		echo "1" > /sys/module/dhd/parameters/wifi_pm;
+		#	fi;
+		#fi;
 
 		if [ "$supplicant_scan_interval" -le 180 ]; then
 			setprop wifi.supplicant_scan_interval 360;
 		fi;
 	elif [ "${state}" == "awake" ]; then
-		if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-			echo "0" > /sys/module/dhd/parameters/wifi_pm;
-		fi;
+		#if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
+		#	echo "0" > /sys/module/dhd/parameters/wifi_pm;
+		#fi;
 
 		setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 	fi;
@@ -751,47 +743,96 @@ WIFI_PM()
 	log -p i -t $FILE_NAME "*** WIFI_PM ***: ${state}";
 }
 
+WIFI_DISABLE()
+{
+	svc wifi disable;
+	# not declared as local - therefore, it's global
+	wifi_helper_awake = 1;
+	log -p i -t $FILE_NAME "*** WIFI ***: disabled";
+}
+
 WIFI()
 {
-	local state="$1";
-	if [ "${state}" == "sleep" ]; then
-		WIFI_PM "sleep";
-		if [ -e /sys/module/dhd/initstate ]; then
-			if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+	if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+		local state="$1";
+		if [ "${state}" == "sleep" ]; then
+			WIFI_PM "sleep";
+			if [ -e /sys/module/dhd/initstate ]; then
 				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
-					svc wifi disable;
-					echo "1" > /data/.siyah/wifi_helper_awake;
-					log -p i -t $FILE_NAME "*** WIFI ***: disabled";
+					WIFI_DISABLE;
 				else
 					(
-						echo "0" > /data/.siyah/wifi_helper;
+						wifi_helper = 0;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
-						if [ `cat /data/.siyah/wifi_helper` == "0" ]; then
+						if [ "$wifi_helper" == 0 ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME;
-							if [ `cat /data/.siyah/wifi_helper` == "0" ]; then
+							if [ "$wifi_helper" == 0 ]; then
 								# user left the screen off, then disable wifi
-								svc wifi disable;
-								echo "1" > /data/.siyah/wifi_helper_awake;
-								log -p i -t $FILE_NAME "*** WIFI ***: disabled";
+								WIFI_DISABLE;
 							fi;
 						fi;
 					)&
 				fi;
+			else
+				wifi_helper_awake = 0;
 			fi;
-		else
-			echo "0" > /data/.siyah/wifi_helper_awake;
-		fi;
-	elif [ "${state}" == "awake" ]; then
-		WIFI_PM "awake";
-		echo "1" > /data/.siyah/wifi_helper;
-		if [ `cat /data/.siyah/wifi_helper_awake` == "1" ]; then
-			if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+		elif [ "${state}" == "awake" ]; then
+			WIFI_PM "awake";
+			wifi_helper = 1;
+			if [ "$wifi_helper_awake" == 1 ]; then
 				svc wifi enable;
 				log -p i -t $FILE_NAME "*** WIFI ***: enabled";
+			fi;
+		fi;
+	fi;
+}
+
+MOBILE_DATA_DISABLE()
+{
+	svc data disable;
+	# not declared as local - therefore, it's global
+	mobile_helper_awake = 1;
+	log -p i -t $FILE_NAME "*** MOBILE DATA ***: disabled";
+}
+
+MOBILE_DATA()
+{
+	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
+		local state="$1";
+		if [ "${state}" == "sleep" ]; then
+			local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
+			if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
+				if [ "$cortexbrain_auto_tweak_mobile_sleep_delay" == 0 ]; then
+					MOBILE_DATA_DISABLE;
+				else
+					(
+						mobile_helper = 0;
+						# screen time out but user want to keep it on and have mobile data
+						sleep 10;
+						if [ "$mobile_helper" == 0 ]; then
+							# user did not turned screen on, so keep waiting
+							SLEEP_TIME=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
+							log -p i -t $FILE_NAME "*** DISABLE_MOBILE $cortexbrain_auto_tweak_mobile_sleep_delay Sec Delay Mode ***";
+							sleep $SLEEP_TIME;
+							if [ "$mobile_helper" == 0 ]; then
+								# user left the screen off, then disable mobile data
+								MOBILE_DATA_DISABLE;
+							fi;
+						fi;
+					)&
+				fi;
+			else
+				mobile_helper_awake = 0;
+			fi;
+		elif [ "${state}" == "awake" ]; then
+			mobile_helper = 1;
+			if [ "$mobile_helper_awake" == 1 ]; then
+				svc data enable;
+				log -p i -t $FILE_NAME "*** MOBILE DATA ***: enabled";
 			fi;
 		fi;
 	fi;
@@ -1076,6 +1117,8 @@ AWAKE_MODE()
 
 		WIFI "awake";
 
+		MOBILE_DATA "awake";
+
 		GESTURES "awake";
 
 		GAMMA_FIX;
@@ -1134,11 +1177,13 @@ SLEEP_MODE()
 
 	DELAY;
 
+	TELE_DATA=`dumpsys telephony.registry`;
+
 	ENABLEMASK "sleep";
 
 	if [ "$DUMPSYS" == 1 ]; then
 		# check the call state, not on call = 0, on call = 2
-		CALL_STATE=`dumpsys telephony.registry | awk '/mCallState/ {print $1}'`;
+		CALL_STATE=`echo "${TELE_DATA}" | awk '/mCallState/ {print $1}'`;
 		if [ "$CALL_STATE" == "mCallState=0" ]; then
 			CALL_STATE=0;
 		else
@@ -1203,6 +1248,8 @@ SLEEP_MODE()
 			echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
 		
 			WIFI "sleep";
+
+			MOBILE_DATA "sleep";
 
 			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 
