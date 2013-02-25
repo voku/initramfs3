@@ -516,8 +516,8 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<checkbox description="Enable or Disable 'KSM-Control'. This merge some memory but need cpu-power"
-			name="KSM-Control" action="generic_ksm /tmp/cortexbrain_ksm_control" label="KSM-Control"/>
+		<checkbox description="Enable or Disable 'KSM-Control'. This will merge some memory but need cpu-power / battery. This depends on cortex background, so you have to stop/start the servive or reboot your phone." 
+			name="KSM-Control" action="generic_cortex /tmp/cortexbrain_ksm_control" label="KSM-Control"/>
 
 		<button description="KSM state check" name="KSM STATS" action="push-actions/ksmstats" label="KSM STATS"/>
 

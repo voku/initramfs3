@@ -21,12 +21,6 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
-# init sleeprun for first script load & ksm
-mount -o remount,rw /
-echo "1" > /tmp/sleeprun;
-echo "0" > /tmp/ksm;
-chmod 666 /tmp/*;
-
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
@@ -1113,7 +1107,7 @@ AWAKE_MODE()
 {
 	ENABLEMASK "awake";
 
-	if [ `cat /tmp/sleeprun` == 1 ]; then
+	if [ "$sleeprun" == 1 ]; then
 
 		LOGGER "awake";
 
@@ -1181,8 +1175,7 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-	mount -o remount,rw /
-	echo "0" > /tmp/sleeprun;
+	sleeprun = 0;
 
 	# we only read the config when screen goes off ...
 	PROFILE=`cat /data/.siyah/.active.profile`;
@@ -1209,7 +1202,7 @@ SLEEP_MODE()
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
 	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
-		echo "1" > /tmp/sleeprun;
+		sleeprun = 1;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
