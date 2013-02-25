@@ -151,6 +151,8 @@ on fs
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
     mount ext4 /res/dev/data /data nosuid nodev noatime discard noauto_da_alloc wait check_spo encryptable=/efs/metadata
 
+    chmod 0771 /data/system
+
     setprop ro.crypto.fuse_sdcard false
 
 # for LogMeIn
@@ -356,12 +358,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     class main
     user shell
     group log
-    oneshot
-
-# DVFS - limit cpufreq during booting sequence
-service dvfs /system/bin/sh /system/bin/dvfs.sh
-    class main
-    user root
     oneshot
 
 ## for LogMeIn

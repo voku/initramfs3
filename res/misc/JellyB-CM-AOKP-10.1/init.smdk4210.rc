@@ -32,10 +32,10 @@ on fs
     exec sfsck /res/dev/data ext4
 
 # mount partitions.
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime journal_async_commit wait check_spo
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait check_spo
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime journal_async_commit wait
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
-    mount ext4 /res/dev/data /data nosuid nodev noatime discard noauto_da_alloc wait check_spo encryptable=/efs/metadata
+    mount ext4 /res/dev/data /data nosuid nodev noatime discard noauto_da_alloc wait encryptable=/efs/metadata
 
     mkdir /efs/bluetooth
     mkdir /efs/wifi
