@@ -184,6 +184,7 @@ case "${debug_to_sd}" in
 			echo "dmesg-Info:" >> $DEBUG_FILE;
 			dmesg >> $DEBUG_FILE;
 			SEPARATOR;
+
 			echo "dmesg-Error:" >> $DEBUG_FILE;
 			dmesg | grep -i "Error" >> $DEBUG_FILE;
 			SEPARATOR;
@@ -192,7 +193,7 @@ case "${debug_to_sd}" in
 				echo "0" > /sys/module/ump/parameters/ump_debug_level;
 				echo "0" > /sys/module/mali/parameters/mali_debug_level;
 				echo "0" > /sys/module/kernel/parameters/initcall_debug;
-				echo "0" > /sys/module/lowmemorykiller/parameters/debug_level;
+				echo "1" > /sys/module/lowmemorykiller/parameters/debug_level;
 				echo "0" > /sys/module/earlysuspend/parameters/debug_mask;
 				echo "0" > /sys/module/alarm/parameters/debug_mask;
 				echo "0" > /sys/module/alarm_dev/parameters/debug_mask;
