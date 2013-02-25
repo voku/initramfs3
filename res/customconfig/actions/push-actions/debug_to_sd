@@ -35,6 +35,7 @@ case "${debug_to_sd}" in
 			echo "1" > /sys/module/binder/parameters/debug_mask;
 			echo "1" > /sys/module/xt_qtaguid/parameters/debug_mask;
 
+			# overwrite old debug-file
 			echo "" > $DEBUG_FILE;
 			echo " --- DEBUG from "`date`" --- " >> $DEBUG_FILE;
 			echo "" >> $DEBUG_FILE;
@@ -206,7 +207,11 @@ case "${debug_to_sd}" in
 	2)
 		# logcat
 		(
+			# overwrite old debug-file
+			echo "" > $DEBUG_FILE_LOGCAT;
+
 			logcat -f $DEBUG_FILE_LOGCAT;
+
 			wait 60;
 			pkill logcat;
 			#maybe we can also grep / remove personal infos here (e.g . email address)
