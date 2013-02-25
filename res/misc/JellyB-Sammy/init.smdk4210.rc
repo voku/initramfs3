@@ -139,16 +139,17 @@ on boot
     chown root shell /dev/tspdrv
 
 on fs
-# Mount all
-    mount ext4 /res/dev/system /system noatime wait rw
+# check all
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait check_spo rw
-    exec sfsck /dev/block/mmcblk0p12 ext4
-    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait rw
     exec sfsck /dev/block/mmcblk0p1 ext4
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait check_spo rw
+    exec sfsck /dev/block/mmcblk0p12 ext4
     exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait check_spo encryptable=/efs/metadata rw
+
+# Mount all
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime journal_async_commit wait check_spo
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait check_spo
+    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
+    mount ext4 /res/dev/data /data nosuid nodev noatime discard noauto_da_alloc wait check_spo encryptable=/efs/metadata
 
     setprop ro.crypto.fuse_sdcard false
 
@@ -215,14 +216,10 @@ on fs
     chown system radio /sys/class/sec/switch/usb_sel
     chown system radio /sys/class/sec/switch/audio_path
     chown system radio /sys/class/sec/switch/otg_test
-    chown system radio /sys/class/sec/switch/adc_debounce_time
-    chown system radio /sys/class/sec/switch/status
-    chown system radio /sys/class/sec/switch/adc
-    chown system radio /mnt/.lfs/sw_sel
 
 # OTG_TEST
     chown system radio /sys/class/host_notify/usb_otg/booster
-    chmod 0664 /sys/class/host_notify/usb_otg/booster
+    chmod 0660 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
 
@@ -280,7 +277,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
 #   user wifi
 #   group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 0660 wifi wifi
+    socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
 
@@ -359,6 +356,12 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     class main
     user shell
     group log
+    oneshot
+
+# DVFS - limit cpufreq during booting sequence
+service dvfs /system/bin/sh /system/bin/dvfs.sh
+    class main
+    user root
     oneshot
 
 ## for LogMeIn
