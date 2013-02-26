@@ -152,7 +152,9 @@ on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+# critical permissions, do not remove ever.
     mkdir /data/system
+    chown media system /data/system
     chmod 0771 /data/system
 
 # Create dump dir and collect dumps.
