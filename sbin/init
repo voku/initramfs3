@@ -221,6 +221,7 @@ $BB chmod 666 /tmp/sammy_rom;
 [ "`$BB grep -i ro.build.PDA=I9100ZCLSF /system/build.prop`" ] && JBSAMMY=1;
 [ "`$BB grep -i ro.build.PDA=I9100ZCLSH /system/build.prop`" ] && JBSAMMY=1;
 [ "`$BB grep -i ro.build.PDA=I9100XWLSE /system/build.prop`" ] && JBSAMMY=1;
+[ "`$BB grep -i ro.build.PDA=I9100UHMS8 /system/build.prop`" ] && JBSAMMY=1;
 
 B2G=`$BB ls /system/b2g | wc -l`;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;

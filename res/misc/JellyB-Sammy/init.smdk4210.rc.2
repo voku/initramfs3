@@ -29,6 +29,7 @@ on early-init
     mkdir /mnt/.lfs 0755 root root
 
 on init
+insmod /lib/modules/ffu.ko
 
 # Vibetonz
 export VIBE_PIPE_PATH /dev/pipes
@@ -148,14 +149,12 @@ on fs
 # check all
     exec sfsck /res/dev/cache ext4
     exec sfsck /dev/block/mmcblk0p1 ext4
-    exec sfsck /dev/block/mmcblk0p12 ext4
     exec sfsck /res/dev/data ext4
 
 # Mount all
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime journal_async_commit wait
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
-    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
-    mount ext4 loop@/res/dev/data /data noatime nosuid nodev noauto_da_alloc wait
+    mount ext4 loop@/res/dev/data /data noatime nosuid nodev wait
 
     chmod 0771 /data/system
 
@@ -230,6 +229,8 @@ on fs
     chmod 0660 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
+#   insmod /lib/modules/exfat_core.ko
+#   insmod /lib/modules/exfat_fs.ko
 
     chown radio system /efs
     chmod 0771 /efs
@@ -364,12 +365,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     class main
     user shell
     group log
-    oneshot
-
-# DVFS - limit cpufreq during booting sequence
-service dvfs /system/bin/sh /system/bin/dvfs.sh
-    class main
-    user root
     oneshot
 
 ## for LogMeIn

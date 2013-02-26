@@ -116,22 +116,19 @@ loglevel 3
 on fs
 # mount ext4 partitions
 # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /res/dev/system /system noatime wait rw nodelalloc
-    
     # verify filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
     # make sure sdcard is mounted because we may have our data and cache partitions on it
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
     exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
-
+    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait
     exec sfsck /res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait nodelalloc
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
 
     mkdir /efs
     exec sfsck /dev/block/mmcblk0p1 ext4
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait nodelalloc
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     chown radio system /efs
     chmod 0771 /efs
     mkdir /efs/bluetooth
@@ -146,7 +143,7 @@ on fs
 
 on post-fs
 
-    # once everything is setup, no need to modify /
+# once everything is setup, no need to modify /
     mount rootfs rootfs / rw remount
 
 # We chown/chmod /cache again so because mount is run as root + defaults

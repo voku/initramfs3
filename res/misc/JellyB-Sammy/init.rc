@@ -587,11 +587,6 @@ service powersnd /system/bin/samsungpowersoundplay
     disabled
     oneshot    
 
-service bootanim-change /sbin/bootanim-change.sh
-    class core
-    user root
-    oneshot
-
 service bootanim /system/bin/bootanimation
     class main
     user graphics
@@ -675,9 +670,6 @@ service mdnsd /system/bin/mdnsd
 
 on property:ro.dumpstate.dmesg=1
     write /proc/sys/kernel/dmesg_restrict 0
-
-on property:sys.boot_completed=1
-    stop bootanim
 
 service postinit /sbin/ext/post-init.sh
     class core

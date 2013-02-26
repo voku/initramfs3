@@ -29,6 +29,7 @@ on early-init
     mkdir /mnt/.lfs 0755 root root
 
 on init
+insmod /lib/modules/ffu.ko
 
 # Vibetonz
 export VIBE_PIPE_PATH /dev/pipes
@@ -142,14 +143,10 @@ on fs
 # check all
     exec sfsck /res/dev/cache ext4
     exec sfsck /dev/block/mmcblk0p1 ext4
-    exec sfsck /dev/block/mmcblk0p12 ext4
     exec sfsck /res/dev/data ext4
 
 # Mount all
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime journal_async_commit wait check_spo
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait check_spo
-    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
-    mount ext4 /res/dev/data /data noatime nosuid nodev discard noauto_da_alloc wait check_spo encryptable=/efs/metadata
+    mount_all /fstab.smdk4210
 
     chmod 0771 /data/system
 
@@ -224,6 +221,8 @@ on fs
     chmod 0660 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
+#   insmod /lib/modules/exfat_core.ko
+#   insmod /lib/modules/exfat_fs.ko
 
     chown radio system /efs
     chmod 0771 /efs
