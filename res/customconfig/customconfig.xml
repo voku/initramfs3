@@ -594,19 +594,19 @@
 			name="GPU Voltage Levels">
 
 		<seekBar description="GPU Voltage for the first step" 
-			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="850" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the second step" 
-			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="850" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the third step" 
-			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="850" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the fourth step" 
-			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="800" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level4" action="gpu-voltage 4" unit="mV" min="850" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the fifth step" 
-			name="GPU Voltage Level5" action="gpu-voltage 5" unit="mV" min="800" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level5" action="gpu-voltage 5" unit="mV" min="850" reversed="false" step="50" max="1300"/>
 
 	</settingsPane>
 
