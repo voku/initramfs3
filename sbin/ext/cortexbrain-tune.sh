@@ -21,6 +21,9 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
+# init functions.
+sleeprun=1;
+
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
