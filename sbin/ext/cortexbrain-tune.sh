@@ -21,6 +21,9 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
+# init functions.
+sleeprun=1;
+
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
@@ -123,7 +126,7 @@ KERNEL_TWEAKS()
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
 		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 		echo "0" > /proc/sys/vm/panic_on_oom;
-		echo "30" > /proc/sys/kernel/panic;
+		echo "120" > /proc/sys/kernel/panic;
 		echo "8192" > /proc/sys/kernel/msgmax;
 		echo "5756" > /proc/sys/kernel/msgmni;
 		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
@@ -562,8 +565,7 @@ MEMORY_TWEAKS()
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "256 256" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		# must be set 8192 or more, mem stability critical value
-		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "4096" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -910,6 +912,20 @@ MALI_TIMEOUT()
 	log -p i -t $FILE_NAME "*** MALI_TIMEOUT: ${state} ***";
 }
 
+BUS_THRESHOLD()
+{
+	local state="$1";
+	if [ "${state}" == "awake" ]; then
+		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	elif [ "${state}" == "sleep" ]; then
+		echo "80" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	elif [ "${state}" == "performance" ]; then
+		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+	fi;
+
+	log -p i -t $FILE_NAME "*** BUS_THRESHOLD: ${state} ***";
+}
+
 # boost CPU power for fast and no lag wakeup
 MEGA_BOOST_CPU_TWEAKS()
 {
@@ -918,9 +934,9 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		CPU_GOV_TWEAKS "performance";
 
-		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-
 		MALI_TIMEOUT "performance";
+
+		BUS_THRESHOLD "performance";
 
 		echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -1129,11 +1145,9 @@ AWAKE_MODE()
 
 		BOOST_DELAY;
 
-		echo "100" > /proc/sys/vm/vfs_cache_pressure;
+		echo "20" > /proc/sys/vm/vfs_cache_pressure;
 
 		CPU_GOV_TWEAKS "awake";
-
-		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 		echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
 		echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
@@ -1152,6 +1166,8 @@ AWAKE_MODE()
 		fi;
 
 		MALI_TIMEOUT "awake";
+
+		BUS_THRESHOLD "awake";
 
 		log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
 	fi;
@@ -1198,6 +1214,8 @@ SLEEP_MODE()
 
 		MALI_TIMEOUT "sleep";
 
+		BUS_THRESHOLD "sleep";
+
 		KERNEL_SCHED "sleep";
 
 		NET "sleep";
@@ -1229,8 +1247,6 @@ SLEEP_MODE()
 				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				CPU_GOV_TWEAKS "sleep";
 			fi;
-
-			echo "80" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 
 			echo "$sleep_scheduler" > /sys/block/mmcblk0/queue/scheduler;
 			echo "$sleep_scheduler" > /sys/block/mmcblk1/queue/scheduler;

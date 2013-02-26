@@ -152,6 +152,10 @@ on post-fs-data
 # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+# critical permissions, do not remove ever.
+    mkdir /data/system
+    chown media system /data/system
+    chmod 0771 /data/system
 
 # Create dump dir and collect dumps.
 # Do this before we mount cache so eventually we can use cache for
@@ -585,11 +589,6 @@ service powersnd /system/bin/samsungpowersoundplay
     disabled
     oneshot    
 
-service bootanim-change /sbin/bootanim-change.sh
-    class core
-    user root
-    oneshot
-
 service bootanim /system/bin/bootanimation
     class main
     user graphics
@@ -673,9 +672,6 @@ service mdnsd /system/bin/mdnsd
 
 on property:ro.dumpstate.dmesg=1
     write /proc/sys/kernel/dmesg_restrict 0
-
-on property:sys.boot_completed=1
-    stop bootanim
 
 service postinit /sbin/ext/post-init.sh
     class core
