@@ -1040,6 +1040,13 @@
 			<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
+		<checkbox description="Enable or Disable the 'DATA turns off while screen is off' function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)."
+			name="Auto-DATA" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile" label="Force Auto-Data"/>
+
+		<seekBar description="Here you can set a delay before DATA is forced to OFF when screen is turned off. Works only if 'Auto-DATA' is Enabled! (dynamic by cortex)."
+			name="DATA Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile_sleep_delay"
+			unit="sec" min="0" reversed="false" step="30" max="300"/>
+
 		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off' function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)."
 			name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
