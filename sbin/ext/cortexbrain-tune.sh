@@ -777,12 +777,12 @@ WIFI()
 						echo "0" > ${CONFIG_DIR}/wifi_helper;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
-						if [ "$wifi_helper" == 0 ]; then
+						if [ `cat ${CONFIG_DIR}/wifi_helper` == "0" ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME;
-							if [ "$wifi_helper" == 0 ]; then
+							if [ `cat ${CONFIG_DIR}/wifi_helper` == "0" ]; then
 								# user left the screen off, then disable wifi
 								WIFI_DISABLE;
 							fi;
@@ -795,7 +795,7 @@ WIFI()
 		elif [ "${state}" == "awake" ]; then
 			WIFI_PM "awake";
 			echo "1" > ${CONFIG_DIR}/wifi_helper;
-			if [ "$wifi_helper_awake" == 1 ]; then
+			if [ `cat ${CONFIG_DIR}/wifi_helper_awake` == "1" ]; then
 				WIFI_ENABLE;
 			fi;
 		fi;
@@ -829,12 +829,12 @@ MOBILE_DATA()
 						echo "0" > ${CONFIG_DIR}/mobile_helper;
 						# screen time out but user want to keep it on and have mobile data
 						sleep 10;
-						if [ "$mobile_helper" == 0 ]; then
+						if [ `cat ${CONFIG_DIR}/mobile_helper` == "0" ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_MOBILE $cortexbrain_auto_tweak_mobile_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME;
-							if [ "$mobile_helper" == 0 ]; then
+							if [ `cat ${CONFIG_DIR}/mobile_helper` == "0" ]; then
 								# user left the screen off, then disable mobile data
 								MOBILE_DATA_DISABLE;
 							fi;
@@ -846,7 +846,7 @@ MOBILE_DATA()
 			fi;
 		elif [ "${state}" == "awake" ]; then
 			echo "1" > ${CONFIG_DIR}/mobile_helper;
-			if [ "$mobile_helper_awake" == 1 ]; then
+			if [ `cat ${CONFIG_DIR}/mobile_helper_awake` == "1" ]; then
 				MOBILE_DATA_ENABLE;
 			fi;
 		fi;
