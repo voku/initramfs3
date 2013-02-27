@@ -23,6 +23,12 @@ PIDOFCORTEX=$$;
 
 # init functions.
 sleeprun=1;
+wifi_helper_awake=1;
+TELE_DATA=`dumpsys telephony.registry`;
+mobile_helper_awake=1;
+echo 1 > /tmp/wifi_helper;
+echo 1 > /tmp/mobile_helper;
+chmod 777 -R /tmp/
 
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
@@ -673,7 +679,7 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 				echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
 				echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
 				echo 1 > /sys/kernel/mm/ksm/run;
-				renice 10 -p "`pidof ksmd`";
+				renice -n 10 -p "`pidof ksmd`";
 			;;
 			esac
 	}
@@ -727,6 +733,8 @@ WIFI_PM()
 
 		if [ "$supplicant_scan_interval" -le 180 ]; then
 			setprop wifi.supplicant_scan_interval 360;
+		else
+			setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
 		fi;
 	elif [ "${state}" == "awake" ]; then
 		#if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
@@ -741,32 +749,32 @@ WIFI_PM()
 
 WIFI_DISABLE()
 {
-	svc wifi disable;
+	service call wifi 13 i32 0 > /dev/null;
 	# not declared as local - therefore, it's global
-	wifi_helper_awake = 1;
+	wifi_helper_awake=1;
 	log -p i -t $FILE_NAME "*** WIFI ***: disabled";
 }
 
 WIFI()
 {
-	if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-		local state="$1";
-		if [ "${state}" == "sleep" ]; then
-			WIFI_PM "sleep";
+	local state="$1";
+	if [ "${state}" == "sleep" ]; then
+		WIFI_PM "sleep";
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			if [ -e /sys/module/dhd/initstate ]; then
 				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
 					WIFI_DISABLE;
 				else
 					(
-						wifi_helper = 0;
+						echo "0" > /tmp/wifi_helper;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
-						if [ "$wifi_helper" == 0 ]; then
+						if [ `cat /tmp/wifi_helper` == 0 ]; then
 							# user did not turned screen on, so keep waiting
-							SLEEP_TIME=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
+							SLEEP_TIME_WIFI=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
-							sleep $SLEEP_TIME;
-							if [ "$wifi_helper" == 0 ]; then
+							sleep $SLEEP_TIME_WIFI;
+							if [ `cat /tmp/wifi_helper` == 0 ]; then
 								# user left the screen off, then disable wifi
 								WIFI_DISABLE;
 							fi;
@@ -774,13 +782,17 @@ WIFI()
 					)&
 				fi;
 			else
-				wifi_helper_awake = 0;
+				wifi_helper_awake=0;
 			fi;
-		elif [ "${state}" == "awake" ]; then
-			WIFI_PM "awake";
-			wifi_helper = 1;
+		fi;
+	elif [ "${state}" == "awake" ]; then
+		WIFI_PM "awake";
+		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
+			echo "1" > /tmp/wifi_helper;
 			if [ "$wifi_helper_awake" == 1 ]; then
-				svc wifi enable;
+				service call wifi 13 i32 1 > /dev/null;
+				service call wifi 13 i32 1 > /dev/null;
+				service call wifi 13 i32 1 > /dev/null;
 				log -p i -t $FILE_NAME "*** WIFI ***: enabled";
 			fi;
 		fi;
@@ -791,14 +803,14 @@ MOBILE_DATA_DISABLE()
 {
 	svc data disable;
 	# not declared as local - therefore, it's global
-	mobile_helper_awake = 1;
+	mobile_helper_awake=1;
 	log -p i -t $FILE_NAME "*** MOBILE DATA ***: disabled";
 }
 
 MOBILE_DATA()
 {
+	local state="$1";
 	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
-		local state="$1";
 		if [ "${state}" == "sleep" ]; then
 			local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
 			if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
@@ -806,15 +818,15 @@ MOBILE_DATA()
 					MOBILE_DATA_DISABLE;
 				else
 					(
-						mobile_helper = 0;
+						echo "0" > /tmp/mobile_helper;
 						# screen time out but user want to keep it on and have mobile data
 						sleep 10;
-						if [ "$mobile_helper" == 0 ]; then
+						if [ `cat /tmp/mobile_helper` == 0 ]; then
 							# user did not turned screen on, so keep waiting
-							SLEEP_TIME=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
+							SLEEP_TIME_DATA=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_MOBILE $cortexbrain_auto_tweak_mobile_sleep_delay Sec Delay Mode ***";
-							sleep $SLEEP_TIME;
-							if [ "$mobile_helper" == 0 ]; then
+							sleep $SLEEP_TIME_DATA;
+							if [ `cat /tmp/mobile_helper` == 0 ]; then
 								# user left the screen off, then disable mobile data
 								MOBILE_DATA_DISABLE;
 							fi;
@@ -822,10 +834,10 @@ MOBILE_DATA()
 					)&
 				fi;
 			else
-				mobile_helper_awake = 0;
+				mobile_helper_awake=0;
 			fi;
 		elif [ "${state}" == "awake" ]; then
-			mobile_helper = 1;
+			echo "1" > /tmp/mobile_helper;
 			if [ "$mobile_helper_awake" == 1 ]; then
 				svc data enable;
 				log -p i -t $FILE_NAME "*** MOBILE DATA ***: enabled";
@@ -1087,6 +1099,7 @@ GAMMA_FIX()
 {
 	echo "$min_gamma" > /sys/class/misc/brightness_curve/min_gamma;
 	echo "$max_gamma" > /sys/class/misc/brightness_curve/max_gamma;
+	echo "$mov_hysti" > /sys/bus/i2c/devices/3-004a/mov_hysti;
 
 	log -p i -t $FILE_NAME "*** GAMMA_FIX: min: $min_gamma max: $max_gamma ***: done";
 }
@@ -1178,7 +1191,7 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-	sleeprun = 0;
+	sleeprun=0;
 
 	# we only read the config when screen goes off ...
 	PROFILE=`cat /data/.siyah/.active.profile`;
@@ -1205,7 +1218,7 @@ SLEEP_MODE()
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
 	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
-		sleeprun = 1;
+		sleeprun=1;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;

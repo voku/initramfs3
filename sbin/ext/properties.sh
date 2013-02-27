@@ -11,4 +11,5 @@ echo true >> /customkernel/property/customkernel.bootani.zip
 echo true >> /customkernel/property/customkernel.bootani.bin
 echo true >> /customkernel/property/customkernel.cwm
 echo 5.0.2.7 >> /customkernel/property/customkernel.cwm.version
+chmod 777 -R /customkernel/
 
