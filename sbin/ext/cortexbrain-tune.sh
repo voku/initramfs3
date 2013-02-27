@@ -743,7 +743,7 @@ WIFI_DISABLE()
 {
 	svc wifi disable;
 	# not declared as local - therefore, it's global
-	wifi_helper_awake = 1;
+	wifi_helper_awake=1;
 	log -p i -t $FILE_NAME "*** WIFI ***: disabled";
 }
 
@@ -758,7 +758,7 @@ WIFI()
 					WIFI_DISABLE;
 				else
 					(
-						wifi_helper = 0;
+						wifi_helper=0;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
 						if [ "$wifi_helper" == 0 ]; then
@@ -774,11 +774,11 @@ WIFI()
 					)&
 				fi;
 			else
-				wifi_helper_awake = 0;
+				wifi_helper_awake=0;
 			fi;
 		elif [ "${state}" == "awake" ]; then
 			WIFI_PM "awake";
-			wifi_helper = 1;
+			wifi_helper=1;
 			if [ "$wifi_helper_awake" == 1 ]; then
 				svc wifi enable;
 				log -p i -t $FILE_NAME "*** WIFI ***: enabled";
@@ -791,7 +791,7 @@ MOBILE_DATA_DISABLE()
 {
 	svc data disable;
 	# not declared as local - therefore, it's global
-	mobile_helper_awake = 1;
+	mobile_helper_awake=1;
 	log -p i -t $FILE_NAME "*** MOBILE DATA ***: disabled";
 }
 
@@ -806,7 +806,7 @@ MOBILE_DATA()
 					MOBILE_DATA_DISABLE;
 				else
 					(
-						mobile_helper = 0;
+						mobile_helper=0;
 						# screen time out but user want to keep it on and have mobile data
 						sleep 10;
 						if [ "$mobile_helper" == 0 ]; then
@@ -822,10 +822,10 @@ MOBILE_DATA()
 					)&
 				fi;
 			else
-				mobile_helper_awake = 0;
+				mobile_helper_awake=0;
 			fi;
 		elif [ "${state}" == "awake" ]; then
-			mobile_helper = 1;
+			mobile_helper=1;
 			if [ "$mobile_helper_awake" == 1 ]; then
 				svc data enable;
 				log -p i -t $FILE_NAME "*** MOBILE DATA ***: enabled";
