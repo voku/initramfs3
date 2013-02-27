@@ -26,15 +26,9 @@ stop tvout
 
 mkdir /efs
 # efs check and fix, do not change.
-$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'Filesystem state' | grep 'clean'" > /tmp/efs_check;
-if [ "a`cat /tmp/efs_check`" == "a" ] || [ "`cat /tmp/efs_check`" == "Filesystem state:         clean with errors" ]; then
-	$BB umount -l /efs;
-	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
-	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
-	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
-else
-	echo "efs OK" > /tmp/efs_check;
-fi;
+$BB umount -l /efs;
+$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check 2>&1;
+$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
 
 rm -rf /cache
 mkdir /cache
