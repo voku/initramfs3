@@ -15,14 +15,25 @@
 # read setting from profile
 
 # Get values from profile. since we dont have the recovery source code i cant change the .siyah dir, so just leave it there for history.
-PROFILE=`cat /data/.siyah/.active.profile`;
+CONFIG_DIR="/data/.siyah/";
+PROFILE=`cat ${CONFIG_DIR}.active.profile`;
 . /data/.siyah/$PROFILE.profile;
 
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 
-# init functions.
+# init functions
 sleeprun=1;
+
+# wifi timer helpers
+echo "0" > ${CONFIG_DIR}/wifi_helper;
+echo "0" > ${CONFIG_DIR}/wifi_helper_awake;
+chmod 777 ${CONFIG_DIR}/wifi_helper ${CONFIG_DIR}/wifi_helper_awake;
+
+# mobile timer helpers
+echo "0" > ${CONFIG_DIR}/mobile_helper;
+echo "0" > ${CONFIG_DIR}/mobile_helper_awake;
+chmod 777 ${CONFIG_DIR}/mobile_helper ${CONFIG_DIR}/mobile_helper_awake;
 
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
@@ -742,9 +753,14 @@ WIFI_PM()
 WIFI_DISABLE()
 {
 	svc wifi disable;
-	# not declared as local - therefore, it's global
-	wifi_helper_awake=1;
+	echo "1" > ${CONFIG_DIR}/wifi_helper_awake;
 	log -p i -t $FILE_NAME "*** WIFI ***: disabled";
+}
+
+WIFI_ENABLE()
+{
+	svc wifi enable;
+	log -p i -t $FILE_NAME "*** WIFI ***: enabled";
 }
 
 WIFI()
@@ -758,7 +774,7 @@ WIFI()
 					WIFI_DISABLE;
 				else
 					(
-						wifi_helper=0;
+						echo "0" > ${CONFIG_DIR}/wifi_helper;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
 						if [ "$wifi_helper" == 0 ]; then
@@ -774,14 +790,13 @@ WIFI()
 					)&
 				fi;
 			else
-				wifi_helper_awake=0;
+				echo "0" > ${CONFIG_DIR}/wifi_helper_awake;
 			fi;
 		elif [ "${state}" == "awake" ]; then
 			WIFI_PM "awake";
-			wifi_helper=1;
+			echo "1" > ${CONFIG_DIR}/wifi_helper;
 			if [ "$wifi_helper_awake" == 1 ]; then
-				svc wifi enable;
-				log -p i -t $FILE_NAME "*** WIFI ***: enabled";
+				WIFI_ENABLE;
 			fi;
 		fi;
 	fi;
@@ -790,9 +805,14 @@ WIFI()
 MOBILE_DATA_DISABLE()
 {
 	svc data disable;
-	# not declared as local - therefore, it's global
-	mobile_helper_awake=1;
+	echo "1" > ${CONFIG_DIR}/mobile_helper_awake;
 	log -p i -t $FILE_NAME "*** MOBILE DATA ***: disabled";
+}
+
+MOBILE_DATA_ENABLE()
+{
+	svc data enable;
+	log -p i -t $FILE_NAME "*** MOBILE DATA ***: enabled";
 }
 
 MOBILE_DATA()
@@ -806,7 +826,7 @@ MOBILE_DATA()
 					MOBILE_DATA_DISABLE;
 				else
 					(
-						mobile_helper=0;
+						echo "0" > ${CONFIG_DIR}/mobile_helper;
 						# screen time out but user want to keep it on and have mobile data
 						sleep 10;
 						if [ "$mobile_helper" == 0 ]; then
@@ -822,13 +842,12 @@ MOBILE_DATA()
 					)&
 				fi;
 			else
-				mobile_helper_awake=0;
+				echo "0" > ${CONFIG_DIR}/mobile_helper_awake;
 			fi;
 		elif [ "${state}" == "awake" ]; then
-			mobile_helper=1;
+			echo "1" > ${CONFIG_DIR}/mobile_helper;
 			if [ "$mobile_helper_awake" == 1 ]; then
-				svc data enable;
-				log -p i -t $FILE_NAME "*** MOBILE DATA ***: enabled";
+				MOBILE_DATA_ENABLE;
 			fi;
 		fi;
 	fi;
@@ -1178,7 +1197,7 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-	sleeprun = 0;
+	sleeprun=0;
 
 	# we only read the config when screen goes off ...
 	PROFILE=`cat /data/.siyah/.active.profile`;
@@ -1205,7 +1224,7 @@ SLEEP_MODE()
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
 	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
-		sleeprun = 1;
+		sleeprun=1;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
