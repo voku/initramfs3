@@ -32,6 +32,7 @@ if [ "$WGET_CHECK1" == 1 ] || [ "$WGET_CHECK2" == 1 ]; then
 
 			expr $version \> $OLD_VERSION >/dev/null && echo "There is a new version of this kernel available!!!" && break;
 			expr "7.10" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
+			expr "8.00" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
 		done;
 	fi;
 

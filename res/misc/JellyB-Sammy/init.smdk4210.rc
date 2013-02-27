@@ -29,7 +29,6 @@ on early-init
     mkdir /mnt/.lfs 0755 root root
 
 on init
-insmod /lib/modules/ffu.ko
 
 # Vibetonz
 export VIBE_PIPE_PATH /dev/pipes
@@ -148,8 +147,6 @@ on fs
 # Mount all
     mount_all /fstab.smdk4210
 
-    chmod 0771 /data/system
-
     setprop ro.crypto.fuse_sdcard false
 
 # for LogMeIn
@@ -215,10 +212,14 @@ on fs
     chown system radio /sys/class/sec/switch/usb_sel
     chown system radio /sys/class/sec/switch/audio_path
     chown system radio /sys/class/sec/switch/otg_test
+    chown system radio /sys/class/sec/switch/adc_debounce_time
+    chown system radio /sys/class/sec/switch/status
+    chown system radio /sys/class/sec/switch/adc
+    chown system radio /mnt/.lfs/sw_sel
 
 # OTG_TEST
     chown system radio /sys/class/host_notify/usb_otg/booster
-    chmod 0660 /sys/class/host_notify/usb_otg/booster
+    chmod 0664 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
 #   insmod /lib/modules/exfat_core.ko
