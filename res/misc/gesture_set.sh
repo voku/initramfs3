@@ -67,6 +67,7 @@ echo "
 # Detect ICS or JB - bluetooth calls are different
 case "`getprop ro.build.version.release`" in
 	4.1.* ) is_jb=1;;
+	4.2.* ) is_jb=1;;
 	* )     is_jb=0;;
 esac
 
