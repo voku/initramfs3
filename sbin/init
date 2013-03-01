@@ -5,6 +5,7 @@ BB=/sbin/busybox
 
 $BB mount -t proc proc /proc;
 $BB mount -t sysfs sysfs /sys;
+echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
 
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
@@ -35,7 +36,6 @@ $BB umount -l /storage/sdcard1;
 
 # cleaning and rebuilding the /mnt and sdcards mounts folders
 $BB rm -rf /sdcard;
-$BB rm -rf /mnt;
 $BB rm -rf /storage;
 $BB rm -rf /vendor;
 $BB rm -rf /tmp/*;
@@ -48,7 +48,7 @@ mkdir -p /mnt/obb;
 mkdir -p /mnt/secure;
 mkdir -p /mnt/tmp;
 mkdir -p /mnt/.secondrom;
-$BB chmod -R 777 /mnt/;
+$BB chmod -R 755 /mnt/;
 mkdir /preload;
 chmod 0771 /preload;
 chown system:system /preload;
@@ -73,7 +73,7 @@ $BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockwor
 
 if [ -e /mnt/tmp/.nextboot ]; then
 	NEXTBOOT=`cat /mnt/tmp/.nextboot`;
-	$BB rm /mnt/tmp/.nextboot;
+	$BB rm -f /mnt/tmp/.nextboot;
 fi;
 if [ -e /mnt/tmp/.defaultrom ]; then
 	DEFAULTROM=`cat /mnt/tmp/.defaultrom`;
@@ -85,12 +85,10 @@ NOBOOTLOGO=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
 
-# fix home button select sec rom and set as default.
-echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
 
 if [ "$SECONDROM" == "0" ]; then
 	if [ "$NOBOOTLOGO" == "0" ]; then
-		/sbin/choose_rom 0;
+		/sbin/choose_rom $SECONDROM;
 	fi;
 else
 	if [ "$NEXTBOOT" == "1" ]; then
@@ -415,7 +413,7 @@ elif [ "$B2G" == "1" ]; then
 	SECROM_FUNCTION_SAMMY;
 
 elif [ "$JBSAMMY" == "1" ]; then
-	echo "0" > /proc/sys/kernel/rom_feature_set;
+	echo "2" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
 	$BB cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
