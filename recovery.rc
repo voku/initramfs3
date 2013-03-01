@@ -9,15 +9,22 @@ on init
     export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
-    #symlink /system/etc /etc
+
 
     mkdir /emmc
     mkdir /sdcard
+    mkdir /sdcard1
     mkdir /usbdisk
     mkdir /system
     mkdir /data
     mkdir /cache
     mkdir /preload
+    mkdir /efs
+    mkdir /tmp
+
+    chown root shell /tmp
+    chmod 0775 /tmp
+
     mount /tmp /tmp tmpfs
 
 on fs
