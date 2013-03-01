@@ -6,4 +6,5 @@ elif [ -f /data/local/bootanimation.zip ] || [ -f /system/media/bootanimation.zi
 	/sbin/bootanimation
 else
 	/system/bin/samsungani
+	/system/bin/bootanimation
 fi;

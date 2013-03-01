@@ -591,7 +591,12 @@ service powersnd /system/bin/samsungpowersoundplay
     disabled
     oneshot    
 
-service bootanim /system/bin/bootanimation
+service bootanim-change /sbin/bootanim-change.sh
+    class core
+    user root
+    oneshot
+
+service bootanim /sbin/bootanimation.sh
     class main
     user graphics
     group graphics system
@@ -627,10 +632,6 @@ service iprenew_bnep0 /system/bin/dhcpcd -n
 service installd /system/bin/installd
     class main
     socket installd stream 600 system system
-
-service flash_recovery /system/etc/install-recovery.sh
-    class main
-    oneshot
 
 service racoon /system/bin/racoon
     class main
