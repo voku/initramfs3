@@ -231,17 +231,28 @@ $BB sh /res/uci.sh usb-mode ${usb_mode};
 			input keyevent 24
 		fi;
 	fi;
-)&
 
-(
-	PIDOFACORE=`pgrep -f "android.process.acore"`;
-	for i in $PIDOFACORE; do
-		echo "-800" > /proc/${i}/oom_score_adj;
-		log -p i -t boot "*** do not kill -> android.process.acore ***";
+	# ###############################################################
+	# I/O related tweaks
+	# ###############################################################
+	DM=`ls -d /sys/block/dm*`;
+
+	for i in $DM; do
+
+		if [ -e $i/queue/rotational ]; then
+			echo "0" > $i/queue/rotational;
+		fi;
+
+		if [ -e $i/queue/iostats ]; then
+			echo "0" > $i/queue/iostats;
+		fi;
 	done;
 
-	# run partitions tune after full boot
-	/sbin/ext/partitions-tune.sh
+	mount -o remount,rw /system;
+	mount -o remount,rw /;
+
+	# correct touch keys light, if rom mess user configuration
+	/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
 
 	echo "Done Booting" > /data/dm-boot-check;
 	date >> /data/dm-boot-check;
