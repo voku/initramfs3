@@ -12,23 +12,22 @@
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT.
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
-# read setting from profile
-
-# Get values from profile. since we dont have the recovery source code i cant change the .siyah dir, so just leave it there for history.
-PROFILE=`cat /data/.siyah/.active.profile`;
-. /data/.siyah/$PROFILE.profile;
-
+# init
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
-
-# init functions.
+DATA_DIR="/data/.siyah";
 sleeprun=1;
 wifi_helper_awake=1;
-TELE_DATA=`dumpsys telephony.registry`;
 mobile_helper_awake=1;
 echo 1 > /tmp/wifi_helper;
 echo 1 > /tmp/mobile_helper;
 chmod 777 -R /tmp/
+
+# get values from profile
+# 
+# (Since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history.)
+PROFILE=`cat ${DATA_DIR}/.active.profile`;
+. ${DATA_DIR}/${PROFILE}.profile;
 
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
@@ -901,7 +900,7 @@ MOUNT_SD_CARD()
 # set delay to prevent mp3-music shattering when screen turned ON
 DELAY()
 {
-	if [ ! -e /data/.siyah/booting ]; then
+	if [ ! -e ${DATA_DIR}/booting ]; then
 		if [ "$wakeup_delay" != 0 ]; then
 			log -p i -t $FILE_NAME "*** DELAY ${delay}sec ***";
 			sleep $wakeup_delay;
@@ -976,8 +975,8 @@ MEGA_BOOST_CPU_TWEAKS()
 
 BOOST_DELAY()
 {
-	# check if ROM booting now, then don't wait - creation and deletion of /data/.siyah/booting @> /sbin/ext/post-init.sh
-	if [ "$wakeup_boost" != 0 ] && [ ! -e /data/.siyah/booting ]; then
+	# check if ROM booting now, then don't wait - creation and deletion of ${DATA_DIR}/booting @> /sbin/ext/post-init.sh
+	if [ "$wakeup_boost" != 0 ] && [ ! -e ${DATA_DIR}/booting ]; then
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_DELAY ${wakeup_boost}sec ***";
 		sleep $wakeup_boost;
 	fi;
@@ -1194,8 +1193,8 @@ SLEEP_MODE()
 	sleeprun=0;
 
 	# we only read the config when screen goes off ...
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
+	PROFILE=`cat ${DATA_DIR}/.active.profile`;
+	. ${DATA_DIR}/${PROFILE}.profile;
 
 	DELAY;
 
