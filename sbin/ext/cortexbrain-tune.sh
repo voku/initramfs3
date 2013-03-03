@@ -10,6 +10,7 @@
 # Alucard_24@xda
 
 # TAKE NOTE THAT LINES PRECEDED BY A "#" IS COMMENTED OUT.
+#
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
 # init
@@ -17,15 +18,20 @@ FILE_NAME=$0;
 PIDOFCORTEX=$$;
 DATA_DIR="/data/.siyah";
 sleeprun=1;
+
 wifi_helper_awake=1;
+wifi_helper_tmp="/tmp/wifi_helper";
+echo 1 > $wifi_helper_tmp;
+
 mobile_helper_awake=1;
-echo 1 > /tmp/wifi_helper;
-echo 1 > /tmp/mobile_helper;
+mobile_helper_tmp="/tmp/mobile_helper";
+echo 1 > $mobile_helper_tmp;
+
 chmod 777 -R /tmp/
 
 # get values from profile
 # 
-# (Since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history.)
+# (since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history)
 PROFILE=`cat ${DATA_DIR}/.active.profile`;
 . ${DATA_DIR}/${PROFILE}.profile;
 
@@ -746,36 +752,47 @@ WIFI_PM()
 	log -p i -t $FILE_NAME "*** WIFI_PM ***: ${state}";
 }
 
-WIFI_DISABLE()
+WIFI_SET()
 {
-	service call wifi 13 i32 0 > /dev/null;
-	# not declared as local - therefore, it's global
-	wifi_helper_awake=1;
-	log -p i -t $FILE_NAME "*** WIFI ***: disabled";
+	local state="$1";
+	
+	if [ "${state}" == "off" ]; then
+		service call wifi 13 i32 0 > /dev/null;
+		# not declared as local - therefore, it's global
+		wifi_helper_awake=1;
+	elif [ "${state}" == "on" ]; then
+		service call wifi 13 i32 1 > /dev/null;
+		service call wifi 13 i32 1 > /dev/null;
+		service call wifi 13 i32 1 > /dev/null;
+		service call wifi 13 i32 1 > /dev/null;
+	fi;
+
+	log -p i -t $FILE_NAME "*** WIFI ***: ${state}";
 }
 
 WIFI()
 {
 	local state="$1";
+
 	if [ "${state}" == "sleep" ]; then
 		WIFI_PM "sleep";
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			if [ -e /sys/module/dhd/initstate ]; then
 				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
-					WIFI_DISABLE;
+					WIFI_SET "off";
 				else
 					(
-						echo "0" > /tmp/wifi_helper;
+						echo "0" > $wifi_helper_tmp;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
-						if [ `cat /tmp/wifi_helper` == 0 ]; then
+						if [ `cat $wifi_helper_tmp` == 0 ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME_WIFI=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME_WIFI;
-							if [ `cat /tmp/wifi_helper` == 0 ]; then
+							if [ `cat $wifi_helper_tmp` == 0 ]; then
 								# user left the screen off, then disable wifi
-								WIFI_DISABLE;
+								WIFI_SET "off";
 							fi;
 						fi;
 					)&
@@ -787,23 +804,27 @@ WIFI()
 	elif [ "${state}" == "awake" ]; then
 		WIFI_PM "awake";
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
-			echo "1" > /tmp/wifi_helper;
+			echo "1" > $wifi_helper_tmp;
 			if [ "$wifi_helper_awake" == 1 ]; then
-				service call wifi 13 i32 1 > /dev/null;
-				service call wifi 13 i32 1 > /dev/null;
-				service call wifi 13 i32 1 > /dev/null;
-				log -p i -t $FILE_NAME "*** WIFI ***: enabled";
+				WIFI_SET "on";
 			fi;
 		fi;
 	fi;
 }
 
-MOBILE_DATA_DISABLE()
+MOBILE_DATA_SET()
 {
-	svc data disable;
-	# not declared as local - therefore, it's global
-	mobile_helper_awake=1;
-	log -p i -t $FILE_NAME "*** MOBILE DATA ***: disabled";
+	local state="$1";
+
+	if [ "${state}" == "off" ]; then
+		svc data disable;
+		# not declared as local - therefore, it's global
+		mobile_helper_awake=1;
+	elif [ "${state}" == "on" ]; then
+		svc data enable;
+	fi;
+
+	log -p i -t $FILE_NAME "*** MOBILE DATA ***: ${state}";
 }
 
 MOBILE_DATA()
@@ -814,20 +835,20 @@ MOBILE_DATA()
 			local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
 			if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
 				if [ "$cortexbrain_auto_tweak_mobile_sleep_delay" == 0 ]; then
-					MOBILE_DATA_DISABLE;
+					MOBILE_DATA_SET "off";
 				else
 					(
-						echo "0" > /tmp/mobile_helper;
+						echo "0" > $mobile_helper_tmp;
 						# screen time out but user want to keep it on and have mobile data
 						sleep 10;
-						if [ `cat /tmp/mobile_helper` == 0 ]; then
+						if [ `cat $mobile_helper_tmp` == 0 ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME_DATA=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_MOBILE $cortexbrain_auto_tweak_mobile_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME_DATA;
-							if [ `cat /tmp/mobile_helper` == 0 ]; then
+							if [ `cat $mobile_helper_tmp` == 0 ]; then
 								# user left the screen off, then disable mobile data
-								MOBILE_DATA_DISABLE;
+								MOBILE_DATA_SET "off";
 							fi;
 						fi;
 					)&
@@ -836,10 +857,9 @@ MOBILE_DATA()
 				mobile_helper_awake=0;
 			fi;
 		elif [ "${state}" == "awake" ]; then
-			echo "1" > /tmp/mobile_helper;
+			echo "1" > $mobile_helper_tmp;
 			if [ "$mobile_helper_awake" == 1 ]; then
-				svc data enable;
-				log -p i -t $FILE_NAME "*** MOBILE DATA ***: enabled";
+				MOBILE_DATA_SET "on";
 			fi;
 		fi;
 	fi;
@@ -848,16 +868,19 @@ MOBILE_DATA()
 LOGGER()
 {
 	local state="$1";
+	local dev_log_sleep="/dev/log-sleep";
+	local dev_log="/dev/log";
+
 	if [ "${state}" == "awake" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == debug ]; then
-			if [ -e /dev/log-sleep ] && [ ! -e /dev/log ]; then
-				mv /dev/log-sleep/ /dev/log/
+			if [ -e $dev_log_sleep ] && [ ! -e $dev_log ]; then
+				mv $dev_log_sleep $dev_log
 			fi;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == disabled ]; then
-			if [ -e /dev/log ]; then
-				mv /dev/log/ /dev/log-sleep/;
+			if [ -e $dev_log ]; then
+				mv $dev_log $dev_log_sleep;
 			fi;
 		fi;
 	fi;
@@ -868,6 +891,7 @@ LOGGER()
 GESTURES()
 {
 	local state="$1";
+
 	if [ "${state}" == "awake" ]; then
 		if [ "$gesture_tweak" == on ]; then
 			pkill -f "/data/gesture_set.sh";
@@ -906,12 +930,14 @@ DELAY()
 			sleep $wakeup_delay;
 		fi;
 	fi;
+
 	log -p i -t $FILE_NAME "*** NO DELAY ***";
 }
 
 MALI_TIMEOUT()
 {
 	local state="$1";
+
 	if [ "${state}" == "awake" ]; then
 		echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "${state}" == "sleep" ]; then
@@ -926,6 +952,7 @@ MALI_TIMEOUT()
 BUS_THRESHOLD()
 {
 	local state="$1";
+
 	if [ "${state}" == "awake" ]; then
 		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "${state}" == "sleep" ]; then
@@ -935,6 +962,40 @@ BUS_THRESHOLD()
 	fi;
 
 	log -p i -t $FILE_NAME "*** BUS_THRESHOLD: ${state} ***";
+}
+
+VFS_CACHE_PRESSURE()
+{
+	local state="$1";
+	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
+
+	if [ "${state}" == "awake" ]; then
+		echo "20" > $sys_vfs_cache;
+	elif [ "${state}" == "sleep" ]; then
+		echo "20" > $sys_vfs_cache;
+	fi;
+
+	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
+}
+
+TWEAK_HOTPLUG_LOAD()
+{
+	local state="$1";
+	local sys_load_h0="/sys/module/stand_hotplug/parameters/load_h0";
+	local sys_load_l1="/sys/module/stand_hotplug/parameters/load_l1";
+
+	if [ "${state}" == "awake" ]; then
+		echo "$load_h0" > $sys_load_h0;
+		echo "$load_l1" > $sys_load_l1;
+	elif [ "${state}" == "sleep" ]; then
+		echo "50" > $sys_load_h0;
+		echo "50" > $sys_load_h1;
+	elif [ "${state}" == "performance" ]; then
+		echo "20" > $sys_load_h0;
+		echo "20" > $sys_load_l1;
+	fi;
+
+	log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_LOAD: ${state} ***";
 }
 
 # boost CPU power for fast and no lag wakeup
@@ -949,8 +1010,7 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		BUS_THRESHOLD "performance";
 
-		echo "20" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "20" > /sys/module/stand_hotplug/parameters/load_l1;
+		TWEAK_HOTPLUG_LOAD "performance";
 
 		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
@@ -986,6 +1046,7 @@ BOOST_DELAY()
 SWAPPINESS()
 {
 	local SWAP_CHECK=`free | grep Swap | awk '{ print $2 }'`;
+
 	if [ "$SWAP_CHECK" == 0 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
 	else
@@ -1000,6 +1061,7 @@ IPV6()
 {
 	local CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
 	local state='';
+
 	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
 		sysctl -w net.ipv6.conf.all.disable_ipv6=0;
@@ -1106,13 +1168,31 @@ GAMMA_FIX()
 ENABLEMASK()
 {
 	local state="$1";
+
 	if [ "${state}" == "awake" ]; then
 		echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 	elif [ "${state}" == "sleep" ]; then
 		echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
 	fi;
 
-	log -p i -t $FILE_NAME "*** ENABLEMASK ${state} ***: done";
+	log -p i -t $FILE_NAME "*** ENABLEMASK: ${state} ***: done";
+}
+
+IO_SCHEDULER()
+{
+	local state="$1";
+	local sys_mmc0_scheduler="/sys/block/mmcblk0/queue/scheduler";
+	local sys_mmc1_scheduler="/sys/block/mmcblk1/queue/scheduler";
+
+	if [ "${state}" == "awake" ]; then
+		echo "$scheduler" > $sys_mmc0_scheduler;
+		echo "$scheduler" > $sys_mmc1_scheduler;
+	elif [ "${state}" == "sleep" ]; then
+		echo "$sleep_scheduler" > $sys_mmc0_scheduler;
+		echo "$sleep_scheduler" > $sys_mmc1_scheduler;
+	fi;
+
+	log -p i -t $FILE_NAME "*** IO_SCHEDULER: ${state} ***: done";	
 }
 
 # ==============================================================
@@ -1134,8 +1214,7 @@ AWAKE_MODE()
 
 		MEGA_BOOST_CPU_TWEAKS;
 
-		echo "$scheduler" > /sys/block/mmcblk0/queue/scheduler;
-		echo "$scheduler" > /sys/block/mmcblk1/queue/scheduler;
+		IO_SCHEDULER "awake";
 
 		WIFI "awake";
 
@@ -1157,12 +1236,11 @@ AWAKE_MODE()
 
 		BOOST_DELAY;
 
-		echo "20" > /proc/sys/vm/vfs_cache_pressure;
+		VFS_CACHE_PRESSURE "awake";
 
 		CPU_GOV_TWEAKS "awake";
 
-		echo "$load_h0" > /sys/module/stand_hotplug/parameters/load_h0;
-		echo "$load_l1" > /sys/module/stand_hotplug/parameters/load_l1;
+		TWEAK_HOTPLUG_LOAD "awake";
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -1260,13 +1338,11 @@ SLEEP_MODE()
 				CPU_GOV_TWEAKS "sleep";
 			fi;
 
-			echo "$sleep_scheduler" > /sys/block/mmcblk0/queue/scheduler;
-			echo "$sleep_scheduler" > /sys/block/mmcblk1/queue/scheduler;
+			IO_SCHEDULER "sleep";
 
-			echo "50" > /sys/module/stand_hotplug/parameters/load_h0;
-			echo "50" > /sys/module/stand_hotplug/parameters/load_l1;
+			TWEAK_HOTPLUG_LOAD "sleep";
 
-			echo "10" > /proc/sys/vm/vfs_cache_pressure; # default: 100
+			VFS_CACHE_PRESSURE "sleep";
 		
 			WIFI "sleep";
 
