@@ -330,7 +330,6 @@ PARTITION_TUNING()
 USER_ACTIONS()
 {
 	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ] || [ "$JBSAMMY" == "1" ]; then
-		echo "JB-INSTALLED" > /sbin/ext/jb-installed; # used and terminated at /sbin/ext/partition_tune.sh
 		stop adbd;
 
 		if [ "$JBSAMMY" == "0" ]; then

@@ -186,11 +186,11 @@
 		<seekBar description="CPU Voltage for 200 MHz. (Default: 950 mV)"
 			name="CPU Voltage 200 MHz" action="cpu-voltage 23" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
-		<seekBar description="CPU Voltage for 150 MHz. (Default: 925 mV)"
-			name="CPU Voltage 150 MHz" action="cpu-voltage 24" unit="mV" min="825" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 150 MHz. (Default: 950 mV)"
+			name="CPU Voltage 150 MHz" action="cpu-voltage 24" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
-		<seekBar description="CPU Voltage for 100 MHz. (Default: 925 mV)"
-			name="CPU Voltage 100 MHz" action="cpu-voltage 25" unit="mV" min="825" reversed="false" step="25" max="1025"/>
+		<seekBar description="CPU Voltage for 100 MHz. (Default: 950 mV)"
+			name="CPU Voltage 100 MHz" action="cpu-voltage 25" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 	</settingsPane>
 
