@@ -771,19 +771,19 @@
 
 	</settingsPane>
 
-	<settingsPane description="More headphone amplification + speaker amplification + Mic gain" name="Volume Levels and Gain Control">
+	<settingsPane description="Master Analog gain + headphone amplification + speaker amplification + Mic gain" name="Volume Levels and Gain Control">
+
+		<seekBar description="Master volume, gain power level, affect all channels"
+			name="Master volume gain" action="sound_volume 4" unit="dB" min="-6" reversed="false" step="1" max="6"/>
 
 		<seekBar description="Headphone amplification level"
-			name="Analog headphone level" action="sound_volume 1" unit="dB" min="-12" reversed="false" step="4" max="20"/>
-
-		<seekBar description="Headphone gain power level"
-			name="Analog headphone gain" action="sound_volume 4" unit="dB" min="-6" reversed="false" step="1" max="6"/>
+			name="Headphone volume level" action="sound_volume 1" unit="dB" min="-12" reversed="false" step="4" max="20"/>
 
 		<seekBar description="Analog Mic gain level"
-			name="Mic gain Level" action="sound_volume 2" unit="dB" min="-12" reversed="false" step="4" max="12"/>
+			name="Mic volume Level" action="sound_volume 2" unit="dB" min="-12" reversed="false" step="4" max="12"/>
 
 		<seekBar description="Analog speaker level"
-			name="Speaker level" action="sound_volume 3" unit="dB" min="-8" reversed="false" step="4" max="20"/>
+			name="Speaker volume level" action="sound_volume 3" unit="dB" min="-8" reversed="false" step="4" max="20"/>
 
 	</settingsPane>
 
