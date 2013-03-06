@@ -77,7 +77,6 @@
 /dev/bus/usb/*            0660   root       usb
 /dev/mtp_usb              0660   root       mtp
 /dev/usb_accessory        0660   root       usb
-/dev/usb/lp*              0660   system     usb
 /dev/tun                  0660   system     vpn
 
 # CDMA radio interface MUX
@@ -97,7 +96,6 @@
 /sys/devices/system/cpu/cpufreq ondemand/down_differential   0664    system  system
 /sys/devices/system/cpu/cpufreq ondemand/powersave_bias  0664    system  system
 /sys/devices/system/cpu/cpufreq ondemand/sampling_down_factor    0664    system  system
-/sys/devices/system/cpu/cpufreq ondemand/up_threshold   0664    system  system
 
 /sys/devices/system/cpu/cpufreq interactive/boostpulse  0664    system  system
 /sys/devices/system/cpu/cpufreq interactive/timer_rate  0664    system  system
