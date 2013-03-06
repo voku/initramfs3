@@ -11,6 +11,7 @@ on post-fs-data
     chmod 0771 /cache/dalvik-cache
 
 on boot
+# Run sysinit
     start sysinit
 
     chown system system /sys/block/mmcblk0/queue/scheduler

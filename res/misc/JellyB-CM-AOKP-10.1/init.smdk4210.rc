@@ -387,8 +387,3 @@ service bdaddr /system/bin/bdaddr_read
     disabled
     oneshot
 
-# TVout
-service TvoutService_C /system/bin/bintvoutservice
-    class main
-    user system
-    group graphics
