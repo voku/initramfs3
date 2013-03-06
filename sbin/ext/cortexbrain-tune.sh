@@ -261,7 +261,7 @@ CPU_GOV_TWEAKS()
 		fi;
 		local up_threshold_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_at_min_freq";
 		if [ ! -e $up_threshold_at_min_freq_tmp ]; then
-			local up_threshold_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq";
+			up_threshold_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_min_freq";
 			if [ ! -e $up_threshold_at_min_freq_tmp ]; then
 				up_threshold_at_min_freq_tmp="/dev/null";
 			fi;
@@ -288,7 +288,7 @@ CPU_GOV_TWEAKS()
 		fi;
 		local freq_for_responsiveness_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_responsiveness";
 		if [ ! -e $freq_for_responsiveness_tmp ]; then
-			local freq_for_responsiveness_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness";
+			freq_for_responsiveness_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_responsiveness";
 			if [ ! -e $freq_for_responsiveness_tmp ]; then
 				freq_for_responsiveness_tmp="/dev/null";
 			fi;
@@ -1093,13 +1093,13 @@ AWAKE_MODE()
 
 		NET "awake";
 
-		MEGA_BOOST_CPU_TWEAKS;
-
-		IO_SCHEDULER "awake";
+		MOBILE_DATA "awake";
 
 		WIFI "awake";
 
-		MOBILE_DATA "awake";
+		MEGA_BOOST_CPU_TWEAKS;
+
+		IO_SCHEDULER "awake";
 
 		GESTURES "awake";
 
@@ -1191,6 +1191,10 @@ SLEEP_MODE()
 
 		NET "sleep";
 
+		WIFI "sleep";
+
+		MOBILE_DATA "sleep";
+
 		GESTURES "sleep";
 
 		IPV6;
@@ -1225,10 +1229,6 @@ SLEEP_MODE()
 
 			VFS_CACHE_PRESSURE "sleep";
 		
-			WIFI "sleep";
-
-			MOBILE_DATA "sleep";
-
 			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 
 			LOGGER "sleep";
