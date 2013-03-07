@@ -36,12 +36,6 @@ fi;
 
 $BB chmod -R 0777 /data/.siyah/;
 
-# for dev testing
-PROFILES=`$BB ls -A1 /data/.siyah/*.profile`;
-for p in $PROFILES; do
-cp $p $p.test;
-done;
-
 . /res/customconfig/customconfig-helper;
 read_defaults;
 read_config;
@@ -49,6 +43,13 @@ read_config;
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 echo "400000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+
+if [ -e /sdcard/.secondrom/data.img ]; then
+	mkdir /data_sec_rom;
+	chmod 777 /data_sec_rom;
+	losetup /dev/block/loop0 /sdcard/.secondrom/data.img;
+	mount -t ext4 /dev/block/loop0 /data_sec_rom;
+fi;
 
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
