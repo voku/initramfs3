@@ -205,6 +205,7 @@ JELLY=0;
 AOSP=1;
 S4A=0;
 JBSAMMY=0;
+JBSAMMY2=0;
 CM_AOKP_10_JB=0;
 CM_AOKP_10_JB_CARBON=0;
 $BB echo "0" > /tmp/sammy_rom;
@@ -213,16 +214,9 @@ $BB chmod 666 /tmp/sammy_rom;
 [ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 [ "`$BB grep -i android-htc-rev /system/build.prop`" ] && S4A=1;
 [ "`$BB grep -i ro.carbon.version= /system/build.prop`" ] && CM_AOKP_10_JB_CARBON=1;
-[ "`$BB grep -i ro.build.PDA=I9100XXLSJ /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLS8 /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLSD /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100JHLS4 /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XXMS1 /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100ZCLSF /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100ZCLSH /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100XWLSE /system/build.prop`" ] && JBSAMMY=1;
-[ "`$BB grep -i ro.build.PDA=I9100UHMS8 /system/build.prop`" ] && JBSAMMY=1;
 
+JBSAMMY=`ls /system/lib/libSamsungAnimation.so | wc -l`;
+JBSAMMY2=`ls /system/lib/lib_Samsung_Resampler.so | wc -l`;
 B2G=`$BB ls /system/b2g | wc -l`;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
 # has to be negative! for SAMMY ICS ROM to get his init files.
@@ -427,7 +421,7 @@ elif [ "$B2G" == "1" ]; then
 
 	SECROM_FUNCTION_SAMMY;
 
-elif [ "$JBSAMMY" == "1" ]; then
+elif [ "$JBSAMMY" == "1" ] || [ "$JBSAMMY2" == "1" ]; then
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	echo "2" > /proc/sys/kernel/rom_feature_set;
