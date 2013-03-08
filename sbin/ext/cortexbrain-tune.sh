@@ -20,11 +20,11 @@ DATA_DIR="/data/.siyah";
 TELE_DATA=`dumpsys telephony.registry`;
 sleeprun=1;
 
-wifi_helper_awake=1;
+wifi_helper_awake="$DATA_DIR/wifi_helper_awake";
 wifi_helper_tmp="$DATA_DIR/wifi_helper";
 echo 1 > $wifi_helper_tmp;
 
-mobile_helper_awake=1;
+mobile_helper_awake="$DATA_DIR/mobile_helper_awake";
 mobile_helper_tmp="$DATA_DIR/mobile_helper";
 echo 1 > $mobile_helper_tmp;
 
@@ -639,8 +639,7 @@ WIFI_SET()
 	
 	if [ "${state}" == "off" ]; then
 		service call wifi 13 i32 0 > /dev/null;
-		# not declared as local - therefore, it's global
-		wifi_helper_awake=1;
+		echo "1" > $wifi_helper_awake;
 	elif [ "${state}" == "on" ]; then
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
@@ -679,14 +678,14 @@ WIFI()
 					)&
 				fi;
 			else
-				wifi_helper_awake=0;
+				echo "0" > $wifi_helper_awake;
 			fi;
 		fi;
 	elif [ "${state}" == "awake" ]; then
 		WIFI_PM "awake";
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			echo "1" > $wifi_helper_tmp;
-			if [ "$wifi_helper_awake" == 1 ]; then
+			if [ `cat $wifi_helper_awake` == 1 ]; then
 				WIFI_SET "on";
 			fi;
 		fi;
@@ -699,8 +698,7 @@ MOBILE_DATA_SET()
 
 	if [ "${state}" == "off" ]; then
 		svc data disable;
-		# not declared as local - therefore, it's global
-		mobile_helper_awake=1;
+		echo "1" > $mobile_helper_awake;
 	elif [ "${state}" == "on" ]; then
 		svc data enable;
 	fi;
@@ -735,11 +733,11 @@ MOBILE_DATA()
 					)&
 				fi;
 			else
-				mobile_helper_awake=0;
+				echo "0" > $mobile_helper_awake;
 			fi;
 		elif [ "${state}" == "awake" ]; then
 			echo "1" > $mobile_helper_tmp;
-			if [ "$mobile_helper_awake" == 1 ]; then
+			if [ `cat $mobile_helper_awake` == 1 ]; then
 				MOBILE_DATA_SET "on";
 			fi;
 		fi;
