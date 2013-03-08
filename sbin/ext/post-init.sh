@@ -44,13 +44,6 @@ read_config;
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 echo "400000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
-if [ -e /sdcard/.secondrom/data.img ]; then
-	mkdir /data_sec_rom;
-	chmod 777 /data_sec_rom;
-	losetup /dev/block/loop0 /sdcard/.secondrom/data.img;
-	mount -t ext4 /dev/block/loop0 /data_sec_rom;
-fi;
-
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
 	. /sbin/ext/mdnie-sharpness-tweak.sh;
@@ -208,6 +201,24 @@ $BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
 
 # change USB mode MTP or Mass Storage
 $BB sh /res/uci.sh usb-mode ${usb_mode};
+
+(
+	# Mount Sec ROM DATA on Boot, we need to wait till sdcard is mounted.
+	if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
+		sleep 10;
+		mount -o remount,rw /
+		mkdir /data_sec_rom;
+		chmod 777 /data_sec_rom;
+		FREE_LOOP=`losetup -f`;
+		if [ -e /sdcard/.secondrom/data.img ]; then
+			DATA_IMG=/sdcard/.secondrom/data.img
+		elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
+			DATA_IMG=/storage/sdcard0/.secondrom/data.img
+		fi;
+		losetup $FREE_LOOP $DATA_IMG;
+		mount -t ext4 $FREE_LOOP /data_sec_rom;
+	fi;
+)&
 
 (
 	# ###############################################################
