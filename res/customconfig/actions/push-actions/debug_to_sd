@@ -176,9 +176,18 @@ case "${debug_to_sd}" in
 			SEPARATOR;
 
 			# Processes
-			echo "Process-Info:" >> $DEBUG_FILE;
+			echo "Process-Info: top" >> $DEBUG_FILE;
 			top -b -n 1 >> $DEBUG_FILE;
+			SEPARATOR;
+
+			echo "Process-Info: ps" >> $DEBUG_FILE;
 			ps -w >> $DEBUG_FILE;
+			SEPARATOR;
+
+			echo "Process-Info: nice (priority)" >> $DEBUG_FILE;
+			for z in `ls /proc/*/stat`; do 
+				tmp=`cat $z` && echo $tmp | cut -f 2 -d ' ' >> $DEBUG_FILE && echo $tmp | cut -f 19 -d ' ' >> $DEBUG_FILE && echo " " >> $DEBUG_FILE;
+			done;
 			SEPARATOR;
 
 			# dmesg
@@ -189,6 +198,14 @@ case "${debug_to_sd}" in
 			echo "dmesg-Error:" >> $DEBUG_FILE;
 			dmesg | grep -i "Error" >> $DEBUG_FILE;
 			SEPARATOR;
+
+			echo "dmesg-Warning:" >> $DEBUG_FILE;
+			dmesg | grep -i "Warning" >> $DEBUG_FILE;
+			SEPARATOR;
+
+			echo "dmesg-Fail:" >> $DEBUG_FILE;
+			dmesg | grep -i "Fail" >> $DEBUG_FILE;
+			SEPARATOR;                               			
 
 			if [ "$logger" == "off" ]; then 
 				echo "0" > /sys/module/ump/parameters/ump_debug_level;
