@@ -1,7 +1,6 @@
 import init.smdk4210.usb.rc
 
 on init
-    insmod /lib/modules/ffu.ko
     export EXTERNAL_STORAGE /storage/sdcard0
     export SECONDARY_STORAGE /storage/sdcard1
     mkdir /storage 0775 system system
