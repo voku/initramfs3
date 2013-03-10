@@ -13,6 +13,9 @@ for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;
 done;
 
+# protect init from oom
+echo "1000" > /proc/1/oom_score_adj;
+
 if [ ! -d /data/.siyah ]; then
 	$BB mkdir -p /data/.siyah;
 fi;
@@ -161,11 +164,51 @@ $BB sh /sbin/ext/properties.sh;
 	# custom boot booster
 	while [ "`cat /tmp/uci_done`" != "1" ]; do
 		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "400000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
-		sleep 20;
+		sleep 10;
 	done;
+
+	# give home launcher, oom protection
+	HOME_APP=`pgrep launcher`;
+	ACORE_APPS=`pgrep acore`;
+
+	if [ "a$HOME_APP" != "a" ]; then
+		for h in `pgrep launcher`; do
+			echo "900" > /proc/$h/oom_score_adj;
+		done;
+	fi;
+
+	if [ "a$ACORE_APPS" != "a" ]; then
+		for c in `pgrep acore`; do
+			echo "900" > /proc/$c/oom_score_adj;
+		done;
+	fi;
+
+	# Mount Sec ROM DATA on Boot, we need to wait till sdcard is mounted.
+	if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
+		mount -o remount,rw /
+		mkdir /data_sec_rom;
+		chmod 777 /data_sec_rom;
+		FREE_LOOP=`losetup -f`;
+		if [ -e /sdcard/.secondrom/data.img ]; then
+			DATA_IMG=/sdcard/.secondrom/data.img
+		elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
+			DATA_IMG=/storage/sdcard0/.secondrom/data.img
+		fi;
+		if [ "a$FREE_LOOP" == "a" ]; then
+			mknod /dev/block/loop99 b 7 99
+			FREE_LOOP=/dev/block/loop99
+		fi;
+		losetup $FREE_LOOP $DATA_IMG;
+		mount -t ext4 $FREE_LOOP /data_sec_rom;
+	fi;
+
+	# restore all the PUSH Button Actions back to there location
+	$BB mount -o remount,rw rootfs;
+	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
+	pkill -f "com.gokhanmoral.stweaks.app";
 
 	# restore normal freq.
 	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -190,34 +233,14 @@ pkill -f "com.gokhanmoral.stweaks.app";
 nohup $BB sh /res/uci.sh restore;
 echo "1" > /tmp/uci_done;
 
-# restore all the PUSH Button Actions back to there location
-$BB mount -o remount,rw rootfs;
-$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-pkill -f "com.gokhanmoral.stweaks.app";
-$BB rm -f /data/.siyah/booting;
-
-# update cpu tunig after profiles load
-$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
-
 # change USB mode MTP or Mass Storage
 $BB sh /res/uci.sh usb-mode ${usb_mode};
 
 (
-	# Mount Sec ROM DATA on Boot, we need to wait till sdcard is mounted.
-	if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
-		sleep 10;
-		mount -o remount,rw /
-		mkdir /data_sec_rom;
-		chmod 777 /data_sec_rom;
-		FREE_LOOP=`losetup -f`;
-		if [ -e /sdcard/.secondrom/data.img ]; then
-			DATA_IMG=/sdcard/.secondrom/data.img
-		elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
-			DATA_IMG=/storage/sdcard0/.secondrom/data.img
-		fi;
-		losetup $FREE_LOOP $DATA_IMG;
-		mount -t ext4 $FREE_LOOP /data_sec_rom;
-	fi;
+	sleep 20;
+	# update cpu tunig after profiles load
+	$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
+	$BB rm -f /data/.siyah/booting;
 )&
 
 (
