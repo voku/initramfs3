@@ -80,6 +80,9 @@ $BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockwork
 sync;
 $BB umount -l /mnt/tmp;
 
+# set ROOT perm for /sbin/busybox
+$BB chmod 6755 /sbin/busybox;
+
 # Start ROM VM boot!
 start;
 
