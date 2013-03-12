@@ -100,10 +100,6 @@
 			name="scaling_min_standby_freq" action="generic_cortex_freq /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="For developer debug only! You can add small delay to cortex wakeup/sleep script. This will delay all function changes and the wakeup! (Default: 0)" 
-			name="Cortex Wakeup Delay" action="generic_cortex /tmp/wakeup_delay"
-			unit="Sec" min="0" reversed="false" step="1" max="5"/>
-
 	</settingsPane>
 
 </settingsTab>

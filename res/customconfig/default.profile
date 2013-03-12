@@ -19,7 +19,6 @@ busfreq_up_threshold=25
 scaling_max_suspend_freq=600000
 scaling_min_suspend_freq=200000
 standby_freq=200000
-wakeup_delay=0
 cpu_voltage_switch=off
 CPUVOLT1=1400
 CPUVOLT2=1375
