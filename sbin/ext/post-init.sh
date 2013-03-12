@@ -219,6 +219,25 @@ $BB sh /sbin/ext/properties.sh;
 	fi;
 )&
 
+(
+	sleep 40;
+	# try to fix broken wifi toggle after boot
+	service call wifi 14 | grep "0 00000001" > /dev/null
+	if [ "$?" -eq "0" ]; then
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		# disable as was.
+		service call wifi 13 i32 0 > /dev/null
+	else
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+	fi;
+)&
+
 # Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
 $BB mount -o remount,rw rootfs;
 $BB chown -R root:system /res/customconfig/actions/;
