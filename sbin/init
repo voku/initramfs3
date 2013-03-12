@@ -398,8 +398,8 @@ $BB sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
 
 # system dalvik.vm tuning.
 $BB sed -i "s/dalvik.vm.heapsize=[0-9a-zA-Z]*/dalvik.vm.heapsize=128m/g" /system/build.prop;
-$BB sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=32m/g" /system/build.prop;
-$BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=128m/g" /system/build.prop;
+$BB sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=5m/g" /system/build.prop;
+$BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=48m/g" /system/build.prop;
 
 # we can OC to 1.5Ghz.
 $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;

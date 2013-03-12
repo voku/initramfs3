@@ -800,19 +800,6 @@ MOUNT_SD_CARD()
 	fi;
 }
 
-# set delay to prevent mp3-music shattering when screen turned ON
-DELAY()
-{
-	if [ ! -e ${DATA_DIR}/booting ]; then
-		if [ "$wakeup_delay" != 0 ]; then
-			log -p i -t $FILE_NAME "*** DELAY ${delay}sec ***";
-			sleep $wakeup_delay;
-		fi;
-	fi;
-
-	log -p i -t $FILE_NAME "*** NO DELAY ***";
-}
-
 MALI_TIMEOUT()
 {
 	local state="$1";
@@ -835,7 +822,7 @@ BUS_THRESHOLD()
 	if [ "${state}" == "awake" ]; then
 		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "${state}" == "sleep" ]; then
-		echo "80" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "${state}" == "performance" ]; then
 		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	fi;
@@ -849,9 +836,9 @@ VFS_CACHE_PRESSURE()
 	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
 
 	if [ "${state}" == "awake" ]; then
-		echo "10" > $sys_vfs_cache;
+		echo "20" > $sys_vfs_cache;
 	elif [ "${state}" == "sleep" ]; then
-		echo "60" > $sys_vfs_cache;
+		echo "50" > $sys_vfs_cache;
 	fi;
 
 	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
@@ -973,13 +960,13 @@ KERNEL_SCHED()
 
 	# this is the correct order to input this settings, every value will be x2 after set
 	if [ "${state}" == "awake" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=2000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=1500000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=12000000 > /dev/null 2>&1;
-	elif [ "${state}" == "sleep" ]; then
 		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
 		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
 		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
+	elif [ "${state}" == "sleep" ]; then
+		sysctl -w kernel.sched_wakeup_granularity_ns=2000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_min_granularity_ns=1500000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_latency_ns=12000000 > /dev/null 2>&1;
 	fi;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
@@ -1085,8 +1072,6 @@ AWAKE_MODE()
 
 		LOGGER "awake";
 
-		DELAY;
-
 		KERNEL_SCHED "awake";
 
 		NET "awake";
@@ -1152,8 +1137,6 @@ SLEEP_MODE()
 	# we only read the config when screen goes off ...
 	PROFILE=`cat ${DATA_DIR}/.active.profile`;
 	. ${DATA_DIR}/${PROFILE}.profile;
-
-	DELAY;
 
 	TELE_DATA=`dumpsys telephony.registry`;
 
