@@ -158,28 +158,26 @@ $BB sh /sbin/ext/properties.sh;
 	$BB sh /sbin/ext/efs-backup.sh;
 )&
 
+echo 0 > /tmp/uci_done;
+chmod 666 /tmp/uci_done;
+
 (
-	echo 0 > /tmp/uci_done;
-	chmod 666 /tmp/uci_done;
 	# custom boot booster
+	COUNTER=0;
 	while [ "`cat /tmp/uci_done`" != "1" ]; do
+		if [ "$COUNTER" -ge "6" ]; then
+			break;
+		fi;
 		echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		pkill -f "com.gokhanmoral.stweaks.app";
 		echo "Waiting For UCI to finish";
 		sleep 10;
+		COUNTER=$(($COUNTER+1));
 	done;
 
 	# give home launcher, oom protection
-	HOME_APP=`pgrep launcher`;
 	ACORE_APPS=`pgrep acore`;
-
-	if [ "a$HOME_APP" != "a" ]; then
-		for h in `pgrep launcher`; do
-			echo "900" > /proc/$h/oom_score_adj;
-		done;
-	fi;
-
 	if [ "a$ACORE_APPS" != "a" ]; then
 		for c in `pgrep acore`; do
 			echo "900" > /proc/$c/oom_score_adj;
@@ -204,11 +202,6 @@ $BB sh /sbin/ext/properties.sh;
 		losetup $FREE_LOOP $DATA_IMG;
 		mount -t ext4 $FREE_LOOP /data_sec_rom;
 	fi;
-
-	# restore all the PUSH Button Actions back to there location
-	$BB mount -o remount,rw rootfs;
-	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
-	pkill -f "com.gokhanmoral.stweaks.app";
 
 	# restore normal freq.
 	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -238,38 +231,39 @@ $BB sh /sbin/ext/properties.sh;
 	fi;
 )&
 
-# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
-$BB mount -o remount,rw rootfs;
-$BB chown -R root:system /res/customconfig/actions/;
-$BB chmod -R 6755 /res/customconfig/actions/;
-$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
-$BB chmod 6755 /res/no-push-on-boot/*;
-
-# apply STweaks settings
-echo "booting" > /data/.siyah/booting;
-chmod 777 /data/.siyah/booting;
-pkill -f "com.gokhanmoral.stweaks.app";
-nohup $BB sh /res/uci.sh restore;
-echo "1" > /tmp/uci_done;
-
-# change USB mode MTP or Mass Storage
-$BB sh /res/uci.sh usb-mode ${usb_mode};
-
 (
-	sleep 20;
+	# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
+	$BB mount -o remount,rw rootfs;
+	$BB chown -R root:system /res/customconfig/actions/;
+	$BB chmod -R 6755 /res/customconfig/actions/;
+	$BB mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
+	$BB chmod 6755 /res/no-push-on-boot/*;
+
+	# apply STweaks settings
+	echo "booting" > /data/.siyah/booting;
+	chmod 777 /data/.siyah/booting;
+	pkill -f "com.gokhanmoral.stweaks.app";
+	nohup $BB sh /res/uci.sh restore;
+	echo "1" > /tmp/uci_done;
+
+	# restore all the PUSH Button Actions back to there location
+	$BB mount -o remount,rw rootfs;
+	$BB mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
+	pkill -f "com.gokhanmoral.stweaks.app";
+
+	# change USB mode MTP or Mass Storage
+	$BB sh /res/uci.sh usb-mode ${usb_mode};
+
 	# update cpu tunig after profiles load
 	$BB sh /sbin/ext/cortexbrain-tune.sh apply_cpu update > /dev/null;
 	$BB rm -f /data/.siyah/booting;
-)&
 
-(
 	# ###############################################################
 	# JB Low Sound Fix.
 	# ###############################################################
 
-	sleep 20;
-
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
+
 	MIUI_JB=0;
 	JELLY=0;
 	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
@@ -289,6 +283,7 @@ $BB sh /res/uci.sh usb-mode ${usb_mode};
 	# ###############################################################
 	# I/O related tweaks
 	# ###############################################################
+
 	DM=`ls -d /sys/block/dm*`;
 
 	for i in $DM; do

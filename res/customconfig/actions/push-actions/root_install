@@ -2,7 +2,7 @@
 export PATH="/res/customconfig/actions/push-actions:${PATH}";
 
 (
-	if [ ! -e /system/xbin/su ]; then
+	if [ ! -e /system/xbin/su ] || [ ! -e /system/app/SuperSU.apk ]; then
 		BB=/sbin/busybox
 
 		# extract Payload with root files
