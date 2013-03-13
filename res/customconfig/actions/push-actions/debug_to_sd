@@ -131,6 +131,21 @@ case "${debug_to_sd}" in
 			cat /proc/sched_debug >> $DEBUG_FILE;
 			SEPARATOR;
 
+			# Interrupts
+			echo "Interrupts-Info:" >> $DEBUG_FILE;
+			cat /proc/interrupts >> $DEBUG_FILE;
+			SEPARATOR;
+
+			# Wakeup
+			echo "Wakeup-Info:" >> $DEBUG_FILE;
+			cat /sys/kernel/debug/wakeup_sources >> $DEBUG_FILE;
+			SEPARATOR;
+
+			# Suspend
+			echo "Suspend-Info:" >> $DEBUG_FILE;
+			cat /sys/kernel/debug/suspend_stats >> $DEBUG_FILE;
+			SEPARATOR;
+
 			# NET
 			echo "NET-Info:" >> $DEBUG_FILE;
 			ifconfig pdp0 >> $DEBUG_FILE;
