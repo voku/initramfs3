@@ -5,16 +5,20 @@ BB=/sbin/busybox
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
+# oom and mem perm fix
+$BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
+$BB chmod 777 /proc/sys/vm/mmap_min_addr;
+
 # set default JB mmap_min_addr value
 echo "32768" > /proc/sys/vm/mmap_min_addr;
+
+# protect init from oom
+echo "1000" > /proc/1/oom_score_adj;
 
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
 	echo "-600" > /proc/$i/oom_score_adj;
 done;
-
-# protect init from oom
-echo "1000" > /proc/1/oom_score_adj;
 
 if [ ! -d /data/.siyah ]; then
 	$BB mkdir -p /data/.siyah;
@@ -45,11 +49,10 @@ read_config;
 
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-echo "400000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
-	. /sbin/ext/mdnie-sharpness-tweak.sh;
+	$BB sh /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
 # STweaks check su only at /system/xbin/su make it so
@@ -62,13 +65,35 @@ else
 	echo "ROM without ROOT";
 fi;
 
+######################################
+# Loading Modules
+######################################
+$BB chmod -R 755 /lib;
+
+(
+	sleep 50;
+	# order of modules load is important.
+	$BB insmod /lib/modules/j4fs.ko;
+	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
+	$BB insmod /lib/modules/Si4709_driver.ko;
+
+	if [ "$usbserial_module" == "on" ]; then
+		$BB insmod /lib/modules/usbserial.ko;
+		$BB insmod /lib/modules/ftdi_sio.ko;
+		$BB insmod /lib/modules/pl2303.ko;
+	fi;
+	if [ "$usbnet_module" == "on" ]; then
+		$BB insmod /lib/modules/usbnet.ko;
+		$BB insmod /lib/modules/asix.ko;
+	fi;
+	if [ "$cifs_module" == "on" ]; then
+		$BB insmod /lib/modules/cifs.ko;
+	fi;
+)&
+
 # dual core hotplug
 echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on;
 echo "off" > /sys/devices/virtual/misc/second_core/second_core_on;
-
-# oom and mem perm fix
-$BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
-$BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
 # some nice thing for dev
 $BB ln -s /sys/devices/system/cpu/cpu0/cpufreq /cpufreq;
@@ -77,8 +102,7 @@ $BB ln -s /sys/devices/system/cpu/cpufreq/ /cpugov;
 # enable kmem interface for everyone by GM
 echo "0" > /proc/sys/kernel/kptr_restrict;
 
-# Cortex parent should be ROOT/INIT and not STweaks, and set root access to script.
-$BB chmod 6755 /sbin/ext/cortexbrain-tune.sh;
+# Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh;
 
 # enable screen color mode
@@ -86,7 +110,7 @@ echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 
 # create init.d folder if missing
 if [ ! -d /system/etc/init.d ]; then
-	mkdir /system/etc/init.d/
+	mkdir -p /system/etc/init.d/
 	$BB chmod -R 755 /system/etc/init.d/;
 fi;
 
@@ -98,7 +122,7 @@ fi;
 	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 
 	if [ $init_d == on ] || [ "$MIUI_JB" == 1 ]; then
-		$BB sh /sbin/ext/run-init-scripts.sh;
+		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
 
@@ -115,32 +139,6 @@ if [ "$logger" == "off" ]; then
 	echo "0" > /sys/module/binder/parameters/debug_mask;
 	echo "0" > /sys/module/xt_qtaguid/parameters/debug_mask;
 fi;
-
-######################################
-# Loading Modules
-######################################
-$BB chmod -R 755 /lib;
-
-(
-	sleep 40;
-	# order of modules load is important.
-	insmod /lib/modules/j4fs.ko;
-	mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-	insmod /lib/modules/Si4709_driver.ko;
-
-	if [ "$usbserial_module" == "on" ]; then
-		insmod /lib/modules/usbserial.ko;
-		insmod /lib/modules/ftdi_sio.ko;
-		insmod /lib/modules/pl2303.ko;
-	fi;
-	if [ "$usbnet_module" == "on" ]; then
-		insmod /lib/modules/usbnet.ko;
-		insmod /lib/modules/asix.ko;
-	fi;
-	if [ "$cifs_module" == "on" ]; then
-		insmod /lib/modules/cifs.ko;
-	fi;
-)&
 
 # for ntfs automounting
 mkdir /mnt/ntfs;
@@ -184,23 +182,32 @@ chmod 666 /tmp/uci_done;
 		done;
 	fi;
 
-	# Mount Sec ROM DATA on Boot, we need to wait till sdcard is mounted.
-	if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
+	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
+	if [ `cat /tmp/pri_rom_boot` == "1" ]; then
+		if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
+			mount -o remount,rw /
+			mkdir /data_sec_rom;
+			chmod 777 /data_sec_rom;
+			FREE_LOOP=`losetup -f`;
+			if [ -e /sdcard/.secondrom/data.img ]; then
+				DATA_IMG=/sdcard/.secondrom/data.img
+			elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
+				DATA_IMG=/storage/sdcard0/.secondrom/data.img
+			fi;
+			if [ "a$FREE_LOOP" == "a" ]; then
+				mknod /dev/block/loop99 b 7 99
+				FREE_LOOP=/dev/block/loop99
+			fi;
+			losetup $FREE_LOOP $DATA_IMG;
+			mount -t ext4 $FREE_LOOP /data_sec_rom;
+		else
+			echo "no sec data image found! abort."
+		fi;
+	elif [ `cat /tmp/sec_rom_boot` == "1" ]; then
 		mount -o remount,rw /
-		mkdir /data_sec_rom;
-		chmod 777 /data_sec_rom;
-		FREE_LOOP=`losetup -f`;
-		if [ -e /sdcard/.secondrom/data.img ]; then
-			DATA_IMG=/sdcard/.secondrom/data.img
-		elif [ -e /storage/sdcard0/.secondrom/data.img ]; then
-			DATA_IMG=/storage/sdcard0/.secondrom/data.img
-		fi;
-		if [ "a$FREE_LOOP" == "a" ]; then
-			mknod /dev/block/loop99 b 7 99
-			FREE_LOOP=/dev/block/loop99
-		fi;
-		losetup $FREE_LOOP $DATA_IMG;
-		mount -t ext4 $FREE_LOOP /data_sec_rom;
+		mkdir /data_pri_rom;
+		chmod 777 /data_pri_rom;
+		mount -t ext4 /dev/block/mmcblk0p10 /data_pri_rom;
 	fi;
 
 	# restore normal freq.
@@ -217,17 +224,20 @@ chmod 666 /tmp/uci_done;
 	# try to fix broken wifi toggle after boot
 	service call wifi 14 | grep "0 00000001" > /dev/null
 	if [ "$?" -eq "0" ]; then
+		svc wifi enable;
 		service call wifi 13 i32 1 > /dev/null
 		service call wifi 13 i32 1 > /dev/null
 		service call wifi 13 i32 1 > /dev/null
 		service call wifi 13 i32 1 > /dev/null
 		# disable as was.
 		service call wifi 13 i32 0 > /dev/null
+		svc wifi disable;
 	else
 		service call wifi 13 i32 1 > /dev/null
 		service call wifi 13 i32 1 > /dev/null
 		service call wifi 13 i32 1 > /dev/null
 		service call wifi 13 i32 1 > /dev/null
+		svc wifi enable;
 	fi;
 )&
 

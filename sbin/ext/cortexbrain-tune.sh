@@ -640,12 +640,14 @@ WIFI_SET()
 	
 	if [ "${state}" == "off" ]; then
 		service call wifi 13 i32 0 > /dev/null;
+		svc wifi disable;
 		echo "1" > $wifi_helper_awake;
 	elif [ "${state}" == "on" ]; then
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
+		svc wifi enable;
 	fi;
 
 	log -p i -t $FILE_NAME "*** WIFI ***: ${state}";
