@@ -1233,7 +1233,7 @@ SLEEP_MODE()
 			log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
 		fi;
 	else
-		if [ "$cortexbrain_cpu" == on ]; then
+		if [ "$cortexbrain_cpu" == on ] && [ "$CALL_STATE" == 2 ]; then
 			CENTRAL_CPU_FREQ "sleep_call";
 			on_call=1;
 		fi;
