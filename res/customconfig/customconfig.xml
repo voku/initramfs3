@@ -96,7 +96,7 @@
 			name="scaling_min_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" 
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
-		<seekBar description="Minimum STANDBY (music playing and screen off) CPU speed. If music still shutter, rise frequency to 300.000kHz/400.000kHz. (Default: 200.000 kHz)"
+		<seekBar description="Minimum STANDBY/ON CALL (music playing/on call and screen off) CPU speed. If music still shutter, rise frequency to 300.000kHz/400.000kHz. (Default: 200.000 kHz)"
 			name="scaling_min_standby_freq" action="generic_cortex_freq /tmp/standby_freq"
 			unit="kHz" min="100000" reversed="false" step="50000" max="1000000"/>
 
@@ -111,7 +111,7 @@
 		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, don't tick this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" 
 			name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
-		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
+		<button description="Use this button to see what CPU Voltage is used right now! if you see voltage different from what set as defaults! then your device has OLD CPU model! that uses different STATIC voltage table! and BEST for you, not to UV/OV EVER! just forget it! you will get SODS and cry about it." name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
 		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1400 mV)"
 			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
@@ -202,7 +202,7 @@
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
-			<spinnerItem name="nightmare" value="nightmare"/> 
+			<!--spinnerItem name="nightmare" value="nightmare"/--> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
@@ -241,7 +241,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
+	<!--settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
 
 		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Default 70%)"
 			name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
@@ -291,7 +291,7 @@
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and it's load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (Default: 2)"
 			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit="int" min="0" reversed="false" step="1" max="2"/>
 
-	</settingsPane>
+	</settingsPane-->
 
 	<settingsPane description="Pegasusq Gov Configuration, see descriptions" name="PEGASUSQ GOV CONFIGURATON">
 
@@ -315,7 +315,7 @@
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
-			<spinnerItem name="nightmare" value="nightmare"/> 
+			<!--spinnerItem name="nightmare" value="nightmare"/--> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
 			<spinnerItem name="pegasusq" value="pegasusq"/> 
 			<spinnerItem name="Scary" value="Scary"/> 
@@ -352,7 +352,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
+	<!--settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
 
 		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Default: 80%)"
 			name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
@@ -402,7 +402,7 @@
 		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and it's load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (Default: 2)"
 			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="2"/>
 
-	</settingsPane>
+	</settingsPane-->
 
 	<settingsPane description="Pegasusq Gov Configuration, see descriptions" name="PEGASUSQ GOV CONFIGURATON">
 
@@ -534,9 +534,9 @@
 		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you don't use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" 
 			name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
-		<seekBar description="Here you can change GPU utilization timeout calculation. Closer to 100 (1sec) and you'll get faster GPU response in steps jump on load, but more battery is drained. CM10 default: 250(2.5sec)"
+		<seekBar description="Here you can change GPU utilization timeout calculation. Closer to 100 (1sec) and you'll get faster GPU response in steps jump on load, but more battery is drained. CM10 default: 1000(10sec)"
 			name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
-			unit="MSec" min="100" reversed="false" step="50" max="500"/>
+			unit="MSec" min="100" reversed="false" step="50" max="1000"/>
 
 		<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Frequency Step 1" action="gpu-freq 1">
 			<spinnerItem name="267 MHz" value="267"/> 
@@ -553,7 +553,7 @@
 			<spinnerItem name="108 MHz" value="108"/> 
 		</spinner>
 
-		<spinner description="Changes the third GPU frequency step. WARNING! 400 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
+		<spinner description="Changes the third GPU frequency step. WARNING! 400 MHz needs 1150 mV - 1200 mV. Above 1300 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 3" action="gpu-freq 3">
 			<spinnerItem name="400 MHz" value="400"/> 
 			<spinnerItem name="330 MHz" value="330"/> 
@@ -563,7 +563,7 @@
 			<spinnerItem name="108 MHz" value="108"/> 
 		</spinner>
 
-		<spinner description="Changes the fourth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
+		<spinner description="Changes the fourth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1150 mV - 1400 mV. (520Mhz stable on 1400mV if your chip can handle that) Above 1300 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 4" action="gpu-freq 4">
 			<spinnerItem name="520 MHz" value="520"/> 
 			<spinnerItem name="440 MHz" value="440"/> 
@@ -574,7 +574,7 @@
 			<spinnerItem name="160 MHz" value="160"/> 
 		</spinner>
 
-		<spinner description="Changes the fifth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1100 mV - 1200 mV. Above 1200 mV you risk to burn your chip!" 
+		<spinner description="Changes the fifth GPU frequency step. WARNING! 400, 440, 520 MHz needs 1150 mV - 1400 mV. (520Mhz stable on 1400mV if your chip can handle that) Above 1300 mV you risk to burn your chip!" 
 			name="GPU Frequency Step 5" action="gpu-freq 5">
 			<spinnerItem name="520 MHz" value="520"/> 
 			<spinnerItem name="440 MHz" value="440"/> 
@@ -599,10 +599,10 @@
 			name="GPU Voltage Level 3" action="gpu-voltage 3" unit="mV" min="850" reversed="false" step="50" max="1300"/>
 
 		<seekBar description="GPU Voltage for the fourth step" 
-			name="GPU Voltage Level 4" action="gpu-voltage 4" unit="mV" min="850" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level 4" action="gpu-voltage 4" unit="mV" min="850" reversed="false" step="50" max="1400"/>
 
 		<seekBar description="GPU Voltage for the fifth step" 
-			name="GPU Voltage Level 5" action="gpu-voltage 5" unit="mV" min="850" reversed="false" step="50" max="1300"/>
+			name="GPU Voltage Level 5" action="gpu-voltage 5" unit="mV" min="850" reversed="false" step="50" max="1400"/>
 
 	</settingsPane>
 
@@ -792,14 +792,14 @@
 		<checkbox description="BackLightNotification" 
 			name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
 
-		<spinner description="This setting will set LED behavior for BLN." 
+		<spinner description="This setting will set LED behavior for BLN, if BLNWW is ON! then effect is ONLY Steady!" 
 			name="BLN Effect" action="bln_switch">
 			<spinnerItem name="Steady" value="0"/> 
 			<spinnerItem name="Breathing" value="1"/> 
 			<spinnerItem name="Blinking" value="2"/> 
 		</spinner>
 
-		<spinner description="Notification timeout" 
+		<spinner description="Notification timeout, if BLNWW is ON! this setting it ignored! BLN will never time out!" 
 			name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
 			<spinnerItem name="Never timeout" value="0"/> 
 			<spinnerItem name="1 minute" value="60000"/> 
