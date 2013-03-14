@@ -60,6 +60,7 @@ mknod /dev/input/event2 c 13 66
 mknod /dev/input/event8 c 13 72
 mknod /dev/input/event9 c 13 73
 mknod /dev/ashmem c 10 61
+mknod /dev/block/mmcblk0p1 b 179 1
 mknod /dev/block/mmcblk0p7 b 179 7
 mknod /dev/block/mmcblk0p9 b 259 1
 mknod /dev/block/mmcblk0p10 b 259 2
@@ -295,6 +296,13 @@ PARTITION_TUNING()
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA 2>&1;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
 	fi;
+
+	# efs check and fix, do not change.
+	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check 2>&1;
+	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
+	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
+	$BB chmod -R 777 /efs
+	$BB umount /efs;
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fs_check ]; then
