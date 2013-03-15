@@ -1049,7 +1049,6 @@ GAMMA_FIX()
 {
 	echo "$min_gamma" > /sys/class/misc/brightness_curve/min_gamma;
 	echo "$max_gamma" > /sys/class/misc/brightness_curve/max_gamma;
-	echo "$mov_hysti" > /sys/bus/i2c/devices/3-004a/mov_hysti;
 
 	log -p i -t $FILE_NAME "*** GAMMA_FIX: min: $min_gamma max: $max_gamma ***: done";
 }
