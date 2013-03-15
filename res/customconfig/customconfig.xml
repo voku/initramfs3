@@ -156,7 +156,7 @@
 			name="CPU Voltage 300 MHz" action="cpu-voltage 14" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
 		<seekBar description="CPU Voltage for 200 MHz. (Default: 950 mV)"
-			name="CPU Voltage 200 MHz" action="cpu-voltage 14" unit="mV" min="850" reversed="false" step="25" max="1050"/>
+			name="CPU Voltage 200 MHz" action="cpu-voltage 15" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 		<seekBar description="CPU Voltage for 100 MHz. (Default: 950 mV)"
 			name="CPU Voltage 100 MHz" action="cpu-voltage 16" unit="mV" min="850" reversed="false" step="25" max="1050"/>
@@ -495,7 +495,7 @@
 		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you don't use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" 
 			name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
-		<seekBar description="Here you can change GPU utilization timeout calculation. Closer to 100 (1sec) and you'll get faster GPU response in steps jump on load, but more battery is drained. CM10 default: 1000(10sec)"
+		<seekBar description="Here you can change GPU utilization timeout calculation. Closer to 100 (0.1sec) and you'll get faster GPU response in steps jump on load, but more battery is drained. CM10 default: 1000 (1sec)"
 			name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout"
 			unit="MSec" min="100" reversed="false" step="50" max="1000"/>
 
