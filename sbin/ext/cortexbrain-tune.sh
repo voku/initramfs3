@@ -19,6 +19,7 @@ PIDOFCORTEX=$$;
 DATA_DIR="/data/.siyah";
 TELE_DATA=`dumpsys telephony.registry`;
 sleeprun=1;
+on_call=0;
 
 wifi_helper_awake="$DATA_DIR/wifi_helper_awake";
 wifi_helper_tmp="$DATA_DIR/wifi_helper";
@@ -239,14 +240,6 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $sampling_rate_tmp ]; then
 			sampling_rate_tmp="/dev/null";
 		fi;
-		local trans_latency_one_core_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_latency_one_core";
-		if [ ! -e $trans_latency_one_core_tmp ]; then
-			trans_latency_one_core_tmp="/dev/null";
-		fi;
-		local trans_latency_two_cores_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_latency_two_cores";
-		if [ ! -e $trans_latency_two_cores_tmp ]; then
-			trans_latency_two_cores_tmp="/dev/null";
-		fi;
 		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate";
 		if [ ! -e $cpu_up_rate_tmp ]; then
 			cpu_up_rate_tmp="/dev/null";
@@ -369,15 +362,11 @@ CPU_GOV_TWEAKS()
 			echo "100" > $freq_step_tmp;
 			echo "800000" > $freq_for_responsiveness_tmp;
 			echo "50000" > $sampling_rate_tmp;
-			echo "40000" > $trans_latency_one_core_tmp;
-			echo "40000" > $trans_latency_two_cores_tmp;
 			echo "800000" > $freq_cpu1on_tmp;
 			echo "400000" > $freq_cpu1off_tmp;
 		# sleep-settings
 		elif [ "${state}" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
-			echo "$trans_latency_one_core_sleep" > $trans_latency_one_core_tmp;
-			echo "$trans_latency_two_cores_sleep" > $trans_latency_two_cores_tmp;
 			echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
@@ -404,8 +393,6 @@ CPU_GOV_TWEAKS()
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
-			echo "$trans_latency_one_core" > $trans_latency_one_core_tmp;
-			echo "$trans_latency_two_cores" > $trans_latency_two_cores_tmp;
 			echo "$cpu_up_rate" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
@@ -639,12 +626,14 @@ WIFI_SET()
 	
 	if [ "${state}" == "off" ]; then
 		service call wifi 13 i32 0 > /dev/null;
+		svc wifi disable;
 		echo "1" > $wifi_helper_awake;
 	elif [ "${state}" == "on" ]; then
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
 		service call wifi 13 i32 1 > /dev/null;
+		svc wifi enable;
 	fi;
 
 	log -p i -t $FILE_NAME "*** WIFI ***: ${state}";
@@ -864,6 +853,51 @@ TWEAK_HOTPLUG_LOAD()
 	log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_LOAD: ${state} ***";
 }
 
+CENTRAL_CPU_FREQ()
+{
+	local state="$1";
+
+	if [ "${state}" == "mega_boost" ]; then
+		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
+			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		elif [ "$scaling_max_freq" -ge 1000000 ]; then
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		else
+			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		fi;
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+	elif [ "${state}" == "awake_normal" ]; then
+		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
+			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		else
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		fi;
+	elif [ "${state}" == "standby_freq" ]; then
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+	elif [ "${state}" == "sleep_freq" ]; then
+		echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	elif [ "${state}" == "sleep_call" ]; then
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+	fi;
+
+	log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: ${state} ***: done";
+}
+
 # boost CPU power for fast and no lag wakeup
 MEGA_BOOST_CPU_TWEAKS()
 {
@@ -878,19 +912,7 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		TWEAK_HOTPLUG_LOAD "performance";
 
-		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
-			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		elif [ "$scaling_max_freq" -ge 1000000 ]; then
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		else
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		fi;
-
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		CENTRAL_CPU_FREQ "mega_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
 	else
@@ -987,6 +1009,7 @@ BLN_CORRECTION()
 			fi;
 		else
 			/res/uci.sh bln_switch 0;
+			/res/uci.sh generic /sys/class/misc/notification/notification_timeout 0;
 		fi;
 
 		if [ "$dyn_brightness" == on ]; then
@@ -1068,6 +1091,11 @@ AWAKE_MODE()
 {
 	ENABLEMASK "awake";
 
+	if [ "$cortexbrain_cpu" == on ] && [ "$on_call" == 1 ]; then
+		CENTRAL_CPU_FREQ "awake_normal";
+		on_call=0;
+	fi;
+
 	if [ "$sleeprun" == 1 ]; then
 
 		LOGGER "awake";
@@ -1107,16 +1135,7 @@ AWAKE_MODE()
 		TWEAK_HOTPLUG_LOAD "awake";
 
 		if [ "$cortexbrain_cpu" == on ]; then
-			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-
-			if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
-				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-			else
-				echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-			fi;
+			CENTRAL_CPU_FREQ "awake_normal";
 		fi;
 
 		MALI_TIMEOUT "awake";
@@ -1160,8 +1179,7 @@ SLEEP_MODE()
 		sleeprun=1;
 
 		if [ "$cortexbrain_cpu" == on ]; then
-			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+			CENTRAL_CPU_FREQ "standby_freq";
 		fi;
 
 		MALI_TIMEOUT "sleep";
@@ -1197,10 +1215,7 @@ SLEEP_MODE()
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" == 0 ]; then
 			if [ "$cortexbrain_cpu" == on ]; then
-				echo "$deep_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
-				echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				CENTRAL_CPU_FREQ "sleep_freq";
 				CPU_GOV_TWEAKS "sleep";
 			fi;
 
@@ -1218,8 +1233,11 @@ SLEEP_MODE()
 			log -p i -t $FILE_NAME "*** SCREEN OFF BUT POWERED mode ***";
 		fi;
 	else
+		if [ "$cortexbrain_cpu" == on ] && [ "$CALL_STATE" == 2 ]; then
+			CENTRAL_CPU_FREQ "sleep_call";
+			on_call=1;
+		fi;
 		log -p i -t $FILE_NAME "*** Early WakeUp (${TMP_EARLY_WAKEUP}), or on call (${CALL_STATE})! SLEEP aborted! ***";
-
 	fi;
 
 	# kill wait_for_fb_wake generated by /sbin/ext/wakecheck.sh

@@ -24,12 +24,6 @@ cat /res/etc/recovery.fstab > /etc/recovery.fstab
 #start adbd
 stop tvout
 
-mkdir /efs
-# efs check and fix, do not change.
-$BB umount -l /efs;
-$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check 2>&1;
-$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check 2>&1;
-
 rm -rf /cache
 mkdir /cache
 chmod 777 /cache

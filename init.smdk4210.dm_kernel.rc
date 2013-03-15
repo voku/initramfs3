@@ -18,11 +18,11 @@ on fs
 
 # Video Tuning
     setprop ro.media.enc.jpeg.quality 100,100,100
-    setprop ro.media.dec.jpeg.memcap 8000000
-    setprop ro.media.enc.hprof.vid.bps 8000000
-    setprop persist.sys.use_dithering 1
-    setprop video.accelerate.hw 1
-    setprop debug.performance.tuning 1
+#   setprop ro.media.dec.jpeg.memcap 8000000
+#   setprop ro.media.enc.hprof.vid.bps 8000000
+#   setprop persist.sys.use_dithering 1
+#   setprop video.accelerate.hw 1
+#   setprop debug.performance.tuning 1
 #   setprop debug.sf.hw 1
 
 # Network Tuning

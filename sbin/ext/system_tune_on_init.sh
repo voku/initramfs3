@@ -66,6 +66,12 @@ SDCARD_FIX()
 	$BB echo "DONE" >> $LOG_SDCARDS;
 }
 
+# Start ROM VM boot!
+start;
+
+# start adb shell
+start adbd;
+
 if [ "$MIUI_JB" == "1" ] || [ "$JELLY" == "1" ] || [ "$JBSAMMY" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ]; then
 	SDCARD_FIX;
 elif [ -e /system/bin/fsck_msdos ]; then
@@ -74,18 +80,4 @@ elif [ -e /system/bin/fsck_msdos ]; then
 else
 	$BB echo "CANT FIX SDCARDS, REPORT TO DM" > $LOG_SDCARDS;
 fi;
-
-# prevent from media storage to dig in clockworkmod backup dir
-$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
-sync;
-$BB umount -l /mnt/tmp;
-
-# set ROOT perm for /sbin/busybox
-$BB chmod 6755 /sbin/busybox;
-
-# Start ROM VM boot!
-start;
-
-# start adb shell
-start adbd;
 
