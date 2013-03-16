@@ -1,10 +1,14 @@
 #!/sbin/busybox sh
 
-/sbin/busybox chmod 6755 /sbin/busybox;
-/sbin/busybox rm /init;
-/sbin/busybox mv /boot /init;
-/sbin/busybox chmod 6755 /init;
-/sbin/busybox chmod -R 6755 /sbin/ext/;
+BB=/sbin/busybox
+$BB chmod 6755 $BB;
+
+rm /init;
+mv /boot /init;
+$BB chmod 6755 /init;
+
+$BB chmod -R 6755 /sbin/ext/;
+
 cd /;
 sync;
 exec /init;

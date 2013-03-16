@@ -17,7 +17,7 @@ echo "1000" > /proc/1/oom_score_adj;
 
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
-	echo "-600" > /proc/$i/oom_score_adj;
+	echo "-600" > /proc/${i}/oom_score_adj;
 done;
 
 if [ ! -d /data/.siyah ]; then
@@ -79,8 +79,7 @@ fi;
 $BB chmod -R 755 /lib;
 
 (
-	sleep 50;
-	# order of modules load is important.
+	# order of modules load is important
 	$BB insmod /lib/modules/j4fs.ko;
 	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 	$BB insmod /lib/modules/Si4709_driver.ko;
@@ -123,14 +122,11 @@ if [ ! -d /system/etc/init.d ]; then
 fi;
 
 (
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
-
 	MIUI_JB=0;
 	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 
 	if [ $init_d == on ] || [ "$MIUI_JB" == 1 ]; then
-		/sbin/busybox sh /sbin/ext/run-init-scripts.sh;
+		$BB sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
 
@@ -185,8 +181,8 @@ chmod 666 /tmp/uci_done;
 	# give home launcher, oom protection
 	ACORE_APPS=`pgrep acore`;
 	if [ "a$ACORE_APPS" != "a" ]; then
-		for c in `pgrep acore`; do
-			echo "900" > /proc/$c/oom_score_adj;
+		for c in ${ACORE_APPS}; do
+			echo "900" > /proc/${c}/oom_score_adj;
 		done;
 	fi;
 
@@ -218,7 +214,7 @@ chmod 666 /tmp/uci_done;
 		mount -t ext4 /dev/block/mmcblk0p10 /data_pri_rom;
 	fi;
 
-	# restore normal freq.
+	# restore normal freq
 	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 	if [ "$scaling_max_freq" == "1000000" ] && [ "$scaling_max_freq_oc" -ge "1000000" ]; then
 		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
@@ -236,29 +232,7 @@ chmod 666 /tmp/uci_done;
 )&
 
 (
-	sleep 40;
-	# try to fix broken wifi toggle after boot
-	service call wifi 14 | grep "0 00000001" > /dev/null
-	if [ "$?" -eq "0" ]; then
-		svc wifi enable;
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		# disable as was.
-		service call wifi 13 i32 0 > /dev/null
-		svc wifi disable;
-	else
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		svc wifi enable;
-	fi;
-)&
-
-(
-	# Stop uci.sh from running all the PUSH Buttons in stweaks on boot.
+	# stop uci.sh from running all the PUSH Buttons in stweaks on boot
 	$BB mount -o remount,rw rootfs;
 	$BB chown -R root:system /res/customconfig/actions/;
 	$BB chmod -R 6755 /res/customconfig/actions/;
@@ -311,15 +285,13 @@ chmod 666 /tmp/uci_done;
 	# ###############################################################
 
 	DM=`ls -d /sys/block/dm*`;
-
-	for i in $DM; do
-
+	for i in ${DM}; do
 		if [ -e $i/queue/rotational ]; then
-			echo "0" > $i/queue/rotational;
+			echo "0" > ${i}/queue/rotational;
 		fi;
 
 		if [ -e $i/queue/iostats ]; then
-			echo "0" > $i/queue/iostats;
+			echo "0" > ${i}/queue/iostats;
 		fi;
 	done;
 
