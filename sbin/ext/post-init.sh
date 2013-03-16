@@ -79,6 +79,7 @@ fi;
 $BB chmod -R 755 /lib;
 
 (
+	sleep 50;
 	# order of modules load is important
 	$BB insmod /lib/modules/j4fs.ko;
 	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
@@ -181,7 +182,7 @@ chmod 666 /tmp/uci_done;
 	# give home launcher, oom protection
 	ACORE_APPS=`pgrep acore`;
 	if [ "a$ACORE_APPS" != "a" ]; then
-		for c in ${ACORE_APPS}; do
+		for c in `pgrep acore`; do
 			echo "900" > /proc/${c}/oom_score_adj;
 		done;
 	fi;
@@ -228,6 +229,28 @@ chmod 666 /tmp/uci_done;
 	else
 		touch /data/dalvik-cache/not_first_boot;
 		chmod 777 /data/dalvik-cache/not_first_boot;
+	fi;
+)&
+
+(
+	sleep 40;
+	# try to fix broken wifi toggle after boot
+	service call wifi 14 | grep "0 00000001" > /dev/null
+	if [ "$?" -eq "0" ]; then
+		svc wifi enable;
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		# disable as was.
+		service call wifi 13 i32 0 > /dev/null
+		svc wifi disable;
+	else
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		service call wifi 13 i32 1 > /dev/null
+		svc wifi enable;
 	fi;
 )&
 
