@@ -308,7 +308,7 @@ PARTITION_TUNING()
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
-	# efs check and fix, do not change.
+	# efs check and fix, do not change
 	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check;
 	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
 	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
