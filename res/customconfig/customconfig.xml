@@ -25,13 +25,10 @@
 		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 100.000 kHz are valid from 100.000 kHz to 1.000.000 kHz! (Default: 200.000 kHz)" 
 			name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="When you touch the screen, CPU frequency will jump UP to this value. If CPU frequency is already above the value, then the frequency won't change. If you set below 500.000 kHz it may effect stability and SOD the GPU, so if you have any problem set to default and disable the 'Dynamic Touch Mode'. (Default: 500.000 kHz)"
-			name="Max Touch Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
-
-		<spinner description="Dynamic Touch Mode: touch-freq / 10 * running tasks."
+		<spinner description="When you touch the screen, CPU frequency will jump to 500.000 kHz. Here you can enable Dynamic Touch Mode, 500Mhz / 10 * running tasks, if not many running tasks, then the frequency won't change to higher, but if heavy loaded then this can help scrolling. (Default: OFF)"
 			name="Dynamic Touch  Mode" action="generic /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_dyn">
-			<spinnerItem name="on" value="1"/>
-			<spinnerItem name="off" value="0"/>
+			<spinnerItem name="on" value="1"/> 
+			<spinnerItem name="off" value="0"/> 
 		</spinner>
 
 		<seekBar description="Minimum Frequency until second core will not be turned on, regardless of thresholds. (Default: 600.000 kHz)" 
@@ -600,10 +597,6 @@
 <settingsTab name="Screen">
 
 	<settingsPane description="Brightness Curve settings. Modifies auto-brightness behavior." name="Brightness Curve">
-
-		<seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
-			name="TouchMove Sensitivity" action="generic /sys/bus/i2c/devices/3-004a/mov_hysti" 
-			unit=" pixel" min="0" reversed="false" step="1" max="20"/>
 
 		<seekBar description="Setting min_bl higher will result in staying in the lowest brightness level for brighter conditions. (Default: 30)" 
 			name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" 
