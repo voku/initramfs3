@@ -5,7 +5,9 @@ BB=/sbin/busybox
 
 $BB mount -t proc proc /proc;
 $BB mount -t sysfs sysfs /sys;
-echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
+if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
+	echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
+fi;
 
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
@@ -448,7 +450,9 @@ elif [ "$JBSAMMY" == "1" ] || [ "$JBSAMMY2" == "1" ]; then
 	POWER_SQL_JB;
 	echo "2" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
-	echo 172 > /sys/devices/virtual/sec/sec_key/set_homekey;
+	if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
+		echo 172 > /sys/devices/virtual/sec/sec_key/set_homekey;
+	fi;
 	# for system_tune_on_init.sh and for res/crontab_service/service.sh
 	$BB echo "1" > /tmp/sammy_rom;
 
