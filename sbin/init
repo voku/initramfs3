@@ -213,6 +213,7 @@ if [ -f /system/recovery.cpio.gz ]; then
 	$BB zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
 
+# ROM check init
 B2G=0;
 MIUI_JB=0;
 JELLY=0;
@@ -413,6 +414,9 @@ POWER_SQL_JB()
 	$BB chmod 755 /system/xbin/sqlite3;
 }
 
+# Kernel check init
+KERNEL_9X=`cat /proc/version | $BB awk '/V9./ {print $3}' | wc -l`;
+
 # network tuning reset to allow real ROM control over H/H+/3G/G signal.
 $BB sed -i "s/ro.ril.hsxpa=[0-9]*//g" /system/build.prop;
 $BB sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
@@ -446,6 +450,9 @@ elif [ "$B2G" == "1" ]; then
 	SECROM_FUNCTION_SAMMY;
 
 elif [ "$JBSAMMY" == "1" ] || [ "$JBSAMMY2" == "1" ]; then
+	if [ "$KERNEL_9X" == "1" ]; then
+		echo "wrong kernel" > /tmp/wrong_kernel;
+	fi;
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	echo "2" > /proc/sys/kernel/rom_feature_set;
@@ -498,6 +505,9 @@ elif [ "$AOSP" == "0" ]; then
 
 	SECROM_FUNCTION_AOSP;
 else
+	if [ "$KERNEL_9X" == "1" ]; then
+		echo "wrong kernel" > /tmp/wrong_kernel;
+	fi;
 	# If not detected Known ROM, then SAMMY ICS ROM installed.
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 

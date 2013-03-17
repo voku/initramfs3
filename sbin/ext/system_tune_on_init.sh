@@ -66,18 +66,27 @@ SDCARD_FIX()
 	$BB echo "DONE" >> $LOG_SDCARDS;
 }
 
-# Start ROM VM boot!
-start;
-
-# start adb shell
-start adbd;
-
-if [ "$MIUI_JB" == "1" ] || [ "$JELLY" == "1" ] || [ "$JBSAMMY" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ]; then
-	SDCARD_FIX;
-elif [ -e /system/bin/fsck_msdos ]; then
-	FIX_BINARY=/system/bin/fsck_msdos
-	SDCARD_FIX;
+if [ -e /tmp/wrong_kernel ]; then
+	mv /res/images/wrong_kernel.png /res/images/icon_clockwork.png;
+	/sbin/choose_rom 0
+	sleep 15;
+	sync;
+	$BB rm -f /tmp/wrong_kernel;
+	reboot;
 else
-	$BB echo "CANT FIX SDCARDS, REPORT TO DM" > $LOG_SDCARDS;
+	# Start ROM VM boot!
+	start;
+
+	# start adb shell
+	start adbd;
+
+	if [ "$MIUI_JB" == "1" ] || [ "$JELLY" == "1" ] || [ "$JBSAMMY" == "1" ] || [ "$CM_AOKP_10_JB" == "1" ]; then
+		SDCARD_FIX;
+	elif [ -e /system/bin/fsck_msdos ]; then
+		FIX_BINARY=/system/bin/fsck_msdos
+		SDCARD_FIX;
+	else
+		$BB echo "CANT FIX SDCARDS, REPORT TO DM" > $LOG_SDCARDS;
+	fi;
 fi;
 
