@@ -9,10 +9,6 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 	else
 		newfreq=$3;
-		if [ "$newfreq" == "850000" ] || [ "$newfreq" == "950000" ]; then
-			newfreq=$(($newfreq + 2000));
-		fi;
-
 		evalcmd='eval "$filename=$newfreq"';
 		eval $evalcmd;
 		evalcmd='eval "echo \$$filename"';

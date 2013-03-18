@@ -5,7 +5,9 @@ BB=/sbin/busybox
 
 $BB mount -t proc proc /proc;
 $BB mount -t sysfs sysfs /sys;
-echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
+if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
+	echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
+fi;
 
 # set "/" rw
 $BB mount -t rootfs -o remount,rw rootfs;
@@ -47,6 +49,7 @@ mkdir -p /mnt/.lfs;
 mkdir -p /mnt/obb;
 mkdir -p /mnt/secure;
 mkdir -p /mnt/tmp;
+mkdir -p /mnt/tmp2;
 mkdir -p /mnt/.secondrom;
 $BB chmod -R 755 /mnt/;
 mkdir /preload;
@@ -60,17 +63,25 @@ mknod /dev/input/event2 c 13 66
 mknod /dev/input/event8 c 13 72
 mknod /dev/input/event9 c 13 73
 mknod /dev/ashmem c 10 61
+mknod /dev/block/mmcblk0p1 b 179 1
 mknod /dev/block/mmcblk0p7 b 179 7
+mknod /dev/block/mmcblk1p1 b 179 25
 mknod /dev/block/mmcblk0p9 b 259 1
 mknod /dev/block/mmcblk0p10 b 259 2
 mknod /dev/block/mmcblk0p11 b 259 3
 mknod /dev/block/mmcblk0p12 b 259 4
 mknod /dev/block/loop0 b 7 0
 
-# dual boot check and run
+# mount /preloaded partition
 $BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
-$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
+# prevent from media storage to dig in clockworkmod backup dir
+$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
+$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
+#umount only the external sd
+$BB umount -l /mnt/tmp2;
+
+# dual boot check and run
 if [ -e /mnt/tmp/.nextboot ]; then
 	NEXTBOOT=`cat /mnt/tmp/.nextboot`;
 	$BB rm -f /mnt/tmp/.nextboot;
@@ -84,7 +95,6 @@ NOBOOTLOGO=0;
 [ -f /mnt/tmp/.secondrom/data.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
-
 
 if [ "$SECONDROM" == "0" ]; then
 	if [ "$NOBOOTLOGO" == "0" ]; then
@@ -125,12 +135,16 @@ if [ "$SECONDROM" == "1" ]; then
 	ln -s /mnt/.secondrom/.secondrom/data.img /res/dev/data;
 	ln -s /dev/block/mmcblk0p12 /res/dev/system;
 	ln -s /mnt/.secondrom/.secondrom/cache.img /res/dev/cache;
+	echo "1" > /tmp/sec_rom_boot;
+	echo "0" > /tmp/pri_rom_boot;
 else
 	$BB rm -rf /res/dev;
 	mkdir -p /res/dev;
 	ln -s /dev/block/mmcblk0p10 /res/dev/data;
 	ln -s /dev/block/mmcblk0p9 /res/dev/system;
 	ln -s /dev/block/mmcblk0p7 /res/dev/cache;
+	echo "0" > /tmp/sec_rom_boot;
+	echo "1" > /tmp/pri_rom_boot;
 fi;
 
 # mounting system!
@@ -199,6 +213,7 @@ if [ -f /system/recovery.cpio.gz ]; then
 	$BB zcat /system/recovery.cpio.gz | cpio -idmu;
 fi;
 
+# ROM check init
 B2G=0;
 MIUI_JB=0;
 JELLY=0;
@@ -247,78 +262,85 @@ PARTITION_TUNING()
 	$BB sh -c "/sbin/date" > $LOG_CACHE;
 
 	# umount 
-	$BB umount -l $DIR_DATA >> $LOG_DATA 2>&1;
-	$BB umount -l $DIR_CACHE >> $LOG_CACHE 2>&1;
+	$BB umount -l $DIR_DATA >> $LOG_DATA;
+	$BB umount -l $DIR_CACHE >> $LOG_CACHE;
 
 	# set fs-feature -> [^]has_journal
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE" >> $LOG_CACHE;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA 2>&1;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
 	# set fs-feature -> [^]dir_index
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then	
-		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
 	# set mount option -> [^]journal_data_ordered
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE" >> $LOG_CACHE;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA" >> $LOG_DATA 2>&1;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA" >> $LOG_DATA;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
 	# set inode to 256
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA 2>&1;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
+
+	# efs check and fix, do not change
+	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check;
+	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
+	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
+	$BB chmod -R 777 /efs;
+	$BB umount /efs;
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fs_check ]; then
 		# reset the lock-file
-		$BB rm -f /system/run_fs_check
+		$BB rm -f /system/run_fs_check;
 
 		# check cache
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 		$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Filesystem state' | grep 'clean'" > $LOG_CACHE_TMP;
 		if [ "a`cat $LOG_CACHE_TMP`" == "a" ] || [ "`cat $LOG_CACHE_TMP`" == "Filesystem state:         clean with errors" ]; then
-			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
-			$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE 2>&1;
+			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE;
+			$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 		else
-			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE 2>&1;
+			echo "CACHE: $LOG_CACHE_TMP" >> $LOG_CACHE;
 		fi;
 
 		# check data
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA >> $LOG_DATA 2>&1";
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 		$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Filesystem state' | grep 'clean'" > $LOG_DATA_TMP;
 		if [ "a`cat $LOG_DATA_TMP`" == "a" ] || [ "`cat $LOG_DATA_TMP`" == "Filesystem state:         clean with errors" ]; then
-			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA 2>&1;
-			$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA 2>&1;
+			$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA;
+			$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 		else
-			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA 2>&1;
+			echo "DATA: $LOG_DATA_TMP" >> $LOG_DATA;
 		fi;
 	fi;
 }
@@ -392,6 +414,9 @@ POWER_SQL_JB()
 	$BB chmod 755 /system/xbin/sqlite3;
 }
 
+# Kernel check init
+KERNEL_9X=`cat /proc/version | $BB awk '/V9./ {print $3}' | wc -l`;
+
 # network tuning reset to allow real ROM control over H/H+/3G/G signal.
 $BB sed -i "s/ro.ril.hsxpa=[0-9]*//g" /system/build.prop;
 $BB sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
@@ -403,6 +428,9 @@ $BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=4
 
 # we can OC to 1.5Ghz.
 $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;
+
+# fix perm for init files in /tmp/
+$BB chmod -R 777 /tmp/;
 
 ######################################
 # Starting ROM choose and INIT config.
@@ -422,11 +450,16 @@ elif [ "$B2G" == "1" ]; then
 	SECROM_FUNCTION_SAMMY;
 
 elif [ "$JBSAMMY" == "1" ] || [ "$JBSAMMY2" == "1" ]; then
+	if [ "$KERNEL_9X" == "1" ]; then
+		echo "wrong kernel" > /tmp/wrong_kernel;
+	fi;
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	echo "2" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-Sammy/* /;
-	echo 172 > /sys/devices/virtual/sec/sec_key/set_homekey;
+	if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
+		echo 172 > /sys/devices/virtual/sec/sec_key/set_homekey;
+	fi;
 	# for system_tune_on_init.sh and for res/crontab_service/service.sh
 	$BB echo "1" > /tmp/sammy_rom;
 
@@ -472,6 +505,9 @@ elif [ "$AOSP" == "0" ]; then
 
 	SECROM_FUNCTION_AOSP;
 else
+	if [ "$KERNEL_9X" == "1" ]; then
+		echo "wrong kernel" > /tmp/wrong_kernel;
+	fi;
 	# If not detected Known ROM, then SAMMY ICS ROM installed.
 	echo "0" > /proc/sys/kernel/rom_feature_set;
 
