@@ -486,7 +486,7 @@
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency/voltage/steps/utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 950mV, 950mV, 1000mV, 1000mV and 1000mV." 
+	<settingsPane description="GPU Frequency/voltage/steps/utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 950mV, 950mV, 1000mV, 1050mV and 1050mV." 
 			name="GPU Control">
 
 		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you don't use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" 

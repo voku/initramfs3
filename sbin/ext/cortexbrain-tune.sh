@@ -796,9 +796,9 @@ MALI_TIMEOUT()
 	if [ "${state}" == "awake" ]; then
 		echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "${state}" == "sleep" ]; then
-		echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "${state}" == "performance" ]; then
-		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	fi;
 
 	log -p i -t $FILE_NAME "*** MALI_TIMEOUT: ${state} ***";
