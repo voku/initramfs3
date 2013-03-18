@@ -470,6 +470,10 @@ TCP_TWEAKS()
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
 		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes;
 		echo "20" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+
+		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: enabled";
+	fi;
+	if [ "$cortexbrain_tcp_ram" == on ]; then
 		echo "1048576" > /proc/sys/net/core/wmem_max;
 		echo "1048576" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
@@ -480,7 +484,7 @@ TCP_TWEAKS()
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
-		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: enabled";
+		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: enabled";
 	fi;
 }
 TCP_TWEAKS;

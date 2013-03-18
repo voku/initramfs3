@@ -1010,6 +1010,9 @@
 		<checkbox description="Enable or Disable 'TCP-Tweaks' (reboot needed)."
 			name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
+		<checkbox description="Enable or Disable 'TCP-RAM-Tweaks' (reboot needed)."
+			name="TCP-RAM-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp_ram" label="TCP-RAM-Tweaks"/>
+
 		<checkbox description="Enable or Disable 'IPv6 Network'. (dynamic by cortex)."
 			name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/>
 
