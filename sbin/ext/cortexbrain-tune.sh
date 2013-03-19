@@ -120,11 +120,11 @@ IO_TWEAKS()
 		done;
 
 		echo "45" > /proc/sys/fs/lease-break-time;
-		echo "289585" > /proc/sys/fs/file-max;
-		echo "1048576" > /proc/sys/fs/nr_open;
-		echo "16384" > /proc/sys/fs/inotify/max_queued_events;
-		echo "128" > /proc/sys/fs/inotify/max_user_instances;
-		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
+#		echo "289585" > /proc/sys/fs/file-max;
+#		echo "1048576" > /proc/sys/fs/nr_open;
+#		echo "16384" > /proc/sys/fs/inotify/max_queued_events;
+#		echo "128" > /proc/sys/fs/inotify/max_user_instances;
+#		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -137,17 +137,17 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 		echo "0" > /proc/sys/vm/panic_on_oom;
 		echo "120" > /proc/sys/kernel/panic;
-		echo "8192" > /proc/sys/kernel/msgmax;
-		echo "5756" > /proc/sys/kernel/msgmni;
-		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
-		echo "250 32000 32 128" > /proc/sys/kernel/sem;
-		echo "2097152" > /proc/sys/kernel/shmall;
-		echo "33554432" > /proc/sys/kernel/shmmax;
-		echo "45832" > /proc/sys/kernel/threads-max;
+#		echo "8192" > /proc/sys/kernel/msgmax;
+#		echo "5756" > /proc/sys/kernel/msgmni;
+#		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
+#		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
+#		echo "250 32000 32 128" > /proc/sys/kernel/sem;
+#		echo "2097152" > /proc/sys/kernel/shmall;
+#		echo "33554432" > /proc/sys/kernel/shmmax;
+#		echo "45832" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	fi;
@@ -444,7 +444,7 @@ MEMORY_TWEAKS()
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "256 256" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
