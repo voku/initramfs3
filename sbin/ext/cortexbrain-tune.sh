@@ -974,9 +974,9 @@ KERNEL_SCHED()
 		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
 		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
 	elif [ "${state}" == "sleep" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=2000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=1500000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=12000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
 	fi;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
