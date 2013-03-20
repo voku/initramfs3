@@ -424,9 +424,9 @@ MEMORY_TWEAKS()
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "256 256" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
@@ -813,9 +813,9 @@ VFS_CACHE_PRESSURE()
 	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
 
 	if [ "${state}" == "awake" ]; then
-		echo "20" > $sys_vfs_cache;
+		echo "200" > $sys_vfs_cache;
 	elif [ "${state}" == "sleep" ]; then
-		echo "50" > $sys_vfs_cache;
+		echo "20" > $sys_vfs_cache;
 	fi;
 
 	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
