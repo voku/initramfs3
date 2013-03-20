@@ -120,11 +120,11 @@ IO_TWEAKS()
 		done;
 
 		echo "45" > /proc/sys/fs/lease-break-time;
-		echo "289585" > /proc/sys/fs/file-max;
-		echo "1048576" > /proc/sys/fs/nr_open;
-		echo "16384" > /proc/sys/fs/inotify/max_queued_events;
-		echo "128" > /proc/sys/fs/inotify/max_user_instances;
-		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
+#		echo "289585" > /proc/sys/fs/file-max;
+#		echo "1048576" > /proc/sys/fs/nr_open;
+#		echo "16384" > /proc/sys/fs/inotify/max_queued_events;
+#		echo "128" > /proc/sys/fs/inotify/max_user_instances;
+#		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 	fi;
@@ -137,17 +137,17 @@ IO_TWEAKS;
 KERNEL_TWEAKS()
 {
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 		echo "0" > /proc/sys/vm/panic_on_oom;
 		echo "120" > /proc/sys/kernel/panic;
-		echo "8192" > /proc/sys/kernel/msgmax;
-		echo "5756" > /proc/sys/kernel/msgmni;
-		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
-		echo "250 32000 32 128" > /proc/sys/kernel/sem;
-		echo "2097152" > /proc/sys/kernel/shmall;
-		echo "33554432" > /proc/sys/kernel/shmmax;
-		echo "45832" > /proc/sys/kernel/threads-max;
+#		echo "8192" > /proc/sys/kernel/msgmax;
+#		echo "5756" > /proc/sys/kernel/msgmni;
+#		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
+#		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
+#		echo "250 32000 32 128" > /proc/sys/kernel/sem;
+#		echo "2097152" > /proc/sys/kernel/shmall;
+#		echo "33554432" > /proc/sys/kernel/shmmax;
+#		echo "45832" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	fi;
@@ -444,7 +444,7 @@ MEMORY_TWEAKS()
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "256 256" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 	fi;
@@ -470,6 +470,10 @@ TCP_TWEAKS()
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
 		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes;
 		echo "20" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+
+		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: enabled";
+	fi;
+	if [ "$cortexbrain_tcp_ram" == on ]; then
 		echo "1048576" > /proc/sys/net/core/wmem_max;
 		echo "1048576" > /proc/sys/net/core/rmem_max;
 		echo "262144" > /proc/sys/net/core/rmem_default;
@@ -480,7 +484,7 @@ TCP_TWEAKS()
 		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
-		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: enabled";
+		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: enabled";
 	fi;
 }
 TCP_TWEAKS;
@@ -796,9 +800,9 @@ MALI_TIMEOUT()
 	if [ "${state}" == "awake" ]; then
 		echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "${state}" == "sleep" ]; then
-		echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "${state}" == "performance" ]; then
-		echo "100" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	fi;
 
 	log -p i -t $FILE_NAME "*** MALI_TIMEOUT: ${state} ***";
