@@ -339,8 +339,8 @@ CPU_GOV_TWEAKS()
 			trans_load_l1_scroff_tmp="/dev/null";
 		fi;
 
-		# performance-settings
-		if [ "${state}" == "performance" ]; then
+		# wake_boost-settings
+		if [ "${state}" == "wake_boost" ]; then
 			echo "10" > $trans_load_h0_tmp;
 			echo "10" > $trans_load_l1_tmp;
 			echo "20000" > $sampling_rate_tmp;
@@ -424,9 +424,9 @@ MEMORY_TWEAKS()
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
-		echo "256 256" > /proc/sys/vm/lowmem_reserve_ratio;
+		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
@@ -785,7 +785,7 @@ MALI_TIMEOUT()
 		echo "$mali_gpu_utilization_timeout" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "${state}" == "sleep" ]; then
 		echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
-	elif [ "${state}" == "performance" ]; then
+	elif [ "${state}" == "wake_boost" ]; then
 		echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	fi;
 
@@ -800,7 +800,7 @@ BUS_THRESHOLD()
 		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "${state}" == "sleep" ]; then
 		echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
-	elif [ "${state}" == "performance" ]; then
+	elif [ "${state}" == "wake_boost" ]; then
 		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	fi;
 
@@ -813,9 +813,9 @@ VFS_CACHE_PRESSURE()
 	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
 
 	if [ "${state}" == "awake" ]; then
-		echo "20" > $sys_vfs_cache;
+		echo "200" > $sys_vfs_cache;
 	elif [ "${state}" == "sleep" ]; then
-		echo "50" > $sys_vfs_cache;
+		echo "20" > $sys_vfs_cache;
 	fi;
 
 	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
@@ -833,7 +833,7 @@ TWEAK_HOTPLUG_LOAD()
 	elif [ "${state}" == "sleep" ]; then
 		echo "50" > $sys_load_h0;
 		echo "50" > $sys_load_h1;
-	elif [ "${state}" == "performance" ]; then
+	elif [ "${state}" == "wake_boost" ]; then
 		echo "20" > $sys_load_h0;
 		echo "20" > $sys_load_l1;
 	fi;
@@ -845,7 +845,7 @@ CENTRAL_CPU_FREQ()
 {
 	local state="$1";
 
-	if [ "${state}" == "mega_boost" ]; then
+	if [ "${state}" == "wake_boost" ]; then
 		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
@@ -892,15 +892,15 @@ MEGA_BOOST_CPU_TWEAKS()
 	if [ "$cortexbrain_cpu" == on ]; then
 		echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
-		CPU_GOV_TWEAKS "performance";
+		CPU_GOV_TWEAKS "wake_boost";
 
-		MALI_TIMEOUT "performance";
+		MALI_TIMEOUT "wake_boost";
 
-		BUS_THRESHOLD "performance";
+		BUS_THRESHOLD "wake_boost";
 
-		TWEAK_HOTPLUG_LOAD "performance";
+		TWEAK_HOTPLUG_LOAD "wake_boost";
 
-		CENTRAL_CPU_FREQ "mega_boost";
+		CENTRAL_CPU_FREQ "wake_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
 	else
@@ -974,9 +974,9 @@ KERNEL_SCHED()
 		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
 		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
 	elif [ "${state}" == "sleep" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=2000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=1500000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=12000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
 	fi;
 
 	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
