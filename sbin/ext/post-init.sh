@@ -184,7 +184,7 @@ chmod 666 /tmp/uci_done;
 	ACORE_APPS=`pgrep acore`;
 	if [ "a$ACORE_APPS" != "a" ]; then
 		for c in `pgrep acore`; do
-			echo "900" > /proc/${c}/oom_score_adj;
+			echo "-900" > /proc/${c}/oom_score_adj;
 		done;
 	fi;
 
