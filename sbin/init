@@ -203,7 +203,6 @@ if [ ! -d /system/lib/modules ]; then
 	$BB cp /lib/modules/*.ko /system/lib/modules/;
 	$BB chmod 755 /system/lib/modules/*.ko;
 else
-	$BB rm -f /system/lib/modules/*.ko;
 	$BB cp /lib/modules/*.ko /system/lib/modules/;
 	$BB chmod 755 /system/lib/modules/*.ko;
 fi;
