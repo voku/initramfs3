@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
-WGET_CHECK1=`ls -la /system/xbin/wget | wc -l`;
-WGET_CHECK2=`ls -la /system/bin/wget | wc -l`;
+WGET_CHECK1=`ls /system/xbin/wget | wc -l` > /dev/null 2>&1`;
+WGET_CHECK2=`ls /system/bin/wget | wc -l` > /dev/null 2>&1`;
 
 if [ "$WGET_CHECK1" == 1 ] || [ "$WGET_CHECK2" == 1 ]; then
 
@@ -30,9 +30,10 @@ if [ "$WGET_CHECK1" == 1 ] || [ "$WGET_CHECK2" == 1 ]; then
 			# debug
 			#echo $version " - " $OLD_VERSION;
 
-			expr $version \> $OLD_VERSION >/dev/null && echo "There is a new version of this kernel available!!!" && break;
-			expr "7.10" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
-			expr "8.00" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
+			expr "$version" \> $OLD_VERSION > /dev/null && echo "There is a new version of this kernel available!!!" && break;
+			expr "7.0" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
+			expr "8.0" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
+			expr "9.0" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
 		done;
 	fi;
 

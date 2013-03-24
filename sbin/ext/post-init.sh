@@ -5,15 +5,16 @@ BB=/sbin/busybox
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
-# oom and mem perm fix
+# oom and mem perm fix, we have auto adj code, do not allow changes in adj
 $BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
+$BB chmod 444 /sys/module/lowmemorykiller/parameters/adj;
 $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
 # set default JB mmap_min_addr value
 echo "32768" > /proc/sys/vm/mmap_min_addr;
 
 # protect init from oom
-echo "1000" > /proc/1/oom_score_adj;
+echo "-1000" > /proc/1/oom_score_adj; # -1000 = -17
 
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
@@ -183,7 +184,7 @@ chmod 666 /tmp/uci_done;
 	ACORE_APPS=`pgrep acore`;
 	if [ "a$ACORE_APPS" != "a" ]; then
 		for c in `pgrep acore`; do
-			echo "900" > /proc/${c}/oom_score_adj;
+			echo "-900" > /proc/${c}/oom_score_adj;
 		done;
 	fi;
 

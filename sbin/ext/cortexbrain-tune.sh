@@ -136,10 +136,29 @@ IO_TWEAKS;
 # ==============================================================
 KERNEL_TWEAKS()
 {
+	local state="$1";
+
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
-		echo "1" > /proc/sys/vm/oom_kill_allocating_task;
-		echo "0" > /proc/sys/vm/panic_on_oom;
-		echo "120" > /proc/sys/kernel/panic;
+		if [ "${state}" == "awake" ]; then
+			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/panic_on_oom;
+			echo "120" > /proc/sys/kernel/panic;
+			if [ "$cortexbrain_memory" == on ]; then
+				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
+			fi;
+		elif [ "${state}" == "sleep" ]; then
+			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/panic_on_oom;
+			echo "60" > /proc/sys/kernel/panic;
+			if [ "$cortexbrain_memory" == on ]; then
+				echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
+			fi;
+		else
+			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/panic_on_oom;
+			echo "120" > /proc/sys/kernel/panic;
+		fi;
+
 #		echo "8192" > /proc/sys/kernel/msgmax;
 #		echo "5756" > /proc/sys/kernel/msgmni;
 #		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
@@ -149,7 +168,7 @@ KERNEL_TWEAKS()
 #		echo "33554432" > /proc/sys/kernel/shmmax;
 #		echo "45832" > /proc/sys/kernel/threads-max;
 	
-		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
+		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: ${state} ***: enabled";
 	fi;
 }
 KERNEL_TWEAKS;
@@ -813,7 +832,7 @@ VFS_CACHE_PRESSURE()
 	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
 
 	if [ "${state}" == "awake" ]; then
-		echo "200" > $sys_vfs_cache;
+		echo "100" > $sys_vfs_cache;
 	elif [ "${state}" == "sleep" ]; then
 		echo "20" > $sys_vfs_cache;
 	fi;
@@ -1089,6 +1108,8 @@ AWAKE_MODE()
 
 		KERNEL_SCHED "awake";
 
+		KERNEL_TWEAKS "awake";
+
 		NET "awake";
 
 		MOBILE_DATA "awake";
@@ -1211,6 +1232,8 @@ SLEEP_MODE()
 			TWEAK_HOTPLUG_LOAD "sleep";
 
 			VFS_CACHE_PRESSURE "sleep";
+
+			KERNEL_TWEAKS "sleep";
 		
 			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 
