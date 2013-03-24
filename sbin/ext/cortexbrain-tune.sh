@@ -153,6 +153,10 @@ KERNEL_TWEAKS()
 			if [ "$cortexbrain_memory" == on ]; then
 				echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
 			fi;
+		else
+			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/panic_on_oom;
+			echo "120" > /proc/sys/kernel/panic;
 		fi;
 
 #		echo "8192" > /proc/sys/kernel/msgmax;
@@ -167,6 +171,7 @@ KERNEL_TWEAKS()
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: ${state} ***: enabled";
 	fi;
 }
+KERNEL_TWEAKS;
 
 # ==============================================================
 # SYSTEM-TWEAKS
@@ -912,8 +917,6 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		BUS_THRESHOLD "wake_boost";
 
-		KERNEL_TWEAKS "awake";
-
 		TWEAK_HOTPLUG_LOAD "wake_boost";
 
 		CENTRAL_CPU_FREQ "wake_boost";
@@ -1104,6 +1107,8 @@ AWAKE_MODE()
 		LOGGER "awake";
 
 		KERNEL_SCHED "awake";
+
+		KERNEL_TWEAKS "awake";
 
 		NET "awake";
 
