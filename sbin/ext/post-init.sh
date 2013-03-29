@@ -80,21 +80,31 @@ fi;
 $BB chmod -R 755 /lib;
 
 (
-	sleep 50;
+	COUNTER=0;
+	while [ ! -f /lib/modules/j4fs.ko ]; do
+        if [ "$COUNTER" -ge "6" ]; then
+            break;
+        fi;
+		sleep 4;
+		COUNTER=$(($COUNTER+1));
+	done;
+	
 	# order of modules load is important
 	$BB insmod /lib/modules/j4fs.ko;
-	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-	$BB insmod /lib/modules/Si4709_driver.ko;
+	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs;
+	$BB insmod /lib/modules/dhd.ko;	
 
 	if [ "$usbserial_module" == "on" ]; then
 		$BB insmod /lib/modules/usbserial.ko;
 		$BB insmod /lib/modules/ftdi_sio.ko;
 		$BB insmod /lib/modules/pl2303.ko;
 	fi;
+
 	if [ "$usbnet_module" == "on" ]; then
 		$BB insmod /lib/modules/usbnet.ko;
 		$BB insmod /lib/modules/asix.ko;
 	fi;
+
 	if [ "$cifs_module" == "on" ]; then
 		$BB insmod /lib/modules/cifs.ko;
 	fi;
@@ -230,28 +240,6 @@ chmod 666 /tmp/uci_done;
 	else
 		touch /data/dalvik-cache/not_first_boot;
 		chmod 777 /data/dalvik-cache/not_first_boot;
-	fi;
-)&
-
-(
-	sleep 40;
-	# try to fix broken wifi toggle after boot
-	service call wifi 14 | grep "0 00000001" > /dev/null
-	if [ "$?" -eq "0" ]; then
-		svc wifi enable;
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		# disable as was.
-		service call wifi 13 i32 0 > /dev/null
-		svc wifi disable;
-	else
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		service call wifi 13 i32 1 > /dev/null
-		svc wifi enable;
 	fi;
 )&
 
