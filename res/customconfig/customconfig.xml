@@ -110,11 +110,11 @@
 
 		<button description="Use this button to see what CPU Voltage is used right now! if you see voltage different from what set as defaults! then your device has OLD CPU model! that uses different STATIC voltage table! and BEST for you, not to UV/OV EVER! just forget it! you will get SODS and cry about it." name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
-		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1400 mV)"
-			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1425 mV)"
+			name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1325" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1375 mV)"
-			name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1275" reversed="false" step="25" max="1475"/>
+		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1400 mV)"
+			name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
 		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1325 mV)"
 			name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1225" reversed="false" step="25" max="1425"/>
