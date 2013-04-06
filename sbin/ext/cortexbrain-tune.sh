@@ -181,7 +181,7 @@ SYSTEM_TWEAKS()
 	if [ "$cortexbrain_system" == on ]; then
 		# render UI with GPU
 		setprop hwui.render_dirty_regions false;
-		setprop windowsmgr.max_events_per_sec 180;
+		setprop windowsmgr.max_events_per_sec 240;
 		setprop profiler.force_disable_err_rpt 1;
 		setprop profiler.force_disable_ulog 1;
 
@@ -598,34 +598,8 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 fi;
 
 # ==============================================================
-# SCREEN-FUNCTIONS
+# GLOBAL-FUNCTIONS
 # ==============================================================
-
-WIFI_PM()
-{
-	local state="$1";
-	if [ "${state}" == "sleep" ]; then
-		#if [ "$wifi_pwr" == on ]; then
-		#	if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-		#		echo "1" > /sys/module/dhd/parameters/wifi_pm;
-		#	fi;
-		#fi;
-
-		if [ "$supplicant_scan_interval" -le 180 ]; then
-			setprop wifi.supplicant_scan_interval 360;
-		else
-			setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
-		fi;
-	elif [ "${state}" == "awake" ]; then
-		#if [ -e /sys/module/dhd/parameters/wifi_pm ]; then
-		#	echo "0" > /sys/module/dhd/parameters/wifi_pm;
-		#fi;
-
-		setprop wifi.supplicant_scan_interval $supplicant_scan_interval;
-	fi;
-
-	log -p i -t $FILE_NAME "*** WIFI_PM ***: ${state}";
-}
 
 WIFI_SET()
 {
@@ -651,7 +625,6 @@ WIFI()
 	local state="$1";
 
 	if [ "${state}" == "sleep" ]; then
-		WIFI_PM "sleep";
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			if [ -e /sys/module/dhd/initstate ]; then
 				if [ "$cortexbrain_auto_tweak_wifi_sleep_delay" == 0 ]; then
@@ -678,7 +651,6 @@ WIFI()
 			fi;
 		fi;
 	elif [ "${state}" == "awake" ]; then
-		WIFI_PM "awake";
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			echo "1" > $wifi_helper_tmp;
 			if [ `cat $wifi_helper_awake` == 1 ]; then
@@ -788,8 +760,8 @@ MOUNT_SD_CARD()
 {
 	if [ "$auto_mount_sd" == on ]; then
 		echo "/dev/block/vold/259:3" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun0/file;
-		if [ -e /dev/block/vold/179:25 ]; then
-			echo "/dev/block/vold/179:25" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
+		if [ -e /dev/block/vold/179:9 ]; then
+			echo "/dev/block/vold/179:9" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
 		fi;
 
 		log -p i -t $FILE_NAME "*** MOUNT_SD_CARD ***";

@@ -2,6 +2,7 @@
 
 rm /init;
 mv /boot /init;
+
 cd /;
 sync;
 exec /init;
