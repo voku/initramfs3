@@ -77,9 +77,33 @@ $BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
 
 # prevent from media storage to dig in clockworkmod backup dir
 $BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
-$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
-#umount only the external sd
-$BB umount -l /mnt/tmp2;
+
+if [ -e /dev/block/mmcblk1p1 ]; then
+	$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
+
+	SDCARD_SIZE1=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+	SDCARD_SIZE4=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+	SDCARD_SIZE8=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+	SDCARD_SIZE16=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+	SDCARD_SIZE32=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+	SDCARD_SIZE64=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+	if [ "$SDCARD_SIZE1" -lt "1000000" ]; then
+		echo "1" > /tmp/sdcard_size;
+	elif [ "$SDCARD_SIZE4" -lt "4000000" ]; then
+		echo "4" > /tmp/sdcard_size;
+	elif [ "$SDCARD_SIZE8" -lt "8000000" ]; then
+		echo "8" > /tmp/sdcard_size;
+	elif [ "$SDCARD_SIZE16" -lt "16000000" ]; then
+		echo "16" > /tmp/sdcard_size;
+	elif [ "$SDCARD_SIZE32" -lt "32000000" ]; then
+		echo "32" > /tmp/sdcard_size;
+	elif [ "$SDCARD_SIZE64" -lt "64000000" ]; then
+		echo "64" > /tmp/sdcard_size;
+	fi;
+
+	#umount only the external sd
+	$BB umount -l /mnt/tmp2;
+fi;
 
 # dual boot check and run
 if [ -e /mnt/tmp/.nextboot ]; then
