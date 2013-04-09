@@ -88,7 +88,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "64" > $i/queue/nr_requests; # default: 128
+				echo "512" > $i/queue/nr_requests; # default: 128
 			fi;
 		done;
 
