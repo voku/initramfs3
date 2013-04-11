@@ -182,4 +182,5 @@ cortexbrain_io=on
 usbserial_module=off
 usbnet_module=off
 cifs_module=off
+eds_module=off
 defaultrom=0

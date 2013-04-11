@@ -98,6 +98,9 @@ $BB chmod -R 755 /lib;
 	if [ "$cifs_module" == "on" ]; then
 		$BB insmod /lib/modules/cifs.ko;
 	fi;
+	if [ "$eds_module" == "on" ]; then
+		$BB insmod /lib/modules/eds.ko;
+	fi;
 )&
 
 # dual core hotplug

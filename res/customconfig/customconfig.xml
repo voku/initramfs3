@@ -1030,6 +1030,9 @@
 		<checkbox description="Enable or Disable CIFS Module. This will allow to use apps that can mount internal storage and publish over network. User can access data/system over network. No support, effect only after reboot!"
 			name="CIFS Module" action="generic_cortex /tmp/cifs_module" label="CIFS Module"/>
 
+		<checkbox description="Enable or Disable EDS Module, (Encrypted Data Store) lets you store your files in the encrypted container to prevent unauthorized access to sensitive information. you need app from google store (EDS/Paid/Lite)"
+			name="EDS Module" action="generic_cortex /tmp/eds_module" label="EDS Module"/>
+
 	</settingsPane>
 
 </settingsTab>
