@@ -31,25 +31,6 @@
 			<spinnerItem name="off" value="0"/> 
 		</spinner>
 
-		<seekBar description="Minimum Frequency until second core will not be turned on, regardless of thresholds. (Default: 500.000 kHz)" 
-			name="Min Frequency for 2-core" action="genericfreq /sys/module/stand_hotplug/parameters/freq_min" 
-			unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
-
-		<seekBar description="The second core will be enabled when the load goes above this threshold. If threshold is set above 24, and you have 800MHz as MAX, second core will not turn ON! If you set MAX CPU frequency lower than 800MHz, second core will be DISABLED! (Default: 20)" 
-			name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="5" reversed="false" step="1" max="30"/>
-
-		<seekBar description="Second core will be disabled when the load goes below this threshold. (Default: 20)" 
-			name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="5" reversed="false" step="1" max="50"/>
-
-		<seekBar description="Default: 2" 
-			name="min_rq" action="generic /sys/module/stand_hotplug/parameters/min_rq" unit="" min="0" reversed="false" step="1" max="2"/>
-
-		<seekBar description="Default: 20" 
-			name="load_rq" action="generic /sys/module/stand_hotplug/parameters/load_rq" unit="%" min="5" reversed="false" step="1" max="35"/>
-
-		<seekBar description="Sets hot plug sampling intervals for screen-on state. (Default: 100)" 
-			name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="100" reversed="false" step="100" max="1000"/>
-
 	</settingsPane>
 
 	<settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
