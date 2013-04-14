@@ -187,6 +187,21 @@ SYSTEM_TWEAKS()
 SYSTEM_TWEAKS;
 
 # ==============================================================
+# ECO-TWEAKS
+# ==============================================================
+ECO_TWEAKS()
+{
+	if [ "$cortexbrain_eco" == on ]; then
+		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+		if [ "$LEVEL" <= $cortexbrain_eco_level ]; then
+			# todo
+		fi;
+
+		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
+	fi;
+}
+
+# ==============================================================
 # BATTERY-TWEAKS
 # ==============================================================
 BATTERY_TWEAKS()
