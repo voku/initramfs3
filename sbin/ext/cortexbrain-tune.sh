@@ -123,6 +123,10 @@ IO_TWEAKS()
 #		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 IO_TWEAKS;
@@ -165,6 +169,10 @@ KERNEL_TWEAKS()
 #		echo "45832" > /proc/sys/kernel/threads-max;
 	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: ${state} ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 KERNEL_TWEAKS;
@@ -182,6 +190,10 @@ SYSTEM_TWEAKS()
 		setprop profiler.force_disable_ulog 1;
 
 		log -p i -t $FILE_NAME "*** SYSTEM_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 SYSTEM_TWEAKS;
@@ -194,10 +206,14 @@ ECO_TWEAKS()
 	if [ "$cortexbrain_eco" == on ]; then
 		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		if [ "$LEVEL" <= $cortexbrain_eco_level ]; then
-			# todo
+			CPU_GOV_TWEAKS "sleep";
 		fi;
 
 		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 
@@ -250,6 +266,10 @@ BATTERY_TWEAKS()
 		done;
 
 		log -p i -t $FILE_NAME "*** BATTERY_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 if [ "$cortexbrain_background_process" == 0 ]; then
@@ -433,6 +453,10 @@ CPU_GOV_TWEAKS()
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 if [ "$cortexbrain_background_process" == 0 ]; then
@@ -461,6 +485,10 @@ MEMORY_TWEAKS()
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 MEMORY_TWEAKS;
@@ -499,6 +527,10 @@ TCP_TWEAKS()
 		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
 
 		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 TCP_TWEAKS;
@@ -524,6 +556,10 @@ FIREWALL_TWEAKS()
 		#echo "0" > /proc/sys/net/ipv4/conf/default/accept_source_route;
 
 		log -p i -t $FILE_NAME "*** FIREWALL_TWEAKS ***: enabled";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 FIREWALL_TWEAKS;
@@ -606,6 +642,10 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 		fi;
 	}
 	ADJUST_KSM;
+
+	return 0;
+else
+	return 1;
 fi;
 
 # ==============================================================
@@ -905,9 +945,13 @@ MEGA_BOOST_CPU_TWEAKS()
 		CENTRAL_CPU_FREQ "wake_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
+
+		return 0;
 	else
 		MAX_FREQ=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`;
 		echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+
+		return 1;
 	fi;
 }
 
@@ -1007,6 +1051,10 @@ BLN_CORRECTION()
 		fi;
 
 		log -p i -t $FILE_NAME "*** BLN_CORRECTION ***";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 
@@ -1031,7 +1079,12 @@ CROND_SAFETY()
 	if [ "$crontab" == on ]; then
 		pkill -f "crond";
 		/res/crontab_service/service.sh;
+
 		log -p i -t $FILE_NAME "*** CROND_SAFETY ***";
+
+		return 0;
+	else
+		return 1;
 	fi;
 }
 
@@ -1121,8 +1174,6 @@ AWAKE_MODE()
 
 		VFS_CACHE_PRESSURE "awake";
 
-		CPU_GOV_TWEAKS "awake";
-
 		TWEAK_HOTPLUG_LOAD "awake";
 
 		if [ "$cortexbrain_cpu" == on ]; then
@@ -1133,7 +1184,13 @@ AWAKE_MODE()
 
 		BUS_THRESHOLD "awake";
 
-		log -p i -t $FILE_NAME "*** AWAKE Normal Mode ***";
+		ECO_TWEAKS;
+		if [ "$?" == 1 ]; then
+			CPU_GOV_TWEAKS "awake";
+			log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
+		else
+			log -p i -t $FILE_NAME "*** AWAKE: ECO-Mode ***";
+		fi;
 	fi;
 }
 
