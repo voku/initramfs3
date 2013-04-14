@@ -15,7 +15,7 @@ for m in $($BB mount | grep ext[3-4] | cut -d " " -f3); do
 done;
 
 $BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /cache;
-$BB mount -o remount,rw,nosuid,nodev,discard /data;
+$BB mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /data;
 $BB mount -o remount,rw /system;
 
 $BB mount -t rootfs -o remount,rw rootfs;
