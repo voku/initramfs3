@@ -225,6 +225,7 @@ ECO_TWEAKS()
 BATTERY_TWEAKS()
 {
 	if [ "$cortexbrain_battery" == on ]; then
+
 		# battery-calibration if battery is full
 		local LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 		local CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
@@ -632,14 +633,18 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 		local free=$(awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo);
 
 		if [ $free -gt $KSM_THRES ]; then
-			log -p i -t $FILE_NAME "*** ksm: $free > $KSM_THRES ***";
 			npages=$(INCREASE_NPAGES ${KSM_NPAGES_BOOST});
 			KSMCTL "stop";
+
+			log -p i -t $FILE_NAME "*** ksm: $free > $KSM_THRES ***";
+
 			return 1;
 		else
 			npages=$(INCREASE_NPAGES $KSM_NPAGES_DECAY);
-			log -p i -t $FILE_NAME "*** ksm: $free < $KSM_THRES ***"
 			KSMCTL "start" $KSM_NPAGES $KSM_SLEEP;
+
+			log -p i -t $FILE_NAME "*** ksm: $free < $KSM_THRES ***"
+
 			return 0;
 		fi;
 	}
@@ -795,9 +800,10 @@ GESTURES()
 			nohup /sbin/busybox sh /data/gesture_set.sh;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
-		if 		[ $(pgrep -f "/data/gesture_set.sh" | wc -l) != 0 ] || 
-				[ $(pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l) != 0 ] || 
-				[ "$gesture_tweak" == off ]; 
+		if		
+			[ $(pgrep -f "/data/gesture_set.sh" | wc -l) != 0 ] || 
+			[ $(pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l) != 0 ] || 
+			[ "$gesture_tweak" == off ]; 
 		then
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
