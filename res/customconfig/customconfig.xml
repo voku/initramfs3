@@ -987,6 +987,20 @@
 		<checkbox description="Enable or Disable 'Battery-Tweaks' (reboot needed)."
 			name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
+		<checkbox description="Enable or Disable 'Eco-Tweaks' (reboot needed)."
+			name="Eco-Tweaks" action="generic_cortex /tmp/cortexbrain_eco" label="Eco-Tweaks"/>
+
+		<spinner description="From what percentage battery life, the eco-mode is activated? Depends on Eco-Tweaks!" 
+			name="Eco-Level" action="generic_cortex /tmp/cortexbrain_eco_level">
+			<spinnerItem name="2%" value="2"/>
+			<spinnerItem name="5%" value="5"/>
+			<spinnerItem name="10%" value="10"/>
+			<spinnerItem name="20%" value="20"/>
+			<spinnerItem name="30%" value="30"/>
+			<spinnerItem name="40%" value="30"/>
+			<spinnerItem name="50%" value="50"/>
+		</spinner>
+
 		<checkbox description="Enable or Disable 'System-Tweak' (reboot needed)."
 			name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 

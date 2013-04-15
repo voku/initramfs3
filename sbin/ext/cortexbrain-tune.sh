@@ -209,6 +209,7 @@ ECO_TWEAKS()
 		local LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 		if [ "$LEVEL" <= $cortexbrain_eco_level ]; then
 			CPU_GOV_TWEAKS "sleep";
+			TWEAK_HOTPLUG_ECO "sleep";
 		fi;
 
 		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
@@ -861,13 +862,40 @@ VFS_CACHE_PRESSURE()
 	local state="$1";
 	local sys_vfs_cache="/proc/sys/vm/vfs_cache_pressure";
 
-	if [ "${state}" == "awake" ]; then
-		echo "100" > $sys_vfs_cache;
-	elif [ "${state}" == "sleep" ]; then
-		echo "20" > $sys_vfs_cache;
+	if [ -e $sys_vfs_cache ]; then
+		if [ "${state}" == "awake" ]; then
+			echo "100" > $sys_vfs_cache;
+		elif [ "${state}" == "sleep" ]; then
+			echo "20" > $sys_vfs_cache;
+		fi;
+
+		log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
+
+		return 0;
 	fi;
 
-	log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
+	return 1;
+}
+
+TWEAK_HOTPLUG_ECO()
+{
+	local state="$1";
+	local sys_eco="/sys/module/intelli_plug/parameters/eco_mode_active";
+
+	if [ -e $sys_eco ]; then
+		if [ "${state}" == "awake" ]; then
+			echo "0" > $sys_eco;
+			echo "$load_l1" > $sys_eco;
+		elif [ "${state}" == "sleep" ]; then
+			echo "1" > $sys_eco;
+		fi;
+
+		log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_ECO: ${state} ***";
+
+		return 0;
+	fi;
+
+	return 1;
 }
 
 TWEAK_HOTPLUG_LOAD()
@@ -876,18 +904,24 @@ TWEAK_HOTPLUG_LOAD()
 	local sys_load_h0="/sys/module/stand_hotplug/parameters/load_h0";
 	local sys_load_l1="/sys/module/stand_hotplug/parameters/load_l1";
 
-	if [ "${state}" == "awake" ]; then
-		echo "$load_h0" > $sys_load_h0;
-		echo "$load_l1" > $sys_load_l1;
-	elif [ "${state}" == "sleep" ]; then
-		echo "50" > $sys_load_h0;
-		echo "50" > $sys_load_h1;
-	elif [ "${state}" == "wake_boost" ]; then
-		echo "20" > $sys_load_h0;
-		echo "20" > $sys_load_l1;
+	if [ -e $sys_load_h0 ]; then
+		if [ "${state}" == "awake" ]; then
+			echo "$load_h0" > $sys_load_h0;
+			echo "$load_l1" > $sys_load_l1;
+		elif [ "${state}" == "sleep" ]; then
+			echo "50" > $sys_load_h0;
+			echo "50" > $sys_load_h1;
+		elif [ "${state}" == "wake_boost" ]; then
+			echo "20" > $sys_load_h0;
+			echo "20" > $sys_load_l1;
+		fi;
+
+		log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_LOAD: ${state} ***";
+
+		exit 0;
 	fi;
 
-	log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_LOAD: ${state} ***";
+	return 1;
 }
 
 CENTRAL_CPU_FREQ()
@@ -1188,6 +1222,7 @@ AWAKE_MODE()
 		VFS_CACHE_PRESSURE "awake";
 
 		TWEAK_HOTPLUG_LOAD "awake";
+		TWEAK_HOTPLUG_ECO "awake";
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			CENTRAL_CPU_FREQ "awake_normal";
@@ -1283,6 +1318,7 @@ SLEEP_MODE()
 			IO_SCHEDULER "sleep";
 
 			TWEAK_HOTPLUG_LOAD "sleep";
+			TWEAK_HOTPLUG_ECO "sleep";
 
 			VFS_CACHE_PRESSURE "sleep";
 
