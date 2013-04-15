@@ -243,6 +243,22 @@
 
 	</settingsPane>
 
+	<settingsPane description="Interactive Gov Configuration, see descriptions" name="INTERACTIVE GOV CONFIGURATON">
+
+		<seekBar description="Wait this long before raising speed above hispeed, by default a single timer interval. (Default 20000)"
+			name="above_hispeed_delay" action="generic_cortex /tmp/above_hispeed_delay" unit="int" min="0" reversed="false" step="10000" max="100000"/>
+
+		<seekBar description="Duration of a boot pulse in usecs. (Default 80000)"
+			name="boostpulse_duration" action="generic_cortex /tmp/boostpulse_duration" unit="usecs" min="0" reversed="false" step="10000" max="1000000"/>
+
+		<seekBar description="The minimum amount of time to spend at a frequency before we can ramp down. (Default: 60000)"
+			name="min_sample_time" action="generic_cortex /tmp/min_sample_time" unit="int" min="10000" reversed="false" step="10000" max="100000"/>
+
+		<seekBar description="Max additional time to wait in idle, beyond sampling_rate, at speeds above minimum before wakeup to reduce speed. (Default: 80000)"
+			name="timer_slack" action="generic_cortex /tmp/timer_slack" unit="int" min="10000" reversed="false" step="10000" max="100000"/>
+
+	</settingsPane>
+
 </settingsTab>
 
 <settingsTab name="CPU-TUNING (SLEEP)">
@@ -340,6 +356,22 @@
 
 		<seekBar description="Number of samples to evaluate load to scale CPU Down. After CPU_down_rate samples are finished for a frequency, CPU scale-Down logic is executed. In other words - before scaling Down, cpu_down_rate*down_sample_time micro seconds are spend at a frequency. (Default: 20%)"
 			name="cpu_down_rate_sleep" action="generic_cortex /tmp/cpu_down_rate_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
+	</settingsPane>
+
+	<settingsPane description="Interactive Gov Configuration, see descriptions" name="INTERACTIVE GOV CONFIGURATON">
+
+		<seekBar description="Wait this long before raising speed above hispeed, by default a single timer interval. (Default 20000)"
+			name="above_hispeed_delay_sleep" action="generic_cortex /tmp/above_hispeed_delay_sleep" unit="int" min="0" reversed="false" step="10000" max="100000"/>
+
+		<seekBar description="Duration of a boot pulse in usecs. (Default 80000)"
+			name="boostpulse_duration_sleep" action="generic_cortex /tmp/boostpulse_duration_sleep" unit="usecs" min="0" reversed="false" step="10000" max="1000000"/>
+
+		<seekBar description="The minimum amount of time to spend at a frequency before we can ramp down. (Default: 60000)"
+			name="min_sample_time_sleep" action="generic_cortex /tmp/min_sample_time_sleep" unit="int" min="10000" reversed="false" step="10000" max="100000"/>
+
+		<seekBar description="Max additional time to wait in idle, beyond sampling_rate, at speeds above minimum before wakeup to reduce speed. (Default: 80000)"
+			name="timer_slack_sleep" action="generic_cortex /tmp/timer_slack_sleep" unit="int" min="10000" reversed="false" step="10000" max="100000"/>
 
 	</settingsPane>
 
