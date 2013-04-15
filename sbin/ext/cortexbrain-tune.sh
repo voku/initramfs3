@@ -392,6 +392,54 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $trans_load_l1_scroff_tmp ]; then
 			trans_load_l1_scroff_tmp="/dev/null";
 		fi;
+		local above_hispeed_delay_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/above_hispeed_delay";
+		if [ ! -e $above_hispeed_delay_tmp ]; then
+			above_hispeed_delay_tmp="/dev/null";
+		fi;
+		local boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boost";
+		if [ ! -e $boost_tmp ]; then
+			boost_tmp="/dev/null";
+		fi;
+		local boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostpulse";
+		if [ ! -e $boostpulse_tmp ]; then
+			boostpulse_tmp="/dev/null";
+		fi;
+		local boostpulse_duration_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostpulse_duration";
+		if [ ! -e $boostpulse_duration_tmp ]; then
+			boostpulse_duration_tmp="/dev/null";
+		fi;
+		local go_hispeed_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/go_hispeed_load";
+		if [ ! -e $go_hispeed_load_tmp ]; then
+			go_hispeed_load_tmp="/dev/null";
+		fi;
+		local hispeed_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hispeed_freq";
+		if [ ! -e $hispeed_freq_tmp ]; then
+			hispeed_freq_tmp="/dev/null";
+		fi;
+		local io_is_busy_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/io_is_busy";
+		if [ ! -e $io_is_busy_tmp ]; then
+			io_is_busy_tmp="/dev/null";
+		fi;
+		local min_sample_time_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_sample_time";
+		if [ ! -e $min_sample_time_tmp ]; then
+			min_sample_time_tmp="/dev/null";
+		fi;
+		local screen_off_maxfreq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/screen_off_maxfreq";
+		if [ ! -e $screen_off_maxfreq_tmp ]; then
+			screen_off_maxfreq_tmp="/dev/null";
+		fi;
+		local target_loads_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/target_loads";
+		if [ ! -e $target_loads_tmp ]; then
+			target_loads_tmp="/dev/null";
+		fi;
+		local timer_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_rate";
+		if [ ! -e $timer_rate_tmp ]; then
+			timer_rate_tmp="/dev/null";
+		fi;
+		local timer_slack_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_slack";
+		if [ ! -e $timer_slack_tmp ]; then
+			timer_slack_tmp="/dev/null";
+		fi;
 
 		# wake_boost-settings
 		if [ "${state}" == "wake_boost" ]; then
@@ -430,6 +478,15 @@ CPU_GOV_TWEAKS()
 			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
 			echo "$trans_load_rq_sleep" > $trans_load_rq_tmp;
 			echo "$trans_rq_sleep" > $trans_rq_tmp;
+			echo "$above_hispeed_delay_sleep" > $above_hispeed_delay_tmp;
+			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
+			echo "$up_threshold_sleep" > $go_hispeed_load_tmp;
+			echo "$hispeed_freq_sleep" > $scaling_max_freq;
+			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
+			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
+			echo "$up_threshold_at_min_freq_sleep" > $target_loads_tmp;
+			echo "$sampling_rate_sleep" > $timer_rate_tmp;
+			echo "$timer_slack_sleep" > $timer_slack_tmp;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -454,6 +511,15 @@ CPU_GOV_TWEAKS()
 			echo "$trans_load_l1" > $trans_load_l1_tmp;
 			echo "$trans_load_rq" > $trans_load_rq_tmp;
 			echo "$trans_rq" > $trans_rq_tmp;
+			echo "$above_hispeed_delay" > $above_hispeed_delay_tmp;
+			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
+			echo "$up_threshold" > $go_hispeed_load_tmp;
+			echo "$hispeed_freq" > $scaling_max_freq;
+			echo "$min_sample_time" > $min_sample_time_tmp;
+			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
+			echo "$up_threshold_at_min_freq" > $target_loads_tmp;
+			echo "$sampling_rate" > $timer_rate_tmp;
+			echo "$timer_slack" > $timer_slack_tmp;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
@@ -893,15 +959,23 @@ TWEAK_HOTPLUG_ECO()
 	return 1;
 }
 
+CENTRAL_CPU_FREQ_HELPER()
+{
+	if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
+		scaling_max_freq=$scaling_max_freq_oc;
+
+		return 0;
+	fi;
+
+	return 1;
+}
+
 CENTRAL_CPU_FREQ()
 {
 	local state="$1";
 
 	if [ "${state}" == "wake_boost" ]; then
-		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
-			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		elif [ "$scaling_max_freq" -ge 1000000 ]; then
+		if [ "$scaling_max_freq" -ge 1000000 ]; then
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		else
@@ -913,13 +987,8 @@ CENTRAL_CPU_FREQ()
 	elif [ "${state}" == "awake_normal" ]; then
 		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
-			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		else
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-		fi;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 	elif [ "${state}" == "standby_freq" ]; then
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
@@ -956,8 +1025,7 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		return 0;
 	else
-		MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
-		echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 
 		return 1;
 	fi;
@@ -1147,6 +1215,8 @@ AWAKE_MODE()
 {
 	ENABLEMASK "awake";
 
+	CENTRAL_CPU_FREQ_HELPER;
+
 	if [ "$cortexbrain_cpu" == on ] && [ "$on_call" == 1 ]; then
 		CENTRAL_CPU_FREQ "awake_normal";
 		on_call=0;
@@ -1222,6 +1292,8 @@ SLEEP_MODE()
 	TELE_DATA=$(dumpsys telephony.registry);
 
 	ENABLEMASK "sleep";
+
+	CENTRAL_CPU_FREQ_HELPER;
 
 	if [ "$DUMPSYS" == 1 ]; then
 		# check the call state, not on call = 0, on call = 2
