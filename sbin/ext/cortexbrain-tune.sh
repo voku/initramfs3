@@ -1002,9 +1002,15 @@ NET()
 	local state="$1";
 
 	if [ "${state}" == "awake" ]; then
-		echo "1800" > /proc/sys/net/ipv4/tcp_keepalive_time;
+		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes; # default: 3
+		echo "1200" > /proc/sys/net/ipv4/tcp_keepalive_time; # default: 7200s
+		echo "10" > /proc/sys/net/ipv4/tcp_keepalive_intvl; # default: 75s
+		echo "10" > /proc/sys/net/ipv4/tcp_retries2; # default: 15
 	elif [ "${state}" == "sleep" ]; then
-		echo "7200" > /proc/sys/net/ipv4/tcp_keepalive_time;
+		echo "2" > /proc/sys/net/ipv4/tcp_keepalive_probes;
+		echo "300" > /proc/sys/net/ipv4/tcp_keepalive_time;
+		echo "5" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "5" > /proc/sys/net/ipv4/tcp_retries2;
 	fi;
 
 	log -p i -t $FILE_NAME "*** NET ***: ${state}";	
