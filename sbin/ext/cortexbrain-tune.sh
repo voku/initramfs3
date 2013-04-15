@@ -17,7 +17,7 @@
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 DATA_DIR="/data/.siyah";
-TELE_DATA=`dumpsys telephony.registry`;
+TELE_DATA=$(dumpsys telephony.registry);
 sleeprun=1;
 on_call=0;
 
@@ -34,7 +34,7 @@ chmod 777 -R /tmp/
 # get values from profile
 # 
 # (since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history)
-PROFILE=`cat ${DATA_DIR}/.active.profile`;
+PROFILE=$(cat ${DATA_DIR}/.active.profile);
 . ${DATA_DIR}/${PROFILE}.profile;
 
 # set initial vm.dirty vales
@@ -49,7 +49,7 @@ else
 fi;
 
 # replace kernel version info for repacked kernels
-cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 `cat /res/version`);
+cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 15 $(cat /res/version));
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -58,7 +58,7 @@ IO_TWEAKS()
 {
 	if [ "$cortexbrain_io" == on ]; then
 
-		local ZRM=`ls -d /sys/block/zram*`;
+		local ZRM=$(ls -d /sys/block/zram*);
 		for z in $ZRM; do
 			if [ -e $z/queue/rotational ]; then
 				echo "0" > $z/queue/rotational;
@@ -73,7 +73,7 @@ IO_TWEAKS()
 			fi;
 		done;
 
-		local MMC=`ls -d /sys/block/mmc*`;
+		local MMC=$(ls -d /sys/block/mmc*);
 		for i in $MMC; do
 			if [ -e $i/queue/scheduler ]; then
 				echo $scheduler > $i/queue/scheduler;
@@ -98,7 +98,8 @@ IO_TWEAKS()
 
 		if [ -e /sys/block/mmcblk1/queue/read_ahead_kb ]; then
 			if [ "$cortexbrain_read_ahead_kb" == 0 ]; then
-				SDCARD_SIZE=`cat /tmp/sdcard_size`
+
+				SDCARD_SIZE=$(cat /tmp/sdcard_size);
 				if [ "$SDCARD_SIZE" == 1 ]; then
 					echo "256" > /sys/block/mmcblk1/queue/read_ahead_kb;
 				elif [ "$SDCARD_SIZE" == 4 ]; then
@@ -110,6 +111,7 @@ IO_TWEAKS()
 				elif [ "$SDCARD_SIZE" == 64 ]; then
 					echo "2560" > /sys/block/mmcblk1/queue/read_ahead_kb;
 				fi;
+
 			else
 				echo "$cortexbrain_read_ahead_kb" > /sys/block/mmcblk1/queue/read_ahead_kb;
 			fi;
@@ -204,7 +206,7 @@ SYSTEM_TWEAKS;
 ECO_TWEAKS()
 {
 	if [ "$cortexbrain_eco" == on ]; then
-		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+		local LEVEL=$(cat /sys/class/power_supply/battery/capacity);
 		if [ "$LEVEL" <= $cortexbrain_eco_level ]; then
 			CPU_GOV_TWEAKS "sleep";
 		fi;
@@ -224,9 +226,9 @@ BATTERY_TWEAKS()
 {
 	if [ "$cortexbrain_battery" == on ]; then
 		# battery-calibration if battery is full
-		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
-		local CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
-		local BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
+		local LEVEL=$(cat /sys/class/power_supply/battery/capacity);
+		local CURR_ADC=$(cat /sys/class/power_supply/battery/batt_current_adc);
+		local BATTFULL=$(cat /sys/class/power_supply/battery/batt_full_check);
 		log -p i -t $FILE_NAME "*** BATTERY - LEVEL: $LEVEL - CUR: $CURR_ADC ***";
 		if [ "$LEVEL" == 100 ] && [ "$BATTFULL" == 1 ]; then
 			rm -f /data/system/batterystats.bin;
@@ -243,13 +245,13 @@ BATTERY_TWEAKS()
 		fi;
 
 		# USB power support
-		local POWER_LEVEL=`ls /sys/bus/usb/devices/*/power/level`;
+		local POWER_LEVEL=$(ls /sys/bus/usb/devices/*/power/level);
 		for i in $POWER_LEVEL; do
 			chmod 777 $i;
 			echo "auto" > $i;
 		done;
 
-		local POWER_AUTOSUSPEND=`ls /sys/bus/usb/devices/*/power/autosuspend`;
+		local POWER_AUTOSUSPEND=$(ls /sys/bus/usb/devices/*/power/autosuspend);
 		for i in $POWER_AUTOSUSPEND; do
 			chmod 777 $i;
 			echo "1" > $i;
@@ -258,7 +260,7 @@ BATTERY_TWEAKS()
 		# BUS power support
 		buslist="spi i2c sdio";
 		for bus in $buslist; do
-			local POWER_CONTROL=`ls /sys/bus/$bus/devices/*/power/control`;
+			local POWER_CONTROL=$(ls /sys/bus/$bus/devices/*/power/control);
 			for i in $POWER_CONTROL; do
 				chmod 777 $i;
 				echo "auto" > $i;
@@ -284,7 +286,7 @@ CPU_GOV_TWEAKS()
 {
     local state="$1";
 	if [ "$cortexbrain_cpu" == on ]; then
-		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+		local SYSTEM_GOVERNOR=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor);
 		
 		local sampling_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate";
 		if [ ! -e $sampling_rate_tmp ]; then
@@ -580,7 +582,7 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 	KSM_THRES_CONST=2048;
 
 	KSM_NPAGES=0;
-	KSM_TOTAL=`awk '/^MemTotal:/ {print $2}' /proc/meminfo`;
+	KSM_TOTAL=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo);
 	KSM_THRES=$(( $KSM_TOTAL * $KSM_THRES_COEF / 100 ));
 
 	if [ $KSM_THRES_CONST -gt $KSM_THRES ]; then
@@ -606,7 +608,7 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 				echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
 				echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
 				echo 1 > /sys/kernel/mm/ksm/run;
-				renice -n 10 -p "`pidof ksmd`";
+				renice -n 10 -p "$(pidof ksmd)";
 			;;
 			esac
 	}
@@ -627,25 +629,21 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 
 	ADJUST_KSM()
 	{
-		local free=`awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo;`
+		local free=$(awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo);
 
 		if [ $free -gt $KSM_THRES ]; then
 			log -p i -t $FILE_NAME "*** ksm: $free > $KSM_THRES ***";
-			npages=`INCREASE_NPAGES ${KSM_NPAGES_BOOST}`;
+			npages=$(INCREASE_NPAGES ${KSM_NPAGES_BOOST});
 			KSMCTL "stop";
 			return 1;
 		else
-			npages=`INCREASE_NPAGES $KSM_NPAGES_DECAY`;
+			npages=$(INCREASE_NPAGES $KSM_NPAGES_DECAY);
 			log -p i -t $FILE_NAME "*** ksm: $free < $KSM_THRES ***"
 			KSMCTL "start" $KSM_NPAGES $KSM_SLEEP;
 			return 0;
 		fi;
 	}
 	ADJUST_KSM;
-
-	return 0;
-else
-	return 1;
 fi;
 
 # ==============================================================
@@ -685,12 +683,12 @@ WIFI()
 						echo "0" > $wifi_helper_tmp;
 						# screen time out but user want to keep it on and have wifi
 						sleep 10;
-						if [ `cat $wifi_helper_tmp` == 0 ]; then
+						if [ $(cat $wifi_helper_tmp) == 0 ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME_WIFI=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME_WIFI;
-							if [ `cat $wifi_helper_tmp` == 0 ]; then
+							if [ $(cat $wifi_helper_tmp) == 0 ]; then
 								# user left the screen off, then disable wifi
 								WIFI_SET "off";
 							fi;
@@ -704,7 +702,7 @@ WIFI()
 	elif [ "${state}" == "awake" ]; then
 		if [ "$cortexbrain_auto_tweak_wifi" == on ]; then
 			echo "1" > $wifi_helper_tmp;
-			if [ `cat $wifi_helper_awake` == 1 ]; then
+			if [ $(cat $wifi_helper_awake) == 1 ]; then
 				WIFI_SET "on";
 			fi;
 		fi;
@@ -730,7 +728,7 @@ MOBILE_DATA()
 	local state="$1";
 	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
 		if [ "${state}" == "sleep" ]; then
-			local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
+			local DATA_STATE=$(echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}');
 			if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
 				if [ "$cortexbrain_auto_tweak_mobile_sleep_delay" == 0 ]; then
 					MOBILE_DATA_SET "off";
@@ -739,12 +737,12 @@ MOBILE_DATA()
 						echo "0" > $mobile_helper_tmp;
 						# screen time out but user want to keep it on and have mobile data
 						sleep 10;
-						if [ `cat $mobile_helper_tmp` == 0 ]; then
+						if [ $(cat $mobile_helper_tmp) == 0 ]; then
 							# user did not turned screen on, so keep waiting
 							SLEEP_TIME_DATA=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_MOBILE $cortexbrain_auto_tweak_mobile_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME_DATA;
-							if [ `cat $mobile_helper_tmp` == 0 ]; then
+							if [ $(cat $mobile_helper_tmp) == 0 ]; then
 								# user left the screen off, then disable mobile data
 								MOBILE_DATA_SET "off";
 							fi;
@@ -756,7 +754,7 @@ MOBILE_DATA()
 			fi;
 		elif [ "${state}" == "awake" ]; then
 			echo "1" > $mobile_helper_tmp;
-			if [ `cat $mobile_helper_awake` == 1 ]; then
+			if [ $(cat $mobile_helper_awake) == 1 ]; then
 				MOBILE_DATA_SET "on";
 			fi;
 		fi;
@@ -797,7 +795,10 @@ GESTURES()
 			nohup /sbin/busybox sh /data/gesture_set.sh;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
-		if [ `pgrep -f "/data/gesture_set.sh" | wc -l` != 0 ] || [ `pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l` != 0 ] || [ "$gesture_tweak" == off ]; then
+		if 		[ $(pgrep -f "/data/gesture_set.sh" | wc -l) != 0 ] || 
+				[ $(pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l) != 0 ] || 
+				[ "$gesture_tweak" == off ]; 
+		then
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		fi;
@@ -948,7 +949,7 @@ MEGA_BOOST_CPU_TWEAKS()
 
 		return 0;
 	else
-		MAX_FREQ=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`;
+		MAX_FREQ=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
 		echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 
 		return 1;
@@ -967,7 +968,7 @@ BOOST_DELAY()
 # set swappiness in case that no root installed, and zram used or disk swap used
 SWAPPINESS()
 {
-	local SWAP_CHECK=`free | grep Swap | awk '{ print $2 }'`;
+	local SWAP_CHECK=$(free | grep Swap | awk '{ print $2 }');
 
 	if [ "$SWAP_CHECK" == 0 ]; then
 		echo "0" > /proc/sys/vm/swappiness;
@@ -981,7 +982,7 @@ SWAPPINESS()
 # disable/enable ipv6  
 IPV6()
 {
-	local CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
+	local CISCO_VPN=$(find /data/data/com.cisco.anyconnec* | wc -l);
 	local state='';
 
 	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
@@ -1208,16 +1209,16 @@ SLEEP_MODE()
 	sleeprun=0;
 
 	# we only read the config when screen goes off ...
-	PROFILE=`cat ${DATA_DIR}/.active.profile`;
+	PROFILE=$(cat ${DATA_DIR}/.active.profile);
 	. ${DATA_DIR}/${PROFILE}.profile;
 
-	TELE_DATA=`dumpsys telephony.registry`;
+	TELE_DATA=$(dumpsys telephony.registry);
 
 	ENABLEMASK "sleep";
 
 	if [ "$DUMPSYS" == 1 ]; then
 		# check the call state, not on call = 0, on call = 2
-		CALL_STATE=`echo "${TELE_DATA}" | awk '/mCallState/ {print $1}'`;
+		CALL_STATE=$(echo "${TELE_DATA}" | awk '/mCallState/ {print $1}');
 		if [ "$CALL_STATE" == "mCallState=0" ]; then
 			CALL_STATE=0;
 		else
@@ -1227,7 +1228,7 @@ SLEEP_MODE()
 		CALL_STATE=0;
 	fi;
 
-	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
+	local TMP_EARLY_WAKEUP=$(cat /tmp/early_wakeup);
 	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
 		sleeprun=1;
@@ -1266,7 +1267,7 @@ SLEEP_MODE()
 
 		SWAPPINESS;
 
-		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+		CHARGING=$(cat /sys/class/power_supply/battery/charging_source);
 		if [ "$CHARGING" == 0 ]; then
 			if [ "$cortexbrain_cpu" == on ]; then
 				CENTRAL_CPU_FREQ "sleep_freq";
@@ -1307,7 +1308,11 @@ SLEEP_MODE()
 # Dynamic value do not change/delete
 cortexbrain_background_process=1;
 
-if [ "$cortexbrain_background_process" == 1 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_sleep" | wc -l` == 0 ] && [ `pgrep -f "cat /sys/power/wait_for_fb_wake" | wc -l` == 0 ]; then
+if 
+	[ "$cortexbrain_background_process" == 1 ] && 
+	[ $(pgrep -f "cat /sys/power/wait_for_fb_sleep" | wc -l) == 0 ] && 
+	[ $(pgrep -f "cat /sys/power/wait_for_fb_wake" | wc -l) == 0 ]; 
+then
 	(while [ 1 ]; do
 		# AWAKE State. all system ON
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
