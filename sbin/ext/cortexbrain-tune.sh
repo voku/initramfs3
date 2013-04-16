@@ -207,7 +207,7 @@ ECO_TWEAKS()
 {
 	if [ "$cortexbrain_eco" == on ]; then
 		local LEVEL=$(cat /sys/class/power_supply/battery/capacity);
-		if [ "$LEVEL" <= $cortexbrain_eco_level ]; then
+		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
 			CPU_GOV_TWEAKS "sleep";
 			TWEAK_HOTPLUG_ECO "sleep";
 		fi;
