@@ -207,7 +207,7 @@ ECO_TWEAKS()
 {
 	if [ "$cortexbrain_eco" == on ]; then
 		local LEVEL=$(cat /sys/class/power_supply/battery/capacity);
-		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
+		if [ "$LEVEL" == "$cortexbrain_eco_level" ] || [ "$LEVEL" -lt "$cortexbrain_eco_level" ]; then
 			CPU_GOV_TWEAKS "sleep";
 			TWEAK_HOTPLUG_ECO "sleep";
 		fi;
@@ -867,11 +867,7 @@ GESTURES()
 			nohup /sbin/busybox sh /data/gesture_set.sh;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
-		if		
-			[ $(pgrep -f "/data/gesture_set.sh" | wc -l) != 0 ] || 
-			[ $(pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l) != 0 ] || 
-			[ "$gesture_tweak" == off ]; 
-		then
+		if [ $(pgrep -f "/data/gesture_set.sh" | wc -l) != 0 ] || [ $(pgrep -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture" | wc -l) != 0 ] || [ "$gesture_tweak" == off ]; then
 			pkill -f "/data/gesture_set.sh";
 			pkill -f "/sys/devices/virtual/misc/touch_gestures/wait_for_gesture";
 		fi;
@@ -951,7 +947,6 @@ TWEAK_HOTPLUG_ECO()
 	if [ -e $sys_eco ]; then
 		if [ "${state}" == "awake" ]; then
 			echo "0" > $sys_eco;
-			echo "$load_l1" > $sys_eco;
 		elif [ "${state}" == "sleep" ]; then
 			echo "1" > $sys_eco;
 		fi;
@@ -959,32 +954,6 @@ TWEAK_HOTPLUG_ECO()
 		log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_ECO: ${state} ***";
 
 		return 0;
-	fi;
-
-	return 1;
-}
-
-TWEAK_HOTPLUG_LOAD()
-{
-	local state="$1";
-	local sys_load_h0="/sys/module/stand_hotplug/parameters/load_h0";
-	local sys_load_l1="/sys/module/stand_hotplug/parameters/load_l1";
-
-	if [ -e $sys_load_h0 ]; then
-		if [ "${state}" == "awake" ]; then
-			echo "$load_h0" > $sys_load_h0;
-			echo "$load_l1" > $sys_load_l1;
-		elif [ "${state}" == "sleep" ]; then
-			echo "50" > $sys_load_h0;
-			echo "50" > $sys_load_h1;
-		elif [ "${state}" == "wake_boost" ]; then
-			echo "20" > $sys_load_h0;
-			echo "20" > $sys_load_l1;
-		fi;
-
-		log -p i -t $FILE_NAME "*** TWEAK_HOTPLUG_LOAD: ${state} ***";
-
-		exit 0;
 	fi;
 
 	return 1;
@@ -1049,8 +1018,6 @@ MEGA_BOOST_CPU_TWEAKS()
 		MALI_TIMEOUT "wake_boost";
 
 		BUS_THRESHOLD "wake_boost";
-
-		TWEAK_HOTPLUG_LOAD "wake_boost";
 
 		CENTRAL_CPU_FREQ "wake_boost";
 
@@ -1291,7 +1258,6 @@ AWAKE_MODE()
 
 		VFS_CACHE_PRESSURE "awake";
 
-		TWEAK_HOTPLUG_LOAD "awake";
 		TWEAK_HOTPLUG_ECO "awake";
 
 		if [ "$cortexbrain_cpu" == on ]; then
@@ -1389,7 +1355,6 @@ SLEEP_MODE()
 
 			IO_SCHEDULER "sleep";
 
-			TWEAK_HOTPLUG_LOAD "sleep";
 			TWEAK_HOTPLUG_ECO "sleep";
 
 			VFS_CACHE_PRESSURE "sleep";
@@ -1422,11 +1387,7 @@ SLEEP_MODE()
 # Dynamic value do not change/delete
 cortexbrain_background_process=1;
 
-if 
-	[ "$cortexbrain_background_process" == 1 ] && 
-	[ $(pgrep -f "cat /sys/power/wait_for_fb_sleep" | wc -l) == 0 ] && 
-	[ $(pgrep -f "cat /sys/power/wait_for_fb_wake" | wc -l) == 0 ]; 
-then
+if [ "$cortexbrain_background_process" == 1 ] && [ $(pgrep -f "cat /sys/power/wait_for_fb_sleep" | wc -l) == 0 ] && [ $(pgrep -f "cat /sys/power/wait_for_fb_wake" | wc -l) == 0 ]; then
 	(while [ 1 ]; do
 		# AWAKE State. all system ON
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
