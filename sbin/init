@@ -282,50 +282,76 @@ PARTITION_TUNING()
 	$BB umount -l $DIR_DATA >> $LOG_DATA;
 	$BB umount -l $DIR_CACHE >> $LOG_CACHE;
 
+	# triggers
+	NEED_CHECK_CACHE=0;
+	NEED_CHECK_DATA=0;
+
+	# set fs-feature -> [^]uninit_bg
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'uninit_bg'" > $LOG_CACHE_TMP;
+	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
+		$BB sh -c "/sbin/tune2fs -O uninit_bg $DEVICE_CACHE" >> $LOG_CACHE;
+		NEED_CHECK_CACHE=1;
+	fi;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'uninit_bg'" > $LOG_DATA_TMP;
+	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+		$BB sh -c "/sbin/tune2fs -O uninit_bg $DEVICE_DATA" >> $LOG_DATA;
+		NEED_CHECK_DATA=1;
+	fi;
+
 	# set fs-feature -> [^]has_journal
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE" >> $LOG_CACHE;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
+		NEED_CHECK_CACHE=1;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
+		NEED_CHECK_DATA=1;
 	fi;
 
 	# set fs-feature -> [^]dir_index
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then	
 		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE;
+		NEED_CHECK_CACHE=1;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA;
+		NEED_CHECK_DATA=1;
 	fi;
 
 	# set mount option -> [^]journal_data_ordered
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_CACHE" >> $LOG_CACHE;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
+		NEED_CHECK_CACHE=1;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_ordered'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -o journal_data_ordered $DEVICE_DATA" >> $LOG_DATA;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
+		NEED_CHECK_DATA=1;
 	fi;
 
 	# set inode to 256
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
+		NEED_CHECK_CACHE=1;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA;
-		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
+		NEED_CHECK_DATA=1;
+	fi;
+
+	# check partitions if needed
+	if [ "$NEED_CHECK_CACHE" == "1" ]; then
+		$BB sh -c "/sbin/e2fsck -pf $DEVICE_CACHE" >> $LOG_CACHE;
+	fi;
+	if [ "$NEED_CHECK_DATA" == "1" ]; then
+		$BB sh -c "/sbin/e2fsck -pf $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
 	# efs check and fix, do not change
@@ -333,6 +359,7 @@ PARTITION_TUNING()
 	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
 	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
 	$BB chmod -R 777 /efs;
+	sync
 	$BB umount /efs;
 
 	# only if asked by user via stweaks
