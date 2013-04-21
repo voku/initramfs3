@@ -245,8 +245,22 @@
 
 	<settingsPane description="Interactive Gov Configuration, see descriptions" name="INTERACTIVE GOV CONFIGURATON">
 
-		<seekBar description="Wait this long before raising speed above hispeed, by default a single timer interval. (Default 20000)"
-			name="above_hispeed_delay" action="generic_cortex /tmp/above_hispeed_delay" unit="uS" min="0" reversed="false" step="10000" max="120000"/>
+		<seekBar description="An intermediate hi_speed at which to initially ramp when CPU load hits the value specified in go_hispeed_load. (Default: 800.000 kHz)"
+			name="hispeed_freq" action="generic_cortex /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+
+		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load."
+			name="above_hispeed_delay" action="generic_cortex /tmp/above_hispeed_delay">
+			<spinnerItem name="slow" value="20000 1000000:20000 1200000:30000"/> 
+			<spinnerItem name="default" value="20000 1000000:40000 1200000:80000"/> 
+			<spinnerItem name="speed" value="20000 1000000:40000 1200000:80000"/> 
+		</spinner>
+
+		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value."
+			name="target_loads" action="generic_cortex /tmp/target_loads">
+			<spinnerItem name="slow" value="70 500000:75 800000:85 1000000:90"/> 
+			<spinnerItem name="default" value="60 800000:70 1000000:80"/> 
+			<spinnerItem name="speed" value="60 800000:70 1000000:80"/> 
+		</spinner>
 
 		<seekBar description="Duration of a boot pulse. (Default 80000)"
 			name="boostpulse_duration" action="generic_cortex /tmp/boostpulse_duration" unit="uS" min="0" reversed="false" step="10000" max="1000000"/>
@@ -361,8 +375,22 @@
 
 	<settingsPane description="Interactive Gov Configuration, see descriptions" name="INTERACTIVE GOV CONFIGURATON">
 
-		<seekBar description="Wait this long before raising speed above hispeed, by default a single timer interval. (Default 20000)"
-			name="above_hispeed_delay_sleep" action="generic_cortex /tmp/above_hispeed_delay_sleep" unit="uS" min="0" reversed="false" step="10000" max="120000"/>
+		<seekBar description="An intermediate hi_speed at which to initially ramp when CPU load hits the value specified in go_hispeed_load. (Default: 500.000 kHz)"
+			name="hispeed_freq_sleep" action="generic_cortex /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
+
+		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load."
+			name="above_hispeed_delay_sleep" action="generic_cortex /tmp/above_hispeed_delay_sleep">
+			<spinnerItem name="slow" value="20000 1000000:20000 1200000:30000"/> 
+			<spinnerItem name="default" value="20000 1000000:40000 1200000:80000"/> 
+			<spinnerItem name="speed" value="20000 1000000:40000 1200000:80000"/> 
+		</spinner>
+
+		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value."
+			name="target_loads_sleep" action="generic_cortex /tmp/target_loads_sleep">
+			<spinnerItem name="slow" value="70 500000:75 800000:85 1000000:90"/> 
+			<spinnerItem name="default" value="60 800000:70 1000000:80"/> 
+			<spinnerItem name="speed" value="60 800000:70 1000000:80"/> 
+		</spinner>
 
 		<seekBar description="Duration of a boot pulse. (Default 80000)"
 			name="boostpulse_duration_sleep" action="generic_cortex /tmp/boostpulse_duration_sleep" unit="uS" min="0" reversed="false" step="10000" max="1000000"/>
