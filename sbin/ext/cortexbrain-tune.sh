@@ -481,11 +481,11 @@ CPU_GOV_TWEAKS()
 			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
 			echo "$above_hispeed_delay_sleep" > $above_hispeed_delay_tmp;
 			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
-			echo "$up_threshold_sleep" > $go_hispeed_load_tmp;
+			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
 			echo "$target_loads_sleep" > $target_loads_tmp;
 			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
-			echo "$sampling_rate_sleep" > $timer_rate_tmp;
+			echo "$timer_rate_sleep" > $timer_rate_tmp;
 			echo "$timer_slack_sleep" > $timer_slack_tmp;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
@@ -514,11 +514,11 @@ CPU_GOV_TWEAKS()
 			echo "$hispeed_freq" > $hispeed_freq_tmp;
 			echo "$above_hispeed_delay" > $above_hispeed_delay_tmp;
 			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
-			echo "$up_threshold" > $go_hispeed_load_tmp;
+			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
 			echo "$target_loads" > $target_loads_tmp;
 			echo "$min_sample_time" > $min_sample_time_tmp;
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
-			echo "$sampling_rate" > $timer_rate_tmp;
+			echo "$timer_rate" > $timer_rate_tmp;
 			echo "$timer_slack" > $timer_slack_tmp;
 		fi;
 

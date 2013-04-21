@@ -248,6 +248,9 @@
 		<seekBar description="An intermediate hi_speed at which to initially ramp when CPU load hits the value specified in go_hispeed_load. (Default: 800.000 kHz)"
 			name="hispeed_freq" action="generic_cortex /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
+		<seekBar description="The CPU load at which to ramp to hispeed_freq. (Default is 99%)"
+			name="go_hispeed_load" action="generic_cortex /tmp/go_hispeed_load" unit="%" min="1" reversed="false" step="1" max="100"/>
+
 		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load."
 			name="above_hispeed_delay" action="generic_cortex /tmp/above_hispeed_delay">
 			<spinnerItem name="slow" value="20000 1000000:20000 1200000:30000"/> 
@@ -257,9 +260,9 @@
 
 		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value."
 			name="target_loads" action="generic_cortex /tmp/target_loads">
-			<spinnerItem name="slow" value="70 500000:75 800000:85 1000000:90"/> 
-			<spinnerItem name="default" value="60 800000:70 1000000:80"/> 
-			<spinnerItem name="speed" value="60 800000:70 1000000:80"/> 
+			<spinnerItem name="slow" value="70 600000:75 700000:80 800000:85 1000000:90"/> 
+			<spinnerItem name="default" value="60 900000:70 1000000:80"/> 
+			<spinnerItem name="speed" value="60 900000:65 1000000:70"/> 
 		</spinner>
 
 		<seekBar description="Duration of a boot pulse. (Default 80000)"
@@ -268,7 +271,10 @@
 		<seekBar description="The minimum amount of time to spend at the current frequency before ramping down. This is to ensure that the governor has seen enough historic cpu load data to determine the appropriate workload. (Default: 80000)"
 			name="min_sample_time" action="generic_cortex /tmp/min_sample_time" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
-		<seekBar description="Max additional time to wait in idle, beyond sampling_rate, at speeds above minimum before wakeup to reduce speed. (Default: 80000)"
+		<seekBar description="Sample rate for reevaluating CPU load when the CPU is not idle.  A deferrable timer is used, such that the CPU will not be woken from idle to service this timer until something else needs to run. (The maximum time to allow deferring this timer when not running at minimum speed is configurable via timer_slack.) (Default: 20000)"
+			name="timer_rate" action="generic_cortex /tmp/timer_rate" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
+
+		<seekBar description="Maximum additional time to defer handling the governor sampling timer beyond timer_rate when running at speeds above the minimum. For example, if timer_rate is 20000uS and timer_slack is 10000uS then timers will be deferred for up to 30msec when not at lowest speed. (Default: 80000)"
 			name="timer_slack" action="generic_cortex /tmp/timer_slack" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
 	</settingsPane>
@@ -378,6 +384,9 @@
 		<seekBar description="An intermediate hi_speed at which to initially ramp when CPU load hits the value specified in go_hispeed_load. (Default: 500.000 kHz)"
 			name="hispeed_freq_sleep" action="generic_cortex /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
 
+		<seekBar description="The CPU load at which to ramp to hispeed_freq. (Default is 99%)"
+			name="go_hispeed_load_sleep" action="generic_cortex /tmp/go_hispeed_load_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
 		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load."
 			name="above_hispeed_delay_sleep" action="generic_cortex /tmp/above_hispeed_delay_sleep">
 			<spinnerItem name="slow" value="20000 1000000:20000 1200000:30000"/> 
@@ -387,9 +396,9 @@
 
 		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value."
 			name="target_loads_sleep" action="generic_cortex /tmp/target_loads_sleep">
-			<spinnerItem name="slow" value="70 500000:75 800000:85 1000000:90"/> 
-			<spinnerItem name="default" value="60 800000:70 1000000:80"/> 
-			<spinnerItem name="speed" value="60 800000:70 1000000:80"/> 
+			<spinnerItem name="slow" value="70 600000:75 700000:80 800000:85 1000000:90"/> 
+			<spinnerItem name="default" value="60 900000:70 1000000:80"/> 
+			<spinnerItem name="speed" value="60 900000:65 1000000:70"/> 
 		</spinner>
 
 		<seekBar description="Duration of a boot pulse. (Default 80000)"
@@ -398,7 +407,10 @@
 		<seekBar description="The minimum amount of time to spend at the current frequency before ramping down. This is to ensure that the governor has seen enough historic cpu load data to determine the appropriate workload. (Default: 80000)"
 			name="min_sample_time_sleep" action="generic_cortex /tmp/min_sample_time_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
-		<seekBar description="Max additional time to wait in idle, beyond sampling_rate, at speeds above minimum before wakeup to reduce speed. (Default: 80000)"
+		<seekBar description="Sample rate for reevaluating CPU load when the CPU is not idle.  A deferrable timer is used, such that the CPU will not be woken from idle to service this timer until something else needs to run. (The maximum time to allow deferring this timer when not running at minimum speed is configurable via timer_slack.) (Default: 20000)"
+			name="timer_rate_sleep" action="generic_cortex /tmp/timer_rate_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
+
+		<seekBar description="Maximum additional time to defer handling the governor sampling timer beyond timer_rate when running at speeds above the minimum. For example, if timer_rate is 20000uS and timer_slack is 10000uS then timers will be deferred for up to 30msec when not at lowest speed. (Default: 80000)"
 			name="timer_slack_sleep" action="generic_cortex /tmp/timer_slack_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
 	</settingsPane>
