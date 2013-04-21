@@ -485,8 +485,8 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate_sleep" > $timer_rate_tmp;
 			echo "$timer_slack_sleep" > $timer_slack_tmp;
-			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_off target_loads_screen_off $target_loads_screen_off;
-			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_off above_hispeed_delay_screen_off $above_hispeed_delay_screen_off;
+			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_off target_loads_screen_off $target_loads_sleep;
+			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_off above_hispeed_delay_screen_off $above_hispeed_delay_sleep;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -519,8 +519,8 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate" > $timer_rate_tmp;
 			echo "$timer_slack" > $timer_slack_tmp;
-			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_on target_loads_screen_on $target_loads_screen_on;
-			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_on above_hispeed_delay_screen_on $above_hispeed_delay_screen_on;
+			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_on target_loads_screen_on $target_loads;
+			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_on above_hispeed_delay_screen_on $above_hispeed_delay;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
