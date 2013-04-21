@@ -479,14 +479,14 @@ CPU_GOV_TWEAKS()
 			echo "$trans_load_rq_sleep" > $trans_load_rq_tmp;
 			echo "$trans_rq_sleep" > $trans_rq_tmp;
 			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
-			echo "$above_hispeed_delay_sleep" > $above_hispeed_delay_tmp;
 			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
 			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
-			echo "$target_loads_sleep" > $target_loads_tmp;
 			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate_sleep" > $timer_rate_tmp;
 			echo "$timer_slack_sleep" > $timer_slack_tmp;
+			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_off target_loads_screen_off $target_loads_screen_off;
+			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_off above_hispeed_delay_screen_off $above_hispeed_delay_screen_off;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -512,7 +512,6 @@ CPU_GOV_TWEAKS()
 			echo "$trans_load_rq" > $trans_load_rq_tmp;
 			echo "$trans_rq" > $trans_rq_tmp;
 			echo "$hispeed_freq" > $hispeed_freq_tmp;
-			echo "$above_hispeed_delay" > $above_hispeed_delay_tmp;
 			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
 			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
 			echo "$target_loads" > $target_loads_tmp;
@@ -520,6 +519,8 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate" > $timer_rate_tmp;
 			echo "$timer_slack" > $timer_slack_tmp;
+			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_on target_loads_screen_on $target_loads_screen_on;
+			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_on above_hispeed_delay_screen_on $above_hispeed_delay_screen_on;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";

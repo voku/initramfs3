@@ -86,7 +86,7 @@ write_config()
 	while IFS="=" read -r key value; do
 		if [ -n $key ]; then
 			evalexpr=$(eval "echo \$$key");
-			echo "$key=\"$evalexpr\"";
+			echo "$key=$evalexpr";
 		fi;
 	done < $DEFAULT_PROFILE > $TEMP_CONFIG;
 

@@ -253,16 +253,16 @@
 
 		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load."
 			name="above_hispeed_delay" action="generic_cortex /tmp/above_hispeed_delay">
-			<spinnerItem name="slow" value="20000 1000000:20000 1200000:30000"/> 
-			<spinnerItem name="default" value="20000 1000000:40000 1200000:80000"/> 
-			<spinnerItem name="speed" value="20000 1000000:40000 1200000:80000"/> 
+			<spinnerItem name="battery" value="battery"/> 
+			<spinnerItem name="default" value="default"/> 
+			<spinnerItem name="performance" value="performance"/> 
 		</spinner>
 
 		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value."
 			name="target_loads" action="generic_cortex /tmp/target_loads">
-			<spinnerItem name="slow" value="70 600000:75 700000:80 800000:85 1000000:90"/> 
-			<spinnerItem name="default" value="60 900000:70 1000000:80"/> 
-			<spinnerItem name="speed" value="60 900000:65 1000000:70"/> 
+			<spinnerItem name="battery" value="battery"/> 
+			<spinnerItem name="default" value="default"/> 
+			<spinnerItem name="performance" value="performance"/> 
 		</spinner>
 
 		<seekBar description="Duration of a boot pulse. (Default 80000)"
@@ -389,16 +389,16 @@
 
 		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load."
 			name="above_hispeed_delay_sleep" action="generic_cortex /tmp/above_hispeed_delay_sleep">
-			<spinnerItem name="slow" value="20000 1000000:20000 1200000:30000"/> 
-			<spinnerItem name="default" value="20000 1000000:40000 1200000:80000"/> 
-			<spinnerItem name="speed" value="20000 1000000:40000 1200000:80000"/> 
+			<spinnerItem name="battery" value="battery"/> 
+			<spinnerItem name="default" value="default"/> 
+			<spinnerItem name="performance" value="performance"/> 
 		</spinner>
 
 		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value."
 			name="target_loads_sleep" action="generic_cortex /tmp/target_loads_sleep">
-			<spinnerItem name="slow" value="70 600000:75 700000:80 800000:85 1000000:90"/> 
-			<spinnerItem name="default" value="60 900000:70 1000000:80"/> 
-			<spinnerItem name="speed" value="60 900000:65 1000000:70"/> 
+			<spinnerItem name="battery" value="battery"/> 
+			<spinnerItem name="default" value="default"/> 
+			<spinnerItem name="performance" value="performance"/> 
 		</spinner>
 
 		<seekBar description="Duration of a boot pulse. (Default 80000)"
