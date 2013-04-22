@@ -1001,6 +1001,9 @@ CENTRAL_CPU_FREQ()
 	elif [ "${state}" == "sleep_call" ]; then
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		# brain cooking prevention during call
+		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 	fi;
 
 	log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: ${state} ***: done";
@@ -1216,7 +1219,7 @@ CPU_GOVERNOR()
 		echo "$scaling_governor_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	fi;
 
-	log -p i -t $FILE_NAME "*** CPU_GOVERNOR: ${state} ***: done";		
+	log -p i -t $FILE_NAME "*** CPU_GOVERNOR: ${state} ***: done";
 }
 
 # ==============================================================
