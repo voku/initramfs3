@@ -961,7 +961,7 @@ TWEAK_HOTPLUG_ECO()
 
 CENTRAL_CPU_FREQ_HELPER()
 {
-	if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
+	if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 		scaling_max_freq=$scaling_max_freq_oc;
 
 		return 0;
@@ -975,7 +975,7 @@ CENTRAL_CPU_FREQ()
 	local state="$1";
 
 	if [ "${state}" == "wake_boost" ]; then
-		if [ "$scaling_max_freq" -ge 1000000 ]; then
+		if [ "$scaling_max_freq" -gt "1000000" ]; then
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		else
