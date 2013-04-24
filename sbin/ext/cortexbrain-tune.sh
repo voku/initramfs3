@@ -485,8 +485,13 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate_sleep" > $timer_rate_tmp;
 			echo "$timer_slack_sleep" > $timer_slack_tmp;
+<<<<<<< HEAD
 			/sbin/busybox sh /res/uci.sh target_loads_sleep $target_loads_sleep;
 			/sbin/busybox sh /res/uci.sh above_hispeed_delay_sleep $above_hispeed_delay_sleep;
+=======
+			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_off target_loads_screen_off $target_loads_sleep;
+			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_off above_hispeed_delay_screen_off $above_hispeed_delay_sleep;
+>>>>>>> 6297abf65c55cbe983619cdf205c43f1b5ea6399
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -519,8 +524,13 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate" > $timer_rate_tmp;
 			echo "$timer_slack" > $timer_slack_tmp;
+<<<<<<< HEAD
 			/sbin/busybox sh /res/uci.sh target_loads $target_loads;
 			/sbin/busybox sh /res/uci.sh above_hispeed_delay $above_hispeed_delay;
+=======
+			/sbin/busybox sh /res/customconfig/actions/target_loads_screen_on target_loads_screen_on $target_loads;
+			/sbin/busybox sh /res/customconfig/actions/above_hispeed_delay_screen_on above_hispeed_delay_screen_on $above_hispeed_delay;
+>>>>>>> 6297abf65c55cbe983619cdf205c43f1b5ea6399
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
@@ -1001,9 +1011,12 @@ CENTRAL_CPU_FREQ()
 	elif [ "${state}" == "sleep_call" ]; then
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+<<<<<<< HEAD
 		# brain cooking prevention during call
 		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+=======
+>>>>>>> 6297abf65c55cbe983619cdf205c43f1b5ea6399
 	fi;
 
 	log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: ${state} ***: done";
@@ -1219,7 +1232,11 @@ CPU_GOVERNOR()
 		echo "$scaling_governor_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 	fi;
 
+<<<<<<< HEAD
 	log -p i -t $FILE_NAME "*** CPU_GOVERNOR: ${state} ***: done";
+=======
+	log -p i -t $FILE_NAME "*** CPU_GOVERNOR: ${state} ***: done";		
+>>>>>>> 6297abf65c55cbe983619cdf205c43f1b5ea6399
 }
 
 # ==============================================================

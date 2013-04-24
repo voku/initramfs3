@@ -1,5 +1,9 @@
 boot_boost=1200000
+<<<<<<< HEAD
 wakeup_boost=4
+=======
+wakeup_boost=0
+>>>>>>> 6297abf65c55cbe983619cdf205c43f1b5ea6399
 scaling_max_freq=1000000
 scaling_max_freq_oc=1200000
 scaling_min_freq=200000
@@ -61,8 +65,13 @@ trans_rq=2
 cpu_up_rate=10
 cpu_down_rate=20
 scaling_governor_sleep=interactive
+<<<<<<< HEAD
 up_threshold_sleep=70
 up_threshold_at_min_freq_sleep=70
+=======
+up_threshold_sleep=90
+up_threshold_at_min_freq_sleep=80
+>>>>>>> 6297abf65c55cbe983619cdf205c43f1b5ea6399
 sampling_rate_sleep=80000
 sampling_down_factor_sleep=1
 hispeed_freq_sleep=500000
