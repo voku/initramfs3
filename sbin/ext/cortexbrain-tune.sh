@@ -478,15 +478,15 @@ CPU_GOV_TWEAKS()
 			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
 			echo "$trans_load_rq_sleep" > $trans_load_rq_tmp;
 			echo "$trans_rq_sleep" > $trans_rq_tmp;
-			echo "$above_hispeed_delay_sleep" > $above_hispeed_delay_tmp;
+			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
 			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
-			echo "$up_threshold_sleep" > $go_hispeed_load_tmp;
-			echo "$hispeed_freq_sleep" > $scaling_max_freq;
+			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
 			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
-			echo "$up_threshold_at_min_freq_sleep" > $target_loads_tmp;
-			echo "$sampling_rate_sleep" > $timer_rate_tmp;
+			echo "$timer_rate_sleep" > $timer_rate_tmp;
 			echo "$timer_slack_sleep" > $timer_slack_tmp;
+			/sbin/busybox sh /res/uci.sh target_loads_sleep $target_loads_sleep;
+			/sbin/busybox sh /res/uci.sh above_hispeed_delay_sleep $above_hispeed_delay_sleep;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -511,15 +511,16 @@ CPU_GOV_TWEAKS()
 			echo "$trans_load_l1" > $trans_load_l1_tmp;
 			echo "$trans_load_rq" > $trans_load_rq_tmp;
 			echo "$trans_rq" > $trans_rq_tmp;
-			echo "$above_hispeed_delay" > $above_hispeed_delay_tmp;
+			echo "$hispeed_freq" > $hispeed_freq_tmp;
 			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
-			echo "$up_threshold" > $go_hispeed_load_tmp;
-			echo "$hispeed_freq" > $scaling_max_freq;
+			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
+			echo "$target_loads" > $target_loads_tmp;
 			echo "$min_sample_time" > $min_sample_time_tmp;
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
-			echo "$up_threshold_at_min_freq" > $target_loads_tmp;
-			echo "$sampling_rate" > $timer_rate_tmp;
+			echo "$timer_rate" > $timer_rate_tmp;
 			echo "$timer_slack" > $timer_slack_tmp;
+			/sbin/busybox sh /res/uci.sh target_loads $target_loads;
+			/sbin/busybox sh /res/uci.sh above_hispeed_delay $above_hispeed_delay;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
@@ -961,7 +962,7 @@ TWEAK_HOTPLUG_ECO()
 
 CENTRAL_CPU_FREQ_HELPER()
 {
-	if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -ge 1000000 ]; then
+	if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 		scaling_max_freq=$scaling_max_freq_oc;
 
 		return 0;
@@ -975,7 +976,7 @@ CENTRAL_CPU_FREQ()
 	local state="$1";
 
 	if [ "${state}" == "wake_boost" ]; then
-		if [ "$scaling_max_freq" -ge 1000000 ]; then
+		if [ "$scaling_max_freq" -gt "1000000" ]; then
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		else
@@ -993,15 +994,16 @@ CENTRAL_CPU_FREQ()
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	elif [ "${state}" == "sleep_freq" ]; then
-		echo "$scaling_governor_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 	elif [ "${state}" == "sleep_call" ]; then
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		# brain cooking prevention during call
+		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 	fi;
 
 	log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: ${state} ***: done";
@@ -1011,7 +1013,6 @@ CENTRAL_CPU_FREQ()
 MEGA_BOOST_CPU_TWEAKS()
 {
 	if [ "$cortexbrain_cpu" == on ]; then
-		echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
 
 		CPU_GOV_TWEAKS "wake_boost";
 
@@ -1208,11 +1209,26 @@ IO_SCHEDULER()
 	log -p i -t $FILE_NAME "*** IO_SCHEDULER: ${state} ***: done";	
 }
 
+CPU_GOVERNOR()
+{
+	local state="$1";
+
+	if [ "${state}" == "awake" ]; then
+		echo "$scaling_governor" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	elif [ "${state}" == "sleep" ]; then
+		echo "$scaling_governor_sleep" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	fi;
+
+	log -p i -t $FILE_NAME "*** CPU_GOVERNOR: ${state} ***: done";
+}
+
 # ==============================================================
 # TWEAKS: if Screen-ON
 # ==============================================================
 AWAKE_MODE()
 {
+	CPU_GOVERNOR "awake";
+
 	ENABLEMASK "awake";
 
 	CENTRAL_CPU_FREQ_HELPER;
@@ -1290,6 +1306,8 @@ SLEEP_MODE()
 	. ${DATA_DIR}/${PROFILE}.profile;
 
 	TELE_DATA=$(dumpsys telephony.registry);
+
+	CPU_GOVERNOR "sleep"
 
 	ENABLEMASK "sleep";
 

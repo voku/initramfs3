@@ -214,7 +214,7 @@ chmod 666 /tmp/uci_done;
 
 	# restore normal freq
 	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	if [ "$scaling_max_freq" == "1000000" ] && [ "$scaling_max_freq_oc" -ge "1000000" ]; then
+	if [ "$scaling_max_freq" == "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	else
 		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
