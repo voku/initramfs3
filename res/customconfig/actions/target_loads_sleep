@@ -11,10 +11,10 @@ if [ "a$2" != "a" ]; then
 	if [ -f $echoPath ]; then
 		case "${target_loads_sleep}" in
 			battery)
-				echo "70 600000:75 700000:80 800000:85 1000000:90" > $echoPath;
+				echo "70 600000:75 700000:85 800000:90 1000000:95" > $echoPath;
 			;;
 			default)
-				echo "60 900000:70 1000000:80" > $echoPath;
+				echo "70 600000:75 700000:80 800000:85 1000000:90" > $echoPath;
 			;;
 			performance)
 				echo "60 900000:65 1000000:70" > $echoPath;

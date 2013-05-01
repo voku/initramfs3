@@ -11,10 +11,10 @@ if [ "a$2" != "a" ]; then
 	if [ -f $echoPath ]; then
 		case "${above_hispeed_delay}" in
 			battery)
-				echo "20000 1000000:20000 1200000:30000" > $echoPath;
+				echo "20000 1000000:20000 1200000:20000" > $echoPath;
 			;;
 			default)
-				echo "20000 1000000:40000 1200000:80000" > $echoPath;
+				echo "20000 1000000:20000 1200000:30000" > $echoPath;
 			;;
 			performance)
 				echo "20000 1000000:40000 1200000:80000" > $echoPath;
