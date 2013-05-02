@@ -647,7 +647,7 @@ if [ "$cortexbrain_ksm_control" == on ]; then
 	KSM_SLEEP_MSEC=200;
 	KSM_SLEEP_MIN=2000;
 
-	KSM_THRES_COEF=30;
+	KSM_THRES_COEF=20;
 	KSM_THRES_CONST=2048;
 
 	KSM_NPAGES=0;
