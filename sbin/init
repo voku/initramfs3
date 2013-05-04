@@ -351,16 +351,6 @@ PARTITION_TUNING()
 		# reset the lock-file
 		$BB rm -f /system/run_fs_check;
 
-		# set fs-feature -> [^]uninit_bg
-		$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'uninit_bg'" > $LOG_CACHE_TMP;
-		if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-			$BB sh -c "/sbin/tune2fs -O uninit_bg $DEVICE_CACHE" >> $LOG_CACHE;
-		fi;
-		$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'uninit_bg'" > $LOG_DATA_TMP;
-		if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-			$BB sh -c "/sbin/tune2fs -O uninit_bg $DEVICE_DATA" >> $LOG_DATA;
-		fi;
-
 		# check cache
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE"
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE;
