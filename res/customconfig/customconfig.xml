@@ -1191,6 +1191,8 @@
 
 		<button description="Check for Update" name="Kernel-Update" action="push-actions/kernel_check" label="KERNEL-CHECK"/>
 
+	<!--force profiles reset- version 1.0-->
+
 	</settingsPane>
 
 </settingsTab>
