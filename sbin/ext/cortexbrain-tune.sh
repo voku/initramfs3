@@ -368,30 +368,6 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $freq_up_brake_tmp ]; then
 			freq_up_brake_tmp="/dev/null";
 		fi;
-		local trans_load_h0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0";
-		if [ ! -e $trans_load_h0_tmp ]; then
-			trans_load_h0_tmp="/dev/null";
-		fi;
-		local trans_load_l1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_l1";
-		if [ ! -e $trans_load_l1_tmp ]; then
-			trans_load_l1_tmp="/dev/null";
-		fi;
-		local trans_load_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_rq";
-		if [ ! -e $trans_load_rq_tmp ]; then
-			trans_load_rq_tmp="/dev/null";
-		fi;
-		local trans_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_rq";
-		if [ ! -e $trans_rq_tmp ]; then
-			trans_rq_tmp="/dev/null";
-		fi;
-		local trans_load_h0_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0_scroff";
-		if [ ! -e $trans_load_h0_scroff_tmp ]; then
-			trans_load_h0_scroff_tmp="/dev/null";
-		fi;
-		local trans_load_l1_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_l1_scroff";
-		if [ ! -e $trans_load_l1_scroff_tmp ]; then
-			trans_load_l1_scroff_tmp="/dev/null";
-		fi;
 		local above_hispeed_delay_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/above_hispeed_delay";
 		if [ ! -e $above_hispeed_delay_tmp ]; then
 			above_hispeed_delay_tmp="/dev/null";
@@ -443,8 +419,6 @@ CPU_GOV_TWEAKS()
 
 		# wake_boost-settings
 		if [ "${state}" == "wake_boost" ]; then
-			echo "10" > $trans_load_h0_tmp;
-			echo "10" > $trans_load_l1_tmp;
 			echo "20000" > $sampling_rate_tmp;
 			echo "10" > $cpu_up_rate_tmp;
 			echo "10" > $cpu_down_rate_tmp;
@@ -474,10 +448,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
-			echo "$trans_load_h0_scroff" > $trans_load_h0_scroff_tmp;
-			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
-			echo "$trans_load_rq_sleep" > $trans_load_rq_tmp;
-			echo "$trans_rq_sleep" > $trans_rq_tmp;
 			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
 			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
 			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
@@ -507,10 +477,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
-			echo "$trans_load_h0" > $trans_load_h0_tmp;
-			echo "$trans_load_l1" > $trans_load_l1_tmp;
-			echo "$trans_load_rq" > $trans_load_rq_tmp;
-			echo "$trans_rq" > $trans_rq_tmp;
 			echo "$hispeed_freq" > $hispeed_freq_tmp;
 			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
 			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
