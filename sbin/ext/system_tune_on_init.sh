@@ -14,8 +14,8 @@ for m in $(mount | grep ext[3-4] | cut -d " " -f3); do
 	mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0 $m;
 done;
 
-mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /cache;
-mount -o remount,rw,nosuid,nodev,discard,journal_async_commit /data;
+mount -o remount,rw,nosuid,nodev,discard /cache;
+mount -o remount,rw,nosuid,nodev,discard /data;
 mount -o remount,rw /system;
 
 mount -t rootfs -o remount,rw rootfs;
