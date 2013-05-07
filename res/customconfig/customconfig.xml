@@ -220,18 +220,6 @@
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (Default: 60%)"
 			name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="When 2nd core is offline, If frequency of 1st core is 'big or equal' freq_min and load average is 'big or equal' trans_load_h0 2nd core will turn on. (Only for Nightmare) (Default: 20%)"
-			name="trans_load_h0" action="generic_cortex /tmp/trans_load_h0" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="When 2nd core is online, If frequency of 1st core is less than freq_min and load average is less than trans_load_l1, 2nd core will turn off. (Default: 20%)"
-			name="trans_load_l1" action="generic_cortex /tmp/trans_load_l1" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and it's load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (Default: 20%)"
-			name="trans_load_rq" action="generic_cortex /tmp/trans_load_rq" unit="%" min="0" reversed="false" step="1" max="50"/>
-
-		<seekBar description="When 2nd core is online, if rq_min less than trans_rq and it's load is less than trans_load_rq, 2nd core will turn off. (Only for Nightmare) (Default: 2)"
-			name="trans_rq" action="generic_cortex /tmp/trans_rq" unit="int" min="0" reversed="false" step="1" max="2"/>
-
 	</settingsPane>
 
 	<settingsPane description="Pegasusq Gov Configuration, see descriptions" name="PEGASUSQ GOV CONFIGURATON">
@@ -356,18 +344,6 @@
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Only for Nightmare) (Default: 60%)"
 			name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="When 2nd core is offline, if frequency of 1st core is 'big or equal' freq_min and load average is 'big or equal' trans_load_h0_scroff 2nd core will turn on. (Only for Nightmare) (Default: 20%)"
-			name="trans_load_h0_scroff" action="generic_cortex /tmp/trans_load_h0_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="When 2nd core is online, if frequency of 1st core is less than freq_min and load average is less than trans_load_l1_scroff, 2nd core will turn off. (Only for Nightmare) (Default: 20%)"
-			name="trans_load_l1_scroff" action="generic_cortex /tmp/trans_load_l1_scroff" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and it's load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (Default: 20%)"
-			name="trans_load_rq_sleep" action="generic_cortex /tmp/trans_load_rq_sleep" unit="%" min="0" reversed="false" step="1" max="50"/>
-
-		<seekBar description="When 2nd core is online, if rq_min less than trans_rq_sleep and it's load is less than trans_load_rq_sleep, 2nd core will turn off. (Only for Nightmare) (Default: 2)"
-			name="trans_rq_sleep" action="generic_cortex /tmp/trans_rq_sleep" unit=" int" min="0" reversed="false" step="1" max="2"/>
 
 	</settingsPane>
 
