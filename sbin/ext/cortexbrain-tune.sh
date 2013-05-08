@@ -602,87 +602,65 @@ FIREWALL_TWEAKS()
 FIREWALL_TWEAKS;
 
 # ==============================================================
-# KSM-TWEAKS
+# UKSM-TWEAKS
 # ==============================================================
-if [ "$cortexbrain_ksm_control" == on ]; then
-	KSM_NPAGES_BOOST=300;
-	KSM_NPAGES_DECAY=50;
+if [ "$cortexbrain_uksm_control" == on ]; then
 
-	KSM_NPAGES_MIN=32;
-	KSM_NPAGES_MAX=1000;
-	KSM_SLEEP_MSEC=200;
-	KSM_SLEEP_MIN=2000;
+	UKSM_SLEEP_MSEC=200;
+	UKSM_SLEEP_MIN=2000;
 
-	KSM_THRES_COEF=20;
-	KSM_THRES_CONST=2048;
+	UKSM_THRES_COEF=20;
+	UKSM_THRES_CONST=2048;
 
-	KSM_NPAGES=0;
-	KSM_TOTAL=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo);
-	KSM_THRES=$(( $KSM_TOTAL * $KSM_THRES_COEF / 100 ));
+	UKSM_TOTAL=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo);
+	UKSM_THRES=$(( $UKSM_TOTAL * $UKSM_THRES_COEF / 100 ));
 
-	if [ $KSM_THRES_CONST -gt $KSM_THRES ]; then
-		KSM_THRES=$KSM_THRES_CONST;
+	if [ $UKSM_THRES_CONST -gt $UKSM_THRES ]; then
+		UKSM_THRES=$UKSM_THRES_CONST;
 	fi;
 
-	KSM_TOTAL=$(( $KSM_TOTAL / 1024 ));
-	KSM_SLEEP=$(( $KSM_SLEEP_MSEC * 16 * 1024 / $KSM_TOTAL ));
+	UKSM_TOTAL=$(( $UKSM_TOTAL / 1024 ));
+	UKSM_SLEEP=$(( $UKSM_SLEEP_MSEC * 16 * 1024 / $UKSM_TOTAL ));
 
-	if [ $KSM_SLEEP -le $KSM_SLEEP_MIN ]; then
-		KSM_SLEEP=$KSM_SLEEP_MIN;
+	if [ $UKSM_SLEEP -le $UKSM_SLEEP_MIN ]; then
+		UKSM_SLEEP=$UKSM_SLEEP_MIN;
 	fi;
 
-	KSMCTL()
+	UKSMCTL()
 	{
 		case x${1} in
 			xstop)
-				log -p i -t $FILE_NAME "*** ksm: stop ***";
-				echo 0 > /sys/kernel/mm/ksm/run;
+				log -p i -t $FILE_NAME "*** uksm: stop ***";
+				echo 0 > /sys/kernel/mm/uksm/run;
 			;;
 			xstart)
-				log -p i -t $FILE_NAME "*** ksm: start ${2} ${3} ***";
-				echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
-				echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
-				echo 1 > /sys/kernel/mm/ksm/run;
-				renice -n 10 -p "$(pidof ksmd)";
+				log -p i -t $FILE_NAME "*** uksm: start ${2} ${3} ***";
+				echo ${3} > /sys/kernel/mm/uksm/sleep_millisecs;
+				echo 1 > /sys/kernel/mm/uksm/run;
+				renice -n 10 -p "$(pidof uksmd)";
 			;;
 			esac
 	}
 
-	INCREASE_NPAGES()
-	{
-		local delta=${1:-0};
-
-		KSM_NPAGES=$(( $KSM_NPAGES + $delta ));
-		if [ $KSM_NPAGES -lt $KSM_NPAGES_MIN ]; then
-			KSM_NPAGES=$KSM_NPAGES_MIN;
-		elif [ $KSM_NPAGES -gt $KSM_NPAGES_MAX ]; then
-			KSM_NPAGES=$KSM_NPAGES_MAX;
-		fi;
-
-		echo $KSM_NPAGES;
-	}
-
-	ADJUST_KSM()
+	ADJUST_UKSM()
 	{
 		local free=$(awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo);
 
-		if [ $free -gt $KSM_THRES ]; then
-			npages=$(INCREASE_NPAGES ${KSM_NPAGES_BOOST});
-			KSMCTL "stop";
+		if [ $free -gt $UKSM_THRES ]; then
+			UKSMCTL "stop";
 
-			log -p i -t $FILE_NAME "*** ksm: $free > $KSM_THRES ***";
+			log -p i -t $FILE_NAME "*** uksm: $free > $UKSM_THRES ***";
 
 			return 1;
 		else
-			npages=$(INCREASE_NPAGES $KSM_NPAGES_DECAY);
-			KSMCTL "start" $KSM_NPAGES $KSM_SLEEP;
+			UKSMCTL "start" $UKSM_SLEEP;
 
-			log -p i -t $FILE_NAME "*** ksm: $free < $KSM_THRES ***"
+			log -p i -t $FILE_NAME "*** uksm: $free < $UKSM_THRES ***"
 
 			return 0;
 		fi;
 	}
-	ADJUST_KSM;
+	ADJUST_UKSM;
 fi;
 
 # ==============================================================
@@ -1230,8 +1208,8 @@ AWAKE_MODE()
 
 		MOUNT_SD_CARD;
 
-		if [ "$cortexbrain_ksm_control" == on ] && [ "$KSM_TOTAL" != "" ]; then
-			ADJUST_KSM;
+		if [ "$cortexbrain_uksm_control" == on ] && [ "$UKSM_TOTAL" != "" ]; then
+			ADJUST_UKSM;
 		fi;
 
 		echo "$pwm_val" > /sys/vibrator/pwm_val;
@@ -1322,10 +1300,8 @@ SLEEP_MODE()
 
 		CROND_SAFETY;
 
-		if [ "$cortexbrain_ksm_control" == on ]; then
-			KSMCTL "stop";
-		else
-			echo 2 > /sys/kernel/mm/ksm/run;
+		if [ "$cortexbrain_uksm_control" == on ]; then
+			UKSMCTL "stop";
 		fi;
 
 		SWAPPINESS;
