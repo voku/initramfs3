@@ -326,52 +326,38 @@ PARTITION_TUNING()
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
 	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE;
-		NEED_CHECK_CACHE=1;
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA;
-		NEED_CHECK_DATA=1;
 	fi;
 
 	# check 'X2' partitions, if needed
 	if [ "$NEED_CHECK_CACHE" == "1" ]; then
-		$BB sh -c "/sbin/e2fsck -pf $DEVICE_CACHE" >> $LOG_CACHE;
-		$BB sh -c "/sbin/e2fsck -pf $DEVICE_CACHE" >> $LOG_CACHE;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
 	if [ "$NEED_CHECK_DATA" == "1" ]; then
-		$BB sh -c "/sbin/e2fsck -pf $DEVICE_DATA" >> $LOG_DATA;
-		$BB sh -c "/sbin/e2fsck -pf $DEVICE_DATA" >> $LOG_DATA;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
 	# efs check and fix, do not change
 	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check;
 	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
-	$BB mount -t ext4 /dev/block/mmcblk0p1 /efs;
-	$BB chmod -R 777 /efs;
-	sync;
-	$BB umount /efs;
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fs_check ]; then
 		# reset the lock-file
 		$BB rm -f /system/run_fs_check;
 
-		# set fs-feature -> [^]uninit_bg
-		$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'uninit_bg'" > $LOG_CACHE_TMP;
-		if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-			$BB sh -c "/sbin/tune2fs -O uninit_bg $DEVICE_CACHE" >> $LOG_CACHE;
-		fi;
-		$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'uninit_bg'" > $LOG_DATA_TMP;
-		if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-			$BB sh -c "/sbin/tune2fs -O uninit_bg $DEVICE_DATA" >> $LOG_DATA;
-		fi;
-
 		# check cache
+		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE"
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 
 		# check data
+		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA"
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
@@ -406,12 +392,11 @@ USER_ACTIONS()
 		# sdcard unmount
 		sync;
 		$BB umount -l /sdcardtmp;
-		if [ `du -h /sdcardtmp | grep 4 | cut -c1-4` == "4.0K" ]; then
+		if [ `$BB du -h /sdcardtmp | grep 4 | cut -c1-4` == "4.0K" ]; then
 			$BB rm -rf /sdcardtmp;
 		fi;
 
 		# data unmount
-		sync;
 		$BB umount -l /data;
 	fi;
 }

@@ -368,30 +368,6 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $freq_up_brake_tmp ]; then
 			freq_up_brake_tmp="/dev/null";
 		fi;
-		local trans_load_h0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0";
-		if [ ! -e $trans_load_h0_tmp ]; then
-			trans_load_h0_tmp="/dev/null";
-		fi;
-		local trans_load_l1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_l1";
-		if [ ! -e $trans_load_l1_tmp ]; then
-			trans_load_l1_tmp="/dev/null";
-		fi;
-		local trans_load_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_rq";
-		if [ ! -e $trans_load_rq_tmp ]; then
-			trans_load_rq_tmp="/dev/null";
-		fi;
-		local trans_rq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_rq";
-		if [ ! -e $trans_rq_tmp ]; then
-			trans_rq_tmp="/dev/null";
-		fi;
-		local trans_load_h0_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_h0_scroff";
-		if [ ! -e $trans_load_h0_scroff_tmp ]; then
-			trans_load_h0_scroff_tmp="/dev/null";
-		fi;
-		local trans_load_l1_scroff_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/trans_load_l1_scroff";
-		if [ ! -e $trans_load_l1_scroff_tmp ]; then
-			trans_load_l1_scroff_tmp="/dev/null";
-		fi;
 		local above_hispeed_delay_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/above_hispeed_delay";
 		if [ ! -e $above_hispeed_delay_tmp ]; then
 			above_hispeed_delay_tmp="/dev/null";
@@ -443,8 +419,6 @@ CPU_GOV_TWEAKS()
 
 		# wake_boost-settings
 		if [ "${state}" == "wake_boost" ]; then
-			echo "10" > $trans_load_h0_tmp;
-			echo "10" > $trans_load_l1_tmp;
 			echo "20000" > $sampling_rate_tmp;
 			echo "10" > $cpu_up_rate_tmp;
 			echo "10" > $cpu_down_rate_tmp;
@@ -474,10 +448,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
-			echo "$trans_load_h0_scroff" > $trans_load_h0_scroff_tmp;
-			echo "$trans_load_l1_scroff" > $trans_load_l1_scroff_tmp;
-			echo "$trans_load_rq_sleep" > $trans_load_rq_tmp;
-			echo "$trans_rq_sleep" > $trans_rq_tmp;
 			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
 			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
 			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
@@ -507,10 +477,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
-			echo "$trans_load_h0" > $trans_load_h0_tmp;
-			echo "$trans_load_l1" > $trans_load_l1_tmp;
-			echo "$trans_load_rq" > $trans_load_rq_tmp;
-			echo "$trans_rq" > $trans_rq_tmp;
 			echo "$hispeed_freq" > $hispeed_freq_tmp;
 			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
 			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
@@ -636,87 +602,65 @@ FIREWALL_TWEAKS()
 FIREWALL_TWEAKS;
 
 # ==============================================================
-# KSM-TWEAKS
+# UKSM-TWEAKS
 # ==============================================================
-if [ "$cortexbrain_ksm_control" == on ]; then
-	KSM_NPAGES_BOOST=300;
-	KSM_NPAGES_DECAY=50;
+if [ "$cortexbrain_uksm_control" == on ]; then
 
-	KSM_NPAGES_MIN=32;
-	KSM_NPAGES_MAX=1000;
-	KSM_SLEEP_MSEC=200;
-	KSM_SLEEP_MIN=2000;
+	UKSM_SLEEP_MSEC=200;
+	UKSM_SLEEP_MIN=2000;
 
-	KSM_THRES_COEF=20;
-	KSM_THRES_CONST=2048;
+	UKSM_THRES_COEF=20;
+	UKSM_THRES_CONST=2048;
 
-	KSM_NPAGES=0;
-	KSM_TOTAL=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo);
-	KSM_THRES=$(( $KSM_TOTAL * $KSM_THRES_COEF / 100 ));
+	UKSM_TOTAL=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo);
+	UKSM_THRES=$(( $UKSM_TOTAL * $UKSM_THRES_COEF / 100 ));
 
-	if [ $KSM_THRES_CONST -gt $KSM_THRES ]; then
-		KSM_THRES=$KSM_THRES_CONST;
+	if [ $UKSM_THRES_CONST -gt $UKSM_THRES ]; then
+		UKSM_THRES=$UKSM_THRES_CONST;
 	fi;
 
-	KSM_TOTAL=$(( $KSM_TOTAL / 1024 ));
-	KSM_SLEEP=$(( $KSM_SLEEP_MSEC * 16 * 1024 / $KSM_TOTAL ));
+	UKSM_TOTAL=$(( $UKSM_TOTAL / 1024 ));
+	UKSM_SLEEP=$(( $UKSM_SLEEP_MSEC * 16 * 1024 / $UKSM_TOTAL ));
 
-	if [ $KSM_SLEEP -le $KSM_SLEEP_MIN ]; then
-		KSM_SLEEP=$KSM_SLEEP_MIN;
+	if [ $UKSM_SLEEP -le $UKSM_SLEEP_MIN ]; then
+		UKSM_SLEEP=$UKSM_SLEEP_MIN;
 	fi;
 
-	KSMCTL()
+	UKSMCTL()
 	{
 		case x${1} in
 			xstop)
-				log -p i -t $FILE_NAME "*** ksm: stop ***";
-				echo 0 > /sys/kernel/mm/ksm/run;
+				log -p i -t $FILE_NAME "*** uksm: stop ***";
+				echo 0 > /sys/kernel/mm/uksm/run;
 			;;
 			xstart)
-				log -p i -t $FILE_NAME "*** ksm: start ${2} ${3} ***";
-				echo ${2} > /sys/kernel/mm/ksm/pages_to_scan;
-				echo ${3} > /sys/kernel/mm/ksm/sleep_millisecs;
-				echo 1 > /sys/kernel/mm/ksm/run;
-				renice -n 10 -p "$(pidof ksmd)";
+				log -p i -t $FILE_NAME "*** uksm: start ${2} ${3} ***";
+				echo ${3} > /sys/kernel/mm/uksm/sleep_millisecs;
+				echo 1 > /sys/kernel/mm/uksm/run;
+				renice -n 10 -p "$(pidof uksmd)";
 			;;
 			esac
 	}
 
-	INCREASE_NPAGES()
-	{
-		local delta=${1:-0};
-
-		KSM_NPAGES=$(( $KSM_NPAGES + $delta ));
-		if [ $KSM_NPAGES -lt $KSM_NPAGES_MIN ]; then
-			KSM_NPAGES=$KSM_NPAGES_MIN;
-		elif [ $KSM_NPAGES -gt $KSM_NPAGES_MAX ]; then
-			KSM_NPAGES=$KSM_NPAGES_MAX;
-		fi;
-
-		echo $KSM_NPAGES;
-	}
-
-	ADJUST_KSM()
+	ADJUST_UKSM()
 	{
 		local free=$(awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo);
 
-		if [ $free -gt $KSM_THRES ]; then
-			npages=$(INCREASE_NPAGES ${KSM_NPAGES_BOOST});
-			KSMCTL "stop";
+		if [ $free -gt $UKSM_THRES ]; then
+			UKSMCTL "stop";
 
-			log -p i -t $FILE_NAME "*** ksm: $free > $KSM_THRES ***";
+			log -p i -t $FILE_NAME "*** uksm: $free > $UKSM_THRES ***";
 
 			return 1;
 		else
-			npages=$(INCREASE_NPAGES $KSM_NPAGES_DECAY);
-			KSMCTL "start" $KSM_NPAGES $KSM_SLEEP;
+			UKSMCTL "start" $UKSM_SLEEP;
 
-			log -p i -t $FILE_NAME "*** ksm: $free < $KSM_THRES ***"
+			log -p i -t $FILE_NAME "*** uksm: $free < $UKSM_THRES ***"
 
 			return 0;
 		fi;
 	}
-	ADJUST_KSM;
+	ADJUST_UKSM;
 fi;
 
 # ==============================================================
@@ -1264,8 +1208,8 @@ AWAKE_MODE()
 
 		MOUNT_SD_CARD;
 
-		if [ "$cortexbrain_ksm_control" == on ] && [ "$KSM_TOTAL" != "" ]; then
-			ADJUST_KSM;
+		if [ "$cortexbrain_uksm_control" == on ] && [ "$UKSM_TOTAL" != "" ]; then
+			ADJUST_UKSM;
 		fi;
 
 		echo "$pwm_val" > /sys/vibrator/pwm_val;
@@ -1356,10 +1300,8 @@ SLEEP_MODE()
 
 		CROND_SAFETY;
 
-		if [ "$cortexbrain_ksm_control" == on ]; then
-			KSMCTL "stop";
-		else
-			echo 2 > /sys/kernel/mm/ksm/run;
+		if [ "$cortexbrain_uksm_control" == on ]; then
+			UKSMCTL "stop";
 		fi;
 
 		SWAPPINESS;
