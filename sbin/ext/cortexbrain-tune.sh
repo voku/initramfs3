@@ -635,7 +635,7 @@ FIREWALL_TWEAKS;
 # ==============================================================
 
 cd /sys/kernel/mm/uksm/;
-chmod 766 run sleep_millisecs uksm_max_cpu_percentage cpu_governor;
+chmod 766 run sleep_millisecs max_cpu_percentage cpu_governor;
 cd /;
 
 UKSMCTL()
@@ -647,13 +647,13 @@ UKSMCTL()
 			echo "1" > /sys/kernel/mm/uksm/run;
 			echo "500" > /sys/kernel/mm/uksm/sleep_millisecs;
 			echo "full" > /sys/kernel/mm/uksm/cpu_governor;
-			echo "85" > /sys/kernel/mm/uksm/uksm_max_cpu_percentage;
+			echo "85" > /sys/kernel/mm/uksm/max_cpu_percentage;
 			log -p i -t $FILE_NAME "*** uksm: awake, sleep=5sec, max_cpu=85%, cpu=full ***";
 			renice -n 10 -p "$(pidof uksmd)";
 		elif [ "${state}" == "sleep" ]; then
-			echo "6000" > /sys/kernel/mm/uksm/sleep_millisecs;
+			echo "1000" > /sys/kernel/mm/uksm/sleep_millisecs;
 			echo "low" > /sys/kernel/mm/uksm/cpu_governor;
-			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=60sec, max_cpu=20%, cpu=low ***";
+			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=10sec, max_cpu=20%, cpu=low ***";
 		fi;
 	else
 		echo "0" > /sys/kernel/mm/uksm/run;
