@@ -605,23 +605,26 @@ FIREWALL_TWEAKS;
 # UKSM-TWEAKS
 # ==============================================================
 
+cd /sys/kernel/mm/uksm/;
+chmod 766 run sleep_millisecs uksm_max_cpu_percentage cpu_governor;
+cd /;
+
 UKSMCTL()
 {
 	local state="$1";
 
 	if [ "$cortexbrain_uksm_control" == on ]; then
 		if [ "${state}" == "awake" ]; then
-			echo "250" > /sys/kernel/mm/uksm/sleep_millisecs;
-			echo "85" > /sys/kernel/mm/uksm/max_cpu_percentage;
+			echo "1" > /sys/kernel/mm/uksm/run;
+			echo "500" > /sys/kernel/mm/uksm/sleep_millisecs;
 			echo "full" > /sys/kernel/mm/uksm/cpu_governor;
-			echo 1 > /sys/kernel/mm/uksm/run;
-			log -p i -t $FILE_NAME "*** uksm: awake, sleep=250ms, max_cpu=85, cpu=full ***";
+			echo "85" > /sys/kernel/mm/uksm/uksm_max_cpu_percentage;
+			log -p i -t $FILE_NAME "*** uksm: awake, sleep=5sec, max_cpu=85%, cpu=full ***";
 			renice -n 10 -p "$(pidof uksmd)";
 		elif [ "${state}" == "sleep" ]; then
-			echo "5000" > /sys/kernel/mm/uksm/sleep_millisecs;
-			echo "45" > /sys/kernel/mm/uksm/max_cpu_percentage;
+			echo "6000" > /sys/kernel/mm/uksm/sleep_millisecs;
 			echo "low" > /sys/kernel/mm/uksm/cpu_governor;
-			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=5000ms, max_cpu=45, cpu=low ***";
+			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=60sec, max_cpu=20%, cpu=low ***";
 		fi;
 	else
 		echo "0" > /sys/kernel/mm/uksm/run;
