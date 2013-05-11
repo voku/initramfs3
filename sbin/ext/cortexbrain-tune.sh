@@ -604,64 +604,29 @@ FIREWALL_TWEAKS;
 # ==============================================================
 # UKSM-TWEAKS
 # ==============================================================
-if [ "$cortexbrain_uksm_control" == on ]; then
 
-	UKSM_SLEEP_MSEC=200;
-	UKSM_SLEEP_MIN=2000;
+UKSMCTL()
+{
+	local state="$1";
 
-	UKSM_THRES_COEF=20;
-	UKSM_THRES_CONST=2048;
-
-	UKSM_TOTAL=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo);
-	UKSM_THRES=$(( $UKSM_TOTAL * $UKSM_THRES_COEF / 100 ));
-
-	if [ $UKSM_THRES_CONST -gt $UKSM_THRES ]; then
-		UKSM_THRES=$UKSM_THRES_CONST;
-	fi;
-
-	UKSM_TOTAL=$(( $UKSM_TOTAL / 1024 ));
-	UKSM_SLEEP=$(( $UKSM_SLEEP_MSEC * 16 * 1024 / $UKSM_TOTAL ));
-
-	if [ $UKSM_SLEEP -le $UKSM_SLEEP_MIN ]; then
-		UKSM_SLEEP=$UKSM_SLEEP_MIN;
-	fi;
-
-	UKSMCTL()
-	{
-		case x${1} in
-			xstop)
-				log -p i -t $FILE_NAME "*** uksm: stop ***";
-				echo 0 > /sys/kernel/mm/uksm/run;
-			;;
-			xstart)
-				log -p i -t $FILE_NAME "*** uksm: start ${2} ${3} ***";
-				echo ${3} > /sys/kernel/mm/uksm/sleep_millisecs;
-				echo 1 > /sys/kernel/mm/uksm/run;
-				renice -n 10 -p "$(pidof uksmd)";
-			;;
-			esac
-	}
-
-	ADJUST_UKSM()
-	{
-		local free=$(awk '/^(MemFree|Buffers|Cached):/ {free += $2}; END {print free}' /proc/meminfo);
-
-		if [ $free -gt $UKSM_THRES ]; then
-			UKSMCTL "stop";
-
-			log -p i -t $FILE_NAME "*** uksm: $free > $UKSM_THRES ***";
-
-			return 1;
-		else
-			UKSMCTL "start" $UKSM_SLEEP;
-
-			log -p i -t $FILE_NAME "*** uksm: $free < $UKSM_THRES ***"
-
-			return 0;
+	if [ "$cortexbrain_uksm_control" == on ]; then
+		if [ "${state}" == "awake" ]; then
+			echo "250" > /sys/kernel/mm/uksm/sleep_millisecs;
+			echo "85" > /sys/kernel/mm/uksm/max_cpu_percentage;
+			echo "full" > /sys/kernel/mm/uksm/cpu_governor;
+			echo 1 > /sys/kernel/mm/uksm/run;
+			log -p i -t $FILE_NAME "*** uksm: awake, sleep=250ms, max_cpu=85, cpu=full ***";
+			renice -n 10 -p "$(pidof uksmd)";
+		elif [ "${state}" == "sleep" ]; then
+			echo "5000" > /sys/kernel/mm/uksm/sleep_millisecs;
+			echo "45" > /sys/kernel/mm/uksm/max_cpu_percentage;
+			echo "low" > /sys/kernel/mm/uksm/cpu_governor;
+			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=5000ms, max_cpu=45, cpu=low ***";
 		fi;
-	}
-	ADJUST_UKSM;
-fi;
+	else
+		echo "0" > /sys/kernel/mm/uksm/run;
+	fi;
+}
 
 # ==============================================================
 # GLOBAL-FUNCTIONS
@@ -1186,6 +1151,8 @@ AWAKE_MODE()
 
 		LOGGER "awake";
 
+		UKSMCTL "awake";
+
 		KERNEL_SCHED "awake";
 
 		KERNEL_TWEAKS "awake";
@@ -1207,10 +1174,6 @@ AWAKE_MODE()
 		TOUCH_KEYS_CORRECTION;
 
 		MOUNT_SD_CARD;
-
-		if [ "$cortexbrain_uksm_control" == on ] && [ "$UKSM_TOTAL" != "" ]; then
-			ADJUST_UKSM;
-		fi;
 
 		echo "$pwm_val" > /sys/vibrator/pwm_val;
 
@@ -1282,6 +1245,8 @@ SLEEP_MODE()
 
 		BUS_THRESHOLD "sleep";
 
+		UKSMCTL "sleep";
+
 		KERNEL_SCHED "sleep";
 
 		NET "sleep";
@@ -1299,10 +1264,6 @@ SLEEP_MODE()
 		BLN_CORRECTION;
 
 		CROND_SAFETY;
-
-		if [ "$cortexbrain_uksm_control" == on ]; then
-			UKSMCTL "stop";
-		fi;
 
 		SWAPPINESS;
 
