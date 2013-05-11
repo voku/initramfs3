@@ -1,5 +1,5 @@
 boot_boost=1500000
-wakeup_boost=5
+wakeup_boost=6
 scaling_max_freq=1000000
 scaling_max_freq_oc=1500000
 scaling_min_freq=200000

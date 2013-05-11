@@ -531,6 +531,35 @@ MEMORY_TWEAKS()
 MEMORY_TWEAKS;
 
 # ==============================================================
+# ENTROPY-TWEAKS
+# ==============================================================
+
+ENTROPY()
+{
+	local state="$1";
+
+	USED_PROFILE=$(cat ${DATA_DIR}/.active.profile);
+
+	if [ "${state}" == "wake_boost" ]; then
+		echo "2048" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "1024" > /proc/sys/kernel/random/write_wakeup_threshold;
+	elif [ "${state}" == "awake" ]; then
+		if [ "$USED_PROFILE" != battery ] || [ "$USED_PROFILE" != extreme_battery ]; then
+			echo "512" > /proc/sys/kernel/random/read_wakeup_threshold;
+			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
+		else
+			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
+			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+		fi;
+	elif [ "${state}" == "sleep" ]; then
+		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
+	fi;
+
+	log -p i -t $FILE_NAME "*** ENTROPY ***: ${state}";
+}
+
+# ==============================================================
 # TCP-TWEAKS
 # ==============================================================
 TCP_TWEAKS()
@@ -895,8 +924,8 @@ CENTRAL_CPU_FREQ()
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		fi;
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	elif [ "${state}" == "awake_normal" ]; then
 		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
@@ -927,10 +956,6 @@ MEGA_BOOST_CPU_TWEAKS()
 	if [ "$cortexbrain_cpu" == on ]; then
 
 		CPU_GOV_TWEAKS "wake_boost";
-
-		MALI_TIMEOUT "wake_boost";
-
-		BUS_THRESHOLD "wake_boost";
 
 		CENTRAL_CPU_FREQ "wake_boost";
 
@@ -1156,6 +1181,12 @@ AWAKE_MODE()
 
 		UKSMCTL "awake";
 
+		MALI_TIMEOUT "wake_boost";
+
+		BUS_THRESHOLD "wake_boost";
+
+		ENTROPY "wake_boost";
+
 		KERNEL_SCHED "awake";
 
 		KERNEL_TWEAKS "awake";
@@ -1181,6 +1212,8 @@ AWAKE_MODE()
 		echo "$pwm_val" > /sys/vibrator/pwm_val;
 
 		BOOST_DELAY;
+
+		ENTROPY "awake";
 
 		VFS_CACHE_PRESSURE "awake";
 
@@ -1246,12 +1279,6 @@ SLEEP_MODE()
 
 		MALI_TIMEOUT "sleep";
 
-		BUS_THRESHOLD "sleep";
-
-		UKSMCTL "sleep";
-
-		KERNEL_SCHED "sleep";
-
 		NET "sleep";
 
 		WIFI "sleep";
@@ -1278,6 +1305,14 @@ SLEEP_MODE()
 			fi;
 
 			IO_SCHEDULER "sleep";
+
+			BUS_THRESHOLD "sleep";
+
+			KERNEL_SCHED "sleep";
+
+			UKSMCTL "sleep";
+
+			ENTROPY "sleep";
 
 			TWEAK_HOTPLUG_ECO "sleep";
 
