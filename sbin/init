@@ -406,6 +406,7 @@ BOOTROM()
 	PARTITION_TUNING;
 	USER_ACTIONS;
 	$BB rm -f /sbin/mount;
+	$BB insmod /lib/modules/logger.ko;
 	exec /sbin/init.samsung;
 }
 

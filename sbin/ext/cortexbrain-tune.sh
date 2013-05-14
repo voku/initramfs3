@@ -778,20 +778,14 @@ MOBILE_DATA()
 LOGGER()
 {
 	local state="$1";
-	local dev_log_sleep="/dev/log-sleep";
-	local dev_log="/dev/log";
 
 	if [ "${state}" == "awake" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == debug ]; then
-			if [ -e $dev_log_sleep ] && [ ! -e $dev_log ]; then
-				mv $dev_log_sleep $dev_log
-			fi;
+			insmod /lib/modules/logger.ko;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == disabled ]; then
-			if [ -e $dev_log ]; then
-				mv $dev_log $dev_log_sleep;
-			fi;
+			rmmod /lib/modules/logger.ko;
 		fi;
 	fi;
 
