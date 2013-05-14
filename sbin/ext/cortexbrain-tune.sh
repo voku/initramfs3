@@ -317,6 +317,40 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $inc_cpu_load_at_min_freq_tmp ]; then
 			inc_cpu_load_at_min_freq_tmp="/dev/null";
 		fi;
+		local IPA_CHECK=`cat sys/module/intelli_plug/parameters/intelli_plug_active`;
+		local sys_ipa_tmp="/sys/module/intelli_plug/parameters/intelli_plug_active";
+		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_enable";
+		if [ ! -e $hotplug_enable_tmp ]; then
+			hotplug_enable_tmp="/dev/null";
+		fi;
+		local hotplug_compare_level_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_compare_level";
+		if [ ! -e $hotplug_compare_level_tmp ]; then
+			hotplug_compare_level_tmp="/dev/null";
+		fi;
+		local hotplug_freq_1_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_1_1";
+		if [ ! -e $hotplug_freq_1_1_tmp ]; then
+			hotplug_freq_1_1_tmp="/dev/null";
+		fi;
+		local hotplug_freq_2_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_2_0";
+		if [ ! -e $hotplug_freq_2_0_tmp ]; then
+			hotplug_freq_2_0_tmp="/dev/null";
+		fi;
+		local hotplug_rq_1_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_1_1";
+		if [ ! -e $hotplug_rq_1_1_tmp ]; then
+			hotplug_rq_1_1_tmp="/dev/null";
+		fi;
+		local hotplug_rq_2_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_2_0";
+		if [ ! -e $hotplug_rq_2_0_tmp ]; then
+			hotplug_rq_2_0_tmp="/dev/null";
+		fi;
+		local up_avg_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_avg_load";
+		if [ ! -e $up_avg_load_tmp ]; then
+			up_avg_load_tmp="/dev/null";
+		fi;
+		local down_avg_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_avg_load";
+		if [ ! -e $down_avg_load_tmp ]; then
+			down_avg_load_tmp="/dev/null";
+		fi;
 		local down_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold";
 		if [ ! -e $down_threshold_tmp ]; then
 			down_threshold_tmp="/dev/null";
@@ -436,6 +470,13 @@ CPU_GOV_TWEAKS()
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_at_min_freq_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
+			echo "$hotplug_compare_level_sleep" > $hotplug_compare_level_tmp;
+			echo "$hotplug_freq_1_1_sleep" > $hotplug_freq_1_1_tmp;
+			echo "$hotplug_freq_2_0_sleep" > $hotplug_freq_2_0_tmp;
+			echo "$hotplug_rq_1_1_sleep" > $hotplug_rq_1_1_tmp;
+			echo "$hotplug_rq_2_0_sleep" > $hotplug_rq_2_0_tmp;
+			echo "$up_avg_load_sleep" > $up_avg_load_tmp;
+			echo "$down_avg_load_sleep" > $down_avg_load_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
 			echo "$sampling_up_factor_sleep" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor_sleep" > $sampling_down_factor_tmp;
@@ -465,6 +506,23 @@ CPU_GOV_TWEAKS()
 			echo "$up_threshold" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
+			if [ "a$IPA_CHECK" == "a1" ]; then
+				if [ "$hotplug_enable" == 1 ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
+					echo "0" > $sys_ipa_tmp;
+				fi;
+			else
+				if [ "$SYSTEM_GOVERNOR" != "nightmare" ] || [ "$hotplug_enable" == 0 ]; then
+					echo "1" > $sys_ipa_tmp;
+				fi;
+			fi;
+			echo "$hotplug_enable" > $hotplug_enable_tmp;
+			echo "$hotplug_compare_level" > $hotplug_compare_level_tmp;
+			echo "$hotplug_freq_1_1" > $hotplug_freq_1_1_tmp;
+			echo "$hotplug_freq_2_0" > $hotplug_freq_2_0_tmp;
+			echo "$hotplug_rq_1_1" > $hotplug_rq_1_1_tmp;
+			echo "$hotplug_rq_2_0" > $hotplug_rq_2_0_tmp;
+			echo "$up_avg_load" > $up_avg_load_tmp;
+			echo "$down_avg_load" > $down_avg_load_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
 			echo "$sampling_up_factor" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;
