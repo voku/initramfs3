@@ -9,9 +9,6 @@ BB=/sbin/busybox
 # protecting fuelgauge reset trigger.
 chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
 
-#load logger for recovery.
-$BB insmod /lib/modules/logger.ko;
-
 rm -rf /emmc
 mkdir /emmc
 chmod 777 /emmc
