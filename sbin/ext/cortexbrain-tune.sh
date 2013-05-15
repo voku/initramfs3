@@ -600,19 +600,19 @@ ENTROPY()
 	USED_PROFILE=$(cat ${DATA_DIR}/.active.profile);
 
 	if [ "${state}" == "wake_boost" ]; then
-		echo "2048" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "512" > /proc/sys/kernel/random/read_wakeup_threshold;
 		echo "1024" > /proc/sys/kernel/random/write_wakeup_threshold;
 	elif [ "${state}" == "awake" ]; then
-		if [ "$USED_PROFILE" != battery ] || [ "$USED_PROFILE" != extreme_battery ]; then
-			echo "512" > /proc/sys/kernel/random/read_wakeup_threshold;
+		if [ "$USED_PROFILE" != "battery" ] || [ "$USED_PROFILE" != "extreme_battery" ]; then
+			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
 		else
-			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
+			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
-		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
+		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
 	fi;
 
 	log -p i -t $FILE_NAME "*** ENTROPY ***: ${state}";
