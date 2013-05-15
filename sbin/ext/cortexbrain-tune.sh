@@ -509,13 +509,14 @@ CPU_GOV_TWEAKS()
 			if [ "a$IPA_CHECK" == "a1" ]; then
 				if [ "$hotplug_enable" == 1 ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
 					echo "0" > $sys_ipa_tmp;
+					echo "$hotplug_enable" > $hotplug_enable_tmp;
 				fi;
 			else
 				if [ "$SYSTEM_GOVERNOR" != "nightmare" ] || [ "$hotplug_enable" == 0 ]; then
 					echo "1" > $sys_ipa_tmp;
+					echo "$hotplug_enable" > $hotplug_enable_tmp;
 				fi;
 			fi;
-			echo "$hotplug_enable" > $hotplug_enable_tmp;
 			echo "$hotplug_compare_level" > $hotplug_compare_level_tmp;
 			echo "$hotplug_freq_1_1" > $hotplug_freq_1_1_tmp;
 			echo "$hotplug_freq_2_0" > $hotplug_freq_2_0_tmp;
