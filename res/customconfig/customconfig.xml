@@ -250,7 +250,7 @@
 		<seekBar description="Threshold run queue length for second core to turn off. (Only when Nightmare hotplugging is Enabled) (Default: 100)"
 			name="hotplug_rq_2_0" action="generic_cortex /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Avg Load >= up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)"
+		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)"
 			name="up_avg_load" action="generic_cortex /tmp/up_avg_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)"
@@ -395,7 +395,7 @@
 		<seekBar description="Threshold run queue length for second core to turn off. (Only when Nightmare hotplugging is Enabled) (Default: 100)"
 			name="hotplug_rq_2_0_sleep" action="generic_cortex /tmp/hotplug_rq_2_0_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Avg Load >= up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)"
+		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)"
 			name="up_avg_load_sleep" action="generic_cortex /tmp/up_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)"
