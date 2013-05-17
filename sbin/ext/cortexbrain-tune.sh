@@ -599,10 +599,7 @@ ENTROPY()
 
 	USED_PROFILE=$(cat ${DATA_DIR}/.active.profile);
 
-	if [ "${state}" == "wake_boost" ]; then
-		echo "512" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "1024" > /proc/sys/kernel/random/write_wakeup_threshold;
-	elif [ "${state}" == "awake" ]; then
+	if [ "${state}" == "awake" ]; then
 		if [ "$USED_PROFILE" != "battery" ] || [ "$USED_PROFILE" != "extreme_battery" ]; then
 			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
@@ -1243,8 +1240,6 @@ AWAKE_MODE()
 		MALI_TIMEOUT "wake_boost";
 
 		BUS_THRESHOLD "wake_boost";
-
-		ENTROPY "wake_boost";
 
 		KERNEL_SCHED "awake";
 
