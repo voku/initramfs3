@@ -571,19 +571,32 @@
 
 	</settingsPane>
 
-	<settingsPane description="Touchscreen configuration on battery and on charge. !ALERT! Wrong settings will disable touch screen! You will have to reset profiles in recovery! Also, settings for battery and charger are different! Do not set the same levels! Have fun tuning." name="Touch screen sensitivity">
+	<settingsPane description="Touchscreen configuration on battery and on charge. !ALERT! Wrong settings will disable touch screen! You will have to reset profiles in recovery! Also, settings for battery and charger are different! Do not set the same levels! Have fun tuning." name="Touch screen MX224 sensitivity">
 
-		<seekBar description="Touchscreen on BATTERY (Touch Threshold) (Default: 50)" name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="1" max="70"/>
+		<button description="Click to see your touch screen type and active touch configuration, it's can be TSP MX224 or MX224E, so if you want to configure, do it for your type." name="Check Touch Screen info" action="push-actions/screen_type_check" label="Check Touch Screen"/>
 
-		<seekBar description="Touchscreen on BATTERY (Noise Threshold) (Default: 40)" name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="1" max="70"/>
+		<seekBar description="MX224 Touchscreen on BATTERY (Touch Threshold) (Default: 50)" name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touchscreen on BATTERY (Move Filter) (Default: 12)" name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="1" max="30"/>
+		<seekBar description="MX224 Touchscreen on BATTERY (Noise Threshold) (Default: 40)" name="BATT Noise Treshold" action="touch_screen_tweak 2" unit="" min="20" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touchscreen on CHARGER or USB (Touch Threshold) (Default: 53)" name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="1" max="70"/>
+		<seekBar description="MX224 Touchscreen on BATTERY (Move Filter) (Default: 12)" name="BATT Move Filter" action="touch_screen_tweak 3" unit="" min="2" reversed="false" step="1" max="30"/>
 
-		<seekBar description="Touchscreen on CHARGER or USB (Noise Threshold) (Default: 38)" name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="1" max="60"/>
+		<seekBar description="MX224 Touchscreen on CHARGER or USB (Touch Threshold) (Default: 53)" name="CHRG Touch Treshold" action="touch_screen_tweak 4" unit="" min="30" reversed="false" step="1" max="70"/>
 
-		<seekBar description="Touchscreen on CHARGER or USB (Move Filter) (Default: 47)" name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="1" max="60"/>
+		<seekBar description="MX224 Touchscreen on CHARGER or USB (Noise Threshold) (Default: 38)" name="CHRG Noise Treshold" action="touch_screen_tweak 5" unit="" min="20" reversed="false" step="1" max="60"/>
+
+		<seekBar description="MX224 Touchscreen on CHARGER or USB (Move Filter) (Default: 47)" name="CHRG Move Filter" action="touch_screen_tweak 6" unit="" min="20" reversed="false" step="1" max="60"/>
+	</settingsPane>
+
+	<settingsPane description="Touch Screen configuration for TSP MX224E only! all the warnings and info above, effect here the same" name="Touch screen MX224E sensitivity">
+
+		<seekBar description="MX224E Touchscreen on BATTERY (Touch Threshold_e) (Default: 40)" name="BATT Touch Treshold E" action="touch_screen_tweak 7" unit="" min="20" reversed="false" step="1" max="60"/>
+
+		<seekBar description="MX224E Touchscreen on BATTERY (Move Filter_e) (Default: 15)" name="BATT Move Filter E" action="touch_screen_tweak 8" unit="" min="5" reversed="false" step="1" max="25"/>
+
+		<seekBar description="MX224E Touchscreen on CHARGER or USB (Touch Threshold_e) (Default: 37)" name="CHRG Touch Treshold E" action="touch_screen_tweak 9" unit="" min="27" reversed="false" step="1" max="47"/>
+
+		<seekBar description="MX224E Touchscreen on CHARGER or USB (Move Filter_e) (Default: 46)" name="CHRG Move Filter E" action="touch_screen_tweak 10" unit="" min="20" reversed="false" step="1" max="60"/>
 
 	</settingsPane>
 
