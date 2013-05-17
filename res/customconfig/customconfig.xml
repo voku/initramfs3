@@ -172,18 +172,18 @@
 			<spinnerItem name="Enabled" value="1"/> 
 		</spinner>
 
-		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_compare_level" action="generic_cortex /tmp/hotplug_compare_level">
+		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level" action="generic_cortex /tmp/hotplug_cmp_level">
 			<spinnerItem name="History Load Based" value="0"/> 
 			<spinnerItem name="Current Load Based" value="1"/> 
 		</spinner>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare hotplugging is Enabled) (Default: 500.000 kHz)" name="hotplug_freq_1_1" action="generic_cortex /tmp/hotplug_freq_1_1" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq 1 1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare hotplugging is Enabled) (Default: 500.000 kHz)" name="hotplug_freq_fst" action="generic_cortex /tmp/hotplug_freq_fst" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare hotplugging is Enabled) (Default: 200.000 kHz)" name="hotplug_freq_2_0" action="generic_cortex /tmp/hotplug_freq_2_0" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare hotplugging is Enabled) (Default: 200.000 kHz)" name="hotplug_freq_snd" action="generic_cortex /tmp/hotplug_freq_snd" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Threshold run queue length for second core to turn on. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_1_1" action="generic_cortex /tmp/hotplug_rq_1_1" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+		<seekBar description="Threshold run queue length for second core to turn on. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_fst" action="generic_cortex /tmp/hotplug_rq_fst" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
-		<seekBar description="Threshold run queue length for second core to turn off. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_2_0" action="generic_cortex /tmp/hotplug_rq_2_0" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+		<seekBar description="Threshold run queue length for second core to turn off. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_snd" action="generic_cortex /tmp/hotplug_rq_snd" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
 		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_avg_load" action="generic_cortex /tmp/up_avg_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
@@ -282,18 +282,18 @@
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive or relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake.  (Default: 60%)" name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_compare_level_sleep" action="generic_cortex /tmp/hotplug_compare_level_sleep">
+		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level_sleep" action="generic_cortex /tmp/hotplug_cmp_level_sleep">
 			<spinnerItem name="History Load Based" value="0"/> 
 			<spinnerItem name="Current Load Based" value="1"/> 
 		</spinner>
 
-		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq_1_1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare hotplugging is Enabled) (Default: 500.000 kHz)" name="hotplug_freq_1_1_sleep" action="generic_cortex /tmp/hotplug_freq_1_1_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq 1 1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare hotplugging is Enabled) (Default: 500.000 kHz)" name="hotplug_freq_fst_sleep" action="generic_cortex /tmp/hotplug_freq_fst_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq_2_0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare hotplugging is Enabled) (Default: 200.000 kHz)" name="hotplug_freq_2_0_sleep" action="generic_cortex /tmp/hotplug_freq_2_0_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare hotplugging is Enabled) (Default: 200.000 kHz)" name="hotplug_freq_snd_sleep" action="generic_cortex /tmp/hotplug_freq_snd_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Threshold run queue length for second core to turn on. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_1_1_sleep" action="generic_cortex /tmp/hotplug_rq_1_1_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+		<seekBar description="Threshold run queue length for second core to turn on. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_fst_sleep" action="generic_cortex /tmp/hotplug_rq_fst_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
-		<seekBar description="Threshold run queue length for second core to turn off. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_2_0_sleep" action="generic_cortex /tmp/hotplug_rq_2_0_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
+		<seekBar description="Threshold run queue length for second core to turn off. (Only when Nightmare hotplugging is Enabled) (Default: 100)" name="hotplug_rq_snd_sleep" action="generic_cortex /tmp/hotplug_rq_snd_sleep" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
 		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_avg_load_sleep" action="generic_cortex /tmp/up_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
