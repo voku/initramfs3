@@ -151,21 +151,29 @@
 
 	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
 
+		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. (Default: 60%)" name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
+
 		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Default: 70%)" name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Default: 50%)" name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Load less than dec_cpu_load: cpu scaled down. (Default: 50%)" name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Default: 1)" name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
+		<seekBar description="When current freq is greater than freq_for_responsiviness_max, freq_step_dec will be equal to freq_step_dec_at_max_freq. (Default: 1200.000 kHz)" name="freq_for_responsiveness_max" action="generic_cortex /tmp/freq_for_responsiveness_max" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
+
+		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load_at_min_freq. (Default: 30)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Default: 30)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Default: 10%)" name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load and current freq is greater than freq_for_responsiviness_max. (Default: 10%)" name="freq_step_dec_at_max_freq" action="generic_cortex /tmp/freq_step_dec_at_max_freq" unit="%" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_incr" action="generic_cortex /tmp/freq_for_calc_incr" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
 
 		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
 
-		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Default: 10%)" name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches inc_cpu_load_at_min_freq. (Default: 20%)" name="freq_step_at_min_freq" action="generic_cortex /tmp/freq_step_at_min_freq" unit="%" min="5" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Default: 30)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
-
-		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake. (Default: 60%)" name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Default: 1)" name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
 		<spinner description="Enabling or Disabling Nightmare Governor Hotplugging. If this options is set to Enabled, Intelli plug hotplugging will be disabled! It will be automatically restored when the chosen governor is different from Nightmare or this option is set to disabled. (Default: Disabled)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
 			<spinnerItem name="Disabled" value="0"/> 
@@ -266,21 +274,29 @@
 
 	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
 
+		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. (Default: 60%)" name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+
 		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Default: 70%)" name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Load less than inc_cpu_load: cpu scaled down. (Default: 60%)" name="dec_cpu_load_sleep" action="generic_cortex /tmp/dec_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Load less than dec_cpu_load: cpu scaled down. (Default: 60%)" name="dec_cpu_load_sleep" action="generic_cortex /tmp/dec_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Default: 1)" name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit="int" min="1" reversed="false" step="1" max="10"/>
+		<seekBar description="When current freq is greater than freq_for_responsiviness_max, freq_step_dec will be equal to freq_step_dec_at_max_freq. (Default: 1200.000 kHz)" name="freq_for_responsiveness_max_sleep" action="generic_cortex /tmp/freq_for_responsiveness_max_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 Khz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
+		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load_at_min_freq. (Default: 30)" name="freq_up_brake_at_min_freq_sleep" action="generic_cortex /tmp/freq_up_brake_at_min_freq_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default 200.000 kHz)" name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
+		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Default: 30)" name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Default: 10%)" name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Default: 30%)" name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load and current freq is greater than freq_for_responsiviness_max. (Default: 10%)" name="freq_step_dec_at_max_freq_sleep" action="generic_cortex /tmp/freq_step_dec_at_max_freq_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive or relaxed until a frequency and normal for higher frequencies. Again, during calculation of optimal frequency which should not trigger up policy, down threshold to consider is difference between inc_cpu_load_at_min_freq and freq_up_brake.  (Default: 60%)" name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
+
+		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
+
+		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches inc_cpu_load_at_min_freq. (Default: 20%)" name="freq_step_at_min_freq_sleep" action="generic_cortex /tmp/freq_step_at_min_freq_sleep" unit="%" min="5" reversed="false" step="1" max="100"/>
+
+		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Default: 1)" name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
 		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level_sleep" action="generic_cortex /tmp/hotplug_cmp_level_sleep">
 			<spinnerItem name="History Load Based" value="0"/> 
