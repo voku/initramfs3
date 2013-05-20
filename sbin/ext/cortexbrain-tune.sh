@@ -516,16 +516,6 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate_sleep" > $timer_rate_tmp;
 			echo "$timer_slack_sleep" > $timer_slack_tmp;
-			/sbin/busybox sh /res/uci.sh target_loads_sleep $target_loads_sleep;
-			/sbin/busybox sh /res/uci.sh above_hispeed_delay_sleep $above_hispeed_delay_sleep;
-		# awake-settings
-		elif [ "${state}" == "awake" ]; then
-			echo "$sampling_rate" > $sampling_rate_tmp;
-			echo "$cpu_up_rate" > $cpu_up_rate_tmp;
-			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
-			echo "$up_threshold" > $up_threshold_tmp;
-			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
-			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			if [ "a$IPA_CHECK" == "a1" ]; then
 				if [ "$hotplug_enable" == 1 ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
 					echo "0" > $sys_ipa_tmp;
@@ -537,6 +527,16 @@ CPU_GOV_TWEAKS()
 					echo "$hotplug_enable" > $hotplug_enable_tmp;
 				fi;
 			fi;
+			/sbin/busybox sh /res/uci.sh target_loads_sleep $target_loads_sleep;
+			/sbin/busybox sh /res/uci.sh above_hispeed_delay_sleep $above_hispeed_delay_sleep;
+		# awake-settings
+		elif [ "${state}" == "awake" ]; then
+			echo "$sampling_rate" > $sampling_rate_tmp;
+			echo "$cpu_up_rate" > $cpu_up_rate_tmp;
+			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
+			echo "$up_threshold" > $up_threshold_tmp;
+			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
+			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_cmp_level" > $hotplug_cmp_level_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
@@ -568,6 +568,17 @@ CPU_GOV_TWEAKS()
 			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
 			echo "$timer_rate" > $timer_rate_tmp;
 			echo "$timer_slack" > $timer_slack_tmp;
+			if [ "a$IPA_CHECK" == "a1" ]; then
+				if [ "$hotplug_enable" == 1 ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
+					echo "0" > $sys_ipa_tmp;
+					echo "$hotplug_enable" > $hotplug_enable_tmp;
+				fi;
+			else
+				if [ "$SYSTEM_GOVERNOR" != "nightmare" ] || [ "$hotplug_enable" == 0 ]; then
+					echo "1" > $sys_ipa_tmp;
+					echo "$hotplug_enable" > $hotplug_enable_tmp;
+				fi;
+			fi;
 			/sbin/busybox sh /res/uci.sh target_loads $target_loads;
 			/sbin/busybox sh /res/uci.sh above_hispeed_delay $above_hispeed_delay;
 		fi;
