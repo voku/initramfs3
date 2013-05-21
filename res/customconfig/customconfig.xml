@@ -112,7 +112,6 @@
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="zzmoove" value="zzmoove"/> 
-			<spinnerItem name="interactive" value="interactive"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
@@ -199,34 +198,6 @@
 
 	</settingsPane>
 
-	<settingsPane description="Interactive Gov Configuration, see descriptions" name="INTERACTIVE GOV CONFIGURATON">
-
-		<seekBar description="An intermediate hi_speed at which to initially ramp when CPU load hits the value specified in go_hispeed_load. (Default: 800.000 kHz)" name="hispeed_freq" action="generic_cortex /tmp/hispeed_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
-
-		<seekBar description="The CPU load at which to ramp to hispeed_freq. (Default is 99%)" name="go_hispeed_load" action="generic_cortex /tmp/go_hispeed_load" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load." name="above_hispeed_delay" action="above_hispeed_delay">
-			<spinnerItem name="battery" value="battery"/> 
-			<spinnerItem name="default" value="default"/> 
-			<spinnerItem name="performance" value="performance"/> 
-		</spinner>
-
-		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value." name="target_loads" action="target_loads">
-			<spinnerItem name="battery" value="battery"/> 
-			<spinnerItem name="default" value="default"/> 
-			<spinnerItem name="performance" value="performance"/> 
-		</spinner>
-
-		<seekBar description="Duration of a boot pulse. (Default 80000)" name="boostpulse_duration" action="generic_cortex /tmp/boostpulse_duration" unit="uS" min="0" reversed="false" step="10000" max="1000000"/>
-
-		<seekBar description="The minimum amount of time to spend at the current frequency before ramping down. This is to ensure that the governor has seen enough historic cpu load data to determine the appropriate workload. (Default: 80000)" name="min_sample_time" action="generic_cortex /tmp/min_sample_time" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
-
-		<seekBar description="Sample rate for reevaluating CPU load when the CPU is not idle.  A deferrable timer is used, such that the CPU will not be woken from idle to service this timer until something else needs to run. (The maximum time to allow deferring this timer when not running at minimum speed is configurable via timer_slack.) (Default: 20000)" name="timer_rate" action="generic_cortex /tmp/timer_rate" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
-
-		<seekBar description="Maximum additional time to defer handling the governor sampling timer beyond timer_rate when running at speeds above the minimum. For example, if timer_rate is 20000uS and timer_slack is 10000uS then timers will be deferred for up to 30msec when not at lowest speed. (Default: 80000)" name="timer_slack" action="generic_cortex /tmp/timer_slack" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
-
-	</settingsPane>
-
 </settingsTab>
 
 <settingsTab name="CPU-TUNING (SLEEP)">
@@ -237,7 +208,6 @@
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="zzmoove" value="zzmoove"/> 
-			<spinnerItem name="interactive" value="interactive"/> 
 			<spinnerItem name="intellidemand" value="intellidemand"/> 
 			<spinnerItem name="nightmare" value="nightmare"/> 
 			<spinnerItem name="ondemand" value="ondemand"/> 
@@ -314,34 +284,6 @@
 		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_avg_load_sleep" action="generic_cortex /tmp/up_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)" name="down_avg_load_sleep" action="generic_cortex /tmp/down_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
-
-	</settingsPane>
-
-	<settingsPane description="Interactive Gov Configuration, see descriptions" name="INTERACTIVE GOV CONFIGURATON">
-
-		<seekBar description="An intermediate hi_speed at which to initially ramp when CPU load hits the value specified in go_hispeed_load. (Default: 500.000 kHz)" name="hispeed_freq_sleep" action="generic_cortex /tmp/hispeed_freq_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1200000"/>
-
-		<seekBar description="The CPU load at which to ramp to hispeed_freq. (Default is 99%)" name="go_hispeed_load_sleep" action="generic_cortex /tmp/go_hispeed_load_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
-
-		<spinner description="When speed is at or above hispeed_freq, wait for this long before raising speed in response to continued high load." name="above_hispeed_delay_sleep" action="above_hispeed_delay_sleep">
-			<spinnerItem name="battery" value="battery"/> 
-			<spinnerItem name="default" value="default"/> 
-			<spinnerItem name="performance" value="performance"/> 
-		</spinner>
-
-		<spinner description="CPU load values used to adjust speed to influence the current CPU load toward that value." name="target_loads_sleep" action="target_loads_sleep">
-			<spinnerItem name="battery" value="battery"/> 
-			<spinnerItem name="default" value="default"/> 
-			<spinnerItem name="performance" value="performance"/> 
-		</spinner>
-
-		<seekBar description="Duration of a boot pulse. (Default 80000)" name="boostpulse_duration_sleep" action="generic_cortex /tmp/boostpulse_duration_sleep" unit="uS" min="0" reversed="false" step="10000" max="1000000"/>
-
-		<seekBar description="The minimum amount of time to spend at the current frequency before ramping down. This is to ensure that the governor has seen enough historic cpu load data to determine the appropriate workload. (Default: 80000)" name="min_sample_time_sleep" action="generic_cortex /tmp/min_sample_time_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
-
-		<seekBar description="Sample rate for reevaluating CPU load when the CPU is not idle.  A deferrable timer is used, such that the CPU will not be woken from idle to service this timer until something else needs to run. (The maximum time to allow deferring this timer when not running at minimum speed is configurable via timer_slack.) (Default: 20000)" name="timer_rate_sleep" action="generic_cortex /tmp/timer_rate_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
-
-		<seekBar description="Maximum additional time to defer handling the governor sampling timer beyond timer_rate when running at speeds above the minimum. For example, if timer_rate is 20000uS and timer_slack is 10000uS then timers will be deferred for up to 30msec when not at lowest speed. (Default: 80000)" name="timer_slack_sleep" action="generic_cortex /tmp/timer_slack_sleep" unit="uS" min="10000" reversed="false" step="10000" max="120000"/>
 
 	</settingsPane>
 

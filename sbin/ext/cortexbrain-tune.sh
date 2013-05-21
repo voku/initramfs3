@@ -418,54 +418,6 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $freq_up_brake_tmp ]; then
 			freq_up_brake_tmp="/dev/null";
 		fi;
-		local above_hispeed_delay_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/above_hispeed_delay";
-		if [ ! -e $above_hispeed_delay_tmp ]; then
-			above_hispeed_delay_tmp="/dev/null";
-		fi;
-		local boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boost";
-		if [ ! -e $boost_tmp ]; then
-			boost_tmp="/dev/null";
-		fi;
-		local boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostpulse";
-		if [ ! -e $boostpulse_tmp ]; then
-			boostpulse_tmp="/dev/null";
-		fi;
-		local boostpulse_duration_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boostpulse_duration";
-		if [ ! -e $boostpulse_duration_tmp ]; then
-			boostpulse_duration_tmp="/dev/null";
-		fi;
-		local go_hispeed_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/go_hispeed_load";
-		if [ ! -e $go_hispeed_load_tmp ]; then
-			go_hispeed_load_tmp="/dev/null";
-		fi;
-		local hispeed_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hispeed_freq";
-		if [ ! -e $hispeed_freq_tmp ]; then
-			hispeed_freq_tmp="/dev/null";
-		fi;
-		local io_is_busy_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/io_is_busy";
-		if [ ! -e $io_is_busy_tmp ]; then
-			io_is_busy_tmp="/dev/null";
-		fi;
-		local min_sample_time_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_sample_time";
-		if [ ! -e $min_sample_time_tmp ]; then
-			min_sample_time_tmp="/dev/null";
-		fi;
-		local screen_off_maxfreq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/screen_off_maxfreq";
-		if [ ! -e $screen_off_maxfreq_tmp ]; then
-			screen_off_maxfreq_tmp="/dev/null";
-		fi;
-		local target_loads_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/target_loads";
-		if [ ! -e $target_loads_tmp ]; then
-			target_loads_tmp="/dev/null";
-		fi;
-		local timer_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_rate";
-		if [ ! -e $timer_rate_tmp ]; then
-			timer_rate_tmp="/dev/null";
-		fi;
-		local timer_slack_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/timer_slack";
-		if [ ! -e $timer_slack_tmp ]; then
-			timer_slack_tmp="/dev/null";
-		fi;
 
 		# wake_boost-settings
 		if [ "${state}" == "wake_boost" ]; then
@@ -509,13 +461,6 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq_sleep" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
-			echo "$hispeed_freq_sleep" > $hispeed_freq_tmp;
-			echo "$boostpulse_duration_sleep" > $boostpulse_duration_tmp;
-			echo "$go_hispeed_load_sleep" > $go_hispeed_load_tmp;
-			echo "$min_sample_time_sleep" > $min_sample_time_tmp;
-			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
-			echo "$timer_rate_sleep" > $timer_rate_tmp;
-			echo "$timer_slack_sleep" > $timer_slack_tmp;
 			if [ "a$IPA_CHECK" == "a1" ]; then
 				if [ "$hotplug_enable" == 1 ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
 					echo "0" > $sys_ipa_tmp;
@@ -527,8 +472,6 @@ CPU_GOV_TWEAKS()
 					echo "$hotplug_enable" > $hotplug_enable_tmp;
 				fi;
 			fi;
-			/sbin/busybox sh /res/uci.sh target_loads_sleep $target_loads_sleep;
-			/sbin/busybox sh /res/uci.sh above_hispeed_delay_sleep $above_hispeed_delay_sleep;
 		# awake-settings
 		elif [ "${state}" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -560,14 +503,6 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
-			echo "$hispeed_freq" > $hispeed_freq_tmp;
-			echo "$boostpulse_duration" > $boostpulse_duration_tmp;
-			echo "$go_hispeed_load" > $go_hispeed_load_tmp;
-			echo "$target_loads" > $target_loads_tmp;
-			echo "$min_sample_time" > $min_sample_time_tmp;
-			echo "$scaling_max_suspend_freq" > $screen_off_maxfreq_tmp;
-			echo "$timer_rate" > $timer_rate_tmp;
-			echo "$timer_slack" > $timer_slack_tmp;
 			if [ "a$IPA_CHECK" == "a1" ]; then
 				if [ "$hotplug_enable" == 1 ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
 					echo "0" > $sys_ipa_tmp;
@@ -579,8 +514,6 @@ CPU_GOV_TWEAKS()
 					echo "$hotplug_enable" > $hotplug_enable_tmp;
 				fi;
 			fi;
-			/sbin/busybox sh /res/uci.sh target_loads $target_loads;
-			/sbin/busybox sh /res/uci.sh above_hispeed_delay $above_hispeed_delay;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
