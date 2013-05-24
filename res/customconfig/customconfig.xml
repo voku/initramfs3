@@ -172,8 +172,6 @@
 
 		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
 
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Default: 1)" name="sampling_up_factor" action="generic_cortex /tmp/sampling_up_factor" unit=" int" min="1" reversed="false" step="1" max="10"/>
-
 		<spinner description="Enabling or Disabling Nightmare Governor Hotplugging. If this options is set to Enabled, Intelli plug hotplugging will be disabled! It will be automatically restored when the chosen governor is different from Nightmare or this option is set to disabled. (Default: Disabled)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
 			<spinnerItem name="Disabled" value="0"/> 
 			<spinnerItem name="Enabled" value="1"/> 
@@ -265,8 +263,6 @@
 		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
 
 		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
-
-		<seekBar description="Acts as a multiplier for sampling interval for re-evaluating the load when CPU is truly busy and is on highest clock frequency (policy max). (Default: 1)" name="sampling_up_factor_sleep" action="generic_cortex /tmp/sampling_up_factor_sleep" unit=" int" min="1" reversed="false" step="1" max="10"/>
 
 		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level_sleep" action="generic_cortex /tmp/hotplug_cmp_level_sleep">
 			<spinnerItem name="History Load Based" value="0"/> 
