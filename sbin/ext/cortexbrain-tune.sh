@@ -144,16 +144,16 @@ KERNEL_TWEAKS()
 		if [ "${state}" == "awake" ]; then
 			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "120" > /proc/sys/kernel/panic;
-			if [ "$cortexbrain_memory" == on ]; then
-				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
-			fi;
-		elif [ "${state}" == "sleep" ]; then
-			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-			echo "0" > /proc/sys/vm/panic_on_oom;
 			echo "60" > /proc/sys/kernel/panic;
 			if [ "$cortexbrain_memory" == on ]; then
-				echo "64 64" > /proc/sys/vm/lowmem_reserve_ratio;
+				echo "32 64" > /proc/sys/vm/lowmem_reserve_ratio;
+			fi;
+		elif [ "${state}" == "sleep" ]; then
+			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "1" > /proc/sys/vm/panic_on_oom;
+			echo "60" > /proc/sys/kernel/panic;
+			if [ "$cortexbrain_memory" == on ]; then
+				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 			fi;
 		else
 			echo "1" > /proc/sys/vm/oom_kill_allocating_task;

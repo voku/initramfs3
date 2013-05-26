@@ -37,20 +37,19 @@ case "${debug_to_sd}" in
 
 			# overwrite old debug-file
 			echo "" > $DEBUG_FILE;
-			echo " --- DEBUG-DATE --- " >> $DEBUG_FILE;
-			echo " --- <date>"`date +"%d.%m.%y / %H:%m"`"</date>" >> $DEBUG_FILE;
+			echo " --- DEBUG from "`date`" --- " >> $DEBUG_FILE;
 			echo "" >> $DEBUG_FILE;
 	
 			# Kernel-Info
-			echo "Kernel-Version: <kernel>"`cat /proc/version`"</kernel>" >> $DEBUG_FILE;
+			echo "Kernel-Version:" >> $DEBUG_FILE;
+			cat /proc/version >> $DEBUG_FILE;
 			SEPARATOR;
 
-			date +"Last Reboot: <reboot>%d.%m.%y / %H:%m</reboot>" -d @$(( $(date +%s) - $(cut -f1 -d. /proc/uptime) )) >> $DEBUG_FILE;
+			date +"Last Reboot: %d.%m.%y / %H:%m" -d @$(( $(date +%s) - $(cut -f1 -d. /proc/uptime) )) >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# System
 			echo "ROM-Version:" >> $DEBUG_FILE;
-			echo "<rom>" >> $DEBUG_FILE;
 			cat init.rc | grep "# THIS INIT.RC is FOR" >> $DEBUG_FILE;
 			getprop ro.modversion >> $DEBUG_FILE;
 			getprop cm.version >> $DEBUG_FILE;
@@ -58,33 +57,23 @@ case "${debug_to_sd}" in
 			getprop ro.build.date >> $DEBUG_FILE;
 			getprop ro.build.display.id >> $DEBUG_FILE;
 			getprop ro.build.id >> $DEBUG_FILE;
-			echo "</rom>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Profile
 			PROFILE=`cat /data/.siyah/.active.profile`;
-			echo "Profile-Config: <profile>$PROFILE</profile>" >> $DEBUG_FILE;
-			echo "<config>" >> $DEBUG_FILE;
+			echo "Profile-Config: $PROFILE" >> $DEBUG_FILE;
 			cat /data/.siyah/$PROFILE.profile >> $DEBUG_FILE;
-			echo "</config>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Memory
 			echo "Memory-Info:" >> $DEBUG_FILE;
-			echo "<mem_free>" >> $DEBUG_FILE;
 			free >> $DEBUG_FILE;
-			echo "</mem_free>" >> $DEBUG_FILE;
-			echo "<mem_swap>" >> $DEBUG_FILE;
 			cat /proc/swaps >> $DEBUG_FILE;
-			echo "</mem_swap>" >> $DEBUG_FILE;
-			echo "<mem_info>" >> $DEBUG_FILE;
 			cat /proc/meminfo >> $DEBUG_FILE;
-			echo "</mem_info>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# low mem kill info
 			echo "App-Info for 'low memory killer':" >> $DEBUG_FILE;
-			echo "<oom_score>" >> $DEBUG_FILE;
 			for i in `ls /proc/ | grep -E '^[0-9]+'`; do
 				if [ "$i" -ne 0 ] && [ -f  "/proc/$i/oom_score_adj" ] && [ "`cat /proc/$i/cmdline`" ]; then
 					echo "" >> $DEBUG_FILE;
@@ -93,45 +82,40 @@ case "${debug_to_sd}" in
 					echo "" >> $DEBUG_FILE;
 				fi;
 			done;
-			echo "</oom_score>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# CPU
 			echo "CPU-Info:" >> $DEBUG_FILE;
 			scaling_governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
-			echo "CPU-Governor: <cpu_governor>$scaling_governor</cpu_governor>" >> $DEBUG_FILE;
+			echo "CPU-Governor: $scaling_governor" >> $DEBUG_FILE;
 			cpuinfo_cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq);
-			echo "Cur.-Freq: <cpu_freq_cur>$cpuinfo_cur_freq</cpu_freq_cur>" >> $DEBUG_FILE;
+			echo "Cur.-Freq: $cpuinfo_cur_freq" >> $DEBUG_FILE;
 			scaling_max_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq);
-			echo "Max.-Freq: <cpu_freq_max>$scaling_max_freq</cpu_freq_max>" >> $DEBUG_FILE;
+			echo "Max.-Freq: $scaling_max_freq" >> $DEBUG_FILE;
 			scaling_min_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq);
-			echo "Min.-Freq: <cpu_freq_min>$scaling_min_freq</cpu_freq_min>" >> $DEBUG_FILE;
+			echo "Min.-Freq: $scaling_min_freq" >> $DEBUG_FILE;
 			total_trans=$(cat /sys/devices/system/cpu/cpu0/cpufreq/stats/total_trans);
-			echo "Total freq-switch: <cpu_freq_switch>$total_trans</cpu_freq_switch>" >> $DEBUG_FILE;
+			echo "Total freq-switch: $total_trans" >> $DEBUG_FILE;
 			echo "" >> $DEBUG_FILE;
 			echo "Time-In-State:" >> $DEBUG_FILE;
-			echo "<cpu_time_in_state>" >> $DEBUG_FILE;
 			cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state >> $DEBUG_FILE;
-			echo "</cpu_time_in_state>" >> $DEBUG_FILE;
 			for i in `cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state | cut -f 2 -d ' '`; do 
 				summe=$(($summe+$i)); 
 			done; 
 			summe=$(($summe/100)); 
-			summe=$(($summe/60));
-			echo "<uptime_with_cpu_up>" >> $DEBUG_FILE; 
+			summe=$(($summe/60)); 
 			if [ $summe -lt 60 ]; then
 				echo "uptime with CPU on: $summe min" >> $DEBUG_FILE;
 			else
 				summe=$(($summe/60)); 
 				echo "uptime with CPU on: $summe h" >> $DEBUG_FILE;
 			fi;
-			echo "</uptime_with_cpu_up>" >> $DEBUG_FILE;
 			echo "" >> $DEBUG_FILE;
-			echo "Uptime: <uptime>"`uptime`"</uptime>" >> $DEBUG_FILE;
+			echo "Uptime:" >> $DEBUG_FILE;
+			uptime >> $DEBUG_FILE;
 			SEPARATOR;
 
-			echo "more CPU-Infos:" >> $DEBUG_FILE;
-			echo "<cpu_more_info>" >> $DEBUG_FILE;
+			echo "more CPU-Infos:" >> $DEBUG_FILE;	
 			cpuinfo_cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq);
 			for i in `ls /sys/devices/system/cpu/cpu0/cpufreq/`; do
 				if [ ! -d "/sys/devices/system/cpu/cpu0/cpufreq/${i}" ]; then
@@ -140,71 +124,51 @@ case "${debug_to_sd}" in
 					echo "" >> $DEBUG_FILE;
 				fi;
 			done;
-			echo "</cpu_more_info>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Scheduler
 			echo "Scheduler-Info:" >> $DEBUG_FILE;
-			echo "<sched_debug>" >> $DEBUG_FILE;
 			cat /proc/sched_debug >> $DEBUG_FILE;
-			echo "</sched_debug>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Interrupts
 			echo "Interrupts-Info:" >> $DEBUG_FILE;
-			echo "<interrupts>" >> $DEBUG_FILE;
 			cat /proc/interrupts >> $DEBUG_FILE;
-			echo "</interrupts>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Wakeup
 			echo "Wakeup-Info:" >> $DEBUG_FILE;
-			echo "<wakeup_sources>" >> $DEBUG_FILE;
 			cat /sys/kernel/debug/wakeup_sources >> $DEBUG_FILE;
-			echo "</wakeup_sources>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Suspend
 			echo "Suspend-Info:" >> $DEBUG_FILE;
-			echo "<suspend_stats>" >> $DEBUG_FILE;
 			cat /sys/kernel/debug/suspend_stats >> $DEBUG_FILE;
-			echo "</suspend_stats>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# NET
 			echo "NET-Info:" >> $DEBUG_FILE;
-			echo "<net_info>" >> $DEBUG_FILE;
 			ifconfig pdp0 >> $DEBUG_FILE;
 			ifconfig wlan0 >> $DEBUG_FILE;
-			echo "</net_info>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# USB
 			echo "USB-Info:" >> $DEBUG_FILE;
-			echo "<usb_info>" >> $DEBUG_FILE;
 			lsusb >> $DEBUG_FILE;
-			echo "</usb_info>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# lsmod
 			echo "lsmod-Info:" >> $DEBUG_FILE;
-			echo "<lsmod_info>" >> $DEBUG_FILE;
 			lsmod >> $DEBUG_FILE;
-			echo "</lsmod_info>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Partitions 
 			echo "Partitions-Info:" >> $DEBUG_FILE;
-			echo "<mount>" >> $DEBUG_FILE;
 			mount >> $DEBUG_FILE;
-			echo "</mount>" >> $DEBUG_FILE;
-			echo "<partitions>" >> $DEBUG_FILE;
 			cat /proc/partitions >> $DEBUG_FILE;
-			echo "</partitions>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Partitions status
-			echo "<partitions_status>" >> $DEBUG_FILE;
 			echo "DATA Partition" >> $DEBUG_FILE;
 			/sbin/tune2fs -l /res/dev/data | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
 			echo "SYSTEM Partition" >> $DEBUG_FILE;
@@ -215,66 +179,47 @@ case "${debug_to_sd}" in
 			/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
 			echo "Preloaded Partition" >> $DEBUG_FILE;
 			/sbin/tune2fs -l /dev/block/mmcblk0p12 | grep 'Filesystem state' | cut -c 27-44 >> $DEBUG_FILE;
-			echo "</partitions_status>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# System
 			echo "System-Info:" >> $DEBUG_FILE;
 			echo "sysctl:" >> $DEBUG_FILE;
-			echo "<sysctl>" >> $DEBUG_FILE;
 			sysctl -a >> $DEBUG_FILE;
-			echo "</sysctl>" >> $DEBUG_FILE;
 			echo "" >> $DEBUG_FILE;
 			echo "getprop:" >> $DEBUG_FILE;
-			echo "<getprop>" >> $DEBUG_FILE;
 			getprop >> $DEBUG_FILE;
-			echo "</getprop>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Processes
 			echo "Process-Info: top" >> $DEBUG_FILE;
-			echo "<top>" >> $DEBUG_FILE;
 			top -b -n 1 >> $DEBUG_FILE;
-			echo "</top>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			echo "Process-Info: ps" >> $DEBUG_FILE;
-			echo "<ps>" >> $DEBUG_FILE;
 			ps -w >> $DEBUG_FILE;
-			echo "</ps>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			echo "Process-Info: nice (priority)" >> $DEBUG_FILE;
-			echo "<nice>" >> $DEBUG_FILE;
 			for z in `ls /proc/*/stat`; do 
 				tmp=`cat $z` && echo $tmp | cut -f 2 -d ' ' >> $DEBUG_FILE && echo $tmp | cut -f 19 -d ' ' >> $DEBUG_FILE && echo " " >> $DEBUG_FILE;
 			done;
-			echo "</nice>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# dmesg
 			echo "dmesg-Info:" >> $DEBUG_FILE;
-			echo "<dmesg>" >> $DEBUG_FILE;
 			dmesg >> $DEBUG_FILE;
-			echo "</dmesg>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			echo "dmesg-Error:" >> $DEBUG_FILE;
-			echo "<dmesg_error>" >> $DEBUG_FILE;
 			dmesg | grep -i "Error" >> $DEBUG_FILE;
-			echo "</dmesg_error>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			echo "dmesg-Warning:" >> $DEBUG_FILE;
-			echo "<dmesg_warning>" >> $DEBUG_FILE;
 			dmesg | grep -i "Warning" >> $DEBUG_FILE;
-			echo "</dmesg_warning>" >> $DEBUG_FILE;
 			SEPARATOR;
 
 			echo "dmesg-Fail:" >> $DEBUG_FILE;
-			echo "<dmesg_fail>" >> $DEBUG_FILE;
 			dmesg | grep -i "Fail" >> $DEBUG_FILE;
-			echo "</dmesg_fail>" >> $DEBUG_FILE;
 			SEPARATOR;                               			
 
 			if [ "$logger" == "off" ]; then 
