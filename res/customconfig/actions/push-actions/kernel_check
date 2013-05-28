@@ -27,9 +27,6 @@ if [ "$WGET_CHECK1" == 1 ] || [ "$WGET_CHECK2" == 1 ]; then
 		cat $TMPFILE | grep ".*-V" |  sed 's/.*-V//g' | sed 's/-I.*//g' | sed 's/[-\[].*//g' > $TMPFILE2;
 
 		for version in $(cat $TMPFILE2); do
-			# debug
-			#echo $version " - " $OLD_VERSION;
-
 			expr "$version" \> $OLD_VERSION >/dev/null && echo "There is a new version of this kernel available!!!" && break;
 			expr "7.0" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
 			expr "8.0" \= $version >/dev/null && echo "You already using the most advanced kernel in the world!" && break;
