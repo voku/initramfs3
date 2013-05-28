@@ -1188,8 +1188,6 @@ CPU_GOVERNOR()
 # ==============================================================
 AWAKE_MODE()
 {
-	CPU_GOVERNOR "awake";
-
 	ENABLEMASK "awake";
 
 	CENTRAL_CPU_FREQ_HELPER;
@@ -1200,6 +1198,8 @@ AWAKE_MODE()
 	fi;
 
 	if [ "$sleeprun" == 1 ]; then
+
+		CPU_GOVERNOR "awake";
 
 		LOGGER "awake";
 
@@ -1272,8 +1272,6 @@ SLEEP_MODE()
 
 	TELE_DATA=$(dumpsys telephony.registry);
 
-	CPU_GOVERNOR "sleep"
-
 	ENABLEMASK "sleep";
 
 	CENTRAL_CPU_FREQ_HELPER;
@@ -1296,6 +1294,7 @@ SLEEP_MODE()
 		sleeprun=1;
 
 		if [ "$cortexbrain_cpu" == on ]; then
+			CPU_GOVERNOR "sleep"
 			CENTRAL_CPU_FREQ "standby_freq";
 		fi;
 
