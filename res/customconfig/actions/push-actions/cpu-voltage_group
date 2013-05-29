@@ -1,0 +1,6 @@
+#!/sbin/busybox sh
+
+VDD_INT=`dmesg | grep VDD_INT | cut -c 19-50`;
+
+echo $VDD_INT;
+

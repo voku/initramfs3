@@ -62,6 +62,8 @@
 
 		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, don't tick this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
+		<button description="Use this button to see what CPU Voltage Group your CPU is using now, SG2 device has 4 different CPU types around the world, most common is number !3! most stable is number !4!, number !2! and !1! have problems, as this types needs more voltage to be stable! so if you see that your CPU is TYPE !2! or !1!, add +25(!2!) or +50mV(!1!) to freqs from 1200 to 100Mhz, and see if no sods any more" name="Check CPU Voltage Group" action="push-actions/cpu-voltage_group" label="Check CPU Voltage Group"/>
+
 		<button description="Use this button to see what CPU Voltage is used right now! if you see voltage different from what set as defaults! then your device has OLD CPU model! that uses different STATIC voltage table! and BEST for you, not to UV or OV EVER! just forget it! you will get SODS and cry about it." name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
 		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1425 mV)" name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1325" reversed="false" step="25" max="1500"/>
