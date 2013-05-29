@@ -918,6 +918,8 @@
 
 		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
 
+		<button description="Bug-Report after kernel crash!, use this to report SODS, only if you had to push 10sec pwr key to reboot, if phone lost power, then no log exist, last kernel log, will be placed to 'SDCARD dorimanx_last_kmsg_log', upload it to forum, to help us resovle SOD bugs" name="LAST_KERNEL_LOG" action="push-actions/last_kmsg" label="LAST_KMSG_LOG"/>
+
 	</settingsPane>
 
 	<settingsPane description="Show Storage status, you can see if you have errors in system, data, cache, efs or preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." name="Partitions Scan">
