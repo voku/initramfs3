@@ -64,6 +64,10 @@ if [ "$mdniemod" == "on" ]; then
 	$BB sh /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
+# check cpu voltage group and report to tmp file
+dmesg | grep VDD_INT | cut -c 19-50 > /tmp/cpu-voltage_group;
+chmod 777 /tmp/cpu-voltage_group;
+
 # STweaks check su only at /system/xbin/su make it so
 if [ -e /system/xbin/su ]; then
 	echo "root for STweaks found";

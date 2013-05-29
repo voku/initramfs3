@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-VDD_INT=`dmesg | grep VDD_INT | cut -c 19-50`;
+VDD_INT=`cat /tmp/cpu-voltage_group`;
 
 echo $VDD_INT;
 
