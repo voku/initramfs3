@@ -1,0 +1,6 @@
+#!/sbin/busybox sh
+
+VDD_INT=`cat /tmp/cpu-voltage_group`;
+
+echo $VDD_INT;
+

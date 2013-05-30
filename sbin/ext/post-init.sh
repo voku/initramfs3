@@ -64,6 +64,84 @@ if [ "$mdniemod" == "on" ]; then
 	$BB sh /sbin/ext/mdnie-sharpness-tweak.sh;
 fi;
 
+# check cpu voltage group and report to tmp file, and set defaults for STweaks
+dmesg | grep VDD_INT | cut -c 19-50 > /tmp/cpu-voltage_group;
+chmod 777 /tmp/cpu-voltage_group;
+
+VDD_INT=`cat /tmp/cpu-voltage_group | cut -c 24`;
+
+if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ]; then
+	if [ "$VDD_INT" == "1" ]; then
+		$BB sh /res/uci.sh cpu-voltage 1 1475;
+		$BB sh /res/uci.sh cpu-voltage 2 1450;
+		$BB sh /res/uci.sh cpu-voltage 3 1400;
+		$BB sh /res/uci.sh cpu-voltage 4 1375;
+		$BB sh /res/uci.sh cpu-voltage 5 1350;
+		$BB sh /res/uci.sh cpu-voltage 6 1300;
+		$BB sh /res/uci.sh cpu-voltage 7 1250;
+		$BB sh /res/uci.sh cpu-voltage 8 1175;
+		$BB sh /res/uci.sh cpu-voltage 9 1150;
+		$BB sh /res/uci.sh cpu-voltage 10 1100;
+		$BB sh /res/uci.sh cpu-voltage 11 1075;
+		$BB sh /res/uci.sh cpu-voltage 12 1050;
+		$BB sh /res/uci.sh cpu-voltage 13 1000;
+		$BB sh /res/uci.sh cpu-voltage 14 1000;
+		$BB sh /res/uci.sh cpu-voltage 15 1000;
+		$BB sh /res/uci.sh cpu-voltage 16 1000;
+	elif [ "$VDD_INT" == "2" ]; then
+		$BB sh /res/uci.sh cpu-voltage 1 1450;
+		$BB sh /res/uci.sh cpu-voltage 2 1425;
+		$BB sh /res/uci.sh cpu-voltage 3 1350;
+		$BB sh /res/uci.sh cpu-voltage 4 1325;
+		$BB sh /res/uci.sh cpu-voltage 5 1300;
+		$BB sh /res/uci.sh cpu-voltage 6 1250;
+		$BB sh /res/uci.sh cpu-voltage 7 1200;
+		$BB sh /res/uci.sh cpu-voltage 8 1150;
+		$BB sh /res/uci.sh cpu-voltage 9 1100;
+		$BB sh /res/uci.sh cpu-voltage 10 1075;
+		$BB sh /res/uci.sh cpu-voltage 11 1050;
+		$BB sh /res/uci.sh cpu-voltage 12 1000;
+		$BB sh /res/uci.sh cpu-voltage 13 975;
+		$BB sh /res/uci.sh cpu-voltage 14 975;
+		$BB sh /res/uci.sh cpu-voltage 15 975;
+		$BB sh /res/uci.sh cpu-voltage 16 975;
+	elif [ "$VDD_INT" == "4" ]; then
+		$BB sh /res/uci.sh cpu-voltage 1 1400;
+		$BB sh /res/uci.sh cpu-voltage 2 1375;
+		$BB sh /res/uci.sh cpu-voltage 3 1300;
+		$BB sh /res/uci.sh cpu-voltage 4 1275;
+		$BB sh /res/uci.sh cpu-voltage 5 1250;
+		$BB sh /res/uci.sh cpu-voltage 6 1200;
+		$BB sh /res/uci.sh cpu-voltage 7 1150;
+		$BB sh /res/uci.sh cpu-voltage 8 1100;
+		$BB sh /res/uci.sh cpu-voltage 9 1050;
+		$BB sh /res/uci.sh cpu-voltage 10 1025;
+		$BB sh /res/uci.sh cpu-voltage 11 1000;
+		$BB sh /res/uci.sh cpu-voltage 12 975;
+		$BB sh /res/uci.sh cpu-voltage 13 975;
+		$BB sh /res/uci.sh cpu-voltage 14 975;
+		$BB sh /res/uci.sh cpu-voltage 15 950;
+		$BB sh /res/uci.sh cpu-voltage 16 950;
+	elif [ "$VDD_INT" == "5" ]; then
+		$BB sh /res/uci.sh cpu-voltage 1 1325;
+		$BB sh /res/uci.sh cpu-voltage 2 1300;
+		$BB sh /res/uci.sh cpu-voltage 3 1275;
+		$BB sh /res/uci.sh cpu-voltage 4 1250;
+		$BB sh /res/uci.sh cpu-voltage 5 1225;
+		$BB sh /res/uci.sh cpu-voltage 6 1175;
+		$BB sh /res/uci.sh cpu-voltage 7 1125;
+		$BB sh /res/uci.sh cpu-voltage 8 1075;
+		$BB sh /res/uci.sh cpu-voltage 9 1025;
+		$BB sh /res/uci.sh cpu-voltage 10 1000;
+		$BB sh /res/uci.sh cpu-voltage 11 975;
+		$BB sh /res/uci.sh cpu-voltage 12 950;
+		$BB sh /res/uci.sh cpu-voltage 13 950;
+		$BB sh /res/uci.sh cpu-voltage 14 950;
+		$BB sh /res/uci.sh cpu-voltage 15 925;
+		$BB sh /res/uci.sh cpu-voltage 16 925;
+	fi;
+fi;
+
 # STweaks check su only at /system/xbin/su make it so
 if [ -e /system/xbin/su ]; then
 	echo "root for STweaks found";

@@ -381,7 +381,7 @@ USER_ACTIONS()
 		$BB mount -t vfat /dev/block/mmcblk0p11 /sdcardtmp;
 		$BB rm -f /system/run_fix_media;
 
-		if [ -e /sdcard/Android/data/ ]; then
+		if [ -e /sdcardtmp/Android/data/ ]; then
 			$BB rm -rf /sdcardtmp/Android/data/com.cooliris.media;
 			$BB rm -rf /sdcardtmp/Android/data/com.android.gallery3d;
 			$BB rm -rf /sdcardtmp/Android/data/com.google.android.gallery3d;
