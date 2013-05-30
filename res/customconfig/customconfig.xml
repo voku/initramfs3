@@ -62,41 +62,41 @@
 
 		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, don't tick this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
-		<button description="Use this button to see what CPU Voltage Group your CPU is using now, SG2 device has 4 different CPU types around the world, most common is number !3! most stable is number !4!, number !2! and !1! have problems, as this types needs more voltage to be stable! so if you see that your CPU is TYPE !2! or !1!, add +25(!2!) or +50mV(!1!) to freqs from 1200 to 100Mhz, and see if no sods any more" name="Check CPU Voltage Group" action="push-actions/cpu-voltage_group" label="Check CPU Voltage Group"/>
+		<button description="Use this button to see what CPU Voltage Group your CPU is using now, SG2 device has 5 different CPU types around the world, most common is number !3! most stable is number !4! and !5!, number !2! and !1! are old CPU types, they need more voltage to be stable! so if you see that your CPU TYPE !2! or !1!, then dont UV! it's just bad idea, you will get SODS! and cry about it." name="Check CPU Voltage Group" action="push-actions/cpu-voltage_group" label="Check CPU Voltage Group"/>
 
-		<button description="Use this button to see what CPU Voltage is used right now! if you see voltage different from what set as defaults! then your device has OLD CPU model! that uses different STATIC voltage table! and BEST for you, not to UV or OV EVER! just forget it! you will get SODS and cry about it." name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
+		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
-		<seekBar description="CPU Voltage for 1600 MHz. (Default: 1425 mV)" name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1325" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1600 MHz." name="CPU Voltage 1600 MHz" action="cpu-voltage 1" unit="mV" min="1325" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1500 MHz. (Default: 1400 mV)" name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
+		<seekBar description="CPU Voltage for 1500 MHz." name="CPU Voltage 1500 MHz" action="cpu-voltage 2" unit="mV" min="1300" reversed="false" step="25" max="1500"/>
 
-		<seekBar description="CPU Voltage for 1400 MHz. (Default: 1325 mV)" name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1225" reversed="false" step="25" max="1425"/>
+		<seekBar description="CPU Voltage for 1400 MHz." name="CPU Voltage 1400 MHz" action="cpu-voltage 3" unit="mV" min="1225" reversed="false" step="25" max="1425"/>
 
-		<seekBar description="CPU Voltage for 1300 MHz. (Default: 1300 mV)" name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1200" reversed="false" step="25" max="1400"/>
+		<seekBar description="CPU Voltage for 1300 MHz." name="CPU Voltage 1300 MHz" action="cpu-voltage 4" unit="mV" min="1200" reversed="false" step="25" max="1400"/>
 
-		<seekBar description="CPU Voltage for 1200 MHz. (Default: 1275 mV)" name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1175" reversed="false" step="25" max="1375"/>
+		<seekBar description="CPU Voltage for 1200 MHz." name="CPU Voltage 1200 MHz" action="cpu-voltage 5" unit="mV" min="1175" reversed="false" step="25" max="1375"/>
 
-		<seekBar description="CPU Voltage for 1100 MHz. (Default: 1225 mV)" name="CPU Voltage 1100 MHz" action="cpu-voltage 6" unit="mV" min="1125" reversed="false" step="25" max="1325"/>
+		<seekBar description="CPU Voltage for 1100 MHz." name="CPU Voltage 1100 MHz" action="cpu-voltage 6" unit="mV" min="1125" reversed="false" step="25" max="1325"/>
 
-		<seekBar description="CPU Voltage for 1000 MHz. (Default: 1175 mV)" name="CPU Voltage 1000 MHz" action="cpu-voltage 7" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
+		<seekBar description="CPU Voltage for 1000 MHz." name="CPU Voltage 1000 MHz" action="cpu-voltage 7" unit="mV" min="1075" reversed="false" step="25" max="1275"/>
 
-		<seekBar description="CPU Voltage for 900 MHz. (Default: 1125 mV)" name="CPU Voltage 900 MHz" action="cpu-voltage 8" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
+		<seekBar description="CPU Voltage for 900 MHz." name="CPU Voltage 900 MHz" action="cpu-voltage 8" unit="mV" min="1025" reversed="false" step="25" max="1225"/>
 
-		<seekBar description="CPU Voltage for 800 MHz. (Default: 1075 mV)" name="CPU Voltage 800 MHz" action="cpu-voltage 9" unit="mV" min="975" reversed="false" step="25" max="1175"/>
+		<seekBar description="CPU Voltage for 800 MHz." name="CPU Voltage 800 MHz" action="cpu-voltage 9" unit="mV" min="975" reversed="false" step="25" max="1175"/>
 
-		<seekBar description="CPU Voltage for 700 MHz. (Default: 1050 mV)" name="CPU Voltage 700MHz" action="cpu-voltage 10" unit="mV" min="950" reversed="false" step="25" max="1150"/>
+		<seekBar description="CPU Voltage for 700 MHz." name="CPU Voltage 700MHz" action="cpu-voltage 10" unit="mV" min="950" reversed="false" step="25" max="1150"/>
 
-		<seekBar description="CPU Voltage for 600 MHz. (Default: 1025 mV)" name="CPU Voltage 600 MHz" action="cpu-voltage 11" unit="mV" min="925" reversed="false" step="25" max="1125"/>
+		<seekBar description="CPU Voltage for 600 MHz." name="CPU Voltage 600 MHz" action="cpu-voltage 11" unit="mV" min="925" reversed="false" step="25" max="1125"/>
 
-		<seekBar description="CPU Voltage for 500 MHz. (Default: 975 mV)" name="CPU Voltage 500 MHz" action="cpu-voltage 12" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 500 MHz." name="CPU Voltage 500 MHz" action="cpu-voltage 12" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 400 MHz. (Default: 975 mV)" name="CPU Voltage 400 MHz" action="cpu-voltage 13" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 400 MHz." name="CPU Voltage 400 MHz" action="cpu-voltage 13" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 300 MHz. (Default: 975 mV)" name="CPU Voltage 300 MHz" action="cpu-voltage 14" unit="mV" min="875" reversed="false" step="25" max="1075"/>
+		<seekBar description="CPU Voltage for 300 MHz." name="CPU Voltage 300 MHz" action="cpu-voltage 14" unit="mV" min="875" reversed="false" step="25" max="1075"/>
 
-		<seekBar description="CPU Voltage for 200 MHz. (Default: 950 mV)" name="CPU Voltage 200 MHz" action="cpu-voltage 15" unit="mV" min="850" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 200 MHz." name="CPU Voltage 200 MHz" action="cpu-voltage 15" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
-		<seekBar description="CPU Voltage for 100 MHz. (Default: 950 mV)" name="CPU Voltage 100 MHz" action="cpu-voltage 16" unit="mV" min="850" reversed="false" step="25" max="1050"/>
+		<seekBar description="CPU Voltage for 100 MHz." name="CPU Voltage 100 MHz" action="cpu-voltage 16" unit="mV" min="850" reversed="false" step="25" max="1050"/>
 
 	</settingsPane>
 
