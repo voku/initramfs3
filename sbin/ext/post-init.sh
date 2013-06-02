@@ -106,17 +106,17 @@ if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ] && [ "$VDD_INT" !
 		$BB sh /res/uci.sh cpu-voltage 15 975;
 		$BB sh /res/uci.sh cpu-voltage 16 975;
 	elif [ "$VDD_INT" == "5" ]; then
-		$BB sh /res/uci.sh cpu-voltage 1 1325;
-		$BB sh /res/uci.sh cpu-voltage 2 1300;
-		$BB sh /res/uci.sh cpu-voltage 3 1275;
-		$BB sh /res/uci.sh cpu-voltage 4 1250;
-		$BB sh /res/uci.sh cpu-voltage 5 1225;
-		$BB sh /res/uci.sh cpu-voltage 6 1175;
-		$BB sh /res/uci.sh cpu-voltage 7 1125;
-		$BB sh /res/uci.sh cpu-voltage 8 1075;
-		$BB sh /res/uci.sh cpu-voltage 9 1025;
-		$BB sh /res/uci.sh cpu-voltage 10 1000;
-		$BB sh /res/uci.sh cpu-voltage 11 975;
+		$BB sh /res/uci.sh cpu-voltage 1 1400;
+		$BB sh /res/uci.sh cpu-voltage 2 1375;
+		$BB sh /res/uci.sh cpu-voltage 3 1300;
+		$BB sh /res/uci.sh cpu-voltage 4 1275;
+		$BB sh /res/uci.sh cpu-voltage 5 1250;
+		$BB sh /res/uci.sh cpu-voltage 6 1200;
+		$BB sh /res/uci.sh cpu-voltage 7 1150;
+		$BB sh /res/uci.sh cpu-voltage 8 1100;
+		$BB sh /res/uci.sh cpu-voltage 9 1050;
+		$BB sh /res/uci.sh cpu-voltage 10 1025;
+		$BB sh /res/uci.sh cpu-voltage 11 1000;
 		$BB sh /res/uci.sh cpu-voltage 12 950;
 		$BB sh /res/uci.sh cpu-voltage 13 950;
 		$BB sh /res/uci.sh cpu-voltage 14 950;
