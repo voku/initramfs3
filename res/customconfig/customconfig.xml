@@ -383,7 +383,7 @@
 </settingsTab>
 
 <settingsTab name="GPU">
-	<settingsPane description="GPU Frequency, voltage, and steps utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 950mV, 950mV, 1000mV, 1050mV and 1050mV." name="GPU Control">
+	<settingsPane description="GPU Frequency, voltage, and steps utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1050mV and 1050mV." name="GPU Control">
 
 		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you don't use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
@@ -434,7 +434,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="GPU Voltage Levels: The defaults are 950, 950, 950, 1000 and 1050. WARNING! Voltage above 1300 mV can put your device to risk! Do not blame me if GPU chip burned." name="GPU Voltage Levels">
+	<settingsPane description="GPU Voltage Levels: The defaults are 900, 950, 950, 1000 and 1050. WARNING! Voltage above 1300 mV can put your device to risk! Do not blame me if GPU chip burned." name="GPU Voltage Levels">
 
 		<seekBar description="GPU Voltage for the first step" name="GPU Voltage Level 1" action="gpu-voltage 1" unit="mV" min="900" reversed="false" step="50" max="1300"/>
 
