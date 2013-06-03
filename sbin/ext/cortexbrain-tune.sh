@@ -88,7 +88,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "512" > $i/queue/nr_requests; # default: 128
+				echo "128" > $i/queue/nr_requests; # default: 128
 			fi;
 		done;
 
@@ -149,8 +149,8 @@ KERNEL_TWEAKS()
 				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 			fi;
 		elif [ "${state}" == "sleep" ]; then
-			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
-			echo "1" > /proc/sys/vm/panic_on_oom;
+			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/panic_on_oom;
 			echo "30" > /proc/sys/kernel/panic;
 			if [ "$cortexbrain_memory" == on ]; then
 				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
@@ -158,7 +158,7 @@ KERNEL_TWEAKS()
 		else
 			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "120" > /proc/sys/kernel/panic;
+			echo "60" > /proc/sys/kernel/panic;
 		fi;
 
 #		echo "8192" > /proc/sys/kernel/msgmax;
@@ -546,7 +546,7 @@ MEMORY_TWEAKS()
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "4096" > /proc/sys/vm/min_free_kbytes;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 
@@ -1054,23 +1054,23 @@ NET()
 	log -p i -t $FILE_NAME "*** NET ***: ${state}";	
 }
 
-KERNEL_SCHED()
-{
-	local state="$1";
+#KERNEL_SCHED()
+#{
+#	local state="$1";
 
 	# this is the correct order to input this settings, every value will be x2 after set
-	if [ "${state}" == "awake" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
-	elif [ "${state}" == "sleep" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
-	fi;
+#	if [ "${state}" == "awake" ]; then
+#		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
+#	elif [ "${state}" == "sleep" ]; then
+#		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
+#	fi;
 
-	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
-}
+#	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
+#}
 
 BLN_CORRECTION()
 {
@@ -1224,7 +1224,7 @@ AWAKE_MODE()
 
 		BUS_THRESHOLD "wake_boost";
 
-		KERNEL_SCHED "awake";
+#		KERNEL_SCHED "awake";
 
 		KERNEL_TWEAKS "awake";
 
@@ -1344,7 +1344,7 @@ SLEEP_MODE()
 
 			BUS_THRESHOLD "sleep";
 
-			KERNEL_SCHED "sleep";
+#			KERNEL_SCHED "sleep";
 
 			UKSMCTL "sleep";
 

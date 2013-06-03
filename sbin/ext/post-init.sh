@@ -10,11 +10,11 @@ $BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
 $BB chmod 444 /sys/module/lowmemorykiller/parameters/adj;
 $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
+# protect init from oom
+echo "-1000" > /proc/1/oom_score_adj;
+
 # set default JB mmap_min_addr value
 echo "32768" > /proc/sys/vm/mmap_min_addr;
-
-# protect init from oom
-echo "-1000" > /proc/1/oom_score_adj; # -1000 = -17
 
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
@@ -135,6 +135,11 @@ else
 	echo "ROM without ROOT";
 fi;
 
+# busybox addons
+if [ -e /system/xbin/busybox ]; then
+	ln -s /system/xbin/busybox /sbin/ifconfig;
+fi;
+
 ######################################
 # Loading Modules
 ######################################
@@ -173,6 +178,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh;
+CORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
+echo "-1000" > /proc/$CORTEX/oom_score_adj;
 
 # enable screen color mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
