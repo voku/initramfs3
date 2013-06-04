@@ -1027,6 +1027,7 @@ SWAPPINESS()
 
 	log -p i -t $FILE_NAME "*** SWAPPINESS: $swappiness ***";
 }
+SWAPPINESS;
 
 # disable/enable ipv6  
 IPV6()
