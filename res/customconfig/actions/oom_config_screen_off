@@ -8,27 +8,27 @@ if [ "a$2" != "a" ]; then
 
 	case "${oom_config_screen_off}" in
 		light)
-			echo "1024,2048,2560,4096,6144,8192" > /sys/module/lowmemorykiller/parameters/minfree_screen_off;
+			echo "2048,2048,2560,2560,3072,6000" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "64" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		low)
-			echo "1024,2048,4096,8192,11776,14848" > /sys/module/lowmemorykiller/parameters/minfree_screen_off;
+			echo "2048,2560,2560,2560,3584,6000" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		medium)
-			echo "2560,4096,5632,10240,12288,16384" > /sys/module/lowmemorykiller/parameters/minfree_screen_off;
+			echo "2048,2560,2560,3072,3584,6000" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		default)
-			echo "8192,10240,12288,14336,16384,20480" > /sys/module/lowmemorykiller/parameters/minfree_screen_off;
+			echo "2048,2560,3072,3584,6000,8192" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		aggressive)
-			echo "8192,10240,12288,16384,24576,32768" > /sys/module/lowmemorykiller/parameters/minfree_screen_off;
+			echo "2048,2560,3584,6000,8192,12288" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "16" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		exterminate)
-			echo "8192,10240,16384,32768,49152,65536" > /sys/module/lowmemorykiller/parameters/minfree_screen_off;
+			echo "3072,3584,6000,8192,12288,16368" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "8" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		*)
