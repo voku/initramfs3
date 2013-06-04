@@ -3,7 +3,7 @@
 
 	<settingsPane description="Boot Booster Control. Here you can set boot CPU frequency, after boot done, frequency will be restored to active profile settings." name="BOOT CPU Frequency">
 
-		<seekBar description="Boot booster frequency. CPU will hold single 'min or max' frequency when ROM booting, DEAR USER! If your CPU can't handle 1.5Ghz or 1.6Ghz, setting it here will STUCK your device on boot until you reset profiles via recovery! USE AT YOUR OWN RISK! (default 1.200.000 kHz)" name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Boot booster frequency. CPU will hold single min or max frequency when ROM booting, DEAR USER! If your CPU cannot handle 1.5Ghz or 1.6Ghz, setting it here will STUCK your device on boot until you reset profiles via recovery! USE AT YOUR OWN RISK! (default 1.200.000 kHz)" name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, all is set back to normal." name="Cortex Wakeup Boost" action="generic_cortex /tmp/wakeup_boost" unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
@@ -11,9 +11,9 @@
 
 	<settingsPane description="The following settings are for all global CPU configuration, use it only if you know what you are doing." name="CPU Global Settings">
 
-		<seekBar description="Maximum Normal CPU-Speed. CPU Frequency steps by 100.000 kHz, from 100.000 kHz to 1.000.000 kHz! If you want to use OC speeds set here 1.0Ghz and tune the OC bar! If the set speed here is lower than MAX '1.0Ghz', OC bar is ignored! (Default: 1.000.000 kHz)" name="Max Normal Frequency" action="genericfreq_normal /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+		<seekBar description="Maximum Normal CPU-Speed. CPU Frequency steps by 100.000 kHz, from 100.000 kHz to 1.000.000 kHz! If you want to use OC speeds set here 1.0Ghz and tune the OC bar! If the set speed here is lower than MAX 1.0Ghz, OC bar is ignored! (Default: 1.000.000 kHz)" name="Max Normal Frequency" action="genericfreq_normal /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="Overclock CPU Speed. To use OC you must set the Normal CPU speed to MAX '1.0Ghz' or this setting ignored! CPU Frequency steps by 100.000 kHz from 1.000.000 kHz to 1.600.000 kHz! ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! 1.6 Ghz is unstable on 85% of devices, try at your own risk. If device is stuck at boot, reset profile via recovery! (Default: 1.200.000 kHz)" name="Max OC Frequency" action="genericfreq_oc /tmp/scaling_max_freq_oc" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
+		<seekBar description="Overclock CPU Speed. To use OC you must set the Normal CPU speed to MAX 1.0Ghz or this setting ignored! CPU Frequency steps by 100.000 kHz from 1.000.000 kHz to 1.600.000 kHz! ALERT! 1.5 GHz and 1.6 GHz can be unstable for your personal device! Try it and if the phone stuck (SOD), then your CPU will not work on such high frequency and you have to use a lower value! 1.6 Ghz is unstable on 85% of devices, try at your own risk. If device is stuck at boot, reset profile via recovery! (Default: 1.200.000 kHz)" name="Max OC Frequency" action="genericfreq_oc /tmp/scaling_max_freq_oc" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Minimum CPU-Speed. CPU Frequency step by 100.000 kHz are valid from 100.000 kHz to 1.000.000 kHz! (Default: 200.000 kHz)" name="Min Frequency" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
@@ -46,7 +46,7 @@
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (Default: 25%)" name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="23" reversed="false" step="1" max="90"/>
 
-		<seekBar description="Maximum DEEP SLEEP CPU speed. Default is Linux Kernel default value: 600000kHz. Samsung's default value is 800000kHz. Setting this too low will stuck your device!" name="scaling_max_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+		<seekBar description="Maximum DEEP SLEEP CPU speed. Default is Linux Kernel default value: 600000kHz. Samsung default value is 800000kHz. Setting this too low will stuck your device!" name="scaling_max_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU speed. (Default: 200.000 kHz)" name="scaling_min_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
@@ -58,11 +58,11 @@
 
 <settingsTab name="CPU-VOLTAGE">
 
-	<settingsPane description="CPU Voltage Controls. Voltage Range is 825~1500mV. Lower or higher are NOT SUPPORTED. All is done to prevent BUGS and SODS. USE this interface AT YOUR OWN RISK! If you get SOD before you can load this interface and can't fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV or OV!" name="CPU Voltage Controls">
+	<settingsPane description="CPU Voltage Controls. Voltage Range is 825~1500mV. Lower or higher are NOT SUPPORTED. All is done to prevent BUGS and SODS. USE this interface AT YOUR OWN RISK! If you get SOD before you can load this interface and cannot fix your error, reset profiles from recovery. And think harder before you SOD your CPU with too much UV or OV!" name="CPU Voltage Controls">
 
-		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, don't tick this checkbox. Don't start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
+		<checkbox description="Main switch for Voltage Control! If disabled, all below settings have no effect! If you are using an external application or script to configure CPU voltage, do not tick this checkbox. Do not start to mod voltage before you enable this switch! It will not make any effect and you will have to set all to default, and tune again!" name="CPU Voltage Main Switch" action="generic_cortex /tmp/cpu_voltage_switch" label="CPU Voltage Main Switch"/>
 
-		<button description="Use this button to see what CPU Voltage Group your CPU is using now, SG2 device has 5 different CPU types around the world, most common is number !3! most stable is number !4! and !5!, number !2! and !1! are old CPU types, they need more voltage to be stable! so if you see that your CPU TYPE !2! or !1!, then dont UV! it's just bad idea, you will get SODS! and cry about it." name="Check CPU Voltage Group" action="push-actions/cpu-voltage_group" label="Check CPU Voltage Group"/>
+		<button description="Use this button to see what CPU Voltage Group your CPU is using now, SG2 device has 5 different CPU types around the world, most common is number !3! most stable is number !4! and !5!, number !2! and !1! are old CPU types, they need more voltage to be stable! so if you see that your CPU TYPE !2! or !1!, then dont UV! it is just bad idea, you will get SODS! and cry about it." name="Check CPU Voltage Group" action="push-actions/cpu-voltage_group" label="Check CPU Voltage Group"/>
 
 		<button description="Use this button to see what CPU Voltage is used right now!" name="Check Active CPU Voltage" action="push-actions/check_cpu_voltage" label="Check CPU Voltage"/>
 
@@ -104,7 +104,7 @@
 
 <settingsTab name="CPU-TUNING (AWAKE)">
 
-	<settingsPane description="Here you can manage advanced governor settings, if cortexbrain 'background-process' and 'CPU' are enabled. These settings are active only if the screen is on." name="Governor Parameters tuning">
+	<settingsPane description="Here you can manage advanced governor settings, if cortexbrain background-process and CPU are enabled. These settings are active only if the screen is on." name="Governor Parameters tuning">
 
 		<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by any other scripts or applications." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 			<spinnerItem name="conservative" value="conservative"/> 
@@ -138,7 +138,7 @@
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (Default: 400.000 kHz)" name="freq_for_responsiveness" action="generic_cortex /tmp/freq_for_responsiveness" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="This is same as the 'up_threshold' found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (Default: 30%)" name="down_threshold" action="generic_cortex /tmp/down_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="This is same as the up_threshold found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (Default: 30%)" name="down_threshold" action="generic_cortex /tmp/down_threshold" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="No of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate X up_sample_time micro seconds are spend at a frequency. (Only for Nightmare when his hotplugging is Enabled, PegasusQ) (Default: 10)" name="cpu_up_rate" action="generic_cortex /tmp/cpu_up_rate" unit=" int" min="1" reversed="false" step="1" max="40"/>
 
@@ -150,7 +150,7 @@
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. (Default: 60%)" name="inc_cpu_load_at_min_freq" action="generic_cortex /tmp/inc_cpu_load_at_min_freq" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Default: 70%)" name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Load big or equal inc_cpu_load: cpu scaled up. (Default: 70%)" name="inc_cpu_load" action="generic_cortex /tmp/inc_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Load less than dec_cpu_load: cpu scaled down. (Default: 50%)" name="dec_cpu_load" action="generic_cortex /tmp/dec_cpu_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
@@ -158,21 +158,21 @@
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches inc_cpu_load_at_min_freq. (Default: 20%)" name="freq_step_at_min_freq" action="generic_cortex /tmp/freq_step_at_min_freq" unit="%" min="5" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load_at_min_freq. (Default: 30)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load_at_min_freq. (Default: 30)" name="freq_up_brake_at_min_freq" action="generic_cortex /tmp/freq_up_brake_at_min_freq" unit="step" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Default: 30)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load. (Default: 30)" name="freq_up_brake" action="generic_cortex /tmp/freq_up_brake" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Default: 10%)" name="freq_step_dec" action="generic_cortex /tmp/freq_step_dec" unit="%" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load and current freq is greater than freq_for_responsiviness_max. (Default: 10%)" name="freq_step_dec_at_max_freq" action="generic_cortex /tmp/freq_step_dec_at_max_freq" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_incr" action="generic_cortex /tmp/freq_for_calc_incr" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
+		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you do not know what it means, please do not change it! (Default: 200.000 kHz)" name="freq_for_calc_incr" action="generic_cortex /tmp/freq_for_calc_incr" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
 
-		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
+		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you do not know what it means, please do not change it! (Default: 200.000 kHz)" name="freq_for_calc_decr" action="generic_cortex /tmp/freq_for_calc_decr" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
 
-		<seekBar description="Basically if the next step 'target frequency' drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let's suppose that the actual frequency is 600 Mhz, and the target one is gonna be 721 Mhz. Target frequency is within the range that goes from 700 to 800 Mhz, Computing will be therefeore 721-700= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 800 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 700 Mhz. An higher value means performance reduction. (Default: 0)" name="up_sf_step" action="generic_cortex /tmp/up_sf_step" unit=" int" min="0" reversed="false" step="1" max="99"/>
+		<seekBar description="Basically if the next step target frequency drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let us suppose that the actual frequency is 600 Mhz, and the target one is gonna be 721 Mhz. Target frequency is within the range that goes from 700 to 800 Mhz, Computing will be therefeore 721-700= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 800 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 700 Mhz. An higher value means performance reduction. (Default: 0)" name="up_sf_step" action="generic_cortex /tmp/up_sf_step" unit=" int" min="0" reversed="false" step="1" max="99"/>
 
-		<seekBar description="Basically if the next step 'target frequency' drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let's suppose that the actual frequency is 600 Mhz, and the target one is gonna be 421 Mhz. Target frequency is within the range that goes from 400 to 500 Mhz, Computing will be therefeore 421-400= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 500 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 400 Mhz. An higher value means performance reduction. (Default: 0)" name="down_sf_step" action="generic_cortex /tmp/down_sf_step" unit=" int" min="0" reversed="false" step="1" max="99"/>
+		<seekBar description="Basically if the next step target frequency drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let us suppose that the actual frequency is 600 Mhz, and the target one is gonna be 421 Mhz. Target frequency is within the range that goes from 400 to 500 Mhz, Computing will be therefeore 421-400= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 500 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 400 Mhz. An higher value means performance reduction. (Default: 0)" name="down_sf_step" action="generic_cortex /tmp/down_sf_step" unit=" int" min="0" reversed="false" step="1" max="99"/>
 
 		<spinner description="Enabling or Disabling Nightmare Governor Hotplugging. If this options is set to Enabled, Intelli plug hotplugging will be disabled! It will be automatically restored when the chosen governor is different from Nightmare or this option is set to disabled. (Default: Disabled)" name="hotplug_enable" action="generic_cortex /tmp/hotplug_enable">
 			<spinnerItem name="Disabled" value="0"/> 
@@ -206,7 +206,7 @@
 
 <settingsTab name="CPU-TUNING (SLEEP)">
 
-	<settingsPane description="Here you can manage advanced governor settings, if cortexbrain 'background-process' and 'CPU' are enabled. These settings are only active when the screen is off." name="Governor Parameters tuning">
+	<settingsPane description="Here you can manage advanced governor settings, if cortexbrain background-process and CPU are enabled. These settings are only active when the screen is off." name="Governor Parameters tuning">
 
 		<spinner description="This will set the DEEP SLEEP (screen off) CPU governor. Depends on cortex background process to be enabled." name="Deep-Sleep! CPU Governor" action="generic_cortex /tmp/scaling_governor_sleep">
 			<spinnerItem name="conservative" value="conservative"/> 
@@ -238,7 +238,7 @@
 
 		<seekBar description="Until freq_for_responsiveness, Up Threshold considered for sampling load is up_threshold_at_min_freq. Also during the part where CPU is at maximum load frequency, governor need to find the optimal frequency as the next frequency - which should not trigger up_threshold in the next sampling. When such a frequency_next is found to be a) less than freq_for_responsiveness b) will not trigger down_threshold in the next sample, then the optimal frequency is set to freq_for_responsiveness. (Only for HYPER, PegasusQ, Nightmare) (Default: 400.000 kHz)" name="freq_for_responsiveness_sleep" action="generic_cortex /tmp/freq_for_responsiveness_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="This is same as the 'up_threshold' found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (Default: 30%)" name="down_threshold_sleep" action="generic_cortex /tmp/down_threshold_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
+		<seekBar description="This is same as the up_threshold found for the Ondemand governor but for the opposite direction. For example when set to its default value of 30 it means that if the CPU usage needs to be below 30% between samples to have the frequency decreased. (Only for Conservative, Scary) (Default: 30%)" name="down_threshold_sleep" action="generic_cortex /tmp/down_threshold_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Number of samples to evaluate load to scale CPU Up. After cpu_up_rate samples are finished for a frequency, CPU scale-Up logic is executed. In other words - before scaling Up, cpu_up_rate X up_sample_time micro seconds are spend at a frequency. (Only for Nightmare when his hotplugging is Enabled, PegasusQ) (Default: 20)" name="cpu_up_rate_sleep" action="generic_cortex /tmp/cpu_up_rate_sleep" unit=" int" min="1" reversed="false" step="1" max="40"/>
 
@@ -250,7 +250,7 @@
 
 		<seekBar description="This threshold is used as up threshold while sampling at frequencies less than freq_for_responsiveness. Above that, normal inc_cpu_load is used. This gives us an option to make scaling aggressive/relaxed until a frequency and normal for higher frequencies. (Default: 60%)" name="inc_cpu_load_at_min_freq_sleep" action="generic_cortex /tmp/inc_cpu_load_at_min_freq_sleep" unit="%" min="1" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Load 'big or equal' inc_cpu_load: cpu scaled up. (Default: 70%)" name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Load big or equal inc_cpu_load: cpu scaled up. (Default: 70%)" name="inc_cpu_load_sleep" action="generic_cortex /tmp/inc_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 		<seekBar description="The frequency at which governor scales CPU down. Load less than dec_cpu_load: cpu scaled down. (Default: 60%)" name="dec_cpu_load_sleep" action="generic_cortex /tmp/dec_cpu_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
@@ -258,21 +258,21 @@
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should increase CPU frequency each time CPU load reaches inc_cpu_load_at_min_freq. (Default: 20%)" name="freq_step_at_min_freq_sleep" action="generic_cortex /tmp/freq_step_at_min_freq_sleep" unit="%" min="5" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load_at_min_freq. (Default: 30)" name="freq_up_brake_at_min_freq_sleep" action="generic_cortex /tmp/freq_up_brake_at_min_freq_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load_at_min_freq. (Default: 30)" name="freq_up_brake_at_min_freq_sleep" action="generic_cortex /tmp/freq_up_brake_at_min_freq_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="Brake scale up frequency when load 'big or equal' inc_cpu_load. (Default: 30)" name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
+		<seekBar description="Brake scale up frequency when load big or equal inc_cpu_load. (Default: 30)" name="freq_up_brake_sleep" action="generic_cortex /tmp/freq_up_brake_sleep" unit="step" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load. (Default: 10%)" name="freq_step_dec_sleep" action="generic_cortex /tmp/freq_step_dec_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
 
 		<seekBar description="Defines how much as a percentage of maximum frequency, governor should decrease CPU frequency each time CPU load reaches dec_cpu_load and current freq is greater than freq_for_responsiviness_max. (Default: 10%)" name="freq_step_dec_at_max_freq_sleep" action="generic_cortex /tmp/freq_step_dec_at_max_freq_sleep" unit="%" min="0" reversed="false" step="1" max="100"/>
 
-		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
+		<seekBar description="cpu load, freq_step and freq_up_brake will be multiplied by freq_for_calc_incr. It defines how much the frequency increment is during cpu scaling! It has been configured to 200.000 kHz. If you do not know what it means, please do not change it! (Default: 200.000 kHz)" name="freq_for_calc_incr_sleep" action="generic_cortex /tmp/freq_for_calc_incr_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="400000"/>
 
-		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you don't know what it means, please don't change it! (Default: 200.000 kHz)" name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
+		<seekBar description="cpu load and freq_step_dec will be multiplied by freq_for_calc_decr. It defines how much the frequency decrement is during cpu scaling! It has been configured to 200.000 kHz. If you do not know what it means, please do not change it! (Default: 200.000 kHz)" name="freq_for_calc_decr_sleep" action="generic_cortex /tmp/freq_for_calc_decr_sleep" unit="kHz" min="200000" reversed="false" step="100000" max="400000"/>
 
-		<seekBar description="Basically if the next step 'target frequency' drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let's suppose that the actual frequency is 600 Mhz, and the target one is gonna be 721 Mhz. Target frequency is within the range that goes from 700 to 800 Mhz, Computing will be therefeore 721-700= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 800 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 700 Mhz. An higher value means performance reduction. (Default: 0)" name="up_sf_step_sleep" action="generic_cortex /tmp/up_sf_step_sleep" unit=" int" min="0" reversed="false" step="1" max="99"/>
+		<seekBar description="Basically if the next step target frequency drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let us suppose that the actual frequency is 600 Mhz, and the target one is gonna be 721 Mhz. Target frequency is within the range that goes from 700 to 800 Mhz, Computing will be therefeore 721-700= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 800 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 700 Mhz. An higher value means performance reduction. (Default: 0)" name="up_sf_step_sleep" action="generic_cortex /tmp/up_sf_step_sleep" unit=" int" min="0" reversed="false" step="1" max="99"/>
 
-		<seekBar description="Basically if the next step 'target frequency' drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let's suppose that the actual frequency is 600 Mhz, and the target one is gonna be 421 Mhz. Target frequency is within the range that goes from 400 to 500 Mhz, Computing will be therefeore 421-400= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 500 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 400 Mhz. An higher value means performance reduction. (Default: 0)" name="down_sf_step_sleep" action="generic_cortex /tmp/down_sf_step_sleep" unit=" int" min="0" reversed="false" step="1" max="99"/>
+		<seekBar description="Basically if the next step target frequency drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let us suppose that the actual frequency is 600 Mhz, and the target one is gonna be 421 Mhz. Target frequency is within the range that goes from 400 to 500 Mhz, Computing will be therefeore 421-400= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 500 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 400 Mhz. An higher value means performance reduction. (Default: 0)" name="down_sf_step_sleep" action="generic_cortex /tmp/down_sf_step_sleep" unit=" int" min="0" reversed="false" step="1" max="99"/>
 
 		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level_sleep" action="generic_cortex /tmp/hotplug_cmp_level_sleep">
 			<spinnerItem name="History Load Based" value="0"/> 
@@ -303,7 +303,7 @@
 
 	<settingsPane description="Here you can tune IO settings managed by Kernel" name="IO Tuning">
 
-		<spinner description="Maximum number of kilobytes to read-ahead for EXTERNAL SDCARD! file systems on this device. Best to leave it AUTO, then script will detect your external sdcard size and set the best value for it! the INTERNAL sdcard will get 1024kB as default and best for 16GB storage, Works only if 'IO-Tweaks' tweak is enabled! (Default: 128 kB)" name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
+		<spinner description="Maximum number of kilobytes to read-ahead for EXTERNAL SDCARD! file systems on this device. Best to leave it AUTO, then script will detect your external sdcard size and set the best value for it! the INTERNAL sdcard will get 1024kB as default and best for 16GB storage, Works only if IO-Tweaks tweak is enabled! (Default: 128 kB)" name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
 			<spinnerItem name="AUTO" value="0"/> 
 			<spinnerItem name="128 kB" value="128"/> 
 			<spinnerItem name="256 kB" value="256"/> 
@@ -343,7 +343,7 @@
 
 	<settingsPane description="Here you can tune memory and OOM (low mem management) settings managed by Kernel." name="Memory Tuning">
 
-		<spinner description="Here you can set the level of 'low mem management' by kernel lowmemkiller function. More aggressive, equals more free RAM but more killed apps." name="OOM Level Tuning - screen on" action="oom_config_screen_on">
+		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function. More aggressive, equals more free RAM but more killed apps." name="OOM Level Tuning - screen on" action="oom_config_screen_on">
 			<spinnerItem name="light" value="light"/> 
 			<spinnerItem name="low" value="low"/> 
 			<spinnerItem name="medium" value="medium"/> 
@@ -352,7 +352,7 @@
 			<spinnerItem name="exterminate" value="exterminate"/> 
 		</spinner>
 
-		<spinner description="Here you can set the level of 'low mem management' by kernel lowmemkiller function. More aggressive equals more free RAM but more killed apps." name="OOM Level Tuning - screen off" action="oom_config_screen_off">
+		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function. More aggressive equals more free RAM but more killed apps." name="OOM Level Tuning - screen off" action="oom_config_screen_off">
 			<spinnerItem name="light" value="light"/> 
 			<spinnerItem name="low" value="low"/> 
 			<spinnerItem name="medium" value="medium"/> 
@@ -390,7 +390,7 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<checkbox description="Enable or Disable 'Ultra KSM Control'. This will merge some memory but need cpu-power + battery. This depends on cortex background, so you have to stop and start the servive or reboot your phone." name="Ultra KSM Control" action="generic_cortex /tmp/cortexbrain_uksm_control" label="Ultra KSM Control"/>
+		<checkbox description="Enable or Disable Ultra KSM Control. This will merge some memory but need cpu-power + battery. This depends on cortex background, so you have to stop and start the servive or reboot your phone." name="Ultra KSM Control" action="generic_cortex /tmp/cortexbrain_uksm_control" label="Ultra KSM Control"/>
 
 		<button description="Ultra KSM state check" name="Ultra KSM STATS" action="push-actions/uksmstats" label="Ultra KSM STATS"/>
 
@@ -401,9 +401,9 @@
 <settingsTab name="GPU">
 	<settingsPane description="GPU Frequency, voltage, and steps utilization settings. Defaults frequencies are 108, 160, 200, 267 and 267. Voltage defaults are 900mV, 950mV, 1000mV, 1050mV and 1050mV." name="GPU Control">
 
-		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you don't use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
+		<checkbox description="Enabling VPLL mode may be unstable on some devices so do not complain if your device lags or crashes (SOD). If you do not use VPLL Mode, the following frequency steps will be unavailable: 330, 440, 520. VPLL is a new frqeuency range to give some users more GPU performance. USE AT YOUR OWN RISK!" name="VPLL Mode" action="generic01 /sys/module/mali/parameters/mali_use_vpll" label="VPLL Mode"/>
 
-		<seekBar description="Here you can change GPU utilization timeout calculation. Closer to 100 (0.1sec) and you'll get faster GPU response in steps jump on load, but more battery is drained. CM10 default: 1000 (1sec)" name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout" unit="MSec" min="100" reversed="false" step="50" max="1000"/>
+		<seekBar description="Here you can change GPU utilization timeout calculation. Closer to 100 (0.1sec) and you will get faster GPU response in steps jump on load, but more battery is drained. CM10 default: 1000 (1sec)" name="GPU Utilization Timeout" action="generic /sys/module/mali/parameters/mali_gpu_utilization_timeout" unit="MSec" min="100" reversed="false" step="50" max="1000"/>
 
 		<spinner description="Changes the first (lowest) GPU frequency step" name="GPU Frequency Step 1" action="gpu-freq 1">
 			<spinnerItem name="267 MHz" value="267"/> 
@@ -531,17 +531,17 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can control kernel screen gestures, set at 'data - gesture_set.sh'. More can be added by user. This tweak depends on cortex background service to be enabled." name="Gestures panel">
+	<settingsPane description="Here you can control kernel screen gestures, set at data - gesture_set.sh. More can be added by user. This tweak depends on cortex background service to be enabled." name="Gestures panel">
 
 		<checkbox description="Here you can turn on or off kernel built in gestures! See OP for instructions or ask in forum." name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="Gestures switch"/>
 
-		<button description="Click to reset gestures to default, or update with new one from dev. Gesture file will be added to 'data' only if it is missing." name="Reset gestures" action="push-actions/reset_gestures" label="Reset Gestures"/>
+		<button description="Click to reset gestures to default, or update with new one from dev. Gesture file will be added to data only if it is missing." name="Reset gestures" action="push-actions/reset_gestures" label="Reset Gestures"/>
 
 	</settingsPane>
 
 	<settingsPane description="Touchscreen configuration on battery and on charge. !ALERT! Wrong settings will disable touch screen! You will have to reset profiles in recovery! Also, settings for battery and charger are different! Do not set the same levels! Have fun tuning." name="Touch screen MX224 sensitivity">
 
-		<button description="Click to see your touch screen type and active touch configuration, it's can be TSP MX224 or MX224E, so if you want to configure, do it for your type." name="Check Touch Screen info" action="push-actions/screen_type_check" label="Check Touch Screen"/>
+		<button description="Click to see your touch screen type and active touch configuration, it is can be TSP MX224 or MX224E, so if you want to configure, do it for your type." name="Check Touch Screen info" action="push-actions/screen_type_check" label="Check Touch Screen"/>
 
 		<seekBar description="MX224 Touchscreen on BATTERY (Touch Threshold) (Default: 50)" name="BATT Touch Treshold" action="touch_screen_tweak 1" unit="" min="30" reversed="false" step="1" max="70"/>
 
@@ -574,7 +574,7 @@
 
 	<settingsPane description="JB ROM low sound bug fix on boot" name="LOW SOUND FIX">
 
-		<checkbox description="Dirty Hack for JB ROM low Sound after boot. This patch will push the Vol DOWN and Vol UP for you on boot, and fix the low sound or ring every boot. You will see the volume slider moving! That is how it's fixed. Also it will reset the silence state if it's was set before boot. If you have an ICS ROM, just ignore this, it will not be used, ICS ROMs don't have the bug. Fix is OFF by default, if you set ON, effect will be on boot only." name="JB low sound fix on boot" action="generic_cortex /tmp/jb_sound_fix" label="JB low sound fix on boot"/>
+		<checkbox description="Dirty Hack for JB ROM low Sound after boot. This patch will push the Vol DOWN and Vol UP for you on boot, and fix the low sound or ring every boot. You will see the volume slider moving! That is how it is fixed. Also it will reset the silence state if it was set before boot. If you have an ICS ROM, just ignore this, it will not be used, ICS ROMs do not have the bug. Fix is OFF by default, if you set ON, effect will be on boot only." name="JB low sound fix on boot" action="generic_cortex /tmp/jb_sound_fix" label="JB low sound fix on boot"/>
 
 	</settingsPane>
 
@@ -631,7 +631,7 @@
 
 	<settingsPane description="Touch keys light settings. Here you can set the way touch keys light work." name="Touch keys lights settings">
 
-		<spinner description="LED timeout. Select 'Use ROM defaults' if your ROM already has LED timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use LED fadeout effect." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
+		<spinner description="LED timeout. Select Use ROM defaults if your ROM already has LED timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use LED fadeout effect." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
 			<spinnerItem name="Use ROM defaults (disabled)" value="0"/> 
 			<spinnerItem name="No timeout" value="9999999"/> 
 			<spinnerItem name="1 sec" value="1000"/> 
@@ -667,13 +667,13 @@
 			<spinnerItem name="Cron OFF" value="off"/> 
 		</spinner>
 
-		<button description="Use this button to test if this 'Cron Task service' is ONLINE and supported! If main switch is ON, and service is OFFLINE, then ROM Busybox is not supporting Cron. Update Busybox or ROM for this to work." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
+		<button description="Use this button to test if this Cron Task service is ONLINE and supported! If main switch is ON, and service is OFFLINE, then ROM Busybox is not supporting Cron. Update Busybox or ROM for this to work." name="Test Cron Task Service" action="push-actions/crontab_test" label="Test Cron Task Service"/>
 
 		<button description="Use this button to RESET the scripts and jobs from kernel, to refresh the configuration. This will clear all your custom changes!" name="CRON RESET" action="push-actions/crontab_reset" label="RESET CRON"/>
 
 		<checkbox description="Cron to clear file-cache every hour, but only if CPU is resting (IDLE) and more than 50% of your memory is used! This will free RAM from unused buffers and cache." name="Clean file-cache" action="generic_cortex /tmp/cron_drop_cache" label="RAM cache clean every Hour"/>
 
-		<checkbox description="Cron to update AD-BLOCKER every week at SAT 6:00AM UTC time, from official site. The script will check, if you are connected with the internet, otherwise it will try to use WIFI! Script will turn wifi, wait for connection and update, then when it's finished it will turn WIFI off. If there's no connection, an error will be written in the log." name="Update AD-Block" action="generic_cortex /tmp/ad_block_update" label="Update AD-BLOCKER every week"/>
+		<checkbox description="Cron to update AD-BLOCKER every week at SAT 6:00AM UTC time, from official site. The script will check, if you are connected with the internet, otherwise it will try to use WIFI! Script will turn wifi, wait for connection and update, then when it is finished it will turn WIFI off. If there is no connection, an error will be written in the log." name="Update AD-Block" action="generic_cortex /tmp/ad_block_update" label="Update AD-BLOCKER every week"/>
 
 		<checkbox description="Cron to DB Optimize every day at 3:00AM, only if CPU is resting (IDLE)!" name="DB Optimization" action="generic_cortex /tmp/cron_db_optimizing" label="DB Optimization task every day at 3:00AM"/>
 
@@ -681,7 +681,7 @@
 
 		<checkbox description="Cron to fix app-permissions every day at 4:40AM, only if CPU is resting (IDLE)! This can help to reduce errors, bugs, and applications FC." name="Fix app-permissions" action="generic_cortex /tmp/cron_fix_permissions" label="Permissions fix every day at 4:40AM"/>
 
-		<checkbox description="Cron to zipalign app's every day at 4:50AM, only if CPU is resting (IDLE)! This can help to reduce errors, bugs, applications FC, and improve applications load speed. WARNING! Bakcup all apps before use! This process will remove apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing! USE it AT YOUR OWN RISK and update the broken applications!" name="Zipalign Task" action="generic_cortex /tmp/cron_zipalign" label="Zipalign Task Every day at 4:50AM"/>
+		<checkbox description="Cron to zipalign app is every day at 4:50AM, only if CPU is resting (IDLE)! This can help to reduce errors, bugs, applications FC, and improve applications load speed. WARNING! Bakcup all apps before use! This process will remove apps that are BROKEN and not compressed or compiled correctly, so you may find some apps missing! USE it AT YOUR OWN RISK and update the broken applications!" name="Zipalign Task" action="generic_cortex /tmp/cron_zipalign" label="Zipalign Task Every day at 4:50AM"/>
 
 		<button description="Use this button to check if Cron Task Jobs are done as requested. This will show the log for all finished jobs." name="Test Cron Task jobs" action="push-actions/crontab_log" label="Test Cron Task Jobs"/>
 
@@ -689,11 +689,11 @@
 
 	<settingsPane description="Here you can find some settings and options for your apps." name="Apps">
 
-		<button description="Push to Reinstall or Update STweaks app. Here you can Reinstall or Update your STweak app to one that's added in the kernel. It will be installed to 'system' and if you had STweaks in 'data', it will be removed. Application will close and you'll have it back from kernel in 5sec." name="STweaks Reinstall or Update" action="push-actions/stweaks_update" label="STweaks Reinstall or Update"/>
+		<button description="Push to Reinstall or Update STweaks app. Here you can Reinstall or Update your STweak app to one that is added in the kernel. It will be installed to system and if you had STweaks in data, it will be removed. Application will close and you will have it back from kernel in 5sec." name="STweaks Reinstall or Update" action="push-actions/stweaks_update" label="STweaks Reinstall or Update"/>
 
 		<button description="Click here to start fixing. Here you can run Fix Permissions, please click one time only, scripts will finish in max 2~3min, no reboot is needed." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
-		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it's OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
+		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it is OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>
 
 		<button description="Click here to start applications Database Optimization. Compacting, cleaning and indexing will take max 2min." name="DB OPTIMIZATION" action="push-actions/database_optimizing" label="DATABASE OPTIMIZATON"/>
 
@@ -752,7 +752,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can Add, Update or Remove AD Blocker! You need ROOT to do the tweak! If you want to update the blocker, you can push the 'UPDATE AD NOW' button, to get the new one installed! If you install a new ROM, and you want to use AD BLOCKER, then push 'UPDATE AD NOW' and REBOOT. If you need to REMOVE AD-BLOCKER use the REMOVE button and REBOOT" name="AD Blocker">
+	<settingsPane description="Here you can Add, Update or Remove AD Blocker! You need ROOT to do the tweak! If you want to update the blocker, you can push the UPDATE AD NOW button, to get the new one installed! If you install a new ROM, and you want to use AD BLOCKER, then push UPDATE AD NOW and REBOOT. If you need to REMOVE AD-BLOCKER use the REMOVE button and REBOOT" name="AD Blocker">
 
 		<button description="ADD or UPDATE AD BLOCKER" name="AD-B UPDATE or ADD" action="push-actions/ad_update" label="UPDATE AD-B NOW"/>
 
@@ -774,7 +774,7 @@
 
 	<settingsPane description="Fixes file system only if needed!" name="FS">
 
-		<button description="DATA and CACHE file system check and repair on boot. !WARNING! This is a VERY DANGEROUS option! Before activating it DO A FULL BACKUP with Titanium Backup or any kind of backup application! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still can't boot, you will have to format DATA file system via recovery! USE IT AT YOUR OWN RISK! THIS FUNCTION IS NOT A TOY! YOU HAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it's OFF. It's also one time action, push the button to Activate, push again to Abort!" name="FIX File System on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON or OFF"/>
+		<button description="DATA and CACHE file system check and repair on boot. !WARNING! This is a VERY DANGEROUS option! Before activating it DO A FULL BACKUP with Titanium Backup or any kind of backup application! If you have lots of damage in your DATA partition, after fix and repair, ROM may NOT BOOT anymore! In that case reinstall ROM, and if you still cannot boot, you will have to format DATA file system via recovery! USE IT AT YOUR OWN RISK! THIS FUNCTION IS NOT A TOY! YOU HAVE BEEN WARNED! This function works only for main ROM, second ROM gets no effect and by default it is OFF. It is also one time action, push the button to Activate, push again to Abort!" name="FIX File System on BOOT" action="push-actions/fix_fs_on_boot" label="FIX DATA ON or OFF"/>
 
 		<button description="Clean the media cache on your sdcard. Push once to clean, push again to abort. You have to reboot for action to work!" name="Clean media-cache" action="push-actions/fix_media" label="FIX MEDIA ON or OFF"/>
 
@@ -784,7 +784,7 @@
 
 		<button description="Root Install. Click to install ROOT (SuperUser) + ROM Busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! This function depends on CORTEX process to be enabled!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
 
-		<button description="Root Uninstall. Click to remove Any ROOT installed + Busybox (kernel's Busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
+		<button description="Root Uninstall. Click to remove Any ROOT installed + Busybox (kernel Busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
 
 		<button description="Root check. Click to see if you have ROOT or not" name="ROOT Check" action="push-actions/root_check" label="ROOT CHECK"/>
 
@@ -796,44 +796,44 @@
 
 <settingsTab name="Tweaks">
 
-	<settingsPane description="This script will manipulate many kernel settings, based on chosen STweaks profile + settings and on screen state (ON or OFF) and we call it 'CortexBrain'. To reset the kernel-settings, after you disable a tweak, you must reboot!" name="CortexBrain  Tweaks">
+	<settingsPane description="This script will manipulate many kernel settings, based on chosen STweaks profile + settings and on screen state (ON or OFF) and we call it CortexBrain. To reset the kernel-settings, after you disable a tweak, you must reboot!" name="CortexBrain  Tweaks">
 
-		<spinner description="Enable or Disable the 'background-process' from 'CortexBrain'. If you disable it, you will lose the function that set different settings for screen state (ON or OFF)." name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
+		<spinner description="Enable or Disable the background-process from CortexBrain. If you disable it, you will lose the function that set different settings for screen state (ON or OFF)." name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
 			<spinnerItem name="Enable" value="1"/> 
 			<spinnerItem name="Disable" value="0"/> 
 		</spinner>
 
-		<button description="Click to see if the 'CortexBrain-Background-Process' is running or not." name="Check Background-Process" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
+		<button description="Click to see if the CortexBrain-Background-Process is running or not." name="Check Background-Process" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<spinner description="Here you can control android logger 'logcat'. If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. If USB or Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Android Logger control" action="android_logger">
+		<spinner description="Here you can control android logger logcat. If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. If USB or Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Android Logger control" action="android_logger">
 			<spinnerItem name="AUTO" value="auto"/> 
 			<spinnerItem name="DEBUG" value="debug"/> 
 			<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable the 'DATA turns off while screen is off' function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Auto-DATA" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile" label="Force Auto-Data"/>
+		<checkbox description="Enable or Disable the DATA turns off while screen is off function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Auto-DATA" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile" label="Force Auto-Data"/>
 
-		<seekBar description="Here you can set a delay before DATA is forced to OFF when screen is turned off. Works only if 'Auto-DATA' is Enabled! (dynamic by cortex)." name="DATA Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
+		<seekBar description="Here you can set a delay before DATA is forced to OFF when screen is turned off. Works only if Auto-DATA is Enabled! (dynamic by cortex)." name="DATA Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
 
-		<checkbox description="Enable or Disable the 'Wifi turns off while screen is off' function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+		<checkbox description="Enable or Disable the Wifi turns off while screen is off function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-		<seekBar description="Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if 'Auto-Wifi' is Enabled! (dynamic by cortex)." name="WIFI Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
+		<seekBar description="Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if Auto-Wifi is Enabled! (dynamic by cortex)." name="WIFI Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
 
-		<checkbox description="Enable or Disable 'ICMP only Firewall-Tweaks' (reboot needed)." name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
+		<checkbox description="Enable or Disable ICMP only Firewall-Tweaks (reboot needed)." name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'TCP-Tweaks' (reboot needed)." name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
+		<checkbox description="Enable or Disable TCP-Tweaks (reboot needed)." name="TCP-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp" label="TCP-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'TCP-RAM-Tweaks' (reboot needed)." name="TCP-RAM-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp_ram" label="TCP-RAM-Tweaks"/>
+		<checkbox description="Enable or Disable TCP-RAM-Tweaks (reboot needed)." name="TCP-RAM-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp_ram" label="TCP-RAM-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'IPv6 Network'. (dynamic by cortex)." name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/>
+		<checkbox description="Enable or Disable IPv6 Network. (dynamic by cortex)." name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/>
 
-		<checkbox description="Enable or Disable 'CPU-Tweaks' (dynamic by cortex)." name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
+		<checkbox description="Enable or Disable CPU-Tweaks (dynamic by cortex)." name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'Memory-Tweaks' (reboot needed)." name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
+		<checkbox description="Enable or Disable Memory-Tweaks (reboot needed)." name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'Battery-Tweaks' (reboot needed)." name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
+		<checkbox description="Enable or Disable Battery-Tweaks (reboot needed)." name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'Eco-Tweaks' (reboot needed)." name="Eco-Tweaks" action="generic_cortex /tmp/cortexbrain_eco" label="Eco-Tweaks"/>
+		<checkbox description="Enable or Disable Eco-Tweaks (reboot needed)." name="Eco-Tweaks" action="generic_cortex /tmp/cortexbrain_eco" label="Eco-Tweaks"/>
 
 		<spinner description="From what percentage battery life, the eco-mode is activated? Depends on Eco-Tweaks!" name="Eco-Level" action="generic_cortex /tmp/cortexbrain_eco_level">
 			<spinnerItem name="2%" value="2"/> 
@@ -845,11 +845,11 @@
 			<spinnerItem name="50%" value="50"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable 'System-Tweak' (reboot needed)." name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
+		<checkbox description="Enable or Disable System-Tweak (reboot needed)." name="System-Tweaks" action="generic_cortex /tmp/cortexbrain_system" label="System-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'Kernel-Tweaks' (reboot needed)." name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
+		<checkbox description="Enable or Disable Kernel-Tweaks (reboot needed)." name="Kernel-Tweaks" action="generic_cortex /tmp/cortexbrain_kernel_tweaks" label="Kernel-Tweaks"/>
 
-		<checkbox description="Enable or Disable 'IO-Tweaks' (reboot needed)." name="IO-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="IO-Tweaks"/>
+		<checkbox description="Enable or Disable IO-Tweaks (reboot needed)." name="IO-Tweaks" action="generic_cortex /tmp/cortexbrain_io" label="IO-Tweaks"/>
 
 	</settingsPane>
 
@@ -917,9 +917,9 @@
 
 		<button description="Reboot into 2nd ROM" name="Reboot into 2nd ROM" action="reboot-into 2" label="Reboot into 2nd ROM"/>
 
-		<checkbox description="Check this if you don't want boot logo to be shown. If this options is checked boot logo will not be shown even if you have 2ndROM installed." name="No boot-logo" action="no-boot-logo" label="No boot-logo"/>
+		<checkbox description="Check this if you do not want boot logo to be shown. If this options is checked boot logo will not be shown even if you have 2ndROM installed." name="No boot-logo" action="no-boot-logo" label="No boot-logo"/>
 
-		<spinner description="Default ROM to boot into. If you don't have 2nd ROM installed, 1st ROM will be booted. If you press the home or volume-down buttons during the boot logo the alternative ROM will be booted, i.e. 1st ROM will be booted if the default ROM selection is the 2nd ROM." name="Default ROM" action="defaultrom">
+		<spinner description="Default ROM to boot into. If you do not have 2nd ROM installed, 1st ROM will be booted. If you press the home or volume-down buttons during the boot logo the alternative ROM will be booted, i.e. 1st ROM will be booted if the default ROM selection is the 2nd ROM." name="Default ROM" action="defaultrom">
 			<spinnerItem name="1stROM" value="0"/> 
 			<spinnerItem name="2ndROM" value="1"/> 
 		</spinner>
@@ -930,19 +930,19 @@
 
 <settingsTab name="BUG-REPORT">
 
-	<settingsPane description="Debug to SD-Card 'sdcard'" name="Bug-Report">
+	<settingsPane description="Debug to SD-Card sdcard" name="Bug-Report">
 
 		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
 
 		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
 
-		<button description="Bug-Report after kernel crash!, use this to report sods or random restarts, if you had to push power key for 10sec to reset or after a random reboot. In case phone lost power!, then no log exist!, debug log will be stored to 'SDCARD dorimanx_last_kmsg_log', upload it to forum, it's can help us to resovle SODs/Reboots bugs" name="LAST_KERNEL_LOG" action="push-actions/last_kmsg" label="LAST_KMSG_LOG"/>
+		<button description="Bug-Report after kernel crash!, use this to report sods or random restarts, if you had to push power key for 10sec to reset or after a random reboot. In case phone lost power!, then no log exist!, debug log will be stored to SDCARD dorimanx_last_kmsg_log, upload it to forum, it is can help us to resovle SODs/Reboots bugs" name="LAST_KERNEL_LOG" action="push-actions/last_kmsg" label="LAST_KMSG_LOG"/>
 
 	</settingsPane>
 
 	<settingsPane description="Show Storage status, you can see if you have errors in system, data, cache, efs or preloaded partitions, this will only SHOW if all OK, or there are errors! will not fix them." name="Partitions Scan">
 
-		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button located at OTHER TAB. USE IT AT YOUR OWN RISK! Some data will be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install thr ROM again! It's BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
+		<button description="Use this to check your data, system, cache, efs, and preloaded partitions for errors. This will not FIX any errors, just check! To fix, backup your files with some backups app, then push the data and cache fix button located at OTHER TAB. USE IT AT YOUR OWN RISK! Some data will be lost! You will need to restore broken apps + data, in case of boot loop, then reinstall ROM. If you are still stuck on boot, wipe and install thr ROM again! It is BETTER to have a clean partition then broken and unstable system." name="Partition Status" action="push-actions/partitions_scan" label="Partition Status"/>
 
 	</settingsPane>
 
