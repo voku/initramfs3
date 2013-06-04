@@ -200,7 +200,6 @@
 
 		<seekBar description="Threshold run queue length for second core to turn off. (Only for PegasusQ) (Default: 100)" name="hotplug_rq_snd" action="generic_cortex /tmp/hotplug_rq_snd" unit=" queue length" min="100" reversed="false" step="10" max="600"/>
 
-
 	</settingsPane>
 
 </settingsTab>
