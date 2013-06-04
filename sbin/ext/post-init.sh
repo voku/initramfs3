@@ -295,6 +295,11 @@ chmod 666 /tmp/uci_done;
 		touch /data/dalvik-cache/not_first_boot;
 		chmod 777 /data/dalvik-cache/not_first_boot;
 	fi;
+
+	# ROOTBOX fix notification_wallpaper
+	if [ -e /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg ]; then
+		chmod 777 /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg
+	fi;
 )&
 
 (
@@ -310,6 +315,8 @@ chmod 666 /tmp/uci_done;
 	chmod 777 /data/.siyah/booting;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	nohup $BB sh /res/uci.sh restore;
+	UCI_PID=`pgrep -f "/res/uci.sh"`;
+	echo "-1000" > /proc/$UCI_PID/oom_score_adj;
 	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location

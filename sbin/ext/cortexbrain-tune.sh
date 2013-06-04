@@ -38,8 +38,8 @@ PROFILE=$(cat ${DATA_DIR}/.active.profile);
 . ${DATA_DIR}/${PROFILE}.profile;
 
 # set initial vm.dirty vales
-echo "1000" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
+echo "200" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "500" > /proc/sys/vm/dirty_expire_centisecs;
 
 # check if dumpsys exist in ROM
 if [ -e /system/bin/dumpsys ]; then
