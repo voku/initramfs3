@@ -10,11 +10,11 @@ $BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
 $BB chmod 444 /sys/module/lowmemorykiller/parameters/adj;
 $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 
+# protect init from oom
+echo "-1000" > /proc/1/oom_score_adj;
+
 # set default JB mmap_min_addr value
 echo "32768" > /proc/sys/vm/mmap_min_addr;
-
-# protect init from oom
-echo "-1000" > /proc/1/oom_score_adj; # -1000 = -17
 
 PIDOFINIT=`pgrep -f "/sbin/ext/post-init.sh"`;
 for i in $PIDOFINIT; do
@@ -106,17 +106,17 @@ if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ] && [ "$VDD_INT" !
 		$BB sh /res/uci.sh cpu-voltage 15 975;
 		$BB sh /res/uci.sh cpu-voltage 16 975;
 	elif [ "$VDD_INT" == "5" ]; then
-		$BB sh /res/uci.sh cpu-voltage 1 1325;
-		$BB sh /res/uci.sh cpu-voltage 2 1300;
-		$BB sh /res/uci.sh cpu-voltage 3 1275;
-		$BB sh /res/uci.sh cpu-voltage 4 1250;
-		$BB sh /res/uci.sh cpu-voltage 5 1225;
-		$BB sh /res/uci.sh cpu-voltage 6 1175;
-		$BB sh /res/uci.sh cpu-voltage 7 1125;
-		$BB sh /res/uci.sh cpu-voltage 8 1075;
-		$BB sh /res/uci.sh cpu-voltage 9 1025;
-		$BB sh /res/uci.sh cpu-voltage 10 1000;
-		$BB sh /res/uci.sh cpu-voltage 11 975;
+		$BB sh /res/uci.sh cpu-voltage 1 1400;
+		$BB sh /res/uci.sh cpu-voltage 2 1375;
+		$BB sh /res/uci.sh cpu-voltage 3 1300;
+		$BB sh /res/uci.sh cpu-voltage 4 1275;
+		$BB sh /res/uci.sh cpu-voltage 5 1250;
+		$BB sh /res/uci.sh cpu-voltage 6 1200;
+		$BB sh /res/uci.sh cpu-voltage 7 1150;
+		$BB sh /res/uci.sh cpu-voltage 8 1100;
+		$BB sh /res/uci.sh cpu-voltage 9 1050;
+		$BB sh /res/uci.sh cpu-voltage 10 1025;
+		$BB sh /res/uci.sh cpu-voltage 11 1000;
 		$BB sh /res/uci.sh cpu-voltage 12 950;
 		$BB sh /res/uci.sh cpu-voltage 13 950;
 		$BB sh /res/uci.sh cpu-voltage 14 950;
@@ -133,6 +133,11 @@ elif [ -e /system/bin/su ]; then
 	chmod 6755 /system/xbin/su;
 else
 	echo "ROM without ROOT";
+fi;
+
+# busybox addons
+if [ -e /system/xbin/busybox ]; then
+	ln -s /system/xbin/busybox /sbin/ifconfig;
 fi;
 
 ######################################
@@ -173,6 +178,8 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh;
+CORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
+echo "-1000" > /proc/$CORTEX/oom_score_adj;
 
 # enable screen color mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
@@ -288,6 +295,11 @@ chmod 666 /tmp/uci_done;
 		touch /data/dalvik-cache/not_first_boot;
 		chmod 777 /data/dalvik-cache/not_first_boot;
 	fi;
+
+	# ROOTBOX fix notification_wallpaper
+	if [ -e /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg ]; then
+		chmod 777 /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg
+	fi;
 )&
 
 (
@@ -303,6 +315,8 @@ chmod 666 /tmp/uci_done;
 	chmod 777 /data/.siyah/booting;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	nohup $BB sh /res/uci.sh restore;
+	UCI_PID=`pgrep -f "/res/uci.sh"`;
+	echo "-1000" > /proc/$UCI_PID/oom_score_adj;
 	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location

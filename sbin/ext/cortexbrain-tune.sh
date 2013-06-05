@@ -38,8 +38,8 @@ PROFILE=$(cat ${DATA_DIR}/.active.profile);
 . ${DATA_DIR}/${PROFILE}.profile;
 
 # set initial vm.dirty vales
-echo "1000" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "3000" > /proc/sys/vm/dirty_expire_centisecs;
+echo "200" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "500" > /proc/sys/vm/dirty_expire_centisecs;
 
 # check if dumpsys exist in ROM
 if [ -e /system/bin/dumpsys ]; then
@@ -88,7 +88,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "512" > $i/queue/nr_requests; # default: 128
+				echo "128" > $i/queue/nr_requests; # default: 128
 			fi;
 		done;
 
@@ -142,23 +142,23 @@ KERNEL_TWEAKS()
 
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
 		if [ "${state}" == "awake" ]; then
-			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
 			echo "60" > /proc/sys/kernel/panic;
 			if [ "$cortexbrain_memory" == on ]; then
 				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 			fi;
 		elif [ "${state}" == "sleep" ]; then
-			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
-			echo "1" > /proc/sys/vm/panic_on_oom;
+			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/panic_on_oom;
 			echo "30" > /proc/sys/kernel/panic;
 			if [ "$cortexbrain_memory" == on ]; then
 				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 			fi;
 		else
-			echo "1" > /proc/sys/vm/oom_kill_allocating_task;
+			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "120" > /proc/sys/kernel/panic;
+			echo "60" > /proc/sys/kernel/panic;
 		fi;
 
 #		echo "8192" > /proc/sys/kernel/msgmax;
@@ -402,6 +402,14 @@ CPU_GOV_TWEAKS()
 		if [ ! -e $freq_for_calc_decr_tmp ]; then
 			freq_for_calc_decr_tmp="/dev/null";
 		fi;
+		local up_sf_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_sf_step";
+		if [ ! -e $up_sf_step_tmp ]; then
+			up_sf_step_tmp="/dev/null";
+		fi;
+		local down_sf_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_sf_step";
+		if [ ! -e $down_sf_step_tmp ]; then
+			down_sf_step_tmp="/dev/null";
+		fi;
 		local inc_cpu_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load";
 		if [ ! -e $inc_cpu_load_tmp ]; then
 			inc_cpu_load_tmp="/dev/null";
@@ -457,6 +465,8 @@ CPU_GOV_TWEAKS()
 			echo "$freq_for_responsiveness_max_sleep" > $freq_for_responsiveness_max_tmp;
 			echo "$freq_for_calc_incr_sleep" > $freq_for_calc_incr_tmp;
 			echo "$freq_for_calc_decr_sleep" > $freq_for_calc_decr_tmp;
+			echo "$up_sf_step_sleep" > $up_sf_step_tmp;
+			echo "$down_sf_step_sleep" > $down_sf_step_tmp;
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq_sleep" > $freq_up_brake_at_min_freq_tmp;
@@ -499,6 +509,8 @@ CPU_GOV_TWEAKS()
 			echo "$freq_for_responsiveness_max" > $freq_for_responsiveness_max_tmp;
 			echo "$freq_for_calc_incr" > $freq_for_calc_incr_tmp;
 			echo "$freq_for_calc_decr" > $freq_for_calc_decr_tmp;
+			echo "$up_sf_step" > $up_sf_step_tmp;
+			echo "$down_sf_step" > $down_sf_step_tmp;
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq" > $freq_up_brake_at_min_freq_tmp;
@@ -542,7 +554,7 @@ MEMORY_TWEAKS()
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "1" > /proc/sys/vm/overcommit_memory; # default: 0
+		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
 		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
@@ -1015,6 +1027,7 @@ SWAPPINESS()
 
 	log -p i -t $FILE_NAME "*** SWAPPINESS: $swappiness ***";
 }
+SWAPPINESS;
 
 # disable/enable ipv6  
 IPV6()
@@ -1054,23 +1067,23 @@ NET()
 	log -p i -t $FILE_NAME "*** NET ***: ${state}";	
 }
 
-KERNEL_SCHED()
-{
-	local state="$1";
+#KERNEL_SCHED()
+#{
+#	local state="$1";
 
 	# this is the correct order to input this settings, every value will be x2 after set
-	if [ "${state}" == "awake" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
-	elif [ "${state}" == "sleep" ]; then
-		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
-		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
-	fi;
+#	if [ "${state}" == "awake" ]; then
+#		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
+#	elif [ "${state}" == "sleep" ]; then
+#		sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null 2>&1;
+#		sysctl -w kernel.sched_latency_ns=6000000 > /dev/null 2>&1;
+#	fi;
 
-	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
-}
+#	log -p i -t $FILE_NAME "*** KERNEL_SCHED ***: ${state}";
+#}
 
 BLN_CORRECTION()
 {
@@ -1224,7 +1237,7 @@ AWAKE_MODE()
 
 		BUS_THRESHOLD "wake_boost";
 
-		KERNEL_SCHED "awake";
+#		KERNEL_SCHED "awake";
 
 		KERNEL_TWEAKS "awake";
 
@@ -1344,7 +1357,7 @@ SLEEP_MODE()
 
 			BUS_THRESHOLD "sleep";
 
-			KERNEL_SCHED "sleep";
+#			KERNEL_SCHED "sleep";
 
 			UKSMCTL "sleep";
 

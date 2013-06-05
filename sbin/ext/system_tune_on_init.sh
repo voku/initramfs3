@@ -15,7 +15,7 @@ mount -o remount,rw /;
 
 # remount all partitions tweked settings
 for m in $(mount | grep ext[3-4] | cut -d " " -f1); do
-	mount -o remount,rw,noatime,nodiratime,noauto_da_alloc,discard,barrier=1,commit=10 $m;
+	mount -o remount,rw,noatime,nodiratime,noauto_da_alloc,discard,barrier=1 $m;
 done;
 
 # cleaning
