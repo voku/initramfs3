@@ -3,39 +3,44 @@
 # $1 - "oom_config_screen_off"
 # $2 - value=
 
-if [ "a$2" != "a" ]; then
-	oom_config_screen_off=$2;
+PROFILE=$(cat /data/.siyah/.active.profile);
+. /data/.siyah/${PROFILE}.profile;
 
-	case "${oom_config_screen_off}" in
-		light)
-			echo "512,1024,1280,2048,8192,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "64" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
-		low)
-			echo "1024,2048,2560,4096,8192,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
-		medium)
-			echo "1024,2048,4096,8192,10240,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
-		default)
-			echo "1024,2048,4096,8192,12288,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
-		aggressive)
-			echo "2048,4096,8192,16384,24576,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "16" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
-		exterminate)
-			echo "4096,8192,16384,19200,21760,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "8" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
-		*)
-			oom_config_screen_off=medium;
-		;;
-	esac;
+if [ "$auto_oom" == 1 ]; then
+	if [ "a$2" != "a" ]; then
+		oom_config_screen_off=$2;
+
+		case "${oom_config_screen_off}" in
+			light)
+				echo "1024,1024,1280,2048,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+				echo "64" > /sys/module/lowmemorykiller/parameters/cost;
+			;;
+			low)
+				echo "1024,2048,2560,4096,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+				echo "32" > /sys/module/lowmemorykiller/parameters/cost;
+			;;
+			medium)
+				echo "1024,2048,4096,8192,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+				echo "32" > /sys/module/lowmemorykiller/parameters/cost;
+			;;
+			default)
+				echo "1024,2048,4096,8192,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+				echo "32" > /sys/module/lowmemorykiller/parameters/cost;
+			;;
+			aggressive)
+				echo "2048,4096,8192,16384,24576,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+				echo "16" > /sys/module/lowmemorykiller/parameters/cost;
+			;;
+			exterminate)
+				echo "4096,8192,16384,19200,21760,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+				echo "8" > /sys/module/lowmemorykiller/parameters/cost;
+			;;
+			*)
+				oom_config_screen_off=medium;
+			;;
+		esac;
+	fi;
+
+	echo ${oom_config_screen_off};
 fi;
-
-echo ${oom_config_screen_off};
 

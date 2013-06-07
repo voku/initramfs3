@@ -13,9 +13,6 @@ $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 # protect init from oom
 echo "-1000" > /proc/1/oom_score_adj;
 
-# set default JB mmap_min_addr value
-echo "32768" > /proc/sys/vm/mmap_min_addr;
-
 # set sysrq to 2 = enable control of console logging level as with CM-KERNEL
 echo "2" > /proc/sys/kernel/sysrq;
 

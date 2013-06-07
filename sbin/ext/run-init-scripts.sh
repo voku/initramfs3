@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-BB="/sbin/busybox";
+BB=/sbin/busybox
 
 if [ -d /system/etc/init.d ]; then
 	chmod 755 /system/etc/init.d/*;
