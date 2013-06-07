@@ -665,7 +665,8 @@ UKSMCTL()
 			log -p i -t $FILE_NAME "*** uksm: awake, sleep=5sec, max_cpu=85%, cpu=full ***";
 			renice -n 10 -p "$(pidof uksmd)";
 		elif [ "${state}" == "sleep" ]; then
-			echo "5000" > /sys/kernel/mm/uksm/sleep_millisecs;
+			# max sleep_millisecs is 1000msec
+			echo "1000" > /sys/kernel/mm/uksm/sleep_millisecs;
 			echo "low" > /sys/kernel/mm/uksm/cpu_governor;
 			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=10sec, max_cpu=20%, cpu=low ***";
 		fi;
