@@ -13,7 +13,9 @@
 	MEM_FREE_AFTER=`free | grep Mem | awk '{ print $4 }'`;
 	CALC_MEM_AFTER=`echo $(($MEM_FREE_AFTER/1024))M`;
 	echo "FREE AFTER $CALC_MEM_AFTER" >> /tmp/ram_clean;
-	RAM_LOG=`cat /tmp/ram_clean`;
-	echo "$RAM_LOG";
 )&
+
+sleep 3;
+RAM_LOG=`cat /tmp/ram_clean`;
+echo "$RAM_LOG";
 

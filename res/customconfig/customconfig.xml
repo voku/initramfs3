@@ -367,7 +367,7 @@
 
 		<seekBar description="Dirty real time memory buffer, more you set, more memory will be used for write buffer for real time operations. Buffer is released on need to free RAM (Default: 20%)" name="Dirty ratio" action="generic /proc/sys/vm/dirty_ratio" unit="%" min="5" reversed="false" step="5" max="90"/>
 
-		<button description="Clean RAM Cache. This will release all cached and buffered RAM" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
+		<button description="Clean RAM Cache. This will release all cached and buffered RAM, please WAIT 3sec to get cleanup report" name="CLEAN RAM CACHE" action="push-actions/clean_ram_cache" label="CLEAN RAM CACHE NOW"/>
 
 		<spinner description="ZRAM Module settings. Here you can shut down ZRAM or add more compressed RAM for your system." name="ZRAM Settings" action="zramtweaks">
 			<spinnerItem name="Set ZRAM to 150MB" value="1"/> 
@@ -387,7 +387,6 @@
 			<spinnerItem name="70" value="70"/> 
 			<spinnerItem name="80" value="80"/> 
 			<spinnerItem name="90" value="90"/> 
-			<spinnerItem name="100" value="100"/> 
 		</spinner>
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
