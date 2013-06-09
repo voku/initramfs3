@@ -1,7 +1,6 @@
 #!/sbin/busybox sh
 
 # ZRAM
-# insmod /lib/modules/zram.ko num_devices=3 (loading at kernel init.)
 # Now we load the ZRAM as RAM SWAP and gain more compressed RAM.
 # ZRAM compress ratio is 50% so if set 300MB, then it will give clean 150MB More RAM,
 # This gives us 1GB RAM device or more.
@@ -18,91 +17,54 @@ fi;
 
 case "${zramtweaks}" in
 	1)
-		if [ `cat /proc/swaps | grep 50000 |  wc -l` != "3" ]; then
+		if [ `cat /proc/swaps | grep 150000 |  wc -l` != "1" ]; then
 			if [ -e /dev/block/zram0 ]; then
 				# for on the fly changes we need to shutdown ZRAM first
 				swapoff /dev/block/zram0 >/dev/null 2>&1;
-				swapoff /dev/block/zram1 >/dev/null 2>&1;
-				swapoff /dev/block/zram2 >/dev/null 2>&1;
 				echo "1" > /sys/block/zram0/reset;
-				echo "1" > /sys/block/zram1/reset;
-				echo "1" > /sys/block/zram2/reset;
-				# setting size of each ZRAM swap drives
-				echo "51204000" > /sys/block/zram0/disksize;
-				echo "51204000" > /sys/block/zram1/disksize;
-				echo "51204000" > /sys/block/zram2/disksize;
-				# creating SWAPS from ZRAM drives
+				# setting size of ZRAM swap drive
+				echo "153604000" > /sys/block/zram0/disksize;
+				# creating SWAP from ZRAM drive
 				mkswap /dev/block/zram0 >/dev/null;
-				mkswap /dev/block/zram1 >/dev/null;
-				mkswap /dev/block/zram2 >/dev/null;
-				# activating ZRAM swaps with the same priority to load balance ram swapping
-				chmod 755 /sbin/swapon;
-				swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
-				swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
-				swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+				# activating ZRAM swap
+				swapon /dev/block/zram0 >/dev/null 2>&1;
 			fi;
 		fi;
 	;;
 	2)
-		if [ `cat /proc/swaps | grep 100000 |  wc -l` != "3" ]; then
+		if [ `cat /proc/swaps | grep 300000 |  wc -l` != "1" ]; then
 			if [ -e /dev/block/zram0 ]; then
 				# for on the fly changes we need to shutdown ZRAM first
 				swapoff /dev/block/zram0 >/dev/null 2>&1;
-				swapoff /dev/block/zram1 >/dev/null 2>&1;
-				swapoff /dev/block/zram2 >/dev/null 2>&1;
 				echo "1" > /sys/block/zram0/reset;
-				echo "1" > /sys/block/zram1/reset;
-				echo "1" > /sys/block/zram2/reset;
-				# setting size of each ZRAM swap drives
-				echo "102402000" > /sys/block/zram0/disksize;
-				echo "102402000" > /sys/block/zram1/disksize;
-				echo "102402000" > /sys/block/zram2/disksize;
-				# creating SWAPS from ZRAM drives
+				# setting size of ZRAM swap drive
+				echo "307202000" > /sys/block/zram0/disksize;
+				# creating SWAP from ZRAM drive
 				mkswap /dev/block/zram0 >/dev/null;
-				mkswap /dev/block/zram1 >/dev/null;
-				mkswap /dev/block/zram2 >/dev/null;
-				chmod 755 /sbin/swapon;
-				# activating ZRAM swaps with the same priority to load balance ram swapping
-				swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
-				swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
-				swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+				# activating ZRAM swap
+				swapon /dev/block/zram0 >/dev/null 2>&1;
 			fi;
 		fi;
 	;;
 	3)
-		if [ `cat /proc/swaps | grep 200000 |  wc -l` != "3" ]; then
+		if [ `cat /proc/swaps | grep 600000 |  wc -l` != "1" ]; then
 			if [ -e /dev/block/zram0 ]; then
 				# for on the fly changes we need to shutdown ZRAM first
 				swapoff /dev/block/zram0 >/dev/null 2>&1;
-				swapoff /dev/block/zram1 >/dev/null 2>&1;
-				swapoff /dev/block/zram2 >/dev/null 2>&1;
 				echo "1" > /sys/block/zram0/reset;
-				echo "1" > /sys/block/zram1/reset;
-				echo "1" > /sys/block/zram2/reset;
-				# setting size of each ZRAM swap drives
-				echo "204804000" > /sys/block/zram0/disksize;
-				echo "204804000" > /sys/block/zram1/disksize;
-				echo "204804000" > /sys/block/zram2/disksize;
-				# creating SWAPS from ZRAM drives
+				# setting size of RAM swap drive
+				echo "614404000" > /sys/block/zram0/disksize;
+				# creating SWAP from ZRAM drive
 				mkswap /dev/block/zram0 >/dev/null;
-				mkswap /dev/block/zram1 >/dev/null;
-				mkswap /dev/block/zram2 >/dev/null;
-				chmod 755 /sbin/swapon;
-				# activating ZRAM swaps with the same priority to load balance ram swapping
-				swapon /dev/block/zram0 -p 20 >/dev/null 2>&1;
-				swapon /dev/block/zram1 -p 20 >/dev/null 2>&1;
-				swapon /dev/block/zram2 -p 20 >/dev/null 2>&1;
+				# activating ZRAM swap
+				swapon /dev/block/zram0 >/dev/null 2>&1;
 			fi;
 		fi;
 	;;
 	4)
 		if [ -e /dev/block/zram0 ]; then
 			swapoff /dev/block/zram0 >/dev/null 2>&1;
-			swapoff /dev/block/zram1 >/dev/null 2>&1;
-			swapoff /dev/block/zram2 >/dev/null 2>&1;
 			echo "1" > /sys/block/zram0/reset;
-			echo "1" > /sys/block/zram1/reset;
-			echo "1" > /sys/block/zram2/reset;
 		fi;
 	;;
 	*)

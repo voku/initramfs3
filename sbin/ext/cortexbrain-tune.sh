@@ -38,8 +38,8 @@ PROFILE=$(cat ${DATA_DIR}/.active.profile);
 . ${DATA_DIR}/${PROFILE}.profile;
 
 # set initial vm.dirty vales
-echo "200" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "500" > /proc/sys/vm/dirty_expire_centisecs;
+echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
 
 # check if dumpsys exist in ROM
 if [ -e /system/bin/dumpsys ]; then
@@ -118,11 +118,6 @@ IO_TWEAKS()
 		fi;
 
 		echo "45" > /proc/sys/fs/lease-break-time;
-#		echo "289585" > /proc/sys/fs/file-max;
-#		echo "1048576" > /proc/sys/fs/nr_open;
-#		echo "16384" > /proc/sys/fs/inotify/max_queued_events;
-#		echo "128" > /proc/sys/fs/inotify/max_user_instances;
-#		echo "8192" > /proc/sys/fs/inotify/max_user_watches;
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 
@@ -151,7 +146,7 @@ KERNEL_TWEAKS()
 		elif [ "${state}" == "sleep" ]; then
 			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "30" > /proc/sys/kernel/panic;
+			echo "90" > /proc/sys/kernel/panic;
 			if [ "$cortexbrain_memory" == on ]; then
 				echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 			fi;
@@ -161,15 +156,6 @@ KERNEL_TWEAKS()
 			echo "60" > /proc/sys/kernel/panic;
 		fi;
 
-#		echo "8192" > /proc/sys/kernel/msgmax;
-#		echo "5756" > /proc/sys/kernel/msgmni;
-#		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
-#		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
-#		echo "250 32000 32 128" > /proc/sys/kernel/sem;
-#		echo "2097152" > /proc/sys/kernel/shmall;
-#		echo "33554432" > /proc/sys/kernel/shmmax;
-#		echo "45832" > /proc/sys/kernel/threads-max;
-	
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: ${state} ***: enabled";
 
 		return 0;
@@ -554,11 +540,12 @@ MEMORY_TWEAKS()
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 0
-		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 1
+		echo "20" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "8192" > /proc/sys/vm/mmap_min_addr;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 
@@ -581,15 +568,15 @@ ENTROPY()
 
 	if [ "${state}" == "awake" ]; then
 		if [ "$USED_PROFILE" != "battery" ] || [ "$USED_PROFILE" != "extreme_battery" ]; then
-			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
-			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
-		else
 			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+		else
+			echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
+			echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
 		fi;
 	elif [ "${state}" == "sleep" ]; then
-		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
 	fi;
 
 	log -p i -t $FILE_NAME "*** ENTROPY ***: ${state}";
@@ -648,15 +635,6 @@ FIREWALL_TWEAKS()
 		echo "1" > /proc/sys/net/ipv4/icmp_echo_ignore_all;
 		echo "1" > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses;
 
-		# drop spoof, redirects, etc
-		#echo "1" > /proc/sys/net/ipv4/conf/all/rp_filter;
-		#echo "1" > /proc/sys/net/ipv4/conf/default/rp_filter;
-		#echo "0" > /proc/sys/net/ipv4/conf/all/send_redirects;
-		#echo "0" > /proc/sys/net/ipv4/conf/default/send_redirects;
-		#echo "0" > /proc/sys/net/ipv4/conf/default/accept_redirects;
-		#echo "0" > /proc/sys/net/ipv4/conf/all/accept_source_route;
-		#echo "0" > /proc/sys/net/ipv4/conf/default/accept_source_route;
-
 		log -p i -t $FILE_NAME "*** FIREWALL_TWEAKS ***: enabled";
 
 		return 0;
@@ -687,6 +665,7 @@ UKSMCTL()
 			log -p i -t $FILE_NAME "*** uksm: awake, sleep=5sec, max_cpu=85%, cpu=full ***";
 			renice -n 10 -p "$(pidof uksmd)";
 		elif [ "${state}" == "sleep" ]; then
+			# max sleep_millisecs is 1000msec
 			echo "1000" > /sys/kernel/mm/uksm/sleep_millisecs;
 			echo "low" > /sys/kernel/mm/uksm/cpu_governor;
 			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=10sec, max_cpu=20%, cpu=low ***";
@@ -889,9 +868,9 @@ BUS_THRESHOLD()
 	if [ "${state}" == "awake" ]; then
 		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "${state}" == "sleep" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "${state}" == "wake_boost" ]; then
-		echo "25" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	fi;
 
 	log -p i -t $FILE_NAME "*** BUS_THRESHOLD: ${state} ***";
@@ -904,9 +883,9 @@ VFS_CACHE_PRESSURE()
 
 	if [ -e $sys_vfs_cache ]; then
 		if [ "${state}" == "awake" ]; then
-			echo "50" > $sys_vfs_cache;
+			echo "200" > $sys_vfs_cache;
 		elif [ "${state}" == "sleep" ]; then
-			echo "10" > $sys_vfs_cache;
+			echo "100" > $sys_vfs_cache;
 		fi;
 
 		log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: ${state} ***";
@@ -939,7 +918,7 @@ TWEAK_HOTPLUG_ECO()
 
 CENTRAL_CPU_FREQ_HELPER()
 {
-	if [ "$scaling_max_freq" == 1000000 ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
+	if [ "$scaling_max_freq" == "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 		scaling_max_freq=$scaling_max_freq_oc;
 
 		return 0;
@@ -960,8 +939,6 @@ CENTRAL_CPU_FREQ()
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		fi;
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 	elif [ "${state}" == "awake_normal" ]; then
 		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
@@ -1158,9 +1135,13 @@ ENABLEMASK()
 	local state="$1";
 
 	if [ "${state}" == "awake" ]; then
-		echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+		if [ "$enable_mask_sleep" != "$enable_mask" ]; then
+			echo "$enable_mask" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+		fi;
 	elif [ "${state}" == "sleep" ]; then
-		echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+		if [ "$enable_mask_sleep" != "$enable_mask" ]; then
+			echo "$enable_mask_sleep" > /sys/module/cpuidle_exynos4/parameters/enable_mask;
+		fi;
 	fi;
 
 	log -p i -t $FILE_NAME "*** ENABLEMASK: ${state} ***: done";
@@ -1173,11 +1154,15 @@ IO_SCHEDULER()
 	local sys_mmc1_scheduler="/sys/block/mmcblk1/queue/scheduler";
 
 	if [ "${state}" == "awake" ]; then
-		echo "$scheduler" > $sys_mmc0_scheduler;
-		echo "$scheduler" > $sys_mmc1_scheduler;
+		if [ "$sleep_scheduler" != "$scheduler" ]; then
+			echo "$scheduler" > $sys_mmc0_scheduler;
+			echo "$scheduler" > $sys_mmc1_scheduler;
+		fi;
 	elif [ "${state}" == "sleep" ]; then
-		echo "$sleep_scheduler" > $sys_mmc0_scheduler;
-		echo "$sleep_scheduler" > $sys_mmc1_scheduler;
+		if [ "$sleep_scheduler" != "$scheduler" ]; then
+			echo "$sleep_scheduler" > $sys_mmc0_scheduler;
+			echo "$sleep_scheduler" > $sys_mmc1_scheduler;
+		fi;
 	fi;
 
 	log -p i -t $FILE_NAME "*** IO_SCHEDULER: ${state} ***: done";	
@@ -1200,13 +1185,17 @@ SLIDE2WAKE_FIX()
 {
 	local state="$1";
 
-	if [ "${state}" == "offline" ]; then
-		echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake_call;
-	elif [ "${state}" == "oncall" ]; then
-		echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake_call;
-	fi;
+	SLIDE_STATE=`cat /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake_call`;
 
-	log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: ${state} ***: done";
+	if [ "$tsp_slide2wake" == on ]; then
+		if [ "${state}" == "offline" ] && [ "$SLIDE_STATE" == 1 ]; then
+			echo "0" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake_call;
+		elif [ "${state}" == "oncall" ]; then
+			echo "1" > /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake_call;
+		fi;
+
+		log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: ${state} ***: done";
+	fi;
 }
 
 # ==============================================================
