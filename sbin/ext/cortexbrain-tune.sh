@@ -1408,8 +1408,6 @@ SLEEP_MODE()
 {
 	WAS_IN_SLEEP_MODE=false;
 
-	enable_mask_sleep
-
 	# we only read the config when the screen turns off ...
 	PROFILE=$(cat ${DATA_DIR}/.active.profile);
 	. ${DATA_DIR}/${PROFILE}.profile;
