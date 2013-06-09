@@ -33,8 +33,12 @@ MOBILE_HELPER_AWAKE="${DATA_DIR}/MOBILE_HELPER_AWAKE";
 MOBILE_HELPER_TMP="${DATA_DIR}/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
-# /tmp for everybody
-chmod 777 -R /tmp/
+# change mode
+chmod 777 -R /tmp/;
+chmod 766 /sys/kernel/mm/uksm/run;
+chmod 766 /sys/kernel/mm/uksm/sleep_millisecs;
+chmod 766 /sys/kernel/mm/uksm/max_cpu_percentage;
+chmod 766 /sys/kernel/mm/uksm/cpu_governor;
 
 # get values from profile
 PROFILE=$(cat ${DATA_DIR}/.active.profile);
@@ -699,11 +703,6 @@ FIREWALL_TWEAKS;
 # ==============================================================
 # UKSM-TWEAKS
 # ==============================================================
-
-chmod 766 /sys/kernel/mm/uksm/run;
-chmod 766  /sys/kernel/mm/uksm/sleep_millisecs;
-chmod 766  /sys/kernel/mm/uksm/max_cpu_percentage;
-chmod 766  /sys/kernel/mm/uksm/cpu_governor;
 
 UKSMCTL()
 {
