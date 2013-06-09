@@ -18,7 +18,7 @@ FILE_NAME=$0;
 PIDOFCORTEX=$$;
 DATA_DIR="/data/.siyah";
 TELE_DATA=$(dumpsys telephony.registry);
-sleeprun=1;
+WAS_IN_SLEEP_MODE=true;
 on_call=0;
 
 wifi_helper_awake="$DATA_DIR/wifi_helper_awake";
@@ -1214,7 +1214,7 @@ AWAKE_MODE()
 		on_call=0;
 	fi;
 
-	if [ "$sleeprun" == 1 ]; then
+	if [ "$WAS_IN_SLEEP_MODE" == true ]; then
 
 		CPU_GOVERNOR "awake";
 
@@ -1281,7 +1281,7 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-	sleeprun=0;
+	WAS_IN_SLEEP_MODE=false;
 
 	# we only read the config when screen goes off ...
 	PROFILE=$(cat ${DATA_DIR}/.active.profile);
@@ -1308,7 +1308,7 @@ SLEEP_MODE()
 	local TMP_EARLY_WAKEUP=$(cat /tmp/early_wakeup);
 	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
-		sleeprun=1;
+		WAS_IN_SLEEP_MODE=true;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			CPU_GOVERNOR "sleep"
