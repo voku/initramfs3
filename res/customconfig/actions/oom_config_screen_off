@@ -6,10 +6,10 @@
 PROFILE=$(cat /data/.siyah/.active.profile);
 . /data/.siyah/${PROFILE}.profile;
 
-if [ "$auto_oom" == 1 ]; then
-	if [ "a$2" != "a" ]; then
+if [ "a$2" != "a" ]; then
 		oom_config_screen_off=$2;
 
+	if [ "$auto_oom" == on ]; then
 		case "${oom_config_screen_off}" in
 			light)
 				echo "1024,1024,1280,2048,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
