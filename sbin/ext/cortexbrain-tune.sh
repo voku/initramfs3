@@ -34,7 +34,7 @@ MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
 # change mode
-chmod 777 -R /tmp/;
+chmod -R 777 /tmp/;
 chmod 766 /sys/kernel/mm/uksm/run;
 chmod 766 /sys/kernel/mm/uksm/sleep_millisecs;
 chmod 766 /sys/kernel/mm/uksm/max_cpu_percentage;
@@ -49,19 +49,11 @@ echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
 
 # check if dumpsys exist in ROM
-DUMPSYS_STATE()
-{
-	local state=0;
-
-	if [ -e /system/bin/dumpsys ]; then
-		state=1;
-	fi;
-
-	log -p i -t $FILE_NAME "*** DUMPSYS_STATE: ${state} ***";
-
-	return ${state};
-}
-DUMPSYS_STATE=$(DUMPSYS_STATE);
+if [ -e /system/bin/dumpsys ]; then
+	DUMPSYS_STATE=1;
+else
+	DUMPSYS_STATE=0;
+fi;
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -111,7 +103,7 @@ IO_TWEAKS()
 		if [ -e /sys/block/mmcblk1/queue/read_ahead_kb ]; then
 			if [ "$cortexbrain_read_ahead_kb" -eq "0" ]; then
 
-				local SDCARD_SIZE=$(cat /tmp/sdcard_size);
+				local SDCARD_SIZE=`cat /tmp/sdcard_size`;
 				if [ "$SDCARD_SIZE" -eq "1" ]; then
 					echo "256" > /sys/block/mmcblk1/queue/read_ahead_kb;
 				elif [ "$SDCARD_SIZE" -eq "4" ]; then
@@ -197,25 +189,6 @@ SYSTEM_TWEAKS()
 SYSTEM_TWEAKS;
 
 # ==============================================================
-# ECO-TWEAKS
-# ==============================================================
-ECO_TWEAKS()
-{
-	if [ "$cortexbrain_eco" == on ]; then
-		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
-		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
-			TWEAK_HOTPLUG_ECO "sleep";
-		fi;
-
-		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
-
-		return 1;
-	else
-		return 0;
-	fi;
-}
-
-# ==============================================================
 # BATTERY-TWEAKS
 # ==============================================================
 BATTERY_TWEAKS()
@@ -284,7 +257,7 @@ fi;
 
 CPU_INTELLI_PLUG_TWEAKS()
 {
-	local SYSTEM_GOVERNOR="$1";
+	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 	local intelli_plug_active_tmp="/sys/module/intelli_plug/parameters/intelli_plug_active";
 
 	if [ -e $intelli_plug_active_tmp ]; then
@@ -574,9 +547,9 @@ CPU_GOV_TWEAKS()
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
 		fi;
 
-		CPU_INTELLI_PLUG_TWEAKS ${SYSTEM_GOVERNOR};
+		CPU_INTELLI_PLUG_TWEAKS;
 
-		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
+		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: $state ***: enabled";
 
 		return 1;
 	else
@@ -712,21 +685,21 @@ UKSMCTL()
 		uksm_run_tmp="/dev/null";
 	fi;
 
-	if [ "$cortexbrain_uksm_control" == on ] && $uksm_run_tmp != "/dev/null"; then
+	if [ "$cortexbrain_uksm_control" == on ] && [ "$uksm_run_tmp" != "/dev/null" ]; then
 		echo "1" > $uksm_run_tmp;
-		renice -n 10 -p "`pidof uksmd`";
+		renice -n 10 -p `pidof uksmd`;
 
 		if [ "$state" == "awake" ]; then
 			echo "500" > /sys/kernel/mm/uksm/sleep_millisecs; # max: 1000
 			echo "medium" > /sys/kernel/mm/uksm/cpu_governor;
 
-			log -p i -t $FILE_NAME "*** uksm: awake, sleep=0,5sec, max_cpu=90% ***";
+			log -p i -t $FILE_NAME "*** uksm: awake, sleep=0,5sec, max_cpu=50% ***";
 
 		elif [ "$state" == "sleep" ]; then
 			echo "1000" > /sys/kernel/mm/uksm/sleep_millisecs; # max: 1000
 			echo "quiet" > /sys/kernel/mm/uksm/cpu_governor;
 
-			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=1sec, max_cpu=<1% ***";
+			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=1sec, max_cpu=1% ***";
 		fi;
 	else
 		echo "0" > $uksm_run_tmp;
@@ -809,17 +782,17 @@ MOBILE_DATA_SET()
 
 MOBILE_DATA_STATE()
 {
-	local state=0;
-
 	if [ $DUMPSYS_STATE -eq "1" ]; then
 		local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
 
 		if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
-			state=1;
+			DATA_STATE_CHECK=1;
+		else
+			DATA_STATE_CHECK=0;
 		fi;
+	else
+		DATA_STATE_CHECK=0;
 	fi;
-
-	return $state;
 }
 
 MOBILE_DATA()
@@ -828,7 +801,8 @@ MOBILE_DATA()
 
 	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
 		if [ "$state" == "sleep" ]; then
-			if [ "$MOBILE_DATA_STATE" -eq "1" ]; then
+			MOBILE_DATA_STATE;
+			if [ "$DATA_STATE_CHECK" -eq "1" ]; then
 				if [ "$cortexbrain_auto_tweak_mobile_sleep_delay" -eq "0" ]; then
 					MOBILE_DATA_SET "off";
 				else
@@ -986,6 +960,28 @@ TWEAK_HOTPLUG_ECO()
 	return 1;
 }
 
+# ==============================================================
+# ECO-TWEAKS
+# ==============================================================
+ECO_TWEAKS()
+{
+	if [ "$cortexbrain_eco" == on ]; then
+		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
+			TWEAK_HOTPLUG_ECO "sleep";
+			CPU_GOV_TWEAKS "sleep";
+			log -p i -t $FILE_NAME "*** AWAKE: ECO-Mode ***";
+		else
+			log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
+		fi;
+
+		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
+	else
+		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: disabled";
+		log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
+	fi;
+}
+
 CENTRAL_CPU_FREQ()
 {
 	local state="$1";
@@ -1038,12 +1034,8 @@ MEGA_BOOST_CPU_TWEAKS()
 		CENTRAL_CPU_FREQ "wake_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
-
-		return 0;
 	else
 		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-
-		return 1;
 	fi;
 }
 
@@ -1074,16 +1066,21 @@ SWAPPINESS;
 # disable/enable ipv6  
 IPV6()
 {
-	local CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
 	local state='';
 
-	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
+	if [ -e /data/data/com.cisco.anyconnec* ]; then
+		local CISCO_VPN=1;
+	else
+		local CISCO_VPN=0;
+	fi;
+
+	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" -eq "1" ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
-		sysctl -w net.ipv6.conf.all.disable_ipv6=0;
+		sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null;
 		local state="enabled";
 	else
 		echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
-		sysctl -w net.ipv6.conf.all.disable_ipv6=1;
+		sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null;
 		local state="disabled";
 	fi;
 
@@ -1141,8 +1138,8 @@ BLN_CORRECTION()
 				/res/uci.sh bln_switch 2;
 			fi;
 		else
-			/res/uci.sh bln_switch 0;
-			/res/uci.sh generic /sys/class/misc/notification/notification_timeout 0;
+			/res/uci.sh bln_switch 0 > /dev/null;
+			/res/uci.sh generic /sys/class/misc/notification/notification_timeout 0 > /dev/null;
 		fi;
 
 		if [ "$dyn_brightness" == on ]; then
@@ -1166,7 +1163,7 @@ TOUCH_KEYS_CORRECTION()
 	if [ "$led_timeout_ms" -eq "0" ]; then
 		echo "0" > /sys/class/misc/notification/led_timeout_ms;
 	else
-		/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
+		/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms > /dev/null;
 	fi;
 
 	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - ${led_timeout_ms}ms ***";
@@ -1189,7 +1186,7 @@ CROND_SAFETY()
 
 GAMMA_FIX()
 {
-	local min_gamm_tmp="/sys/class/misc/brightness_curve/min_gamm";
+	local min_gamm_tmp="/sys/class/misc/brightness_curve/min_gamma";
 	if [ -e $min_gamm_tmp ]; then
 		min_gamm_tmp="/dev/null";
 	fi;
@@ -1302,22 +1299,23 @@ SLIDE2WAKE_FIX()
 
 CALL_STATE()
 {
-	local state=0;
-
-	if [ $DUMPSYS_STATE -eq "1" ]; then
+	if [ "$DUMPSYS_STATE" -eq "1" ]; then
 
 		# check the call state, not on call = 0, on call = 2
 		local state_tmp=`echo "$TELE_DATA" | awk '/mCallState/ {print $1}'`;
 
 		if [ "$state_tmp" != "mCallState=0" ]; then
-			state=1;
+			NOW_CALL_STATE=1;
+		else
+			NOW_CALL_STATE=0;
 		fi;
 
-		log -p i -t $FILE_NAME "*** CALL_STATE: $state ***";
+		log -p i -t $FILE_NAME "*** CALL_STATE: $NOW_CALL_STATE ***";
+	else
+		NOW_CALL_STATE=0;
 	fi;
-
-	return $state;
 }
+CALL_STATE;
 
 # ==============================================================
 # TWEAKS: if Screen-ON
@@ -1326,11 +1324,13 @@ AWAKE_MODE()
 {
 	ENABLEMASK "awake";
 
+	CALL_STATE;
+
 	SLIDE2WAKE_FIX "offline";
 
-	if [ "$cortexbrain_cpu" == on ] && [ "$ON_CALL" -eq "1" ]; then
+	if [ "$cortexbrain_cpu" == on ] && [ "$NOW_CALL_STATE" -eq "1" ]; then
 		CENTRAL_CPU_FREQ "awake_normal";
-		ON_CALL=0;
+		NOW_CALL_STATE=0;
 	fi;
 
 	if [ "$WAS_IN_SLEEP_MODE" -eq "1" ]; then
@@ -1386,13 +1386,6 @@ AWAKE_MODE()
 		BUS_THRESHOLD "awake";
 
 		ECO_TWEAKS;
-		if [ "$?" -eq "1" ]; then
-			CPU_GOV_TWEAKS "awake";
-			log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
-		else
-			CPU_GOV_TWEAKS "sleep";
-			log -p i -t $FILE_NAME "*** AWAKE: ECO-Mode ***";
-		fi;
 	fi;
 }
 
@@ -1408,16 +1401,17 @@ SLEEP_MODE()
 	. $DATA_DIR/${PROFILE}.profile;
 
 	# we only read tele-data when the screen turns off ...
-	if [ $DUMPSYS_STATE == 1 ]; then
+	if [ "$DUMPSYS_STATE" -eq "1" ]; then
 		TELE_DATA=`dumpsys telephony.registry`;
 	fi;
 
 	ENABLEMASK "sleep";
 
-	local CALL_STATE=$CALL_STATE;
+	CALL_STATE;
+
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
 
-	if [ "$TMP_EARLY_WAKEUP" -eq "0" ] && [ "$CALL_STATE" -eq "0" ]; then
+	if [ "$TMP_EARLY_WAKEUP" -eq "0" ] && [ "$NOW_CALL_STATE" -eq "0" ]; then
 
 		WAS_IN_SLEEP_MODE=1;
 
@@ -1427,15 +1421,7 @@ SLEEP_MODE()
 
 		MALI_TIMEOUT "sleep";
 
-		NET "sleep";
-
-		WIFI "sleep";
-
-		MOBILE_DATA "sleep";
-
 		GESTURES "sleep";
-
-		IPV6;
 
 		BATTERY_TWEAKS;
 
@@ -1448,7 +1434,7 @@ SLEEP_MODE()
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" -eq "0" ]; then
 			if [ "$cortexbrain_cpu" == on ]; then
-				CPU_GOVERNOR "sleep"
+				CPU_GOVERNOR "sleep";
 				CENTRAL_CPU_FREQ "sleep_freq";
 				CPU_GOV_TWEAKS "sleep";
 			fi;
@@ -1463,6 +1449,14 @@ SLEEP_MODE()
 
 			ENTROPY "sleep";
 
+			NET "sleep";
+
+			WIFI "sleep";
+
+			MOBILE_DATA "sleep";
+
+			IPV6;
+
 			TWEAK_HOTPLUG_ECO "sleep";
 
 			VFS_CACHE_PRESSURE "sleep";
@@ -1476,10 +1470,10 @@ SLEEP_MODE()
 			log -p i -t $FILE_NAME "*** SLEEP mode: USB CABLE CONNECTED! No real sleep mode! ***";
 		fi;
 	else
-		if [ "$CALL_STATE" -eq "1" ]; then
+		if [ "$NOW_CALL_STATE" -eq "1" ]; then
 			if [ "$cortexbrain_cpu" == on ]; then
 				CENTRAL_CPU_FREQ "sleep_call";
-				ON_CALL=1;
+				NOW_CALL_STATE=1;
 			fi;
 			SLIDE2WAKE_FIX "oncall";
 
