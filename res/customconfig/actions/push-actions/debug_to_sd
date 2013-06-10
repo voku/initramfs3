@@ -15,7 +15,7 @@ case "${debug_to_sd}" in
 	1)
 		(
 			PROFILE=`cat /data/.siyah/.active.profile`;
-			. /data/.siyah/$PROFILE.profile;
+			. /data/.siyah/${PROFILE}.profile;
 
 			SEPARATOR()
 			{
@@ -62,7 +62,7 @@ case "${debug_to_sd}" in
 			# Profile
 			PROFILE=`cat /data/.siyah/.active.profile`;
 			echo "Profile-Config: $PROFILE" >> $DEBUG_FILE;
-			cat /data/.siyah/$PROFILE.profile >> $DEBUG_FILE;
+			cat /data/.siyah/${PROFILE}.profile >> $DEBUG_FILE;
 			SEPARATOR;
 
 			# Memory

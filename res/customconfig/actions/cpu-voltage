@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
 PROFILE=`cat /data/.siyah/.active.profile`;
-. /data/.siyah/$PROFILE.profile;
+CPU_VOLT_SWITCH=`cat /data/.siyah/${PROFILE}.profile | grep cpu_voltage_switch=on | wc -l`;
 
 if [ "a$3" == "a" ]; then
 	evalcmd='eval "echo \$CPUVOLT$2"';
@@ -12,7 +12,7 @@ else
 	evalcmd='eval "echo \$CPUVOLT$2"';
 	eval $evalcmd;
 
-	if [ "$cpu_voltage_switch" == "on" ]; then
+	if [ "$CPU_VOLT_SWITCH" == "1" ]; then
 		echo "100000 $CPUVOLT16" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 		echo "200000 $CPUVOLT15" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;
 		echo "300000 $CPUVOLT14" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels;

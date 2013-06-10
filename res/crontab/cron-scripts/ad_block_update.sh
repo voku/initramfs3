@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
 PROFILE=`cat /data/.siyah/.active.profile`;
-. /data/.siyah/$PROFILE.profile;
+. /data/.siyah/${PROFILE}.profile;
 
 if [ "$ad_block_update" == "on" ]; then
 

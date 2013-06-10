@@ -2,7 +2,7 @@
 
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
+	. /data/.siyah/${PROFILE}.profile;
 
 	if [ "$cron_db_optimizing" == "on" ]; then
 		while [ ! `cat /proc/loadavg | cut -c1-4` \< "3.50" ]; do
