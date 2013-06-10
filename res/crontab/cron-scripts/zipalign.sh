@@ -51,7 +51,7 @@ if [ "$cron_zipalign" == "on" ]; then
 				else
 					ZIPCHECK=`/system/xbin/zipalign -c -v 4 $APK | grep FAILED | wc -l`;
 
-					if [ $ZIPCHECK == "1" ]; then
+					if [ $ZIPCHECK -eq "1" ]; then
 						echo "Now aligning: $DIR/$APK" | tee -a $LOG_FILE;
 						/system/xbin/zipalign -v -f 4 $APK /data/local/$APK;
 						cp -f -p /data/local/$APK $APK;

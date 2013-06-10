@@ -40,7 +40,7 @@ JBSAMMY=0;
 CM_AOKP_10_JB=0;
 
 [ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
-if [ `cat /tmp/sammy_rom` == "1" ]; then
+if [ `cat /tmp/sammy_rom` -eq "1" ]; then
 	JBSAMMY=1;
 fi;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;

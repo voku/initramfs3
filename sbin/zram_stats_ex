@@ -42,7 +42,7 @@ find /sys/block -name 'zram*' | while read dev; do
 	is_init=$(get_stat $dev initstate)
 
 	# Show stats only for initialized devices
-	[ "$is_init" == 1 ] || continue
+	[ "$is_init" -eq "1" ] || continue
 
 	echo "$dev"
 	for stat in "${stats[@]}"; do
@@ -51,7 +51,7 @@ find /sys/block -name 'zram*' | while read dev; do
 		show_stat $stat $val
 	done
 
-	[ "$__orig_data_size" == "0" ] && continue; 
+	[ "$__orig_data_size" -eq "0" ] && continue;
 
 	cratio=$(($(($__compr_data_size * 100)) / $__orig_data_size))
 	show_stat "avg_compr_ratio" $cratio "%"
