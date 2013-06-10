@@ -1238,7 +1238,7 @@ AWAKE_MODE()
 
 		MOUNT_SD_CARD;
 
-		echo "$pwm_val" > /sys/vibrator/pwm_val;
+		echo "$vibrator_level" > /sys/vibrator/vibrator_level;
 
 		BOOST_DELAY;
 
