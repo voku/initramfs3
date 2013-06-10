@@ -237,13 +237,10 @@ JELLY=0;
 JBSAMMY=0;
 JBSAMMY2=0;
 CM_AOKP_10_JB=0;
-CM_AOKP_10_JB_CARBON=0;
 $BB echo "0" > /tmp/sammy_rom;
 $BB chmod 666 /tmp/sammy_rom;
 
 [ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
-[ "`$BB grep -i ro.carbon.version= /system/build.prop`" ] && CM_AOKP_10_JB_CARBON=1;
-
 JBSAMMY=`ls /system/lib/libSamsungAnimation.so | wc -l`;
 JBSAMMY2=`ls /system/lib/lib_Samsung_Resampler.so | wc -l`;
 JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
@@ -454,16 +451,6 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
 			$BB sed -i 's/102/172/g' $GPIO_KEYS;
 		fi;
 	fi;
-
-	SECROM_FUNCTION_AOSP;
-
-elif [ "$CM_AOKP_10_JB_CARBON" -eq "1" ]; then
-	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
-	POWER_SQL_JB;
-	echo "3" > /proc/sys/kernel/rom_feature_set;
-	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
-	$BB cp -a /res/misc/JellyB-CM-AOKP-CARBON/* /;
-	touch /tmp/cm10.1-installed;
 
 	SECROM_FUNCTION_AOSP;
 
