@@ -20,8 +20,8 @@ FILE_NAME=$0;
 PIDOFCORTEX=$$;
 # (since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history)
 DATA_DIR="/data/.siyah";
-WAS_IN_SLEEP_MODE=true;
-ON_CALL=false;
+WAS_IN_SLEEP_MODE=1;
+ON_CALL=0;
 
 # WIFI HELPER
 WIFI_HELPER_AWAKE="${DATA_DIR}/WIFI_HELPER_AWAKE";
@@ -54,10 +54,10 @@ cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 
 # check if dumpsys exist in ROM
 DUMPSYS_STATE()
 {
-	local state=false;
+	local state=0;
 
 	if [ -e /system/bin/dumpsys ]; then
-		state=true;
+		state=1;
 	fi;
 	
 	log -p i -t $FILE_NAME "*** DUMPSYS_STATE: ${state} ***";
@@ -136,9 +136,9 @@ IO_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** IO_TWEAKS ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 IO_TWEAKS;
@@ -172,9 +172,9 @@ KERNEL_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: ${state} ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 KERNEL_TWEAKS;
@@ -192,9 +192,9 @@ SYSTEM_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** SYSTEM_TWEAKS ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 SYSTEM_TWEAKS;
@@ -212,9 +212,9 @@ ECO_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 
@@ -271,9 +271,9 @@ BATTERY_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** BATTERY_TWEAKS ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 # run this tweak once, if the background-process is disabled
@@ -581,9 +581,9 @@ CPU_GOV_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 # this needed for cpu tweaks apply from STweaks in real time
@@ -610,9 +610,9 @@ MEMORY_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 MEMORY_TWEAKS;
@@ -693,9 +693,9 @@ FIREWALL_TWEAKS()
 
 		log -p i -t $FILE_NAME "*** FIREWALL_TWEAKS ***: enabled";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 FIREWALL_TWEAKS;
@@ -810,13 +810,13 @@ MOBILE_DATA_SET()
 
 MOBILE_DATA_STATE()
 {
-	local state=false;
+	local state=0;
 
-	if [ $DUMPSYS_STATE == true ]; then
+	if [ $DUMPSYS_STATE == 1 ]; then
 		local DATA_STATE=$(echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}');
 	
 		if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
-			state=true;
+			state=1;
 		fi;
 	}
 
@@ -829,7 +829,7 @@ MOBILE_DATA()
 
 	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
 		if [ "${state}" == "sleep" ]; then
-			if [ $(MOBILE_DATA_STATE) == true ]; then
+			if [ $(MOBILE_DATA_STATE) == 1 ]; then
 				if [ "$cortexbrain_auto_tweak_mobile_sleep_delay" == 0 ]; then
 					MOBILE_DATA_SET "off";
 				else
@@ -1156,9 +1156,9 @@ BLN_CORRECTION()
 
 		log -p i -t $FILE_NAME "*** BLN_CORRECTION ***";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 
@@ -1186,9 +1186,9 @@ CROND_SAFETY()
 
 		log -p i -t $FILE_NAME "*** CROND_SAFETY ***";
 
-		return true;
+		return 1;
 	else
-		return false;
+		return 0;
 	fi;
 }
 
@@ -1307,15 +1307,15 @@ SLIDE2WAKE_FIX()
 
 CALL_STATE()
 {
-	local state=false;
+	local state=0;
 
-	if [ $DUMPSYS_STATE == true ]; then
+	if [ $DUMPSYS_STATE == 1 ]; then
 
 		# check the call state, not on call = 0, on call = 2
 		local state_tmp=$(echo "${TELE_DATA}" | awk '/mCallState/ {print $1}');
 
 		if [ "$state_tmp" != "mCallState=0" ]; then
-			state=true;
+			state=1;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CALL_STATE: ${state} ***";
@@ -1333,12 +1333,12 @@ AWAKE_MODE()
 
 	SLIDE2WAKE_FIX "offline";
 
-	if [ "$cortexbrain_cpu" == on ] && [ "$ON_CALL" == true ]; then
+	if [ "$cortexbrain_cpu" == on ] && [ "$ON_CALL" == 1 ]; then
 		CENTRAL_CPU_FREQ "awake_normal";
-		ON_CALL=false;
+		ON_CALL=0;
 	fi;
 
-	if [ "$WAS_IN_SLEEP_MODE" == true ]; then
+	if [ "$WAS_IN_SLEEP_MODE" == 1 ]; then
 
 		CPU_GOVERNOR "awake";
 
@@ -1406,7 +1406,7 @@ AWAKE_MODE()
 # ==============================================================
 SLEEP_MODE()
 {
-	WAS_IN_SLEEP_MODE=false;
+	WAS_IN_SLEEP_MODE=0;
 
 	# we only read the config when the screen turns off ...
 	PROFILE=$(cat ${DATA_DIR}/.active.profile);
@@ -1416,7 +1416,7 @@ SLEEP_MODE()
 	CENTRAL_CPU_FREQ_HELPER;
 
 	# we only read tele-data when the screen turns off ...
-	if [ $DUMPSYS_STATE == true ]; then
+	if [ $DUMPSYS_STATE == 1 ]; then
 		TELE_DATA=$(dumpsys telephony.registry);
 	fi;
 
@@ -1425,9 +1425,9 @@ SLEEP_MODE()
 	local CALL_STATE=$(CALL_STATE);
 	local TMP_EARLY_WAKEUP=$(cat /tmp/early_wakeup);
 
-	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == false ]; then
+	if [ "$TMP_EARLY_WAKEUP" == 0 ] && [ "$CALL_STATE" == 0 ]; then
 
-		WAS_IN_SLEEP_MODE=true;
+		WAS_IN_SLEEP_MODE=1;
 
 		if [ "$cortexbrain_cpu" == on ]; then
 			CPU_GOVERNOR "sleep"
@@ -1484,10 +1484,10 @@ SLEEP_MODE()
 			log -p i -t $FILE_NAME "*** SLEEP mode: USB CABLE CONNECTED! No real sleep mode! ***";
 		fi;
 	else
-		if [ "$CALL_STATE" == true ]; then
+		if [ "$CALL_STATE" == 1 ]; then
 			if [ "$cortexbrain_cpu" == on ]; then
 				CENTRAL_CPU_FREQ "sleep_call";
-				ON_CALL=true;
+				ON_CALL=1;
 			fi;
 			SLIDE2WAKE_FIX "oncall";
 
