@@ -14,7 +14,7 @@ if [ "a$2" != "a" ]; then
 				pkill -f "crond";
 
 				# starting crontab service
-				/res/crontab_service/service.sh
+				/res/crontab_service/service.sh > /dev/null;
 
 				# setting my jobs with corrected timezone for all world.
 				/res/crontab_service/dm_job.sh "3:00" "/sbin/busybox sh /data/crontab/cron-scripts/database_optimizing.sh"

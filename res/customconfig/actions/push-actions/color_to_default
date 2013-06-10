@@ -9,8 +9,8 @@ case "$2" in
 		echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
 		echo "127" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb;
 		echo "127" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr;
-		sed -i "s/user_cb=[0-9]*/user_cb=127/g" /data/.siyah/$PROFILE.profile;
-		sed -i "s/user_cr=[0-9]*/user_cr=127/g" /data/.siyah/$PROFILE.profile;
+		sed -i "s/user_cb=[0-9]*/user_cb=127/g" /data/.siyah/${PROFILE}.profile;
+		sed -i "s/user_cr=[0-9]*/user_cr=127/g" /data/.siyah/${PROFILE}.profile;
 		echo "Color was set to default, reloading";
 		sleep 2
 		pkill -f "com.gokhanmoral.stweaks.app";

@@ -1,9 +1,5 @@
 #!/sbin/busybox sh
 
-rm /init;
-mv /boot /init;
-
-cd /;
-sync;
-exec /init;
+mv /boot /init
+exec /init
 

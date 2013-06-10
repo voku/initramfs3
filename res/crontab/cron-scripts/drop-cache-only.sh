@@ -2,7 +2,7 @@
 
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
+	. /data/.siyah/${PROFILE}.profile;
 
 	if [ "$cron_drop_cache" == "on" ]; then
 

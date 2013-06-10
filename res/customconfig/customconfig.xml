@@ -345,7 +345,7 @@
 
 		<checkbox description="Enable AUTO OOM control using below profiles, disable if you want to set your own OOM tuning via APP or Script." name="Auto OOM" action="generic01 /sys/module/lowmemorykiller/parameters/auto_oom" label="AUTO OOM CONTROL"/>
 
-		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function. More aggressive, equals more free RAM but more killed apps." name="OOM Level Tuning - screen on" action="oom_config_screen_on">
+		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function. More aggressive, equals more free RAM but more killed apps." name="OOM Level Screen ON" action="oom_config_screen_on">
 			<spinnerItem name="light" value="light"/> 
 			<spinnerItem name="low" value="low"/> 
 			<spinnerItem name="medium" value="medium"/> 
@@ -354,7 +354,7 @@
 			<spinnerItem name="exterminate" value="exterminate"/> 
 		</spinner>
 
-		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function. More aggressive equals more free RAM but more killed apps." name="OOM Level Tuning - screen off" action="oom_config_screen_off">
+		<spinner description="Here you can set the level of low mem management by kernel lowmemkiller function. More aggressive equals more free RAM but more killed apps." name="OOM Level Screen OFF" action="oom_config_screen_off">
 			<spinnerItem name="light" value="light"/> 
 			<spinnerItem name="low" value="low"/> 
 			<spinnerItem name="medium" value="medium"/> 
@@ -519,7 +519,7 @@
 
 		<seekBar description="FB earlysuspend delay to run CRT animation when you turn the screen off." name="FB early suspend delay" action="generickmem fbearlysuspend_delay 0 int" unit="ms" min="0" reversed="false" step="50" max="500"/>
 
-		<seekBar description="Vibration force level. (Default: 75)" name="Vibration force" action="generic /sys/vibrator/pwm_val" unit="%" min="0" reversed="false" step="5" max="100"/>
+		<seekBar description="Vibration force level. (Default: 7)" name="Vibration force" action="generic /sys/vibrator/vibrator_level" unit="lvl" min="-1" reversed="false" step="1" max="9"/>
 
 		<checkbox description="Slide2Wake By Fluxi@xda. When screen is turned off, swipe from the left side of the screen to the right side of the screen, and the screen will be turned on!" name="Slide2Wake ON or OFF switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
 

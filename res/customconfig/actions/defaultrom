@@ -5,7 +5,9 @@ if [ "a$2" != "a" ]; then
 fi;
 
 if [ -f $EXTERNAL_STORAGE/.defaultrom ]; then
-	cat $EXTERNAL_STORAGE/.defaultrom
-else
-	echo 0
+	if [ `cat $EXTERNAL_STORAGE/.defaultrom` -eq "1" ]; then
+		echo "1"
+	else
+		echo "0"
+	fi;
 fi;

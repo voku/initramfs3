@@ -52,8 +52,8 @@ PROFILE=`cat /data/.siyah/.active.profile`;
 case "${config_backup_restore}" in
 	1)
 		echo "Backup config file ...";
-		cp /data/.siyah/$PROFILE.profile /data/.siyah/$PROFILE.profile_backup;
-		cp /data/.siyah/$PROFILE.profile /sdcard/$PROFILE.profile_backup;
+		cp /data/.siyah/${PROFILE}.profile /data/.siyah/${PROFILE}.profile_backup;
+		cp /data/.siyah/${PROFILE}.profile /sdcard/${PROFILE}.profile_backup;
 		echo "Backup Done!";
 	;;
 	2)

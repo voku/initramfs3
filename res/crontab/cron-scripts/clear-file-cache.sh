@@ -3,7 +3,7 @@
 
 (
 	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
+	. /data/.siyah/${PROFILE}.profile;
 
 	if [ "$cron_clear_app_cache" == "on" ]; then
 

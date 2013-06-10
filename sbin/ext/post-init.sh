@@ -71,7 +71,7 @@ chmod 777 /tmp/cpu-voltage_group;
 VDD_INT=`cat /tmp/cpu-voltage_group | cut -c 24`;
 
 if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ] && [ "$VDD_INT" != "4" ]; then
-	if [ "$VDD_INT" == "1" ]; then
+	if [ "$VDD_INT" -eq "1" ]; then
 		$BB sh /res/uci.sh cpu-voltage 1 1475;
 		$BB sh /res/uci.sh cpu-voltage 2 1450;
 		$BB sh /res/uci.sh cpu-voltage 3 1400;
@@ -88,7 +88,7 @@ if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ] && [ "$VDD_INT" !
 		$BB sh /res/uci.sh cpu-voltage 14 1000;
 		$BB sh /res/uci.sh cpu-voltage 15 1000;
 		$BB sh /res/uci.sh cpu-voltage 16 1000;
-	elif [ "$VDD_INT" == "2" ]; then
+	elif [ "$VDD_INT" -eq "2" ]; then
 		$BB sh /res/uci.sh cpu-voltage 1 1450;
 		$BB sh /res/uci.sh cpu-voltage 2 1425;
 		$BB sh /res/uci.sh cpu-voltage 3 1350;
@@ -105,7 +105,7 @@ if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ] && [ "$VDD_INT" !
 		$BB sh /res/uci.sh cpu-voltage 14 975;
 		$BB sh /res/uci.sh cpu-voltage 15 975;
 		$BB sh /res/uci.sh cpu-voltage 16 975;
-	elif [ "$VDD_INT" == "5" ]; then
+	elif [ "$VDD_INT" -eq "5" ]; then
 		$BB sh /res/uci.sh cpu-voltage 1 1400;
 		$BB sh /res/uci.sh cpu-voltage 2 1375;
 		$BB sh /res/uci.sh cpu-voltage 3 1300;
@@ -194,7 +194,7 @@ fi;
 	MIUI_JB=0;
 	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 
-	if [ $init_d == on ] || [ "$MIUI_JB" == 1 ]; then
+	if [ $init_d == on ] || [ "$MIUI_JB" -eq "1" ]; then
 		$BB sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
@@ -253,7 +253,7 @@ chmod 666 /tmp/uci_done;
 	fi;
 
 	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
-	if [ `cat /tmp/pri_rom_boot` == "1" ]; then
+	if [ `cat /tmp/pri_rom_boot` -eq "1" ]; then
 		if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
 			mount -o remount,rw /
 			mkdir /data_sec_rom;
@@ -273,7 +273,7 @@ chmod 666 /tmp/uci_done;
 		else
 			echo "no sec data image found! abort."
 		fi;
-	elif [ `cat /tmp/sec_rom_boot` == "1" ]; then
+	elif [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
 		mount -o remount,rw /
 		mkdir /data_pri_rom;
 		chmod 777 /data_pri_rom;
@@ -282,7 +282,7 @@ chmod 666 /tmp/uci_done;
 
 	# restore normal freq
 	echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-	if [ "$scaling_max_freq" == "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
+	if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	else
 		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
@@ -341,7 +341,7 @@ chmod 666 /tmp/uci_done;
 	JELLY=0;
 	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
 	[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
-	if [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
+	if [ "$JELLY" -eq "1" ] || [ "$MIUI_JB" -eq "1" ]; then
 		if [ "$jb_sound_fix" == "on" ]; then
 			input keyevent 25
 			input keyevent 25

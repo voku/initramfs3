@@ -1,9 +1,9 @@
 #!/sbin/busybox sh
 
-if [ "a$2" != "a" ]; then
+PROFILE=`cat /data/.siyah/.active.profile`;
+MAX_FREQ_OC=`cat /data/.siyah/${PROFILE}.profile | grep scaling_max_freq_oc | sed -e 's/scaling_max_freq_oc=//g'`;
 
-	PROFILE=`cat /data/.siyah/.active.profile`;
-	. /data/.siyah/$PROFILE.profile;
+if [ "a$2" != "a" ]; then
 
 	filename=$(basename "$2");
 
@@ -18,8 +18,8 @@ if [ "a$2" != "a" ]; then
 		eval $evalcmd;
 
 		if [ -f $2 ]; then
-			if [ "$newfreq" == "1000000" ] && [ "$scaling_max_freq_oc" -ge "1000000" ]; then
-				echo "$scaling_max_freq_oc" > $2;
+			if [ "$newfreq" -eq "1000000" ] && [ "$MAX_FREQ_OC" -gt "1000000" ]; then
+				echo "$MAX_FREQ_OC" > $2;
 			else
 				echo "$newfreq" > $2;
 			fi;

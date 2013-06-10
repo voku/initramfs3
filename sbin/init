@@ -115,23 +115,23 @@ NOBOOTLOGO=0;
 [ -f /mnt/tmp/.secondrom/cache.img ] || SECONDROM=0;
 [ -f /mnt/tmp/.nobootlogo ] && NOBOOTLOGO=1;
 
-if [ "$SECONDROM" == "0" ]; then
-	if [ "$NOBOOTLOGO" == "0" ]; then
+if [ "$SECONDROM" -eq "0" ]; then
+	if [ "$NOBOOTLOGO" -eq "0" ]; then
 		/sbin/choose_rom $SECONDROM;
 	fi;
 else
-	if [ "$NEXTBOOT" == "1" ]; then
+	if [ "$NEXTBOOT" -eq "1" ]; then
 		SECONDROM=0;
-	elif [ "$NEXTBOOT" == "2" ]; then
+	elif [ "$NEXTBOOT" -eq "2" ]; then
 		SECONDROM=1;
 	else
-		if [ "$NOBOOTLOGO" == "1" ]; then
+		if [ "$NOBOOTLOGO" -eq "1" ]; then
 			SECONDROM=$DEFAULTROM;
 
-		elif [ "$DEFAULTROM" == "1" ]; then
+		elif [ "$DEFAULTROM" -eq "1" ]; then
 			/sbin/choose_rom $SECONDROM;
 
-			if [ "$?" == "1" ]; then
+			if [ "$?" -eq "1" ]; then
 				SECONDROM=0;
 			else
 				SECONDROM=1;
@@ -139,7 +139,7 @@ else
 		else
 			/sbin/choose_rom $SECONDROM;
 
-			if [ "$?" == "1" ]; then
+			if [ "$?" -eq "1" ]; then
 				SECONDROM=1;
 			else
 				SECONDROM=0;
@@ -148,7 +148,7 @@ else
 	fi;
 fi;
 
-if [ "$SECONDROM" == "1" ]; then
+if [ "$SECONDROM" -eq "1" ]; then
 	$BB rm -rf /res/dev;
 	mkdir -p /res/dev;
 	ln -s /mnt/.secondrom/.secondrom/data.img /res/dev/data;
@@ -170,7 +170,7 @@ fi;
 $BB mount -t ext4 /res/dev/system /system;
 
 # fixing second rom partitions
-if [ "$SECONDROM" == "1" ]; then
+if [ "$SECONDROM" -eq "1" ]; then
 	if [ -e /mnt/tmp/.secondrom/data.img ]; then
 		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/data.img" > /fix_data_log;
 		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/cache.img" > /fix_cache_log;
@@ -184,7 +184,7 @@ $BB umount -l /mnt/tmp;
 SECROM_FUNCTION_AOSP()
 {
 	# init.rc style JB/CM/AOKP
-	if [ "$SECONDROM" == "1" ]; then
+	if [ "$SECONDROM" -eq "1" ]; then
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		$BB rm /init.rc.2;
 	else
@@ -196,7 +196,7 @@ SECROM_FUNCTION_AOSP()
 SECROM_FUNCTION_SAMMY()
 {
 	# init.rc style SAMMY ICS
-	if [ "$SECONDROM" == "1" ]; then
+	if [ "$SECONDROM" -eq "1" ]; then
 		$BB mv /init.smdk4210.rc.2 /init.smdk4210.rc;
 		$BB mv /init.rc.2 /init.rc
 	else
@@ -328,11 +328,11 @@ PARTITION_TUNING()
 	fi;
 
 	# check 'X2' partitions, if needed
-	if [ "$NEED_CHECK_CACHE" == "1" ]; then
+	if [ "$NEED_CHECK_CACHE" -eq "1" ]; then
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
-	if [ "$NEED_CHECK_DATA" == "1" ]; then
+	if [ "$NEED_CHECK_DATA" -eq "1" ]; then
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
@@ -360,7 +360,7 @@ PARTITION_TUNING()
 
 USER_ACTIONS()
 {
-	if [ "$JBSAMMY" == "1" ]; then
+	if [ "$JBSAMMY" -eq "1" ]; then
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
@@ -434,8 +434,8 @@ $BB chmod -R 777 /tmp/;
 # Starting ROM choose and INIT config.
 ######################################
 
-if [ "$JBSAMMY" == "1" ] || [ "$JBSAMMY2" == "1" ]; then
-	if [ "$KERNEL_9X" == "1" ]; then
+if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ]; then
+	if [ "$KERNEL_9X" -eq "1" ]; then
 		echo "wrong kernel" > /tmp/wrong_kernel;
 	fi;
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
@@ -457,7 +457,7 @@ if [ "$JBSAMMY" == "1" ] || [ "$JBSAMMY2" == "1" ]; then
 
 	SECROM_FUNCTION_AOSP;
 
-elif [ "$CM_AOKP_10_JB_CARBON" == "1" ]; then
+elif [ "$CM_AOKP_10_JB_CARBON" -eq "1" ]; then
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	echo "3" > /proc/sys/kernel/rom_feature_set;
@@ -467,7 +467,7 @@ elif [ "$CM_AOKP_10_JB_CARBON" == "1" ]; then
 
 	SECROM_FUNCTION_AOSP;
 
-elif [ "$CM_AOKP_10_JB" == "1" ]; then
+elif [ "$CM_AOKP_10_JB" -eq "1" ]; then
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	echo "3" > /proc/sys/kernel/rom_feature_set;
@@ -476,7 +476,7 @@ elif [ "$CM_AOKP_10_JB" == "1" ]; then
 
 	SECROM_FUNCTION_AOSP;
 
-elif [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
+elif [ "$JELLY" -eq "1" ] || [ "$MIUI_JB" -eq "1" ]; then
 	# Injecting JB Modded by Dorimanx, SUPER libsqlite!
 	POWER_SQL_JB;
 	echo "3" > /proc/sys/kernel/rom_feature_set;
@@ -485,7 +485,7 @@ elif [ "$JELLY" == "1" ] || [ "$MIUI_JB" == "1" ]; then
 	SECROM_FUNCTION_AOSP;
 
 else
-	if [ "$KERNEL_9X" == "1" ]; then
+	if [ "$KERNEL_9X" -eq "1" ]; then
 		echo "wrong kernel" > /tmp/wrong_kernel;
 	fi;
 	# If not detected Known ROM, then SAMMY ICS ROM installed.
