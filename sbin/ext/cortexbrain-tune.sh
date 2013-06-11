@@ -22,6 +22,7 @@ PIDOFCORTEX=$$;
 DATA_DIR=/data/.siyah
 WAS_IN_SLEEP_MODE=1;
 NOW_CALL_STATE=0;
+USB_POWER=0;
 
 # WIFI HELPER
 WIFI_HELPER_AWAKE="$DATA_DIR/WIFI_HELPER_AWAKE";
@@ -991,23 +992,25 @@ CENTRAL_CPU_FREQ()
 
 	if [ "$cortexbrain_cpu" == on ]; then
 		if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
-			local scaling_max_freq=$scaling_max_freq_oc;
+			MAX_FREQ=`echo $scaling_max_freq_oc`;
 		else
-			local scaling_max_freq=$scaling_max_freq;
+			MAX_FREQ=`echo $scaling_max_freq`;
 		fi;
 
 		if [ "$state" == "wake_boost" ]; then
-			if [ "$scaling_max_freq" -gt "1000000" ]; then
-				echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+			if [ "$MAX_FREQ" -gt "1000000" ]; then
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			else
 				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
 		elif [ "$state" == "awake_normal" ]; then
 			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		elif [ "$state" == "standby_freq" ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -1295,11 +1298,11 @@ SLIDE2WAKE_FIX()
 	if [ "$tsp_slide2wake" == on ]; then
 		if [ "$state" == "offline" ] && [ "$SLIDE_STATE" -eq "1" ]; then
 			echo "0" > $tsp_slide2wake_call_tmp;
+			log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
 		elif [ "$state" == "oncall" ]; then
 			echo "1" > $tsp_slide2wake_call_tmp;
+			log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
 		fi;
-
-		log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
 	fi;
 }
 
@@ -1322,14 +1325,6 @@ CALL_STATE()
 	fi;
 }
 
-USB_POWER_WAKE()
-{
-	MEGA_BOOST_CPU_TWEAKS;
-	BOOST_DELAY;
-	CENTRAL_CPU_FREQ "awake_normal";
-	ECO_TWEAKS;
-}
-
 VIBRATE_FIX()
 {
 	echo "$vibrator_level" > /sys/vibrator/vibrator_level;
@@ -1345,6 +1340,8 @@ VIBRATE_FIX()
 	elif [ "$vibrator_level" -eq "-1" ]; then
 		echo "0" > /sys/vibrator/pwm_val;
 	fi;
+
+	log -p i -t $FILE_NAME "*** VIBRATE_FIX: done ***";
 }
 
 # ==============================================================
@@ -1352,48 +1349,59 @@ VIBRATE_FIX()
 # ==============================================================
 AWAKE_MODE()
 {
-	ENABLEMASK "awake";
+	# Do not touch this
 	CALL_STATE;
-	SLIDE2WAKE_FIX "offline";
 	VIBRATE_FIX;
+	SLIDE2WAKE_FIX "offline";
 
-	if [ "$cortexbrain_cpu" == on ] && [ "$NOW_CALL_STATE" -eq "1" ]; then
+	# Check call state, if on call dont sleep
+	if [ "$NOW_CALL_STATE" -eq "1" ]; then
 		CENTRAL_CPU_FREQ "awake_normal";
 		NOW_CALL_STATE=0;
 	else
-		if [ "$USB_POWER" -eq "1" ]; then
-			USB_POWER_WAKE;
-			USB_POWER=0;
+		# not on call, check if was powerd by USB on sleep, or didnt sleep at all
+		if [ "$WAS_IN_SLEEP_MODE" -eq "1" ] && [ "$USB_POWER" -eq "0" ]; then
+			ENABLEMASK "awake";
+			CPU_GOVERNOR "awake";
+			LOGGER "awake";
+			UKSMCTL "awake";
+			MALI_TIMEOUT "wake_boost";
+			BUS_THRESHOLD "wake_boost";
+#			KERNEL_SCHED "awake";
+			KERNEL_TWEAKS "awake";
+			NET "awake";
+			MOBILE_DATA "awake";
+			WIFI "awake";
+			MEGA_BOOST_CPU_TWEAKS;
+			IO_SCHEDULER "awake";
+			GESTURES "awake";
+			GAMMA_FIX;
+			TOUCH_KEYS_CORRECTION;
+			MOUNT_SD_CARD;
+			BOOST_DELAY;
+			ENTROPY "awake";
+			VFS_CACHE_PRESSURE "awake";
+			TWEAK_HOTPLUG_ECO "awake";
+			CENTRAL_CPU_FREQ "awake_normal";
+			MALI_TIMEOUT "awake";
+			BUS_THRESHOLD "awake";
+			ECO_TWEAKS;
 		else
+			# Was powered by USB, and half sleep
+			ENABLEMASK "awake";
+			MEGA_BOOST_CPU_TWEAKS;
+			MALI_TIMEOUT "wake_boost";
+			GESTURES "awake";
+			BOOST_DELAY;
+			BATTERY_TWEAKS;
+			MALI_TIMEOUT "awake";
+			CENTRAL_CPU_FREQ "awake_normal";
+			ECO_TWEAKS;
 			USB_POWER=0;
-		fi;
-	fi;
 
-	if [ "$WAS_IN_SLEEP_MODE" -eq "1" ]; then
-		CPU_GOVERNOR "awake";
-		LOGGER "awake";
-		UKSMCTL "awake";
-		MALI_TIMEOUT "wake_boost";
-		BUS_THRESHOLD "wake_boost";
-#		KERNEL_SCHED "awake";
-		KERNEL_TWEAKS "awake";
-		NET "awake";
-		MOBILE_DATA "awake";
-		WIFI "awake";
-		MEGA_BOOST_CPU_TWEAKS;
-		IO_SCHEDULER "awake";
-		GESTURES "awake";
-		GAMMA_FIX;
-		TOUCH_KEYS_CORRECTION;
-		MOUNT_SD_CARD;
-		BOOST_DELAY;
-		ENTROPY "awake";
-		VFS_CACHE_PRESSURE "awake";
-		TWEAK_HOTPLUG_ECO "awake";
-		CENTRAL_CPU_FREQ "awake_normal";
-		MALI_TIMEOUT "awake";
-		BUS_THRESHOLD "awake";
-		ECO_TWEAKS;
+			log -p i -t $FILE_NAME "*** USB_POWER_WAKE: done ***";
+		fi;
+		#Didn't sleep, and was not powered by USB
 	fi;
 }
 
@@ -1413,13 +1421,16 @@ SLEEP_MODE()
 		TELE_DATA=`dumpsys telephony.registry`;
 	fi;
 
-	ENABLEMASK "sleep";
+	# Check call state
 	CALL_STATE;
 
+	# Check Early Wakeup
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
 
+	# check if early_wakeup, or we on call
 	if [ "$TMP_EARLY_WAKEUP" -eq "0" ] && [ "$NOW_CALL_STATE" -eq "0" ]; then
 		WAS_IN_SLEEP_MODE=1;
+		ENABLEMASK "sleep";
 		CENTRAL_CPU_FREQ "standby_freq";
 		MALI_TIMEOUT "sleep";
 		GESTURES "sleep";
@@ -1428,6 +1439,7 @@ SLEEP_MODE()
 		CROND_SAFETY;
 		SWAPPINESS;
 
+		# check if we powered by USB, if not sleep
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" -eq "0" ]; then
 			CPU_GOVERNOR "sleep";
@@ -1450,10 +1462,12 @@ SLEEP_MODE()
 
 			LOGGER "sleep";
 		else
+			# Powered by USB
 			USB_POWER=1;
 			log -p i -t $FILE_NAME "*** SLEEP mode: USB CABLE CONNECTED! No real sleep mode! ***";
 		fi;
 	else
+		# Check if on call
 		if [ "$NOW_CALL_STATE" -eq "1" ]; then
 			CENTRAL_CPU_FREQ "sleep_call";
 			SLIDE2WAKE_FIX "oncall";
@@ -1461,6 +1475,7 @@ SLEEP_MODE()
 
 			log -p i -t $FILE_NAME "*** on call: SLEEP aborted! ***";
 		else
+			# Early Wakeup detected
 			log -p i -t $FILE_NAME "*** early wake up: SLEEP aborted! ***";
 		fi;
 	fi;
