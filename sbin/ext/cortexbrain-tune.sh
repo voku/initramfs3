@@ -1353,6 +1353,9 @@ AWAKE_MODE()
 	CALL_STATE;
 	VIBRATE_FIX;
 	SLIDE2WAKE_FIX "offline";
+	MOUNT_SD_CARD;
+	TOUCH_KEYS_CORRECTION;
+	GAMMA_FIX;
 
 	# Check call state, if on call dont sleep
 	if [ "$NOW_CALL_STATE" -eq "1" ]; then
@@ -1375,9 +1378,6 @@ AWAKE_MODE()
 			MEGA_BOOST_CPU_TWEAKS;
 			IO_SCHEDULER "awake";
 			GESTURES "awake";
-			GAMMA_FIX;
-			TOUCH_KEYS_CORRECTION;
-			MOUNT_SD_CARD;
 			BOOST_DELAY;
 			ENTROPY "awake";
 			VFS_CACHE_PRESSURE "awake";
