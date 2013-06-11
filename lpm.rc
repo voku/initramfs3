@@ -15,8 +15,7 @@ on init
 
     mkdir /system
     mkdir /tmp
-    mkdir /mnt 0775 root root
-
+    mkdir /mnt/sdcard 0775 root root
 
 on boot
 # CPU Frequency Governor
