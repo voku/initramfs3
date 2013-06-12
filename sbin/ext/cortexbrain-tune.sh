@@ -21,7 +21,8 @@ PIDOFCORTEX=$$;
 # (since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history)
 DATA_DIR=/data/.siyah
 WAS_IN_SLEEP_MODE=1;
-ON_CALL=0;
+NOW_CALL_STATE=0;
+USB_POWER=0;
 
 # WIFI HELPER
 WIFI_HELPER_AWAKE="$DATA_DIR/WIFI_HELPER_AWAKE";
@@ -34,7 +35,7 @@ MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
 # change mode
-chmod 777 -R /tmp/;
+chmod -R 777 /tmp/;
 chmod 766 /sys/kernel/mm/uksm/run;
 chmod 766 /sys/kernel/mm/uksm/sleep_millisecs;
 chmod 766 /sys/kernel/mm/uksm/max_cpu_percentage;
@@ -49,19 +50,11 @@ echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
 echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
 
 # check if dumpsys exist in ROM
-DUMPSYS_STATE()
-{
-	local state=0;
-
-	if [ -e /system/bin/dumpsys ]; then
-		state=1;
-	fi;
-
-	log -p i -t $FILE_NAME "*** DUMPSYS_STATE: ${state} ***";
-
-	return ${state};
-}
-DUMPSYS_STATE=$(DUMPSYS_STATE);
+if [ -e /system/bin/dumpsys ]; then
+	DUMPSYS_STATE=1;
+else
+	DUMPSYS_STATE=0;
+fi;
 
 # ==============================================================
 # I/O-TWEAKS 
@@ -111,7 +104,7 @@ IO_TWEAKS()
 		if [ -e /sys/block/mmcblk1/queue/read_ahead_kb ]; then
 			if [ "$cortexbrain_read_ahead_kb" -eq "0" ]; then
 
-				local SDCARD_SIZE=$(cat /tmp/sdcard_size);
+				local SDCARD_SIZE=`cat /tmp/sdcard_size`;
 				if [ "$SDCARD_SIZE" -eq "1" ]; then
 					echo "256" > /sys/block/mmcblk1/queue/read_ahead_kb;
 				elif [ "$SDCARD_SIZE" -eq "4" ]; then
@@ -197,25 +190,6 @@ SYSTEM_TWEAKS()
 SYSTEM_TWEAKS;
 
 # ==============================================================
-# ECO-TWEAKS
-# ==============================================================
-ECO_TWEAKS()
-{
-	if [ "$cortexbrain_eco" == on ]; then
-		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
-		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
-			TWEAK_HOTPLUG_ECO "sleep";
-		fi;
-
-		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
-
-		return 1;
-	else
-		return 0;
-	fi;
-}
-
-# ==============================================================
 # BATTERY-TWEAKS
 # ==============================================================
 BATTERY_TWEAKS()
@@ -244,7 +218,7 @@ BATTERY_TWEAKS()
 		fi;
 
 		# USB: power support
-		local POWER_LEVEL=`ls /sys/bus/usb/devices/*/power/level`;
+		local POWER_LEVEL=`ls /sys/bus/usb/devices/*/power/control`;
 		for i in $POWER_LEVEL; do
 			chmod 777 $i;
 			echo "auto" > $i;
@@ -284,7 +258,7 @@ fi;
 
 CPU_INTELLI_PLUG_TWEAKS()
 {
-	local SYSTEM_GOVERNOR="$1";
+	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 	local intelli_plug_active_tmp="/sys/module/intelli_plug/parameters/intelli_plug_active";
 
 	if [ -e $intelli_plug_active_tmp ]; then
@@ -574,9 +548,9 @@ CPU_GOV_TWEAKS()
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
 		fi;
 
-		CPU_INTELLI_PLUG_TWEAKS ${SYSTEM_GOVERNOR};
+		CPU_INTELLI_PLUG_TWEAKS;
 
-		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: ${state} ***: enabled";
+		log -p i -t $FILE_NAME "*** CPU_GOV_TWEAKS: $state ***: enabled";
 
 		return 1;
 	else
@@ -621,7 +595,6 @@ MEMORY_TWEAKS;
 ENTROPY()
 {
 	local state="$1";
-
 	USED_PROFILE=`cat $DATA_DIR/.active.profile`;
 
 	if [ "$state" == "awake" ]; then
@@ -706,27 +679,26 @@ FIREWALL_TWEAKS;
 UKSMCTL()
 {
 	local state="$1";
-
 	local uksm_run_tmp="/sys/kernel/mm/uksm/run";
 	if [ ! -e $uksm_run_tmp ]; then
 		uksm_run_tmp="/dev/null";
 	fi;
 
-	if [ "$cortexbrain_uksm_control" == on ] && $uksm_run_tmp != "/dev/null"; then
+	if [ "$cortexbrain_uksm_control" == on ] && [ "$uksm_run_tmp" != "/dev/null" ]; then
 		echo "1" > $uksm_run_tmp;
-		renice -n 10 -p "`pidof uksmd`";
+		renice -n 10 -p `pidof uksmd`;
 
 		if [ "$state" == "awake" ]; then
 			echo "500" > /sys/kernel/mm/uksm/sleep_millisecs; # max: 1000
 			echo "medium" > /sys/kernel/mm/uksm/cpu_governor;
 
-			log -p i -t $FILE_NAME "*** uksm: awake, sleep=0,5sec, max_cpu=90% ***";
+			log -p i -t $FILE_NAME "*** uksm: awake, sleep=0,5sec, max_cpu=50% ***";
 
 		elif [ "$state" == "sleep" ]; then
 			echo "1000" > /sys/kernel/mm/uksm/sleep_millisecs; # max: 1000
 			echo "quiet" > /sys/kernel/mm/uksm/cpu_governor;
 
-			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=1sec, max_cpu=<1% ***";
+			log -p i -t $FILE_NAME "*** uksm: sleep, sleep=1sec, max_cpu=1% ***";
 		fi;
 	else
 		echo "0" > $uksm_run_tmp;
@@ -809,17 +781,17 @@ MOBILE_DATA_SET()
 
 MOBILE_DATA_STATE()
 {
-	local state=0;
-
 	if [ $DUMPSYS_STATE -eq "1" ]; then
 		local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
 
 		if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
-			state=1;
+			DATA_STATE_CHECK=1;
+		else
+			DATA_STATE_CHECK=0;
 		fi;
+	else
+		DATA_STATE_CHECK=0;
 	fi;
-
-	return $state;
 }
 
 MOBILE_DATA()
@@ -828,7 +800,8 @@ MOBILE_DATA()
 
 	if [ "$cortexbrain_auto_tweak_mobile" == on ]; then
 		if [ "$state" == "sleep" ]; then
-			if [ "$MOBILE_DATA_STATE" -eq "1" ]; then
+			MOBILE_DATA_STATE;
+			if [ "$DATA_STATE_CHECK" -eq "1" ]; then
 				if [ "$cortexbrain_auto_tweak_mobile_sleep_delay" -eq "0" ]; then
 					MOBILE_DATA_SET "off";
 				else
@@ -986,64 +959,91 @@ TWEAK_HOTPLUG_ECO()
 	return 1;
 }
 
+# ==============================================================
+# ECO-TWEAKS
+# ==============================================================
+ECO_TWEAKS()
+{
+	if [ "$cortexbrain_eco" == on ]; then
+		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
+		if [ "$LEVEL" -le "$cortexbrain_eco_level" ]; then
+			TWEAK_HOTPLUG_ECO "sleep";
+			CPU_GOV_TWEAKS "sleep";
+
+			log -p i -t $FILE_NAME "*** AWAKE: ECO-Mode ***";
+		else
+			CPU_GOV_TWEAKS "awake";
+
+			log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
+		fi;
+
+		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: enabled";
+	else
+		CPU_GOV_TWEAKS "awake";
+
+		log -p i -t $FILE_NAME "*** ECO_TWEAKS ***: disabled";
+		log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
+	fi;
+}
+
 CENTRAL_CPU_FREQ()
 {
 	local state="$1";
 
-	if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
-		scaling_max_freq=$scaling_max_freq_oc;
-	else
-		scaling_max_freq=$scaling_max_freq;
-	fi;
-
-	if [ "$state" == "wake_boost" ]; then
-		if [ "$scaling_max_freq" -gt "1000000" ]; then
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+	if [ "$cortexbrain_cpu" == on ]; then
+		if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
+			MAX_FREQ=`echo $scaling_max_freq_oc`;
 		else
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+			MAX_FREQ=`echo $scaling_max_freq`;
 		fi;
-	elif [ "$state" == "awake_normal" ]; then
-		echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	elif [ "$state" == "standby_freq" ]; then
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-	elif [ "$state" == "sleep_freq" ]; then
-		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	elif [ "$state" == "sleep_call" ]; then
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-		echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
-		# brain cooking prevention during call
-		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-		echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-	fi;
 
-	log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: $state ***: done";
+		if [ "$state" == "wake_boost" ]; then
+			if [ "$MAX_FREQ" -gt "1000000" ]; then
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			else
+				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			fi;
+		elif [ "$state" == "awake_normal" ]; then
+			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+			echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		elif [ "$state" == "standby_freq" ]; then
+			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+		elif [ "$state" == "sleep_freq" ]; then
+			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		elif [ "$state" == "sleep_call" ]; then
+			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
+			# brain cooking prevention during call
+			echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		fi;
+
+		log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: $state ***: done";
+	else
+		log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: NOT CHANGED ***: done";
+	fi;
 }
 
 # boost CPU power for fast and no lag wakeup
 MEGA_BOOST_CPU_TWEAKS()
 {
 	if [ "$cortexbrain_cpu" == on ]; then
-
 		CPU_GOV_TWEAKS "wake_boost";
-
 		CENTRAL_CPU_FREQ "wake_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
-
-		return 0;
 	else
 		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
-
-		return 1;
 	fi;
 }
 
@@ -1074,16 +1074,21 @@ SWAPPINESS;
 # disable/enable ipv6  
 IPV6()
 {
-	local CISCO_VPN=`find /data/data/com.cisco.anyconnec* | wc -l`;
 	local state='';
 
-	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" != 0 ]; then
+	if [ -e /data/data/com.cisco.anyconnec* ]; then
+		local CISCO_VPN=1;
+	else
+		local CISCO_VPN=0;
+	fi;
+
+	if [ "$cortexbrain_ipv6" == on ] || [ "$CISCO_VPN" -eq "1" ]; then
 		echo "0" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
-		sysctl -w net.ipv6.conf.all.disable_ipv6=0;
+		sysctl -w net.ipv6.conf.all.disable_ipv6=0 > /dev/null;
 		local state="enabled";
 	else
 		echo "1" > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6;
-		sysctl -w net.ipv6.conf.all.disable_ipv6=1;
+		sysctl -w net.ipv6.conf.all.disable_ipv6=1 > /dev/null;
 		local state="disabled";
 	fi;
 
@@ -1141,8 +1146,8 @@ BLN_CORRECTION()
 				/res/uci.sh bln_switch 2;
 			fi;
 		else
-			/res/uci.sh bln_switch 0;
-			/res/uci.sh generic /sys/class/misc/notification/notification_timeout 0;
+			/res/uci.sh bln_switch 0 > /dev/null;
+			/res/uci.sh generic /sys/class/misc/notification/notification_timeout 0 > /dev/null;
 		fi;
 
 		if [ "$dyn_brightness" == on ]; then
@@ -1166,7 +1171,7 @@ TOUCH_KEYS_CORRECTION()
 	if [ "$led_timeout_ms" -eq "0" ]; then
 		echo "0" > /sys/class/misc/notification/led_timeout_ms;
 	else
-		/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms;
+		/res/uci.sh generic /sys/class/misc/notification/led_timeout_ms $led_timeout_ms > /dev/null;
 	fi;
 
 	log -p i -t $FILE_NAME "*** TOUCH_KEYS_CORRECTION: $dyn_brightness - ${led_timeout_ms}ms ***";
@@ -1189,7 +1194,7 @@ CROND_SAFETY()
 
 GAMMA_FIX()
 {
-	local min_gamm_tmp="/sys/class/misc/brightness_curve/min_gamm";
+	local min_gamm_tmp="/sys/class/misc/brightness_curve/min_gamma";
 	if [ -e $min_gamm_tmp ]; then
 		min_gamm_tmp="/dev/null";
 	fi;
@@ -1208,7 +1213,6 @@ GAMMA_FIX()
 ENABLEMASK()
 {
 	local state="$1";
-
 	local enable_mask_tmp="/sys/module/cpuidle_exynos4/parameters/enable_mask";
 	if [ -e $enable_mask_tmp ]; then
 		enable_mask_tmp="/dev/null";
@@ -1232,7 +1236,6 @@ ENABLEMASK()
 IO_SCHEDULER()
 {
 	local state="$1";
-
 	local sys_mmc0_scheduler_tmp="/sys/block/mmcblk0/queue/scheduler";
 	if [ -e $sys_mmc0_scheduler_tmp ]; then
 		sys_mmc0_scheduler_tmp="/dev/null";
@@ -1264,20 +1267,23 @@ CPU_GOVERNOR()
 {
 	local state="$1";
 	local scaling_governor_tmp="/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor";
-
 	local tmp_governor=`cat $scaling_governor_tmp`;
 
-	if [ "$state" == "awake" ]; then
-		if [ "$tmp_governor" != $scaling_governor ]; then
-			echo "$scaling_governor" > $scaling_governor_tmp;
+	if [ "$cortexbrain_cpu" == on ]; then
+		if [ "$state" == "awake" ]; then
+			if [ "$tmp_governor" != $scaling_governor ]; then
+				echo "$scaling_governor" > $scaling_governor_tmp;
+			fi;
+		elif [ "$state" == "sleep" ]; then
+			if [ "$tmp_governor" != $scaling_governor_sleep ]; then
+				echo "$scaling_governor_sleep" > $scaling_governor_tmp;
+			fi;
 		fi;
-	elif [ "$state" == "sleep" ]; then
-		if [ "$tmp_governor" != $scaling_governor_sleep ]; then
-			echo "$scaling_governor_sleep" > $scaling_governor_tmp;
-		fi;
-	fi;
 
-	log -p i -t $FILE_NAME "*** CPU_GOVERNOR: $state ***: done";
+		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: $state ***: done";
+	else
+		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: NO CHANGED ***: done";
+	fi;
 }
 
 SLIDE2WAKE_FIX()
@@ -1292,31 +1298,50 @@ SLIDE2WAKE_FIX()
 	if [ "$tsp_slide2wake" == on ]; then
 		if [ "$state" == "offline" ] && [ "$SLIDE_STATE" -eq "1" ]; then
 			echo "0" > $tsp_slide2wake_call_tmp;
+			log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
 		elif [ "$state" == "oncall" ]; then
 			echo "1" > $tsp_slide2wake_call_tmp;
+			log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
 		fi;
-
-		log -p i -t $FILE_NAME "*** SLIDE2WAKE_FIX: $state ***: done";
 	fi;
 }
 
 CALL_STATE()
 {
-	local state=0;
-
-	if [ $DUMPSYS_STATE -eq "1" ]; then
+	if [ "$DUMPSYS_STATE" -eq "1" ]; then
 
 		# check the call state, not on call = 0, on call = 2
 		local state_tmp=`echo "$TELE_DATA" | awk '/mCallState/ {print $1}'`;
 
 		if [ "$state_tmp" != "mCallState=0" ]; then
-			state=1;
+			NOW_CALL_STATE=1;
+		else
+			NOW_CALL_STATE=0;
 		fi;
 
-		log -p i -t $FILE_NAME "*** CALL_STATE: $state ***";
+		log -p i -t $FILE_NAME "*** CALL_STATE: $NOW_CALL_STATE ***";
+	else
+		NOW_CALL_STATE=0;
+	fi;
+}
+
+VIBRATE_FIX()
+{
+	echo "$vibrator_level" > /sys/vibrator/vibrator_level;
+
+	if [ "$vibrator_level" -eq "9" ]; then
+		echo "100" > /sys/vibrator/pwm_val;
+	elif [ "$vibrator_level" -eq "7" ]; then
+		echo "75" > /sys/vibrator/pwm_val;
+	elif [ "$vibrator_level" -eq "5" ]; then
+		echo "50" > /sys/vibrator/pwm_val;
+	elif [ "$vibrator_level" -eq "3" ]; then
+		echo "25" > /sys/vibrator/pwm_val;
+	elif [ "$vibrator_level" -eq "-1" ]; then
+		echo "0" > /sys/vibrator/pwm_val;
 	fi;
 
-	return $state;
+	log -p i -t $FILE_NAME "*** VIBRATE_FIX: done ***";
 }
 
 # ==============================================================
@@ -1324,75 +1349,59 @@ CALL_STATE()
 # ==============================================================
 AWAKE_MODE()
 {
-	ENABLEMASK "awake";
-
+	# Do not touch this
+	CALL_STATE;
+	VIBRATE_FIX;
 	SLIDE2WAKE_FIX "offline";
+	MOUNT_SD_CARD;
+	TOUCH_KEYS_CORRECTION;
+	GAMMA_FIX;
 
-	if [ "$cortexbrain_cpu" == on ] && [ "$ON_CALL" -eq "1" ]; then
+	# Check call state, if on call dont sleep
+	if [ "$NOW_CALL_STATE" -eq "1" ]; then
 		CENTRAL_CPU_FREQ "awake_normal";
-		ON_CALL=0;
-	fi;
-
-	if [ "$WAS_IN_SLEEP_MODE" -eq "1" ]; then
-
-		CPU_GOVERNOR "awake";
-
-		LOGGER "awake";
-
-		UKSMCTL "awake";
-
-		MALI_TIMEOUT "wake_boost";
-
-		BUS_THRESHOLD "wake_boost";
-
-#		KERNEL_SCHED "awake";
-
-		KERNEL_TWEAKS "awake";
-
-		NET "awake";
-
-		MOBILE_DATA "awake";
-
-		WIFI "awake";
-
-		MEGA_BOOST_CPU_TWEAKS;
-
-		IO_SCHEDULER "awake";
-
-		GESTURES "awake";
-
-		GAMMA_FIX;
-
-		TOUCH_KEYS_CORRECTION;
-
-		MOUNT_SD_CARD;
-
-		echo "$vibrator_level" > /sys/vibrator/vibrator_level;
-
-		BOOST_DELAY;
-
-		ENTROPY "awake";
-
-		VFS_CACHE_PRESSURE "awake";
-
-		TWEAK_HOTPLUG_ECO "awake";
-
-		if [ "$cortexbrain_cpu" == on ]; then
+		NOW_CALL_STATE=0;
+	else
+		# not on call, check if was powerd by USB on sleep, or didnt sleep at all
+		if [ "$WAS_IN_SLEEP_MODE" -eq "1" ] && [ "$USB_POWER" -eq "0" ]; then
+			ENABLEMASK "awake";
+			CPU_GOVERNOR "awake";
+			LOGGER "awake";
+			UKSMCTL "awake";
+			MALI_TIMEOUT "wake_boost";
+			BUS_THRESHOLD "wake_boost";
+#			KERNEL_SCHED "awake";
+			KERNEL_TWEAKS "awake";
+			NET "awake";
+			MOBILE_DATA "awake";
+			WIFI "awake";
+			MEGA_BOOST_CPU_TWEAKS;
+			IO_SCHEDULER "awake";
+			GESTURES "awake";
+			BOOST_DELAY;
+			ENTROPY "awake";
+			VFS_CACHE_PRESSURE "awake";
+			TWEAK_HOTPLUG_ECO "awake";
 			CENTRAL_CPU_FREQ "awake_normal";
-		fi;
-
-		MALI_TIMEOUT "awake";
-
-		BUS_THRESHOLD "awake";
-
-		ECO_TWEAKS;
-		if [ "$?" -eq "1" ]; then
-			CPU_GOV_TWEAKS "awake";
-			log -p i -t $FILE_NAME "*** AWAKE: Normal-Mode ***";
+			MALI_TIMEOUT "awake";
+			BUS_THRESHOLD "awake";
+			ECO_TWEAKS;
 		else
-			CPU_GOV_TWEAKS "sleep";
-			log -p i -t $FILE_NAME "*** AWAKE: ECO-Mode ***";
+			# Was powered by USB, and half sleep
+			ENABLEMASK "awake";
+			MEGA_BOOST_CPU_TWEAKS;
+			MALI_TIMEOUT "wake_boost";
+			GESTURES "awake";
+			BOOST_DELAY;
+			BATTERY_TWEAKS;
+			MALI_TIMEOUT "awake";
+			CENTRAL_CPU_FREQ "awake_normal";
+			ECO_TWEAKS;
+			USB_POWER=0;
+
+			log -p i -t $FILE_NAME "*** USB_POWER_WAKE: done ***";
 		fi;
+		#Didn't sleep, and was not powered by USB
 	fi;
 }
 
@@ -1408,83 +1417,65 @@ SLEEP_MODE()
 	. $DATA_DIR/${PROFILE}.profile;
 
 	# we only read tele-data when the screen turns off ...
-	if [ $DUMPSYS_STATE == 1 ]; then
+	if [ "$DUMPSYS_STATE" -eq "1" ]; then
 		TELE_DATA=`dumpsys telephony.registry`;
 	fi;
 
-	ENABLEMASK "sleep";
+	# Check call state
+	CALL_STATE;
 
-	local CALL_STATE=$CALL_STATE;
+	# Check Early Wakeup
 	local TMP_EARLY_WAKEUP=`cat /tmp/early_wakeup`;
 
-	if [ "$TMP_EARLY_WAKEUP" -eq "0" ] && [ "$CALL_STATE" -eq "0" ]; then
-
+	# check if early_wakeup, or we on call
+	if [ "$TMP_EARLY_WAKEUP" -eq "0" ] && [ "$NOW_CALL_STATE" -eq "0" ]; then
 		WAS_IN_SLEEP_MODE=1;
-
-		if [ "$cortexbrain_cpu" == on ]; then
-			CENTRAL_CPU_FREQ "standby_freq";
-		fi;
-
+		ENABLEMASK "sleep";
+		CENTRAL_CPU_FREQ "standby_freq";
 		MALI_TIMEOUT "sleep";
-
-		NET "sleep";
-
-		WIFI "sleep";
-
-		MOBILE_DATA "sleep";
-
 		GESTURES "sleep";
-
-		IPV6;
-
 		BATTERY_TWEAKS;
-
 		BLN_CORRECTION;
-
 		CROND_SAFETY;
-
 		SWAPPINESS;
 
+		# check if we powered by USB, if not sleep
 		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" -eq "0" ]; then
-			if [ "$cortexbrain_cpu" == on ]; then
-				CPU_GOVERNOR "sleep"
-				CENTRAL_CPU_FREQ "sleep_freq";
-				CPU_GOV_TWEAKS "sleep";
-			fi;
-
+			CPU_GOVERNOR "sleep";
+			CENTRAL_CPU_FREQ "sleep_freq";
+			CPU_GOV_TWEAKS "sleep";
 			IO_SCHEDULER "sleep";
-
 			BUS_THRESHOLD "sleep";
-
 #			KERNEL_SCHED "sleep";
-
 			UKSMCTL "sleep";
-
 			ENTROPY "sleep";
-
+			NET "sleep";
+			WIFI "sleep";
+			MOBILE_DATA "sleep";
+			IPV6;
 			TWEAK_HOTPLUG_ECO "sleep";
-
 			VFS_CACHE_PRESSURE "sleep";
-
 			KERNEL_TWEAKS "sleep";
-		
+
 			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 
 			LOGGER "sleep";
 		else
+			# Powered by USB
+			USB_POWER=1;
 			log -p i -t $FILE_NAME "*** SLEEP mode: USB CABLE CONNECTED! No real sleep mode! ***";
 		fi;
 	else
-		if [ "$CALL_STATE" -eq "1" ]; then
-			if [ "$cortexbrain_cpu" == on ]; then
-				CENTRAL_CPU_FREQ "sleep_call";
-				ON_CALL=1;
-			fi;
+		# Check if on call
+		if [ "$NOW_CALL_STATE" -eq "1" ]; then
+			CENTRAL_CPU_FREQ "sleep_call";
 			SLIDE2WAKE_FIX "oncall";
+			NOW_CALL_STATE=1;
 
 			log -p i -t $FILE_NAME "*** on call: SLEEP aborted! ***";
 		else
+			# Early Wakeup detected
 			log -p i -t $FILE_NAME "*** early wake up: SLEEP aborted! ***";
 		fi;
 	fi;
