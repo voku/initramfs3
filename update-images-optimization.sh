@@ -11,11 +11,11 @@
 
 find . -iname '*.png' | parallel optipng -o7 {};
 
-for file in `find . -name "*.png"`; do
-   echo $file;
-   pngcrush -rem alla -reduce -brute "$file" tmp_img_file.png;
-   mv -f tmp_img_file.png $file;
-done;
+#for file in `find . -name "*.png"`; do
+#   echo $file;
+#   pngcrush -rem alla -reduce -brute "$file" tmp_img_file.png;
+#   mv -f tmp_img_file.png $file;
+#done;
 
 find . -iname '*.jpg' | parallel jpegoptim --force {};
 
