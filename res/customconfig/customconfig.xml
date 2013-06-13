@@ -534,6 +534,12 @@
 
 		<checkbox description="Slide2Wake By Fluxi@xda. When screen is turned off, swipe from the left side of the screen to the right side of the screen, and the screen will be turned on!" name="Slide2Wake ON or OFF switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
 
+		<checkbox description="Enable or Disable frequency-booster by touch." name="Touch-Booster" action="generic /sys/devices/virtual/sec/sec_touchscreen/touchbooster_enabled" label="Touch-Booster"/>
+
+		<seekBar description="Touch-Booster - CPU-Speed: CPU Frequency step by 100.000 kHz are valid from 100.000 kHz to 8.000.000 kHz! (Default: 500.000 kHz)" name="Touch Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/touchbooster_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
+
+		<seekBar description="Touch-Booster - frequency-booster for some time. default: 2000 (2sec)" name="Touch Frequency - time" action="generic /sys/devices/virtual/sec/sec_touchscreen/touchbooster_msecs_on" unit="MSec" min="100" reversed="false" step="100" max="10000"/>
+        
 		<checkbox description="Enable inverting screen colors by quickly pressing Home button." name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
 
 		<spinner description="Negative Color. Screen effect settings. Fast clicking Home button for the number of times configured will activate MOD." name="Negative Screen Mod tuning." action="negative_tweak">
