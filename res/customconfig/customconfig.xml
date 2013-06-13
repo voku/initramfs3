@@ -391,7 +391,7 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<!-- <checkbox description="Enable or Disable Ultra KSM. This will merge some memory but need some cpu-power and so also battery-time." name="Ultra KSM" action="generic /sys/kernel/mm/uksm/run" label="Ultra KSM"/>
+		<!-- <checkbox description="Enable or Disable Ultra KSM. This will merge some memory but need some cpu-power and so also battery-time." name="Ultra KSM" action="generic01 /sys/kernel/mm/uksm/run" label="Ultra KSM"/>
 
 		<seekBar description="How long will uksmd sleep before it wakes up and does its work. default: 1000 (1sec)" name="Ultra KSM: sleep" action="generic /sys/kernel/mm/uksm/sleep_millisecs" unit="MSec" min="100" reversed="false" step="50" max="1000"/>
 
@@ -534,7 +534,7 @@
 
 		<checkbox description="Slide2Wake By Fluxi@xda. When screen is turned off, swipe from the left side of the screen to the right side of the screen, and the screen will be turned on!" name="Slide2Wake ON or OFF switch" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake" label="Slide2Wake Switch"/>
 
-		<checkbox description="Enable or Disable frequency-booster by touch." name="Touch-Booster" action="generic /sys/devices/virtual/sec/sec_touchscreen/touchbooster_enabled" label="Touch-Booster"/>
+		<checkbox description="Enable or Disable frequency-booster by touch." name="Touch-Booster" action="generic01 /sys/devices/virtual/sec/sec_touchscreen/touchbooster_enabled" label="Touch-Booster"/>
 
 		<seekBar description="Touch-Booster - CPU-Speed: CPU Frequency step by 100.000 kHz are valid from 100.000 kHz to 8.000.000 kHz! (Default: 500.000 kHz)" name="Touch Frequency" action="genericfreq /sys/devices/virtual/sec/sec_touchscreen/touchbooster_freq" unit="kHz" min="100000" reversed="false" step="100000" max="800000"/>
 
