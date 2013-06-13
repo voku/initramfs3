@@ -5,7 +5,7 @@
 
 		<seekBar description="Boot booster frequency. CPU will hold single min or max frequency when ROM booting, DEAR USER! If your CPU cannot handle 1.5Ghz or 1.6Ghz, setting it here will STUCK your device on boot until you reset profiles via recovery! USE AT YOUR OWN RISK! (default 1.200.000 kHz)" name="Boot CPU Frequency" action="generic_cortex /tmp/boot_boost" unit="kHz" min="1000000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, all is set back to normal." name="Cortex Wakeup Boost" action="generic_cortex /tmp/wakeup_boost" unit="Sec" min="0" reversed="false" step="1" max="15"/>
+		<seekBar description="Here you can change Cortex Wakeup Boost. It will give you full CPU power but only for the set time. After that time, all is set back to normal. !!! Depends on CortexBrain-Background-Process !!!" name="Cortex Wakeup Boost" action="generic_cortex /tmp/wakeup_boost" unit="Sec" min="0" reversed="false" step="1" max="15"/>
 
 	</settingsPane>
 
@@ -37,7 +37,7 @@
 			<spinnerItem name="Idle only" value="0"/> 
 		</spinner>
 
-		<spinner description="Sets the CPU Idle Mode (Sleep Mode). For best stability use Idle + LPA. (Default: AFTR + LPA)" name="CPU Idle Mode (Sleep Mode)" action="generic_cortex /tmp/enable_mask_sleep">
+		<spinner description="Sets the CPU Idle Mode (Sleep Mode). For best stability use Idle + LPA. (Default: AFTR + LPA) !!! Depends on CortexBrain-Background-Process !!!" name="CPU Idle Mode (Sleep Mode)" action="generic_cortex /tmp/enable_mask_sleep">
 			<spinnerItem name="AFTR + LPA" value="3"/> 
 			<spinnerItem name="Idle + LPA" value="2"/> 
 			<spinnerItem name="AFTR only" value="1"/> 
@@ -50,7 +50,7 @@
 
 		<seekBar description="Minimum DEEP SLEEP CPU speed. (Default: 200.000 kHz)" name="scaling_min_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
-		<seekBar description="Minimum STANDBY or ON CALL (music playing or on call and screen off) CPU speed. If music still shutter, rise frequency to 300.000kHz or 400.000kHz. (Default: 200.000 kHz)" name="scaling_min_standby_freq" action="generic_cortex /tmp/standby_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+		<seekBar description="Minimum STANDBY or ON CALL (on call and screen off) CPU speed. (Default: 200.000 kHz) !!! Depends on CortexBrain-Background-Process !!!" name="scaling_min_standby_freq" action="generic_cortex /tmp/standby_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
 	</settingsPane>
 
@@ -104,7 +104,7 @@
 
 <settingsTab name="CPU-TUNING (AWAKE)">
 
-	<settingsPane description="Here you can manage advanced governor settings, if cortexbrain background-process and CPU are enabled. These settings are active only if the screen is on." name="Governor Parameters tuning">
+	<settingsPane description="Here you can manage advanced governor settings. These settings are active only if the screen is on. !!! Depends on CortexBrain-Background-Process and CortexBrain-CPU-Tweaks!!!" name="Governor Parameters tuning">
 
 		<spinner description="This will set the AWAKE (screen ON) CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution), and can be overridden by any other scripts or applications." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
 			<spinnerItem name="conservative" value="conservative"/> 
@@ -206,9 +206,9 @@
 
 <settingsTab name="CPU-TUNING (SLEEP)">
 
-	<settingsPane description="Here you can manage advanced governor settings, if cortexbrain background-process and CPU are enabled. These settings are only active when the screen is off." name="Governor Parameters tuning">
+	<settingsPane description="Here you can manage advanced governor settings. These settings are only active when the screen is off. !!! Depends on CortexBrain-Background-Process and CortexBrain-CPU-Tweaks!!!" name="Governor Parameters tuning">
 
-		<spinner description="This will set the DEEP SLEEP (screen off) CPU governor. Depends on cortex background process to be enabled." name="Deep-Sleep! CPU Governor" action="generic_cortex /tmp/scaling_governor_sleep">
+		<spinner description="This will set the DEEP SLEEP (screen off) CPU governor." name="Deep-Sleep! CPU Governor" action="generic_cortex /tmp/scaling_governor_sleep">
 			<spinnerItem name="conservative" value="conservative"/> 
 			<spinnerItem name="HYPER" value="HYPER"/> 
 			<spinnerItem name="zzmoove" value="zzmoove"/> 
@@ -303,7 +303,7 @@
 
 	<settingsPane description="Here you can tune IO settings managed by Kernel" name="IO Tuning">
 
-		<spinner description="Maximum number of kilobytes to read-ahead for EXTERNAL SDCARD! file systems on this device. Best to leave it AUTO, then script will detect your external sdcard size and set the best value for it! the INTERNAL sdcard will get 1024kB as default and best for 16GB storage, Works only if IO-Tweaks tweak is enabled! (Default: 128 kB)" name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
+		<spinner description="Maximum number of kilobytes to read-ahead for EXTERNAL SDCARD! file systems on this device. Best to leave it AUTO, then script will detect your external sdcard size and set the best value for it! the INTERNAL sdcard will get 1024kB as default and best for 16GB storage, Works only if IO-Tweaks tweak is enabled! (Default: 128 kB) !!! Depends on CortexBrain-Background-Process !!!" name="kilobytes to read-ahead" action="generic_cortex /tmp/cortexbrain_read_ahead_kb">
 			<spinnerItem name="AUTO" value="0"/> 
 			<spinnerItem name="128 kB" value="128"/> 
 			<spinnerItem name="256 kB" value="256"/> 
@@ -324,7 +324,7 @@
 			<spinnerItem name="FIFO" value="fifo"/> 
 		</spinner>
 
-		<spinner description="This will set the STANDBY and DEEPSLEEP IO scheduler for internal, system, data and external sdcard. (Default: ROW)" name="STANDBY and DEEPSLEEP IO Scheduler" action="generic_cortex /tmp/sleep_scheduler">
+		<spinner description="This will set the STANDBY and DEEPSLEEP IO scheduler for internal, system, data and external sdcard. (Default: ROW) !!! Depends on CortexBrain-Background-Process !!!" name="STANDBY and DEEPSLEEP IO Scheduler" action="generic_cortex /tmp/sleep_scheduler">
 			<spinnerItem name="CFQ" value="cfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
 			<spinnerItem name="NOOP" value="noop"/> 
@@ -391,7 +391,18 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<checkbox description="Enable or Disable Ultra KSM Control. This will merge some memory but need cpu-power + battery. This depends on cortex background, so you have to stop and start the servive or reboot your phone." name="Ultra KSM Control" action="generic_cortex /tmp/cortexbrain_uksm_control" label="Ultra KSM Control"/>
+		<checkbox description="Enable or Disable Ultra KSM. This will merge some memory but need some cpu-power and so also battery-time." name="Ultra KSM" action="generic /sys/kernel/mm/uksm/run" label="Ultra KSM"/>
+
+		<seekBar description="How long will uksmd sleep before it wakes up and does its work. default: 1000 (1sec)" name="Ultra KSM: sleep" action="generic /sys/kernel/mm/uksm/sleep_millisecs" unit="MSec" min="100" reversed="false" step="50" max="1000"/>
+
+		<spinner description="The macro governors for controlling how aggressively the uksmd uses CPU. (Default: full)" name="Ultra KSM: governor" action="generic /sys/kernel/mm/uksm/cpu_governor">
+			<spinnerItem name="full (90%)" value="full"/> 
+			<spinnerItem name="medium (50%)" value="medium"/> 
+			<spinnerItem name="low (20%)" value="low"/> 
+			<spinnerItem name="quiet (1%)" value="quiet"/> 
+		</spinner>
+
+		<checkbox description="Enable or Disable Ultra KSM Control. !!! Depends on CortexBrain-Background-Process !!!" name="Ultra KSM: Control" action="generic_cortex /tmp/cortexbrain_uksm_control" label="Ultra KSM Control"/>
 
 		<button description="Ultra KSM state check" name="Ultra KSM STATS" action="push-actions/uksmstats" label="Ultra KSM STATS"/>
 
@@ -532,7 +543,7 @@
 
 	</settingsPane>
 
-	<settingsPane description="Here you can control kernel screen gestures, set at data - gesture_set.sh. More can be added by user. This tweak depends on cortex background service to be enabled." name="Gestures panel">
+	<settingsPane description="Here you can control kernel screen gestures, set at data - gesture_set.sh. More can be added by user. !!! Depends on CortexBrain-Background-Process !!!" name="Gestures panel">
 
 		<checkbox description="Here you can turn on or off kernel built in gestures! See OP for instructions or ask in forum." name="Gestures switch" action="generic_gestures /tmp/gesture_tweak" label="Gestures switch"/>
 
@@ -733,7 +744,7 @@
 			<spinnerItem name="Force MTP Mode" value="mtp-adb"/> 
 		</spinner>
 
-		<checkbox description="If checked, Mass-Storage-SDCARDS will be auto-mounted when USB connected. then you can transfer files on high speed from PC to device. (Default: On)" name="Auto Mount USB Drives" action="generic_cortex /tmp/auto_mount_sd" label="Auto Mount USB Drives"/>
+		<checkbox description="If checked, Mass-Storage-SDCARDS will be auto-mounted when USB connected. then you can transfer files on high speed from PC to device. (Default: On) !!! Depends on CortexBrain-Background-Process !!!" name="Auto Mount USB Drives" action="generic_cortex /tmp/auto_mount_sd" label="Auto Mount USB Drives"/>
 
 		<button description="Dual Mount-SDCARD and MMC via USB. After USB is disconnected, Dual Mount is disabled! This tweak is working automatically. Plug USB, turn off the screen and then turn ON, and you get working mounts. To scan your new MEDIA files, use some app to force Media Scan." name="DUAL MOUNT" action="push-actions/dualmount" label="Dual Mount"/>
 
@@ -783,7 +794,7 @@
 
 	<settingsPane description="Remove OR Reinstall ROOT! You can have a ROOTED or not ROOTED phone." name="Root">
 
-		<button description="Root Install. Click to install ROOT (SuperUser) + ROM Busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! This function depends on CORTEX process to be enabled!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
+		<button description="Root Install. Click to install ROOT (SuperUser) + ROM Busybox if existed. In case you have used the remove button, to Reinstall ROOT first REMOVE it! !!! Depends on CortexBrain-Background-Process !!!" name="ROOT INSTALL" action="push-actions/root_install" label="INSTALL ROOT"/>
 
 		<button description="Root Uninstall. Click to remove Any ROOT installed + Busybox (kernel Busybox remains, but is hidden from system) To install ROOT check the Auto-Install Root and REBOOT." name="ROOT REMOVE" action="push-actions/root_remove" label="REMOVE ROOT"/>
 
@@ -797,7 +808,7 @@
 
 <settingsTab name="Tweaks">
 
-	<settingsPane description="This script will manipulate many kernel settings, based on chosen STweaks profile + settings and on screen state (ON or OFF) and we call it CortexBrain. To reset the kernel-settings, after you disable a tweak, you must reboot!" name="CortexBrain  Tweaks">
+	<settingsPane description="This script will manipulate many kernel settings, based on chosen STweaks profile + settings and on screen state (ON or OFF) and we call it CortexBrain. To reset the kernel-settings, after you disable a tweak, you must reboot!" name="CortexBrain Tweaks">
 
 		<spinner description="Enable or Disable the background-process from CortexBrain. If you disable it, you will lose the function that set different settings for screen state (ON or OFF)." name="Cortexbrain-Background-Process" action="cortexbrain_background_process">
 			<spinnerItem name="Enable" value="1"/> 
@@ -806,19 +817,19 @@
 
 		<button description="Click to see if the CortexBrain-Background-Process is running or not." name="Check Background-Process" action="push-actions/cortexbrain_background_process_check" label="CHECK SERVICE"/>
 
-		<spinner description="Here you can control android logger logcat. If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. If USB or Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Android Logger control" action="android_logger">
+		<spinner description="Here you can control android logger logcat. If you set it to AUTO, then you will have logs only on screen is on. When screen will be off, logger will be disabled to save battery. If you set DEBUG, it will be working no matter what! If set to DISABLED, logging will be off, no matter what. If USB or Charger is connected and logger is set to AUTO, logging will not be disabled so we can debug. !!! Depends on CortexBrain-Background-Process !!!" name="Android Logger control" action="android_logger">
 			<spinnerItem name="AUTO" value="auto"/> 
 			<spinnerItem name="DEBUG" value="debug"/> 
 			<spinnerItem name="DISABLED" value="disabled"/> 
 		</spinner>
 
-		<checkbox description="Enable or Disable the DATA turns off while screen is off function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Auto-DATA" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile" label="Force Auto-Data"/>
+		<checkbox description="Enable or Disable the DATA turns off while screen is off function. !!! Depends on CortexBrain-Background-Process !!!" name="Auto-DATA" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile" label="Force Auto-Data"/>
 
-		<seekBar description="Here you can set a delay before DATA is forced to OFF when screen is turned off. Works only if Auto-DATA is Enabled! (dynamic by cortex)." name="DATA Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
+		<seekBar description="Here you can set a delay before DATA is forced to OFF when screen is turned off. !!! Depends on CortexBrain-Auto-DATA!!!" name="DATA Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_mobile_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
 
-		<checkbox description="Enable or Disable the Wifi turns off while screen is off function. Depends on CortexBrain-Background-Process to be enabled! (dynamic by cortex)." name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
+		<checkbox description="Enable or Disable the Wifi turns off while screen is off function. !!! Depends on CortexBrain-Background-Process !!!" name="Auto-Wifi" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi" label="Force Auto-Wifi"/>
 
-		<seekBar description="Here you can set a delay before WIFI is forced to OFF when screen is turned off. Works only if Auto-Wifi is Enabled! (dynamic by cortex)." name="WIFI Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
+		<seekBar description="Here you can set a delay before WIFI is forced to OFF when screen is turned off. !!! Depends on CortexBrain-Auto-Wifi !!!" name="WIFI Turn Off Delay (in sec)" action="generic_cortex /tmp/cortexbrain_auto_tweak_wifi_sleep_delay" unit="sec" min="0" reversed="false" step="30" max="300"/>
 
 		<checkbox description="Enable or Disable ICMP only Firewall-Tweaks (reboot needed)." name="Firewall-Tweaks" action="generic_cortex /tmp/cortexbrain_firewall" label="Firewall-Tweaks"/>
 
@@ -826,17 +837,17 @@
 
 		<checkbox description="Enable or Disable TCP-RAM-Tweaks (reboot needed)." name="TCP-RAM-Tweaks" action="generic_cortex /tmp/cortexbrain_tcp_ram" label="TCP-RAM-Tweaks"/>
 
-		<checkbox description="Enable or Disable IPv6 Network. (dynamic by cortex)." name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/>
+		<checkbox description="Enable or Disable IPv6 Network. !!! Depends on CortexBrain-Background-Process !!!" name="IPv6 Tweaks" action="generic_cortex /tmp/cortexbrain_ipv6" label="IPv6"/>
 
-		<checkbox description="Enable or Disable CPU-Tweaks (dynamic by cortex)." name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
+		<checkbox description="Enable or Disable CPU-Tweaks (reboot needed)." name="CPU-Tweaks" action="generic_cortex /tmp/cortexbrain_cpu" label="CPU-Tweaks"/>
 
 		<checkbox description="Enable or Disable Memory-Tweaks (reboot needed)." name="Memory-Tweaks" action="generic_cortex /tmp/cortexbrain_memory" label="Memory-Tweaks"/>
 
 		<checkbox description="Enable or Disable Battery-Tweaks (reboot needed)." name="Battery-Tweaks" action="generic_cortex /tmp/cortexbrain_battery" label="Battery-Tweaks"/>
 
-		<checkbox description="Enable or Disable Eco-Tweaks (reboot needed)." name="Eco-Tweaks" action="generic_cortex /tmp/cortexbrain_eco" label="Eco-Tweaks"/>
+		<checkbox description="Enable or Disable Eco-Tweaks. !!! Depends on CortexBrain-Background-Process !!!" name="Eco-Tweaks" action="generic_cortex /tmp/cortexbrain_eco" label="Eco-Tweaks"/>
 
-		<spinner description="From what percentage battery life, the eco-mode is activated? Depends on Eco-Tweaks!" name="Eco-Level" action="generic_cortex /tmp/cortexbrain_eco_level">
+		<spinner description="From what percentage battery life, the eco-mode is activated? !!! Depends on CortexBrain-Eco-Tweaks !!!" name="Eco-Level" action="generic_cortex /tmp/cortexbrain_eco_level">
 			<spinnerItem name="2%" value="2"/> 
 			<spinnerItem name="5%" value="5"/> 
 			<spinnerItem name="10%" value="10"/> 

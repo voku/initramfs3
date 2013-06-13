@@ -35,11 +35,7 @@ MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
 # change mode
-chmod -R 777 /tmp/;
-chmod 766 /sys/kernel/mm/uksm/run;
-chmod 766 /sys/kernel/mm/uksm/sleep_millisecs;
-chmod 766 /sys/kernel/mm/uksm/max_cpu_percentage;
-chmod 766 /sys/kernel/mm/uksm/cpu_governor;
+chmod -R 1777 /tmp/;
 
 # get values from profile
 PROFILE=`cat $DATA_DIR/.active.profile`;
