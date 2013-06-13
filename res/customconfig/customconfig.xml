@@ -391,7 +391,7 @@
 
 		<button description="ZRAM state check" name="ZRAM STATS" action="push-actions/zramstats" label="ZRAM STATS"/>
 
-		<checkbox description="Enable or Disable Ultra KSM. This will merge some memory but need some cpu-power and so also battery-time." name="Ultra KSM" action="generic /sys/kernel/mm/uksm/run" label="Ultra KSM"/>
+		<!-- <checkbox description="Enable or Disable Ultra KSM. This will merge some memory but need some cpu-power and so also battery-time." name="Ultra KSM" action="generic /sys/kernel/mm/uksm/run" label="Ultra KSM"/>
 
 		<seekBar description="How long will uksmd sleep before it wakes up and does its work. default: 1000 (1sec)" name="Ultra KSM: sleep" action="generic /sys/kernel/mm/uksm/sleep_millisecs" unit="MSec" min="100" reversed="false" step="50" max="1000"/>
 
@@ -400,7 +400,7 @@
 			<spinnerItem name="medium (50%)" value="medium"/> 
 			<spinnerItem name="low (20%)" value="low"/> 
 			<spinnerItem name="quiet (1%)" value="quiet"/> 
-		</spinner>
+		</spinner> -->
 
 		<checkbox description="Enable or Disable Ultra KSM Control. !!! Depends on CortexBrain-Background-Process !!!" name="Ultra KSM: Control" action="generic_cortex /tmp/cortexbrain_uksm_control" label="Ultra KSM Control"/>
 
