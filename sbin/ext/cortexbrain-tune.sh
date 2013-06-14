@@ -13,16 +13,45 @@
 #
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
+# change mode for /tmp/
+chmod -R 1777 /tmp/;
+
 # ==============================================================
-# INIT
+# GLOBAL VARIABLES || without "local" also a variable in a function is global
 # ==============================================================
+
 FILE_NAME=$0;
 PIDOFCORTEX=$$;
 # (since we don't have the recovery source code I can't change the ".siyah" dir, so just leave it there for history)
-DATA_DIR=/data/.siyah
+DATA_DIR=/data/.siyah;
 WAS_IN_SLEEP_MODE=1;
 NOW_CALL_STATE=0;
 USB_POWER=0;
+# read sd-card size, set via boot
+SDCARD_SIZE=`cat /tmp/sdcard_size`;
+
+# ==============================================================
+# INITIATE
+# ==============================================================
+
+# get values from profile
+PROFILE=`cat $DATA_DIR/.active.profile`;
+. $DATA_DIR/${PROFILE}.profile;
+
+# check if dumpsys exist in ROM
+if [ -e /system/bin/dumpsys ]; then
+	DUMPSYS_STATE=1;
+else
+	DUMPSYS_STATE=0;
+fi;
+
+# set initial vm.dirty vales
+echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
+echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
+
+# ==============================================================
+# FILES FOR VARIABLES || we need this for write variables from child-processes to parent
+# ==============================================================
 
 # WIFI HELPER
 WIFI_HELPER_AWAKE="$DATA_DIR/WIFI_HELPER_AWAKE";
@@ -34,28 +63,6 @@ MOBILE_HELPER_AWAKE="$DATA_DIR/MOBILE_HELPER_AWAKE";
 MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
-# change mode
-chmod -R 777 /tmp/;
-chmod 766 /sys/kernel/mm/uksm/run;
-chmod 766 /sys/kernel/mm/uksm/sleep_millisecs;
-chmod 766 /sys/kernel/mm/uksm/max_cpu_percentage;
-chmod 766 /sys/kernel/mm/uksm/cpu_governor;
-
-# get values from profile
-PROFILE=`cat $DATA_DIR/.active.profile`;
-. $DATA_DIR/${PROFILE}.profile;
-
-# set initial vm.dirty vales
-echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
-
-# check if dumpsys exist in ROM
-if [ -e /system/bin/dumpsys ]; then
-	DUMPSYS_STATE=1;
-else
-	DUMPSYS_STATE=0;
-fi;
-
 # ==============================================================
 # I/O-TWEAKS 
 # ==============================================================
@@ -63,18 +70,20 @@ IO_TWEAKS()
 {
 	if [ "$cortexbrain_io" == on ]; then
 
+		local i="";
+
 		local ZRM=`ls -d /sys/block/zram*`;
-		for z in $ZRM; do
-			if [ -e $z/queue/rotational ]; then
-				echo "0" > $z/queue/rotational;
+		for i in $ZRM; do
+			if [ -e $i/queue/rotational ]; then
+				echo "0" > $i/queue/rotational;
 			fi;
 
-			if [ -e $z/queue/iostats ]; then
-				echo "0" > $z/queue/iostats;
+			if [ -e $i/queue/iostats ]; then
+				echo "0" > $i/queue/iostats;
 			fi;
 
-			if [ -e $z/queue/rq_affinity ]; then
-				echo "1" > $z/queue/rq_affinity;
+			if [ -e $i/queue/rq_affinity ]; then
+				echo "1" > $i/queue/rq_affinity;
 			fi;
 		done;
 
@@ -104,7 +113,6 @@ IO_TWEAKS()
 		if [ -e /sys/block/mmcblk1/queue/read_ahead_kb ]; then
 			if [ "$cortexbrain_read_ahead_kb" -eq "0" ]; then
 
-				local SDCARD_SIZE=`cat /tmp/sdcard_size`;
 				if [ "$SDCARD_SIZE" -eq "1" ]; then
 					echo "256" > /sys/block/mmcblk1/queue/read_ahead_kb;
 				elif [ "$SDCARD_SIZE" -eq "4" ]; then
@@ -200,6 +208,8 @@ BATTERY_TWEAKS()
 		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		local CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
 		local BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
+		loacl i="";
+		local bus="";
 
 		log -p i -t $FILE_NAME "*** BATTERY - LEVEL: $LEVEL - CUR: $CURR_ADC ***";
 
@@ -231,7 +241,7 @@ BATTERY_TWEAKS()
 		done;
 
 		# BUS: power support
-		buslist="spi i2c sdio";
+		local buslist="spi i2c sdio";
 		for bus in $buslist; do
 			local POWER_CONTROL=`ls /sys/bus/$bus/devices/*/power/control`;
 			for i in $POWER_CONTROL; do
@@ -595,10 +605,9 @@ MEMORY_TWEAKS;
 ENTROPY()
 {
 	local state="$1";
-	USED_PROFILE=`cat $DATA_DIR/.active.profile`;
 
 	if [ "$state" == "awake" ]; then
-		if [ "$USED_PROFILE" != "battery" ] || [ "$USED_PROFILE" != "extreme_battery" ]; then
+		if [ "$PROFILE" != "battery" ] || [ "$PROFILE" != "extreme_battery" ]; then
 			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
 		else
@@ -610,7 +619,7 @@ ENTROPY()
 		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
 	fi;
 
-	log -p i -t $FILE_NAME "*** ENTROPY ***: $state";
+	log -p i -t $FILE_NAME "*** ENTROPY ***: $state - $PROFILE";
 }
 
 # ==============================================================
@@ -741,7 +750,7 @@ WIFI()
 						sleep 10;
 						if [ `cat $WIFI_HELPER_TMP` -eq "0" ]; then
 							# user did not turned screen on, so keep waiting
-							SLEEP_TIME_WIFI=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
+							local SLEEP_TIME_WIFI=$(( $cortexbrain_auto_tweak_wifi_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_WIFI $cortexbrain_auto_tweak_wifi_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME_WIFI;
 							if [ `cat $WIFI_HELPER_TMP` -eq "0" ]; then
@@ -781,16 +790,14 @@ MOBILE_DATA_SET()
 
 MOBILE_DATA_STATE()
 {
+	DATA_STATE_CHECK=0;
+
 	if [ $DUMPSYS_STATE -eq "1" ]; then
 		local DATA_STATE=`echo "$TELE_DATA" | awk '/mDataConnectionState/ {print $1}'`;
 
 		if [ "$DATA_STATE" != "mDataConnectionState=0" ]; then
 			DATA_STATE_CHECK=1;
-		else
-			DATA_STATE_CHECK=0;
 		fi;
-	else
-		DATA_STATE_CHECK=0;
 	fi;
 }
 
@@ -811,7 +818,7 @@ MOBILE_DATA()
 						sleep 10;
 						if [ `cat $MOBILE_HELPER_TMP` -eq "0" ]; then
 							# user did not turned screen on, so keep waiting
-							SLEEP_TIME_DATA=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
+							local SLEEP_TIME_DATA=$(( $cortexbrain_auto_tweak_mobile_sleep_delay - 10 ));
 							log -p i -t $FILE_NAME "*** DISABLE_MOBILE $cortexbrain_auto_tweak_mobile_sleep_delay Sec Delay Mode ***";
 							sleep $SLEEP_TIME_DATA;
 							if [ `cat $MOBILE_HELPER_TMP` -eq "0" ]; then
@@ -1235,32 +1242,43 @@ ENABLEMASK()
 
 IO_SCHEDULER()
 {
-	local state="$1";
-	local sys_mmc0_scheduler_tmp="/sys/block/mmcblk0/queue/scheduler";
-	if [ -e $sys_mmc0_scheduler_tmp ]; then
-		sys_mmc0_scheduler_tmp="/dev/null";
-	fi;
+	if [ "$cortexbrain_io" == on ]; then
 
-	local sys_mmc1_scheduler_tmp="/sys/block/mmcblk1/queue/scheduler";
-	if [ -e $sys_mmc1_scheduler_tmp ]; then
-		sys_mmc1_scheduler_tmp="/dev/null";
-	fi;
+		local state="$1";
+		local sys_mmc0_scheduler_tmp="/sys/block/mmcblk0/queue/scheduler";
+		local sys_mmc1_scheduler_tmp="/sys/block/mmcblk1/queue/scheduler";
+		local tmp_scheduler="";
 
-	local tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
-
-	if [ "$state" == "awake" ]; then
-		if [ "$tmp_scheduler" != "$scheduler" ]; then
-			echo "$scheduler" > $sys_mmc0_scheduler_tmp;
-			echo "$scheduler" > $sys_mmc1_scheduler_tmp;
+		if [ -e $sys_mmc0_scheduler_tmp ]; then
+			sys_mmc0_scheduler_tmp="/dev/null";
 		fi;
-	elif [ "$state" == "sleep" ]; then
-		if [ "$tmp_scheduler" != "$sleep_scheduler" ]; then
-			echo "$sleep_scheduler" > $sys_mmc0_scheduler_tmp;
-			echo "$sleep_scheduler" > $sys_mmc1_scheduler_tmp;
-		fi;
-	fi;
 
-	log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state ***: done";
+		if [ -e $sys_mmc1_scheduler_tmp ]; then
+			sys_mmc1_scheduler_tmp="/dev/null";
+		fi;
+
+		tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
+
+		if [ "$state" == "awake" ]; then
+			if [ "$tmp_scheduler" != "$scheduler" ]; then
+				echo "$scheduler" > $sys_mmc0_scheduler_tmp;
+				echo "$scheduler" > $sys_mmc1_scheduler_tmp;
+			fi;
+		elif [ "$state" == "sleep" ]; then
+			if [ "$tmp_scheduler" != "$sleep_scheduler" ]; then
+				echo "$sleep_scheduler" > $sys_mmc0_scheduler_tmp;
+				echo "$sleep_scheduler" > $sys_mmc1_scheduler_tmp;
+			fi;
+		fi;
+
+		echo "$scheduler" > $sys_mmc0_scheduler_tmp;
+		echo "$scheduler" > $sys_mmc1_scheduler_tmp;
+
+		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state ***: done";
+
+		# set I/O Tweaks again ...
+		IO_TWEAKS;
+	fi;
 }
 
 CPU_GOVERNOR()
@@ -1289,10 +1307,11 @@ CPU_GOVERNOR()
 SLIDE2WAKE_FIX()
 {
 	local state="$1";
-
+	local SLIDE_STATE=0;
 	local tsp_slide2wake_call_tmp="/sys/devices/virtual/sec/sec_touchscreen/tsp_slide2wake_call";
+
 	if [ -e $tsp_slide2wake_call_tmp ]; then
-		local SLIDE_STATE=`cat $tsp_slide2wake_call_tmp`;
+		SLIDE_STATE=`cat $tsp_slide2wake_call_tmp`;
 	fi;
 
 	if [ "$tsp_slide2wake" == on ]; then
@@ -1343,7 +1362,7 @@ VIBRATE_FIX()
 #		echo "0" > /sys/vibrator/pwm_val;
 #	fi;
 
-	log -p i -t $FILE_NAME "*** VIBRATE_FIX: done ***";
+	log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_val ***";
 }
 
 # ==============================================================
