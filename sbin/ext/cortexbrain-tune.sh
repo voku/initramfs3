@@ -1327,19 +1327,21 @@ CALL_STATE()
 
 VIBRATE_FIX()
 {
-	echo "$vibrator_level" > /sys/vibrator/vibrator_level;
+	echo "$pwm_val" > /sys/vibrator/pwm_val;
 
-	if [ "$vibrator_level" -eq "9" ]; then
-		echo "100" > /sys/vibrator/pwm_val;
-	elif [ "$vibrator_level" -eq "7" ]; then
-		echo "75" > /sys/vibrator/pwm_val;
-	elif [ "$vibrator_level" -eq "5" ]; then
-		echo "50" > /sys/vibrator/pwm_val;
-	elif [ "$vibrator_level" -eq "3" ]; then
-		echo "25" > /sys/vibrator/pwm_val;
-	elif [ "$vibrator_level" -eq "-1" ]; then
-		echo "0" > /sys/vibrator/pwm_val;
-	fi;
+#	echo "$vibrator_level" > /sys/vibrator/vibrator_level;
+
+#	if [ "$vibrator_level" -eq "9" ]; then
+#		echo "100" > /sys/vibrator/pwm_val;
+#	elif [ "$vibrator_level" -eq "7" ]; then
+#		echo "75" > /sys/vibrator/pwm_val;
+#	elif [ "$vibrator_level" -eq "5" ]; then
+#		echo "50" > /sys/vibrator/pwm_val;
+#	elif [ "$vibrator_level" -eq "3" ]; then
+#		echo "25" > /sys/vibrator/pwm_val;
+#	elif [ "$vibrator_level" -eq "-1" ]; then
+#		echo "0" > /sys/vibrator/pwm_val;
+#	fi;
 
 	log -p i -t $FILE_NAME "*** VIBRATE_FIX: done ***";
 }
