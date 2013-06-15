@@ -1226,10 +1226,6 @@ IO_SCHEDULER()
 		local sys_mmc1_scheduler_tmp="/sys/block/mmcblk1/queue/scheduler";
 		local tmp_scheduler="";
 
-		if [ -e $sys_mmc0_scheduler_tmp ]; then
-			sys_mmc0_scheduler_tmp="/dev/null";
-		fi;
-
 		if [ -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
@@ -1248,13 +1244,12 @@ IO_SCHEDULER()
 			fi;
 		fi;
 
-		echo "$scheduler" > $sys_mmc0_scheduler_tmp;
-		echo "$scheduler" > $sys_mmc1_scheduler_tmp;
-
 		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state ***: done";
 
 		# set I/O Tweaks again ...
 		IO_TWEAKS;
+	else
+		log -p i -t $FILE_NAME "*** Cortex IO_SCHEDULER: Disabled ***";
 	fi;
 }
 
@@ -1275,7 +1270,9 @@ CPU_GOVERNOR()
 			fi;
 		fi;
 
-		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: $state ***: done";
+		local USED_GOV_NOW=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+
+		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: set $state GOV $USED_GOV_NOW ***: done";
 	else
 		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: NO CHANGED ***: done";
 	fi;
@@ -1324,20 +1321,6 @@ CALL_STATE()
 VIBRATE_FIX()
 {
 	echo "$pwm_val" > /sys/vibrator/pwm_val;
-
-#	echo "$vibrator_level" > /sys/vibrator/vibrator_level;
-
-#	if [ "$vibrator_level" -eq "9" ]; then
-#		echo "100" > /sys/vibrator/pwm_val;
-#	elif [ "$vibrator_level" -eq "7" ]; then
-#		echo "75" > /sys/vibrator/pwm_val;
-#	elif [ "$vibrator_level" -eq "5" ]; then
-#		echo "50" > /sys/vibrator/pwm_val;
-#	elif [ "$vibrator_level" -eq "3" ]; then
-#		echo "25" > /sys/vibrator/pwm_val;
-#	elif [ "$vibrator_level" -eq "-1" ]; then
-#		echo "0" > /sys/vibrator/pwm_val;
-#	fi;
 
 	log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_val ***";
 }
@@ -1437,8 +1420,14 @@ SLEEP_MODE()
 		CROND_SAFETY;
 		SWAPPINESS;
 
+		# for devs use, if debug is on, then finish full sleep with usb connected
+		if [ "$android_logger" == debug ]; then
+			CHARGING=0;
+		else
+			CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+		fi;
+
 		# check if we powered by USB, if not sleep
-		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" -eq "0" ]; then
 			CPU_GOVERNOR "sleep";
 			CENTRAL_CPU_FREQ "sleep_freq";
