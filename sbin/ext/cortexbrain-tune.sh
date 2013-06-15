@@ -35,8 +35,8 @@ SDCARD_SIZE=`cat /tmp/sdcard_size`;
 # ==============================================================
 
 # get values from profile
-PROFILE=`cat ${DATA_DIR}/.active.profile`;
-. ${DATA_DIR}/${PROFILE}.profile;
+PROFILE=`cat $DATA_DIR/.active.profile`;
+. $DATA_DIR/${PROFILE}.profile;
 
 # check if dumpsys exist in ROM
 if [ -e /system/bin/dumpsys ]; then
@@ -54,13 +54,13 @@ echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
 # ==============================================================
 
 # WIFI HELPER
-WIFI_HELPER_AWAKE="${DATA_DIR}/WIFI_HELPER_AWAKE";
-WIFI_HELPER_TMP="${DATA_DIR}/WIFI_HELPER_TMP";
+WIFI_HELPER_AWAKE="$DATA_DIR/WIFI_HELPER_AWAKE";
+WIFI_HELPER_TMP="$DATA_DIR/WIFI_HELPER_TMP";
 echo "1" > $WIFI_HELPER_TMP;
 
 # MOBILE HELPER
-MOBILE_HELPER_AWAKE="${DATA_DIR}/MOBILE_HELPER_AWAKE";
-MOBILE_HELPER_TMP="${DATA_DIR}/MOBILE_HELPER_TMP";
+MOBILE_HELPER_AWAKE="$DATA_DIR/MOBILE_HELPER_AWAKE";
+MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
 # ==============================================================
@@ -1257,7 +1257,7 @@ IO_SCHEDULER()
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
 
-		tmp_scheduler=`cat ${sys_mmc0_scheduler_tmp}`;
+		tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
 
 		if [ "$state" == "awake" ]; then
 			if [ "$tmp_scheduler" != "$scheduler" ]; then
@@ -1286,22 +1286,19 @@ CPU_GOVERNOR()
 	local state="$1";
 	local scaling_governor_tmp="/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor";
 	local tmp_governor=`cat $scaling_governor_tmp`;
-	local new_governor="";
 
 	if [ "$cortexbrain_cpu" == on ]; then
 		if [ "$state" == "awake" ]; then
 			if [ "$tmp_governor" != $scaling_governor ]; then
-				$new_governor=$scaling_governor;
+				echo "$scaling_governor" > $scaling_governor_tmp;
 			fi;
 		elif [ "$state" == "sleep" ]; then
 			if [ "$tmp_governor" != $scaling_governor_sleep ]; then
-				$new_governor=$scaling_governor_sleep
+				echo "$scaling_governor_sleep" > $scaling_governor_tmp;
 			fi;
 		fi;
 
-		echo "$new_governor" > $scaling_governor_tmp;
-
-		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: $state - $new_governor ***: done";
+		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: $state ***: done";
 	else
 		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: NO CHANGED ***: done";
 	fi;
@@ -1349,31 +1346,13 @@ CALL_STATE()
 
 VIBRATE_FIX()
 {
-	local vibrator_level_tmp=/sys/vibrator/vibrator_level;
 	local pwm_val_tmp=/sys/vibrator/pwm_val;
-	local vibrator_level_new=0;
-
-	if [ -e $vibrator_level_tmp ]; then
-		echo "$vibrator_level" > $vibrator_level_tmp;
-	fi;
 
 	if [ -e $pwm_val_tmp ]; then
-		if [ "$vibrator_level" -eq "9" ]; then
-			pwm_val_new=100;
-		elif [ "$vibrator_level" -eq "7" ]; then
-			pwm_val_new=75;
-		elif [ "$vibrator_level" -eq "5" ]; then
-			pwm_val_new=50;
-		elif [ "$vibrator_level" -eq "3" ]; then
-			pwm_val_new=25;
-		elif [ "$vibrator_level" -eq "-1" ]; then
-			pwm_val_new=0;
-		fi;
+		echo "$pwm_val" > $pwm_val_tmp;
 
-		echo "$vibrator_level_new" > $pwm_val_tmp
+		log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_val ***";
 	fi;
-
-	log -p i -t $FILE_NAME "*** VIBRATE_FIX: $vibrator_level ***";
 }
 
 TOUCH_FREQ_FIX()
@@ -1399,6 +1378,7 @@ AWAKE_MODE()
 	MOUNT_SD_CARD;
 	TOUCH_KEYS_CORRECTION;
 	GAMMA_FIX;
+	TOUCH_FREQ_FIX;
 
 	# Check call state, if on call dont sleep
 	if [ "$NOW_CALL_STATE" -eq "1" ]; then
@@ -1456,8 +1436,8 @@ SLEEP_MODE()
 	WAS_IN_SLEEP_MODE=0;
 
 	# we only read the config when the screen turns off ...
-	PROFILE=`cat ${DATA_DIR}/.active.profile`;
-	. ${DATA_DIR}/${PROFILE}.profile;
+	PROFILE=`cat $DATA_DIR/.active.profile`;
+	. $DATA_DIR/${PROFILE}.profile;
 
 	# we only read tele-data when the screen turns off ...
 	if [ "$DUMPSYS_STATE" -eq "1" ]; then

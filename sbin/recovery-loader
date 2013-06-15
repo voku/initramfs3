@@ -45,7 +45,8 @@ mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
 mkdir /secondrom_data
 mkdir /secondrom_system
 
-echo "7" > /sys/vibrator/vibrator_level
+#echo "7" > /sys/vibrator/vibrator_level
+echo "75" > /sys/vibrator/pwm_val
 echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey
 
 if [ -f /cache/recovery/command ]; then
