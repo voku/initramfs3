@@ -304,6 +304,11 @@ CPU_GOV_TWEAKS()
 	if [ "$cortexbrain_cpu" == on ]; then
 		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
 
+		local sampling_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate";
+		if [ ! -e $sampling_rate_tmp ]; then
+			sampling_rate_tmp="/dev/null";
+		fi;
+
 		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate";
 		if [ ! -e $cpu_up_rate_tmp ]; then
 			cpu_up_rate_tmp="/dev/null";
@@ -472,9 +477,10 @@ CPU_GOV_TWEAKS()
 			echo "40" > $up_threshold_tmp;
 			echo "40" > $up_threshold_at_min_freq_tmp;
 			echo "100" > $freq_step_tmp;
-			echo "800000" > $freq_for_responsiveness_tmp;
+			echo "1000000" > $freq_for_responsiveness_tmp;
 		# sleep-settings
 		elif [ "$state" == "sleep" ]; then
+			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
 			echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
@@ -505,6 +511,7 @@ CPU_GOV_TWEAKS()
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
 		# awake-settings
 		elif [ "$state" == "awake" ]; then
+			echo "$sampling_rate" > $sampling_rate_tmp;
 			echo "$cpu_up_rate" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
