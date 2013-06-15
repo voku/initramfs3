@@ -334,6 +334,16 @@ CPU_GOV_TWEAKS()
 			up_threshold_min_freq_tmp="/dev/null";
 		fi;
 
+		local boost_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/boost";
+		if [ ! -e $boost_tmp ]; then
+			boost_tmp="/dev/null";
+		fi;
+
+		local soft_scal_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/soft_scal";
+		if [ ! -e $soft_scal_tmp ]; then
+			soft_scal_tmp="/dev/null";
+		fi;
+
 		local inc_cpu_load_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load_at_min_freq";
 		if [ ! -e $inc_cpu_load_at_min_freq_tmp ]; then
 			inc_cpu_load_at_min_freq_tmp="/dev/null";
@@ -485,6 +495,8 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_at_min_freq_tmp;
+			echo "$boost_sleep" > $boost_tmp;
+			echo "$soft_scal_sleep" > $soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_cmp_level_sleep" > $hotplug_cmp_level_tmp;
 			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
@@ -516,6 +528,8 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
+			echo "$boost" > $boost_tmp;
+			echo "$soft_scal" > $soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_cmp_level" > $hotplug_cmp_level_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
