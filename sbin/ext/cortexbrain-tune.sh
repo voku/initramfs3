@@ -349,11 +349,6 @@ CPU_GOV_TWEAKS()
 			inc_cpu_load_at_min_freq_tmp="/dev/null";
 		fi;
 
-		local hotplug_cmp_level_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_compare_level";
-		if [ ! -e $hotplug_cmp_level_tmp ]; then
-			hotplug_cmp_level_tmp="/dev/null";
-		fi;
-
 		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_1_1";
 		if [ ! -e $hotplug_freq_fst_tmp ]; then
 			hotplug_freq_fst_tmp="/dev/null";
@@ -374,14 +369,14 @@ CPU_GOV_TWEAKS()
 			hotplug_rq_snd_tmp="/dev/null";
 		fi;
 
-		local up_avg_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_avg_load";
-		if [ ! -e $up_avg_load_tmp ]; then
-			up_avg_load_tmp="/dev/null";
+		local up_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_load";
+		if [ ! -e $up_load_tmp ]; then
+			up_load_tmp="/dev/null";
 		fi;
 
-		local down_avg_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_avg_load";
-		if [ ! -e $down_avg_load_tmp ]; then
-			down_avg_load_tmp="/dev/null";
+		local down_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_load";
+		if [ ! -e $down_load_tmp ]; then
+			down_load_tmp="/dev/null";
 		fi;
 
 		local down_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold";
@@ -498,13 +493,12 @@ CPU_GOV_TWEAKS()
 			echo "$boost_sleep" > $boost_tmp;
 			echo "$soft_scal_sleep" > $soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
-			echo "$hotplug_cmp_level_sleep" > $hotplug_cmp_level_tmp;
 			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
 			echo "$hotplug_rq_fst_sleep" > $hotplug_rq_fst_tmp;
 			echo "$hotplug_rq_snd_sleep" > $hotplug_rq_snd_tmp;
-			echo "$up_avg_load_sleep" > $up_avg_load_tmp;
-			echo "$down_avg_load_sleep" > $down_avg_load_tmp;
+			echo "$up_load_sleep" > $up_load_tmp;
+			echo "$down_load_sleep" > $down_load_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
 			echo "$sampling_up_factor_sleep" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor_sleep" > $sampling_down_factor_tmp;
@@ -531,13 +525,12 @@ CPU_GOV_TWEAKS()
 			echo "$boost" > $boost_tmp;
 			echo "$soft_scal" > $soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
-			echo "$hotplug_cmp_level" > $hotplug_cmp_level_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
 			echo "$hotplug_rq_fst" > $hotplug_rq_fst_tmp;
 			echo "$hotplug_rq_snd" > $hotplug_rq_snd_tmp;
-			echo "$up_avg_load" > $up_avg_load_tmp;
-			echo "$down_avg_load" > $down_avg_load_tmp;
+			echo "$up_load" > $up_load_tmp;
+			echo "$down_load" > $down_load_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
 			echo "$sampling_up_factor" > $sampling_up_factor_tmp;
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;

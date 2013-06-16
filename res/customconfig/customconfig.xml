@@ -185,18 +185,13 @@
 			<spinnerItem name="Enabled" value="1"/> 
 		</spinner>
 
-		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level" action="generic_cortex /tmp/hotplug_cmp_level">
-			<spinnerItem name="History Load Based" value="0"/> 
-			<spinnerItem name="Current Load Based" value="1"/> 
-		</spinner>
-
 		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq 1 1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare hotplugging is Enabled, PegasusQ) (Default: 500.000 kHz)" name="hotplug_freq_fst" action="generic_cortex /tmp/hotplug_freq_fst" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare hotplugging is Enabled, PegasusQ) (Default: 200.000 kHz)" name="hotplug_freq_snd" action="generic_cortex /tmp/hotplug_freq_snd" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_avg_load" action="generic_cortex /tmp/up_avg_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_load" action="generic_cortex /tmp/up_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)" name="down_avg_load" action="generic_cortex /tmp/down_avg_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)" name="down_load" action="generic_cortex /tmp/down_load" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 	</settingsPane>
 
@@ -286,18 +281,13 @@
 
 		<seekBar description="Basically if the next step target frequency drop inside the range of 100 mhz, cpu will decide if the frequency shift will be loudly enough, so that higher than the parameter value. This will act so that the next target frequency will be one step higher than before. Let us suppose that the actual frequency is 600 Mhz, and the target one is gonna be 421 Mhz. Target frequency is within the range that goes from 400 to 500 Mhz, Computing will be therefeore 421-400= 21 Mhz. If the obtained value(for this sample will be 21) is gonna be greater than the parameter value, the target frequency will upgrade its own value to 500 Mhz, instead, if the value(21) will be smaller or equal than the parameter value, target frequency will be 400 Mhz. An higher value means performance reduction. (Default: 0)" name="down_sf_step_sleep" action="generic_cortex /tmp/down_sf_step_sleep" unit="int" min="0" reversed="false" step="1" max="99"/>
 
-		<spinner description="Set the HOTPLUG Compare Level to turn on the Second Core and Frequency scale. (Only when Nightmare hotplugging is Enabled) (Default: 1 = Current Load Based)" name="hotplug_cmp_level_sleep" action="generic_cortex /tmp/hotplug_cmp_level_sleep">
-			<spinnerItem name="History Load Based" value="0"/> 
-			<spinnerItem name="Current Load Based" value="1"/> 
-		</spinner>
-
 		<seekBar description="Up threshold frequency to turn second core On, when some other conditions is also met. ie If (minimum frequency greater than or equal to hotplug_freq 1 1 and run queue length is greater than hotplug_rq 1 1) Hotplug IN Second Core. Higher value correpsonds to delay in turning on second core. (Only when Nightmare hotplugging is Enabled, PegasusQ) (Default: 500.000 kHz)" name="hotplug_freq_fst_sleep" action="generic_cortex /tmp/hotplug_freq_fst_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare hotplugging is Enabled, PegasusQ) (Default: 200.000 kHz)" name="hotplug_freq_snd_sleep" action="generic_cortex /tmp/hotplug_freq_snd_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Avg Load equal or greater than up_avg_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_avg_load_sleep" action="generic_cortex /tmp/up_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. (Only when Nightmare hotplugging is Enabled) (Default: 65%)" name="up_load_sleep" action="generic_cortex /tmp/up_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Avg Load less than down_avg_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)" name="down_avg_load_sleep" action="generic_cortex /tmp/down_avg_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. (Only when Nightmare hotplugging is Enabled) (Default: 30%)" name="down_load_sleep" action="generic_cortex /tmp/down_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
 
 	</settingsPane>
 
