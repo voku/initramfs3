@@ -429,16 +429,6 @@ CPU_GOV_TWEAKS()
 			freq_step_dec_at_max_freq_tmp="/dev/null";
 		fi;
 
-		local freq_for_calc_incr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_incr";
-		if [ ! -e $freq_for_calc_incr_tmp ]; then
-			freq_for_calc_incr_tmp="/dev/null";
-		fi;
-
-		local freq_for_calc_decr_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_for_calc_decr";
-		if [ ! -e $freq_for_calc_decr_tmp ]; then
-			freq_for_calc_decr_tmp="/dev/null";
-		fi;
-
 		local up_sf_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_sf_step";
 		if [ ! -e $up_sf_step_tmp ]; then
 			up_sf_step_tmp="/dev/null";
@@ -481,15 +471,13 @@ CPU_GOV_TWEAKS()
 
 		# wake_boost-settings
 		if [ "$state" == "wake_boost" ]; then
-			echo "20000" > $sampling_rate_tmp;
 			echo "10" > $cpu_up_rate_tmp;
 			echo "10" > $cpu_down_rate_tmp;
 			echo "10" > $down_threshold_tmp;
 			echo "40" > $up_threshold_tmp;
 			echo "40" > $up_threshold_at_min_freq_tmp;
 			echo "100" > $freq_step_tmp;
-			echo "800000" > $freq_for_responsiveness_tmp;
-			echo "50000" > $sampling_rate_tmp;
+			echo "1000000" > $freq_for_responsiveness_tmp;
 		# sleep-settings
 		elif [ "$state" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
@@ -515,8 +503,6 @@ CPU_GOV_TWEAKS()
 			echo "$freq_step_dec_at_max_freq_sleep" > $freq_step_dec_at_max_freq_tmp;
 			echo "$freq_for_responsiveness_sleep" > $freq_for_responsiveness_tmp;
 			echo "$freq_for_responsiveness_max_sleep" > $freq_for_responsiveness_max_tmp;
-			echo "$freq_for_calc_incr_sleep" > $freq_for_calc_incr_tmp;
-			echo "$freq_for_calc_decr_sleep" > $freq_for_calc_decr_tmp;
 			echo "$up_sf_step_sleep" > $up_sf_step_tmp;
 			echo "$down_sf_step_sleep" > $down_sf_step_tmp;
 			echo "$inc_cpu_load_sleep" > $inc_cpu_load_tmp;
@@ -548,8 +534,6 @@ CPU_GOV_TWEAKS()
 			echo "$freq_step_dec_at_max_freq" > $freq_step_dec_at_max_freq_tmp;
 			echo "$freq_for_responsiveness" > $freq_for_responsiveness_tmp;
 			echo "$freq_for_responsiveness_max" > $freq_for_responsiveness_max_tmp;
-			echo "$freq_for_calc_incr" > $freq_for_calc_incr_tmp;
-			echo "$freq_for_calc_decr" > $freq_for_calc_decr_tmp;
 			echo "$up_sf_step" > $up_sf_step_tmp;
 			echo "$down_sf_step" > $down_sf_step_tmp;
 			echo "$inc_cpu_load" > $inc_cpu_load_tmp;
@@ -1271,13 +1255,12 @@ IO_SCHEDULER()
 			fi;
 		fi;
 
-		echo "$scheduler" > $sys_mmc0_scheduler_tmp;
-		echo "$scheduler" > $sys_mmc1_scheduler_tmp;
-
 		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state ***: done";
 
 		# set I/O Tweaks again ...
 		IO_TWEAKS;
+	else
+		log -p i -t $FILE_NAME "*** Cortex IO_SCHEDULER: Disabled ***";
 	fi;
 }
 
@@ -1298,7 +1281,9 @@ CPU_GOVERNOR()
 			fi;
 		fi;
 
-		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: $state ***: done";
+		local USED_GOV_NOW=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+
+		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: set $state GOV $USED_GOV_NOW ***: done";
 	else
 		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: NO CHANGED ***: done";
 	fi;
@@ -1462,8 +1447,14 @@ SLEEP_MODE()
 		CROND_SAFETY;
 		SWAPPINESS;
 
+		# for devs use, if debug is on, then finish full sleep with usb connected
+		if [ "$android_logger" == debug ]; then
+			CHARGING=0;
+		else
+			CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
+		fi;
+
 		# check if we powered by USB, if not sleep
-		CHARGING=`cat /sys/class/power_supply/battery/charging_source`;
 		if [ "$CHARGING" -eq "0" ]; then
 			CPU_GOVERNOR "sleep";
 			CENTRAL_CPU_FREQ "sleep_freq";
