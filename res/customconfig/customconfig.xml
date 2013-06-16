@@ -148,8 +148,6 @@
 
 	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
 
-		<seekBar description="This factor determines how often governor timer function will be delayed. Increasing this value sometime can increase phone performance and also consuming battery (Default: 0 uS)" name="delayer_rate" action="generic_cortex /tmp/delayer_rate" unit="uS" min="0" reversed="false" step="5000" max="120000"/>
-
 		<spinner description="Enabling or Disabling Nightmare Governor frequency soft scaling. If this options is set to Enabled, frequency will change slowly, performance will be increased and battery consuming also. (Default: Disabled)" name="soft_scal" action="generic_cortex /tmp/soft_scal">
 			<spinnerItem name="Disabled" value="0"/> 
 			<spinnerItem name="Enabled" value="1"/> 
@@ -245,8 +243,6 @@
 	</settingsPane>
 
 	<settingsPane description="Nightmare Gov Configuration, see descriptions" name="NIGHTMARE GOV CONFIGURATON">
-
-		<seekBar description="This factor determines how often governor timer function will be delayed. Increasing this value sometime can increase phone performance and also consuming battery (Default: 0 uS)" name="delayer_rate_sleep" action="generic_cortex /tmp/delayer_rate_sleep" unit="uS" min="0" reversed="false" step="5000" max="120000"/>
 
 		<spinner description="Enabling or Disabling Nightmare Governor frequency soft scaling. If this options is set to Enabled, frequency will change slowly, performance will be increased and battery consuming also. (Default: Disabled)" name="soft_scal_sleep" action="generic_cortex /tmp/soft_scal_sleep">
 			<spinnerItem name="Disabled" value="0"/> 
