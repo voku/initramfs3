@@ -1233,10 +1233,6 @@ IO_SCHEDULER()
 		local sys_mmc1_scheduler_tmp="/sys/block/mmcblk1/queue/scheduler";
 		local tmp_scheduler="";
 
-		if [ -e $sys_mmc0_scheduler_tmp ]; then
-			sys_mmc0_scheduler_tmp="/dev/null";
-		fi;
-
 		if [ -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
@@ -1331,24 +1327,9 @@ CALL_STATE()
 
 VIBRATE_FIX()
 {
-	local pwm_val_tmp=/sys/vibrator/pwm_val;
+	echo "$pwm_val" > /sys/vibrator/pwm_val;
 
-	if [ -e $pwm_val_tmp ]; then
-		echo "$pwm_val" > $pwm_val_tmp;
-
-		log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_val ***";
-	fi;
-}
-
-TOUCH_FREQ_FIX()
-{
-	local touchbooster_freq_tmp=/sys/devices/virtual/sec/sec_touchscreen/touchbooster_freq;
-
-	if [ -e $touchbooster_freq_tmp ]; then
-		echo $touchbooster_freq > $touchbooster_freq_tmp;
-
-		log -p i -t $FILE_NAME "*** TOUCH_FREQ_FIX: $touchbooster_freq ***";
-	fi;
+	log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_val ***";
 }
 
 # ==============================================================
@@ -1363,7 +1344,6 @@ AWAKE_MODE()
 	MOUNT_SD_CARD;
 	TOUCH_KEYS_CORRECTION;
 	GAMMA_FIX;
-	TOUCH_FREQ_FIX;
 
 	# Check call state, if on call dont sleep
 	if [ "$NOW_CALL_STATE" -eq "1" ]; then
