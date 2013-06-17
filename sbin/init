@@ -352,6 +352,11 @@ PARTITION_TUNING()
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA"
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
+
+		$BB mount -t ext4 $DEVICE_DATA /data;
+		$BB rm -f /data/dalvik_cache/*;
+		sync;
+		umount /data;
 	fi;
 }
 
