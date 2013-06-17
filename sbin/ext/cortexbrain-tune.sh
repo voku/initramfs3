@@ -1232,26 +1232,26 @@ IO_SCHEDULER()
 		local sys_mmc0_scheduler_tmp="/sys/block/mmcblk0/queue/scheduler";
 		local sys_mmc1_scheduler_tmp="/sys/block/mmcblk1/queue/scheduler";
 		local tmp_scheduler="";
+		local new_scheduler="";
 
 		if [ -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
 
-		tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
-
 		if [ "$state" == "awake" ]; then
-			if [ "$tmp_scheduler" != "$scheduler" ]; then
-				echo "$scheduler" > $sys_mmc0_scheduler_tmp;
-				echo "$scheduler" > $sys_mmc1_scheduler_tmp;
-			fi;
+			new_scheduler=$scheduler;
 		elif [ "$state" == "sleep" ]; then
-			if [ "$tmp_scheduler" != "$sleep_scheduler" ]; then
-				echo "$sleep_scheduler" > $sys_mmc0_scheduler_tmp;
-				echo "$sleep_scheduler" > $sys_mmc1_scheduler_tmp;
-			fi;
+			new_scheduler=$sleep_scheduler
 		fi;
 
-		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state ***: done";
+		tmp_scheduler=`cat $sys_mmc0_scheduler_tmp`;
+
+		if [ "$tmp_scheduler" != "$new_scheduler" ]; then
+			echo "$new_scheduler" > $sys_mmc0_scheduler_tmp;
+			echo "$new_scheduler" > $sys_mmc1_scheduler_tmp;
+		fi;
+
+		log -p i -t $FILE_NAME "*** IO_SCHEDULER: $state - $new_scheduler ***: done";
 
 		# set I/O Tweaks again ...
 		IO_TWEAKS;
