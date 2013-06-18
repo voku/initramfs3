@@ -1342,12 +1342,14 @@ VIBRATE_FIX()
 
 TOUCH_FREQ_FIX()
 {
+	local touchbooster_enabled_tmp=/sys/devices/virtual/sec/sec_touchscreen/touchbooster_enabled;
 	local touchbooster_freq_tmp=/sys/devices/virtual/sec/sec_touchscreen/touchbooster_freq;
 
-	if [ -e $touchbooster_freq_tmp ]; then
+	if [ -e $touchbooster_freq_tmp ] && [ -e $touchbooster_enabled_tmp ]; then
+		echo $touchbooster_enabled > $touchbooster_enabled_tmp;
 		echo $touchbooster_freq > $touchbooster_freq_tmp;
 
-		log -p i -t $FILE_NAME "*** TOUCH_FREQ_FIX: $touchbooster_freq ***";
+		log -p i -t $FILE_NAME "*** TOUCH_FREQ_FIX: $touchbooster_enabled_tmp | $touchbooster_freq MHz ***";
 	fi;
 }
 
