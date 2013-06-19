@@ -153,7 +153,7 @@ KERNEL_TWEAKS()
 		if [ "$state" == "awake" ]; then
 			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "60" > /proc/sys/kernel/panic;
+			echo "120" > /proc/sys/kernel/panic;
 		elif [ "$state" == "sleep" ]; then
 			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
@@ -161,7 +161,7 @@ KERNEL_TWEAKS()
 		else
 			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
 			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "60" > /proc/sys/kernel/panic;
+			echo "120" > /proc/sys/kernel/panic;
 		fi;
 
 		if [ "$cortexbrain_memory" == on ]; then
@@ -916,9 +916,9 @@ VFS_CACHE_PRESSURE()
 
 	if [ -e $sys_vfs_cache ]; then
 		if [ "$state" == "awake" ]; then
-			echo "200" > $sys_vfs_cache;
+			echo "50" > $sys_vfs_cache;
 		elif [ "$state" == "sleep" ]; then
-			echo "100" > $sys_vfs_cache;
+			echo "10" > $sys_vfs_cache;
 		fi;
 
 		log -p i -t $FILE_NAME "*** VFS_CACHE_PRESSURE: $state ***";
