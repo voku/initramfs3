@@ -8,7 +8,7 @@ if [ "$REPLY" == "y" ]; then
 		/sbin/e2fsck -fyc /dev/block/mmcblk0p10;
 		/sbin/e2fsck -p /dev/block/mmcblk0p10;
 		mount -t ext4 /dev/block/mmcblk0p10 /data;
-		rm -f /data/dalvik_cache/*;
+		rm -f /data/dalvik-cache/*;
 		sync;
 		umount /data;
 		echo "All done!"
