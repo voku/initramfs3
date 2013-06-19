@@ -15,20 +15,16 @@ AUTO_OOM=`cat /data/.siyah/${PROFILE}.profile | grep auto_oom=on | wc -l`
 
 if [ "$AUTO_OOM" -eq "1" ]; then
 	case "${oom_config_screen_on}" in
-		light)
-			echo "1024,1024,1280,2048,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+		low)
+			echo "1024,1024,1280,8192,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "64" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
-		low)
-			echo "1024,2048,2560,4096,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
-		;;
 		medium)
-			echo "1024,2048,4096,8192,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
-			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
+			echo "1024,2048,2560,12288,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+			echo "48" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		default)
-			echo "1024,2048,4096,8192,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+			echo "1024,2048,4096,12288,16384,32768" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "32" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		aggressive)
@@ -36,7 +32,7 @@ if [ "$AUTO_OOM" -eq "1" ]; then
 			echo "16" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		exterminate)
-			echo "4096,8192,16384,19200,21760,32768" > /sys/module/lowmemorykiller/parameters/minfree;
+			echo "4096,8192,16384,19200,32768,32768" > /sys/module/lowmemorykiller/parameters/minfree;
 			echo "8" > /sys/module/lowmemorykiller/parameters/cost;
 		;;
 		*)
