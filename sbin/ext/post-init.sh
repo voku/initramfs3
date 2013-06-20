@@ -23,7 +23,7 @@ done;
 
 # allow user and admin to use all free mem.
 echo 0 > /proc/sys/vm/user_reserve_kbytes;
-echo 0 > /proc/sys/vm/admin_reserve_kbytes;
+echo 8192 > /proc/sys/vm/admin_reserve_kbytes;
 
 if [ ! -d /data/.siyah ]; then
 	$BB mkdir -p /data/.siyah;

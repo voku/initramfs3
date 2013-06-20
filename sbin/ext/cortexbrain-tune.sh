@@ -566,11 +566,11 @@ MEMORY_TWEAKS()
 		echo "$dirty_background_ratio" > /proc/sys/vm/dirty_background_ratio; # default: 10
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
-		echo "0" > /proc/sys/vm/overcommit_memory; # default: 1
-		echo "100" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "1" > /proc/sys/vm/overcommit_memory; # default: 1
+		echo "950" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
-		echo "4096" > /proc/sys/vm/min_free_kbytes;
-		echo "32768" > /proc/sys/vm/mmap_min_addr;
+		echo "8192" > /proc/sys/vm/min_free_kbytes;
+		echo "0" > /proc/sys/vm/mmap_min_addr;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 
@@ -592,7 +592,7 @@ ENTROPY()
 	if [ "$state" == "awake" ]; then
 		if [ "$PROFILE" != "battery" ] || [ "$PROFILE" != "extreme_battery" ]; then
 			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
-			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
+			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
 		else
 			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
