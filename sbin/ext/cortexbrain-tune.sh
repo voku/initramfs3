@@ -280,14 +280,16 @@ CPU_INTELLI_PLUG_TWEAKS()
 		fi;
 
 		if [ "a$IPA_CHECK" == "a1" ]; then
-			if [ "$hotplug_enable" -eq "1" ] && [ [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ] ]; then
-				echo "0" > $intelli_plug_active_tmp;
-				echo "$hotplug_enable" > $hotplug_enable_tmp;
+			if [ "$hotplug_enable" -eq "1" ];
+				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+					echo "0" > $intelli_plug_active_tmp;
+					echo "$hotplug_enable" > $hotplug_enable_tmp;
 
-				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
+					log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
+				fi;
 			fi;
 		else
-			if [ "$hotplug_enable" -eq "0" ] || [ [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ] ]; then
+			if [ "$hotplug_enable" -eq "0" ] || [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
 				echo "1" > $intelli_plug_active_tmp;
 				echo "$hotplug_enable" > $hotplug_enable_tmp;
 
