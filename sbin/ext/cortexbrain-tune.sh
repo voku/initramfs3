@@ -280,14 +280,14 @@ CPU_INTELLI_PLUG_TWEAKS()
 		fi;
 
 		if [ "a$IPA_CHECK" == "a1" ]; then
-			if [ "$hotplug_enable" -eq "1" ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
+			if [ "$hotplug_enable" -eq "1" ] && [ [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ] ]; then
 				echo "0" > $intelli_plug_active_tmp;
 				echo "$hotplug_enable" > $hotplug_enable_tmp;
 
 				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
 			fi;
 		else
-			if [ "$hotplug_enable" -eq "0" ] || [ "$SYSTEM_GOVERNOR" != "nightmare" ]; then
+			if [ "$hotplug_enable" -eq "0" ] || [ [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ] ]; then
 				echo "1" > $intelli_plug_active_tmp;
 				echo "$hotplug_enable" > $hotplug_enable_tmp;
 
@@ -334,9 +334,9 @@ CPU_GOV_TWEAKS()
 			up_threshold_min_freq_tmp="/dev/null";
 		fi;
 
-		local soft_scal_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/soft_scal";
-		if [ ! -e $soft_scal_tmp ]; then
-			soft_scal_tmp="/dev/null";
+		local up_soft_scal_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_soft_scal";
+		if [ ! -e $up_soft_scal_tmp ]; then
+			up_soft_scal_tmp="/dev/null";
 		fi;
 
 		local inc_cpu_load_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load_at_min_freq";
@@ -485,7 +485,7 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_at_min_freq_tmp;
-			echo "$soft_scal_sleep" > $soft_scal_tmp;
+			echo "$up_soft_scal_sleep" > $up_soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
@@ -516,7 +516,7 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
-			echo "$soft_scal" > $soft_scal_tmp;
+			echo "$up_soft_scal" > $up_soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
