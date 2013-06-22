@@ -297,10 +297,10 @@ CPU_INTELLI_PLUG_TWEAKS()
 		else
 			if [ "$hotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
 				echo "1" > $intelli_plug_active_tmp;
-				echo "$hotplug_enable" > $hotplug_enable_tmp;
 
 				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: enabled";
 			fi;
+			echo "$hotplug_enable" > $hotplug_enable_tmp;
 		fi;
 	fi;
 }
