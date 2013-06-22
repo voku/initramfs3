@@ -275,8 +275,14 @@ CPU_INTELLI_PLUG_TWEAKS()
 		local IPA_CHECK=`cat $intelli_plug_active_tmp`;
 
 		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_enable";
+		local gov_check="0";
+
 		if [ ! -e $hotplug_enable_tmp ]; then
 			hotplug_enable_tmp="/dev/null";
+		fi;
+
+		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
+			gov_check=1;
 		fi;
 
 		if [ "a$IPA_CHECK" == "a1" ]; then
@@ -289,7 +295,7 @@ CPU_INTELLI_PLUG_TWEAKS()
 				fi;
 			fi;
 		else
-			if [ "$hotplug_enable" -eq "0" ] || [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
+			if [ "$hotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
 				echo "1" > $intelli_plug_active_tmp;
 				echo "$hotplug_enable" > $hotplug_enable_tmp;
 
