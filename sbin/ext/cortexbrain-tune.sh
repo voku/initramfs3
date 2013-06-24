@@ -985,7 +985,7 @@ CENTRAL_CPU_FREQ()
 			MAX_FREQ=`echo $scaling_max_freq`;
 		fi;
 
-		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" >= 0 ]; then
+		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" -le "0" ]; then
 			if [ "$MAX_FREQ" -gt "1000000" ]; then
 				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
@@ -1028,7 +1028,7 @@ MEGA_BOOST_CPU_TWEAKS()
 BOOST_DELAY()
 {
 	# check if ROM booting now, then don't wait - creation and deletion of $DATA_DIR/booting @> /sbin/ext/post-init.sh
-	if [ "$wakeup_boost" > 0 ] && [ ! -e $DATA_DIR/booting ]; then
+	if [ "$wakeup_boost" -gt "0" ] && [ ! -e $DATA_DIR/booting ]; then
 		log -p i -t $FILE_NAME "*** BOOST_DELAY: ${wakeup_boost}sec ***";
 		sleep $wakeup_boost;
 	fi;
