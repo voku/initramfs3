@@ -994,8 +994,8 @@ CENTRAL_CPU_FREQ()
 				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
 		elif [ "$state" == "awake_normal" ]; then
-			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		elif [ "$state" == "standby_freq" ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		elif [ "$state" == "sleep_freq" ]; then
