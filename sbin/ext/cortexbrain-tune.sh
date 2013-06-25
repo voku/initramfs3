@@ -275,25 +275,32 @@ CPU_INTELLI_PLUG_TWEAKS()
 		local IPA_CHECK=`cat $intelli_plug_active_tmp`;
 
 		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_enable";
+		local gov_check="0";
+
 		if [ ! -e $hotplug_enable_tmp ]; then
 			hotplug_enable_tmp="/dev/null";
 		fi;
 
-		if [ "a$IPA_CHECK" == "a1" ]; then
-			if [ "$hotplug_enable" -eq "1" ] && [ "$SYSTEM_GOVERNOR" == "nightmare" ]; then
-				echo "0" > $intelli_plug_active_tmp;
-				echo "$hotplug_enable" > $hotplug_enable_tmp;
+		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
+			gov_check=1;
+		fi;
 
-				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
+		if [ "a$IPA_CHECK" == "a1" ]; then
+			if [ "$hotplug_enable" -eq "1" ]; then
+				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+					echo "0" > $intelli_plug_active_tmp;
+
+					log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: disabled";
+				fi;
 			fi;
 		else
-			if [ "$hotplug_enable" -eq "0" ] || [ "$SYSTEM_GOVERNOR" != "nightmare" ]; then
+			if [ "$hotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
 				echo "1" > $intelli_plug_active_tmp;
-				echo "$hotplug_enable" > $hotplug_enable_tmp;
 
 				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: enabled";
 			fi;
 		fi;
+		echo "$hotplug_enable" > $hotplug_enable_tmp;
 	fi;
 }
 
@@ -334,9 +341,9 @@ CPU_GOV_TWEAKS()
 			up_threshold_min_freq_tmp="/dev/null";
 		fi;
 
-		local soft_scal_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/soft_scal";
-		if [ ! -e $soft_scal_tmp ]; then
-			soft_scal_tmp="/dev/null";
+		local up_soft_scal_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_soft_scal";
+		if [ ! -e $up_soft_scal_tmp ]; then
+			up_soft_scal_tmp="/dev/null";
 		fi;
 
 		local inc_cpu_load_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load_at_min_freq";
@@ -469,23 +476,14 @@ CPU_GOV_TWEAKS()
 			freq_for_responsiveness_tmp=$freq_responsiveness_tmp;
 		fi;
 
-		# wake_boost-settings
-		if [ "$state" == "wake_boost" ]; then
-			echo "10" > $cpu_up_rate_tmp;
-			echo "10" > $cpu_down_rate_tmp;
-			echo "10" > $down_threshold_tmp;
-			echo "40" > $up_threshold_tmp;
-			echo "40" > $up_threshold_at_min_freq_tmp;
-			echo "100" > $freq_step_tmp;
-			echo "1000000" > $freq_for_responsiveness_tmp;
 		# sleep-settings
-		elif [ "$state" == "sleep" ]; then
+		if [ "$state" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
 			echo "$cpu_up_rate_sleep" > $cpu_up_rate_tmp;
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_at_min_freq_tmp;
-			echo "$soft_scal_sleep" > $soft_scal_tmp;
+			echo "$up_soft_scal_sleep" > $up_soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
@@ -516,7 +514,7 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
-			echo "$soft_scal" > $soft_scal_tmp;
+			echo "$up_soft_scal" > $up_soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
@@ -987,35 +985,26 @@ CENTRAL_CPU_FREQ()
 			MAX_FREQ=`echo $scaling_max_freq`;
 		fi;
 
-		if [ "$state" == "wake_boost" ]; then
+		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" -le "0" ]; then
 			if [ "$MAX_FREQ" -gt "1000000" ]; then
 				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			else
 				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
 		elif [ "$state" == "awake_normal" ]; then
-			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 			echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 		elif [ "$state" == "standby_freq" ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 		elif [ "$state" == "sleep_freq" ]; then
 			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		elif [ "$state" == "sleep_call" ]; then
 			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq;
 			# brain cooking prevention during call
 			echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: $state ***: done";
@@ -1028,19 +1017,18 @@ CENTRAL_CPU_FREQ()
 MEGA_BOOST_CPU_TWEAKS()
 {
 	if [ "$cortexbrain_cpu" == on ]; then
-		CPU_GOV_TWEAKS "wake_boost";
 		CENTRAL_CPU_FREQ "wake_boost";
 
 		log -p i -t $FILE_NAME "*** MEGA_BOOST_CPU_TWEAKS ***";
 	else
-		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq;
+		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	fi;
 }
 
 BOOST_DELAY()
 {
 	# check if ROM booting now, then don't wait - creation and deletion of $DATA_DIR/booting @> /sbin/ext/post-init.sh
-	if [ "$wakeup_boost" != 0 ] && [ ! -e $DATA_DIR/booting ]; then
+	if [ "$wakeup_boost" -gt "0" ] && [ ! -e $DATA_DIR/booting ]; then
 		log -p i -t $FILE_NAME "*** BOOST_DELAY: ${wakeup_boost}sec ***";
 		sleep $wakeup_boost;
 	fi;
