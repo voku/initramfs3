@@ -1221,6 +1221,10 @@ IO_SCHEDULER()
 		local tmp_scheduler="";
 		local new_scheduler="";
 
+		if [ -e $sys_mmc0_scheduler_tmp ]; then
+			sys_mmc0_scheduler_tmp="/dev/null";
+		fi;
+
 		if [ -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
