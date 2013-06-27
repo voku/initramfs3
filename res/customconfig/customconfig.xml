@@ -180,9 +180,9 @@
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare, Darkness hotplugging is Enabled, PegasusQ) (Default: 200.000 kHz)" name="hotplug_freq_snd" action="generic_cortex /tmp/hotplug_freq_snd" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 65%)" name="up_load" action="generic_cortex /tmp/up_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. Value corresponding to 101 causes not HOTPLUG IN. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 65%)" name="up_load" action="generic_cortex /tmp/up_load" unit="%" min="10" reversed="false" step="1" max="101"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 30%)" name="down_load" action="generic_cortex /tmp/down_load" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. Value corresponding to 101 causes immediately HOTPLUG OUT. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 30%)" name="down_load" action="generic_cortex /tmp/down_load" unit="%" min="0" reversed="false" step="1" max="101"/>
 
 	</settingsPane>
 
@@ -267,9 +267,9 @@
 
 		<seekBar description="Down threshold frequency to turn second core Off, when some other conditions is also met. ie If (maximum frequency less than hotplug_freq 2 0 and run queue length is less than or equal to hotplug_rq 2 0) Hotplug OUT Second Core. Lower value correpsonds to delay in turning off second core. (Only when Nightmare, Darkness hotplugging is Enabled, PegasusQ) (Default: 200.000 kHz)" name="hotplug_freq_snd_sleep" action="generic_cortex /tmp/hotplug_freq_snd_sleep" unit="kHz" min="100000" reversed="false" step="100000" max="1600000"/>
 
-		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 65%)" name="up_load_sleep" action="generic_cortex /tmp/up_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU up. Cur Load equal or greater than up_load: Cpu Hotplug IN. Value corresponding to 101 causes not HOTPLUG IN. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 65%)" name="up_load_sleep" action="generic_cortex /tmp/up_load_sleep" unit="%" min="10" reversed="false" step="1" max="101"/>
 
-		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 30%)" name="down_load_sleep" action="generic_cortex /tmp/down_load_sleep" unit="%" min="10" reversed="false" step="1" max="100"/>
+		<seekBar description="The frequency at which governor scales CPU down. Cur Load less than down_load: Cpu Hotplug OUT. Value corresponding to 101 causes immediately HOTPLUG OUT. (Only when Nightmare, Darkness hotplugging is Enabled) (Default: 30%)" name="down_load_sleep" action="generic_cortex /tmp/down_load_sleep" unit="%" min="0" reversed="false" step="1" max="101"/>
 
 	</settingsPane>
 
