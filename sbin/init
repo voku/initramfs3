@@ -309,7 +309,7 @@ PARTITION_TUNING()
 	fi;
 	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'needs_recovery'" > $LOG_DATA_TMP;
 	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		NEED_CHECK_CACHE=1;
+		NEED_CHECK_DATA=1;
 	fi;
 
 	# set mount option -> [^]journal_data_ordered
