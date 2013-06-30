@@ -299,6 +299,7 @@
 
 		<spinner description="This will set the default AWAKE IO scheduler for internal, system, data and external sdcard. For best stability use ROW. (Default: ROW)" name="Default Awake IO Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="CFQ" value="cfq"/> 
+			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
 			<spinnerItem name="NOOP" value="noop"/> 
 			<spinnerItem name="ROW" value="row"/> 
@@ -310,6 +311,7 @@
 
 		<spinner description="This will set the STANDBY and DEEPSLEEP IO scheduler for internal, system, data and external sdcard. (Default: ROW) !!! Depends on CortexBrain-Background-Process !!!" name="STANDBY and DEEPSLEEP IO Scheduler" action="generic_cortex /tmp/sleep_scheduler">
 			<spinnerItem name="CFQ" value="cfq"/> 
+			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
 			<spinnerItem name="NOOP" value="noop"/> 
 			<spinnerItem name="ROW" value="row"/> 
