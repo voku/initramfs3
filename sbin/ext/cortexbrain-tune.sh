@@ -356,16 +356,6 @@ CPU_GOV_TWEAKS()
 			hotplug_freq_snd_tmp="/dev/null";
 		fi;
 
-		local hotplug_rq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_1_1";
-		if [ ! -e $hotplug_rq_fst_tmp ]; then
-			hotplug_rq_fst_tmp="/dev/null";
-		fi;
-
-		local hotplug_rq_snd_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_2_0";
-		if [ ! -e $hotplug_rq_snd_tmp ]; then
-			hotplug_rq_snd_tmp="/dev/null";
-		fi;
-
 		local up_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_load";
 		if [ ! -e $up_load_tmp ]; then
 			up_load_tmp="/dev/null";
@@ -481,8 +471,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
-			echo "$hotplug_rq_fst_sleep" > $hotplug_rq_fst_tmp;
-			echo "$hotplug_rq_snd_sleep" > $hotplug_rq_snd_tmp;
 			echo "$up_load_sleep" > $up_load_tmp;
 			echo "$down_load_sleep" > $down_load_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
@@ -511,8 +499,6 @@ CPU_GOV_TWEAKS()
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
-			echo "$hotplug_rq_fst" > $hotplug_rq_fst_tmp;
-			echo "$hotplug_rq_snd" > $hotplug_rq_snd_tmp;
 			echo "$up_load" > $up_load_tmp;
 			echo "$down_load" > $down_load_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
