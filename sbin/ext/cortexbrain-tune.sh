@@ -461,6 +461,56 @@ CPU_GOV_TWEAKS()
 			freq_for_responsiveness_tmp=$freq_responsiveness_tmp;
 		fi;
 
+		local sampling_down_max_mom_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_max_mom";
+		if [ ! -e $sampling_down_max_mom_tmp ]; then
+			sampling_down_max_mom_tmp="/dev/null";
+		fi;
+
+		local sampling_down_mom_sens_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_mom_sens";
+		if [ ! -e $sampling_down_mom_sens_tmp ]; then
+			sampling_down_mom_sens_tmp="/dev/null";
+		fi;
+
+		local up_threshold_hp_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_hotplug1";
+		if [ ! -e $up_threshold_hp_fst_tmp ]; then
+			up_threshold_hp_fst_tmp="/dev/null";
+		fi;
+
+		local down_threshold_hp_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold_hotplug1";
+		if [ ! -e $down_threshold_hp_fst_tmp ]; then
+			down_threshold_hp_fst_tmp="/dev/null";
+		fi;
+
+		local smooth_up_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/smooth_up";
+		if [ ! -e $smooth_up_tmp ]; then
+			smooth_up_tmp="/dev/null";
+		fi;
+
+		local freq_limit_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_limit";
+		if [ ! -e $freq_limit_tmp ]; then
+			freq_limit_tmp="/dev/null";
+		fi;
+
+		local fast_scaling_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/fast_scaling";
+		if [ ! -e $fast_scaling_tmp ]; then
+			fast_scaling_tmp="/dev/null";
+		fi;
+
+		local early_demand_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/early_demand";
+		if [ ! -e $early_demand_tmp ]; then
+			early_demand_tmp="/dev/null";
+		fi;
+
+		local grad_up_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/grad_up_threshold";
+		if [ ! -e $grad_up_threshold_tmp ]; then
+			grad_up_threshold_tmp="/dev/null";
+		fi;
+
+		local disable_hotplug_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/disable_hotplug";
+		if [ ! -e $disable_hotplug_tmp ]; then
+			disable_hotplug_tmp="/dev/null";
+		fi;
+
 		# sleep-settings
 		if [ "$state" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
@@ -489,6 +539,16 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq_sleep" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
+			echo "$sampling_down_max_mom_sleep" > $sampling_down_max_mom_tmp;
+			echo "$sampling_down_mom_sens_sleep" > $sampling_down_mom_sens_tmp;
+			echo "$up_threshold_hp_fst_sleep" > $up_threshold_hp_fst_tmp;
+			echo "$down_threshold_hp_fst_sleep" > $down_threshold_hp_fst_tmp;
+			echo "$smooth_up_sleep" > $smooth_up_tmp;
+			echo "$freq_limit_sleep" > $freq_limit_tmp;
+			echo "$fast_scaling_sleep" > $fast_scaling_tmp;
+			echo "$early_demand_sleep" > $early_demand_tmp;
+			echo "$grad_up_threshold_sleep" > $grad_up_threshold_tmp;
+			echo "$disable_hotplug_sleep" > $disable_hotplug_tmp;
 		# awake-settings
 		elif [ "$state" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -517,6 +577,16 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
+			echo "$sampling_down_max_mom" > $sampling_down_max_mom_tmp;
+			echo "$sampling_down_mom_sens" > $sampling_down_mom_sens_tmp;
+			echo "$up_threshold_hp_fst" > $up_threshold_hp_fst_tmp;
+			echo "$down_threshold_hp_fst" > $down_threshold_hp_fst_tmp;
+			echo "$smooth_up" > $smooth_up_tmp;
+			echo "$freq_limit" > $freq_limit_tmp;
+			echo "$fast_scaling" > $fast_scaling_tmp;
+			echo "$early_demand" > $early_demand_tmp;
+			echo "$grad_up_threshold" > $grad_up_threshold_tmp;
+			echo "$disable_hotplug" > $disable_hotplug_tmp;
 		fi;
 
 		CPU_INTELLI_PLUG_TWEAKS;
