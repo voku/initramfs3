@@ -451,9 +451,9 @@ CPU_GOV_TWEAKS()
 			freq_up_brake_tmp="/dev/null";
 		fi;
 
-		local cpu_load_bias_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_load_bias";
-		if [ ! -e $cpu_load_bias_tmp ]; then
-			cpu_load_bias_tmp="/dev/null";
+		local force_freqs_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/force_freqs_step";
+		if [ ! -e $force_freqs_step_tmp ]; then
+			force_freqs_step_tmp="/dev/null";
 		fi;
 
 		# merge up_threshold_at_min_freq & up_threshold_min_freq => up_threshold_at_min_freq_tmp
@@ -544,7 +544,7 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq_sleep" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
-			echo "$cpu_load_bias_sleep" > $cpu_load_bias_tmp;
+			echo "$force_freqs_step" > $force_freqs_step_tmp;
 			echo "$sampling_down_max_mom_sleep" > $sampling_down_max_mom_tmp;
 			echo "$sampling_down_mom_sens_sleep" > $sampling_down_mom_sens_tmp;
 			echo "$up_threshold_hp_fst_sleep" > $up_threshold_hp_fst_tmp;
@@ -583,7 +583,7 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
-			echo "$cpu_load_bias" > $cpu_load_bias_tmp;
+			echo "$force_freqs_step" > $force_freqs_step_tmp;
 			echo "$sampling_down_max_mom" > $sampling_down_max_mom_tmp;
 			echo "$sampling_down_mom_sens" > $sampling_down_mom_sens_tmp;
 			echo "$up_threshold_hp_fst" > $up_threshold_hp_fst_tmp;
