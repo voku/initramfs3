@@ -9,8 +9,6 @@ on init
     export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
-
-
     mkdir /emmc
     mkdir /sdcard
     mkdir /sdcard1
@@ -56,6 +54,7 @@ service recovery /sbin/recovery-loader
 service adbd /sbin/adbd recovery
     disabled
 
+
 # Always start adbd on userdebug and eng builds
 # In recovery, always run adbd as root.
 on property:ro.debuggable=1
@@ -64,9 +63,8 @@ on property:ro.debuggable=1
     write /sys/class/android_usb/android0/idProduct 685e
     write /sys/class/android_usb/android0/functions mass_storage,adb
     write /sys/class/android_usb/android0/enable 1
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
+    write /sys/class/android_usb/android0/iManufacturer Samsung
+    write /sys/class/android_usb/android0/iProduct GT-I9100
     start adbd
     setprop service.adb.root 1
 
