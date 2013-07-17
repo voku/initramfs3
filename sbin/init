@@ -180,8 +180,12 @@ $BB mount -t ext4 /res/dev/system /system;
 # fixing second rom partitions
 if [ "$SECONDROM" -eq "1" ]; then
 	if [ -e /mnt/tmp/.secondrom/data.img ]; then
-		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/data.img" > /fix_data_log;
-		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/cache.img" > /fix_cache_log;
+		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/data.img" > /fix_data_log;
+		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/data.img" >> /fix_data_log;
+		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/data.img" >> /fix_data_log;
+		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/cache.img" > /fix_cache_log;
+		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/cache.img" >> /fix_cache_log;
+		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/cache.img" >> /fix_cache_log;
 	fi;
 fi;
 
