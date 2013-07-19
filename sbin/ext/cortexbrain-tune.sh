@@ -666,34 +666,58 @@ TCP_TWEAKS()
 {
 	if [ "$cortexbrain_tcp" == on ]; then
 		echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
+		echo "1" > /proc/sys/net/ipv4/tcp_rfc1337;
+		echo "1" > /proc/sys/net/ipv4/tcp_workaround_signed_windows;
+		echo "1" > /proc/sys/net/ipv4/tcp_low_latency;
+		echo "1" > /proc/sys/net/ipv4/tcp_mtu_probing;
+		echo "2" > /proc/sys/net/ipv4/tcp_frto_response;
+		echo "1" > /proc/sys/net/ipv4/tcp_no_metrics_save;
 		echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
-		echo "1" > /proc/sys/net/ipv4/tcp_sack;
 		echo "1" > /proc/sys/net/ipv4/tcp_tw_recycle;
-		echo "1" > /proc/sys/net/ipv4/tcp_window_scaling;
-		echo "1" > /proc/sys/net/ipv4/tcp_moderate_rcvbuf;
-		echo "1" > /proc/sys/net/ipv4/route/flush;
-		echo "2" > /proc/sys/net/ipv4/tcp_syn_retries;
-		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
-		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
+		echo "30" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes;
-		echo "20" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "5" > /proc/sys/net/ipv4/tcp_keepalive_probes;
+		echo "40" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "2500" > /proc/sys/net/core/netdev_max_backlog;
+		echo "1" > /proc/sys/net/ipv4/route/flush;
 
 		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: enabled";
+	else
+		echo "1" > /proc/sys/net/ipv4/tcp_timestamps;
+		echo "0" > /proc/sys/net/ipv4/tcp_rfc1337;
+		echo "0" > /proc/sys/net/ipv4/tcp_workaround_signed_windows;
+		echo "0" > /proc/sys/net/ipv4/tcp_low_latency;
+		echo "0" > /proc/sys/net/ipv4/tcp_mtu_probing;
+		echo "0" > /proc/sys/net/ipv4/tcp_frto_response;
+		echo "0" > /proc/sys/net/ipv4/tcp_no_metrics_save;
+		echo "0" > /proc/sys/net/ipv4/tcp_tw_reuse;
+		echo "0" > /proc/sys/net/ipv4/tcp_tw_recycle;
+		echo "60" > /proc/sys/net/ipv4/tcp_fin_timeout;
+		echo "2" > /proc/sys/net/ipv4/tcp_ecn;
+		echo "9" > /proc/sys/net/ipv4/tcp_keepalive_probes;
+		echo "75" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "1000" > /proc/sys/net/core/netdev_max_backlog;
+		echo "0" > /proc/sys/net/ipv4/route/flush;
+
+		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: disabled";
 	fi;
 
 	if [ "$cortexbrain_tcp_ram" == on ]; then
-		echo "1048576" > /proc/sys/net/core/wmem_max;
-		echo "1048576" > /proc/sys/net/core/rmem_max;
-		echo "262144" > /proc/sys/net/core/rmem_default;
-		echo "262144" > /proc/sys/net/core/wmem_default;
+		echo "4194304" > /proc/sys/net/core/wmem_max;
+		echo "4194304" > /proc/sys/net/core/rmem_max;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "262144 524288 1048576" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "262144 524288 1048576" > /proc/sys/net/ipv4/tcp_rmem;
-		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
-		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
+		echo "4096 87380 4194304" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "4096 87380 4194304" > /proc/sys/net/ipv4/tcp_rmem;
 
 		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: enabled";
+	else
+		echo "131071" > /proc/sys/net/core/wmem_max;
+		echo "131071" > /proc/sys/net/core/rmem_max;
+		echo "10240" > /proc/sys/net/core/optmem_max;
+		echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "4096 87380 704512" > /proc/sys/net/ipv4/tcp_rmem;
+
+		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: disable";
 	fi;
 }
 TCP_TWEAKS;
