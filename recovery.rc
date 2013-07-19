@@ -1,3 +1,6 @@
+
+import /init.recovery.rc
+
 on early-init
     start ueventd
 
