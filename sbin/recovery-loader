@@ -1,25 +1,27 @@
 #!/sbin/busybox sh
 
-mount -t rootfs -o remount,rw rootfs
+BB=/sbin/busybox
+
+$BB mount -t rootfs -o remount,rw rootfs
 
 ln -s /sbin/busybox /sbin/sh
 
-BB=/sbin/busybox
+$BB chmod -R 777 /proc/
 
 # protecting fuelgauge reset trigger.
-chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
+$BB chmod 000 /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
 
-rm -rf /emmc
-mkdir /emmc
-chmod 777 /emmc
+$BB rm -rf /emmc
+$BB mkdir /emmc
+$BB chmod 777 /emmc
 
-rm -rf /sdcard
-mkdir /sdcard
-chmod 777 /sdcard
+$BB rm -rf /sdcard
+$BB mkdir /sdcard
+$BB chmod 777 /sdcard
 
-rm -rf /etc
-mkdir /etc
-cat /res/etc/recovery.fstab > /etc/recovery.fstab
+$BB rm -rf /etc
+$BB mkdir /etc
+$BB cat /res/etc/recovery.fstab > /etc/recovery.fstab
 
 #start adbd
 stop tvout
@@ -27,23 +29,23 @@ stop tvout
 echo "0" > /sys/class/mdnie/mdnie/scenario
 echo "1" > /sys/class/mdnie/mdnie/mode
 
-rm -rf /cache
-mkdir /cache
-chmod 777 /cache
-mount -t ext4 /dev/block/mmcblk0p7 /cache
-mkdir /cache/recovery
-chmod 770 /cache/recovery
-chown system.cache /cache/recovery
+$BB rm -rf /cache
+$BB mkdir /cache
+$BB chmod 777 /cache
+$BB mount -t ext4 /dev/block/mmcblk0p7 /cache
+$BB mkdir /cache/recovery
+$BB chmod 770 /cache/recovery
+$BB chown system.cache /cache/recovery
 
 cd /
-mkdir -p /mnt/.secondrom
-mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
-mkdir /mnt/.secondrom/.secondrom
-rm -rf /secondrom_cache
-mkdir /secondrom_cache
-mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
-mkdir /secondrom_data
-mkdir /secondrom_system
+$BB mkdir -p /mnt/.secondrom
+$BB mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
+$BB mkdir /mnt/.secondrom/.secondrom
+$BB rm -rf /secondrom_cache
+$BB mkdir /secondrom_cache
+$BB mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
+$BB mkdir /secondrom_data
+$BB mkdir /secondrom_system
 
 #echo "7" > /sys/vibrator/vibrator_level
 echo "75" > /sys/vibrator/pwm_val

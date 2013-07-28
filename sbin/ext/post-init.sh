@@ -13,6 +13,11 @@ $BB chmod 777 /proc/sys/vm/mmap_min_addr;
 # protect init from oom
 echo "-1000" > /proc/1/oom_score_adj;
 
+# remount all partitions tweaked settings
+for m in $(mount | grep ext[3-4] | cut -d " " -f1); do
+        mount -o remount,rw,noatime,nodiratime,noauto_da_alloc,discard,barrier=1 $m;
+done;
+
 # set sysrq to 2 = enable control of console logging level as with CM-KERNEL
 echo "2" > /proc/sys/kernel/sysrq;
 
@@ -304,6 +309,11 @@ chmod 666 /tmp/uci_done;
 	if [ -e /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg ]; then
 		chmod 777 /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg
 	fi;
+
+	# remount all partitions tweaked settings
+	for m in $(mount | grep ext[3-4] | cut -d " " -f1); do
+		mount -o remount,rw,noatime,nodiratime,noauto_da_alloc,discard,barrier=1 $m;
+	done;
 )&
 
 (
