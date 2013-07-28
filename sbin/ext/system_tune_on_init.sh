@@ -7,7 +7,7 @@ stop;
 BB=/sbin/busybox
 
 $BB chmod -R 777 /tmp/;
-$BB chmod 6755 /sbin/ext/*;
+$BB chmod -R 6755 /sbin/ext/;
 
 mount -o remount,rw,nosuid,nodev /cache;
 mount -o remount,rw,nosuid,nodev /data;
