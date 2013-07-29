@@ -157,7 +157,6 @@ $BB chmod -R 755 /lib;
 	# order of modules load is important
 #	$BB insmod /lib/modules/j4fs.ko;
 #	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-	$BB insmod /lib/modules/Si4709_driver.ko;
 
 	if [ "$usbserial_module" == "on" ]; then
 		$BB insmod /lib/modules/usbserial.ko;

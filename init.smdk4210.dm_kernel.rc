@@ -8,6 +8,12 @@ on boot
 
     chmod 0444 /sys/module/lowmemorykiller/parameters/adj
 
+on post-fs-data
+# insmod kernel modules
+    insmod /lib/exfat_modules/exfat_core.ko
+    insmod /lib/exfat_modules/exfat_fs.ko
+    insmod /lib/modules/Si4709_driver.ko
+
 on fs
 
 # Tweaks For ROM
