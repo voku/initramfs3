@@ -25,6 +25,11 @@ on init
 
     mount /tmp /tmp tmpfs
 
+on post-fs-data
+# insmod kernel modules
+    insmod /lib/exfat_modules/exfat_core.ko
+    insmod /lib/exfat_modules/exfat_fs.ko
+
 on fs
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /dev/block/mmcblk0p10

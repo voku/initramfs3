@@ -51,8 +51,24 @@ SDCARD_FIX()
 	$BB echo "FIXING STORAGE" >> $LOG_SDCARDS;
 
 	if [ -e /dev/block/mmcblk1p1 ]; then
-		$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
-		$BB sh -c "$FIX_BINARY -p -f /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
+		if [ `cat /tmp/sammy_rom` -eq "0" ]; then
+			$BB mount -t exfat /dev/block/mmcblk1p1 /storage/sdcard1;
+		else
+			$BB mount -t exfat /dev/block/mmcblk1p1 /storage/extSdCard;
+		fi;
+
+		chmod 777 /proc/self/mounts;
+		EXFAT_CHECK=`cat /proc/self/mounts | grep "/dev/block/mmcblk1p1" | wc -l`;
+		if [ "$EXFAT_CHECK" -eq "1" ]; then
+			$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+			cp /sbin/libexfat_utils.so /system/lib/;
+			/sbin/fsck.exfat -R /dev/block/mmcblk1p1 >> $LOG_SDCARDS;
+			$BB sed -i "s/dev_mount sdcard1 */#dev_mount sdcard1 /g" /system/etc/vold.fstab;
+		else
+			$BB sed -i "s/#dev_mount sdcard1 */dev_mount sdcard1 /g" /system/etc/vold.fstab;
+			$BB echo "EXTERNAL SDCARD CHECK" >> $LOG_SDCARDS;
+			$BB sh -c "$FIX_BINARY -p -f /dev/block/mmcblk1p1" >> $LOG_SDCARDS;
+		fi;
 	else
 		$BB echo "EXTERNAL SDCARD NOT EXIST" >> $LOG_SDCARDS;
 	fi;

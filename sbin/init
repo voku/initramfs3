@@ -87,7 +87,7 @@ $BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
 $BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
 if [ -e /dev/block/mmcblk1p1 ]; then
-	$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
+	$BB mount -t auto /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
 
 	SDCARD_SIZE=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
 	if [ "$SDCARD_SIZE" -lt "1000000" ]; then

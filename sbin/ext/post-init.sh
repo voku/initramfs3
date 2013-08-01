@@ -153,7 +153,7 @@ fi;
 $BB chmod -R 755 /lib;
 
 (
-	sleep 50;
+	sleep 40;
 	# order of modules load is important
 #	$BB insmod /lib/modules/j4fs.ko;
 #	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
@@ -173,6 +173,19 @@ $BB chmod -R 755 /lib;
 	if [ "$eds_module" == "on" ]; then
 		$BB insmod /lib/modules/eds.ko;
 	fi;
+
+	# remount external sdcard if exist
+	EXFAT_CHECK=`cat /proc/self/mounts | grep "exfat" | wc -l`;
+	if [ "$EXFAT_CHECK" -eq "1" ]; then
+		if [ `cat /tmp/sammy_rom` -eq "0" ]; then
+			umount /storage/sdcard1;
+			$BB mount -t exfat /dev/block/vold/179:9 /storage/sdcard1;
+		else
+			umount /storage/extSdCard
+			$BB mount -t exfat /dev/block/vold/179:9 /storage/extSdCard;
+		fi;
+	fi;
+
 )&
 
 # some nice thing for dev
