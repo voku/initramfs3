@@ -23,6 +23,7 @@ done;
 
 $BB mount -o remount,rw,noauto_da_alloc /data;
 $BB mount -o remount,rw,noauto_da_alloc /system;
+$BB mount -o remount,rw /efs;
 
 # allow user and admin to use all free mem.
 echo 0 > /proc/sys/vm/user_reserve_kbytes;
