@@ -11,6 +11,17 @@ $BB mount -t rootfs -o remount,rw rootfs;
 
 cd /;
 
+extract_payload()
+{
+	chmod 755 /sbin/read_boot_headers;
+	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
+	load_offset=$boot_offset;
+	load_len=$boot_len;
+	cd /;
+	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | xzcat | tar x;
+}
+extract_payload;
+
 # copy cron files
 $BB cp -a /res/crontab/ /data/
 $BB rm -rf /data/crontab/cron/ > /dev/null 2>&1;
@@ -162,4 +173,6 @@ fi;
 
 $BB mount -t rootfs -o remount,rw rootfs;
 $BB mount -o remount,rw /system;
+
+$BB rm -f /res/misc/payload/*;
 

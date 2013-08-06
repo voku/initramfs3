@@ -164,10 +164,6 @@ $BB chmod -R 755 /lib;
 		$BB insmod /lib/modules/ftdi_sio.ko;
 		$BB insmod /lib/modules/pl2303.ko;
 	fi;
-	if [ "$usbnet_module" == "on" ]; then
-		$BB insmod /lib/modules/usbnet.ko;
-		$BB insmod /lib/modules/asix.ko;
-	fi;
 	if [ "$cifs_module" == "on" ]; then
 		$BB insmod /lib/modules/cifs.ko;
 	fi;

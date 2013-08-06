@@ -9,6 +9,13 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 		$BB mount -o remount,rw /system;
 		$BB mount -o remount,rw /;
 
+		chmod 755 /sbin/read_boot_headers;
+		eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
+		load_offset=$boot_offset;
+		load_len=$boot_len;
+		cd /;
+		dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | xzcat | tar x;
+
 		# clean su traces
 		$BB rm -f /system/bin/su > /dev/null 2>&1;
 		if [ ! -d /system/xbin ]; then
@@ -79,6 +86,7 @@ export PATH="/res/customconfig/actions/push-actions:${PATH}";
 		pkill -f "com.noshufou.android.su";
 		pkill -f "eu.chinfire.supersu";
 		echo "App SuperSU was installed!, You have Full ROOT now!";
+		$BB rm -f /res/misc/payload/*;
 	else
 		echo "You have ROOT installed already! first remove it.";
 	fi;
