@@ -21,9 +21,15 @@ for i in $PIDOFINIT; do
 	echo "-600" > /proc/${i}/oom_score_adj;
 done;
 
-$BB mount -o remount,rw,noauto_da_alloc /data;
-$BB mount -o remount,rw,noauto_da_alloc /system;
-$BB mount -o remount,rw /efs;
+if [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
+	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /data;
+	$BB mount -o remount,rw,noauto_da_alloc /system;
+	$BB mount -o remount,rw,journal_async_commit /efs;
+else
+	$BB mount -o remount,rw,noauto_da_alloc /data;
+	$BB mount -o remount,rw,noauto_da_alloc /system;
+	$BB mount -o remount,rw /efs;
+fi;
 
 # allow user and admin to use all free mem.
 echo 0 > /proc/sys/vm/user_reserve_kbytes;

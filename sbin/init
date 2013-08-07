@@ -164,6 +164,7 @@ if [ "$SECONDROM" -eq "1" ]; then
 	ln -s /mnt/.secondrom/.secondrom/cache.img /res/dev/cache;
 	echo "1" > /tmp/sec_rom_boot;
 	echo "0" > /tmp/pri_rom_boot;
+	umount /preload;
 else
 	$BB rm -rf /res/dev;
 	mkdir -p /res/dev;
@@ -179,12 +180,30 @@ $BB mount -t ext4 /res/dev/system /system;
 
 # fixing second rom partitions
 if [ "$SECONDROM" -eq "1" ]; then
-	if [ -e /mnt/tmp/.secondrom/data.img ]; then
-		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/data.img" > /fix_data_log;
-		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/data.img" >> /fix_data_log;
-		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/data.img" >> /fix_data_log;
-		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/cache.img" > /fix_cache_log;
-		$BB sh -c "/sbin/e2fsck -fyc /mnt/tmp/.secondrom/cache.img" >> /fix_cache_log;
+	SEC_DATA=/mnt/tmp/.secondrom/data.img
+
+	if [ -e "$SEC_DATA" ]; then
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'features' | grep 'has_journal'" > /fix_data_log;
+		if [ "a`cat /fix_data_log`" == "a" ]; then
+			$BB sh -c "/sbin/tune2fs -O has_journal $SEC_DATA";
+		fi;
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'features' | grep 'dir_index'" > /fix_data_log;
+		if [ "a`cat /fix_data_log`" == "a" ]; then
+			$BB sh -c "/sbin/tune2fs -O dir_index $SEC_DATA";
+		fi;
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'Default mount options' | grep 'journal_data_writeback'" > /fix_data_log;
+		if [ "a`cat /fix_data_log`" == "a" ]; then
+			$BB sh -c "/sbin/tune2fs -o journal_data_writeback $SEC_DATA";
+		fi;
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'Inode size' | grep '256'" > /fix_data_log;
+		if [ "a`cat /fix_data_log`" == "a" ]; then
+			$BB sh -c "/sbin/tune2fs -I 256 $SEC_DATA";
+		fi;
+
+		$BB sh -c "/sbin/e2fsck -p $SEC_DATA" >> /fix_data_log;
+		$BB sh -c "/sbin/e2fsck -p $SEC_DATA" >> /fix_data_log;
+
+		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/cache.img" >> /fix_cache_log;
 		$BB sh -c "/sbin/e2fsck -p /mnt/tmp/.secondrom/cache.img" >> /fix_cache_log;
 	fi;
 fi;
@@ -357,7 +376,7 @@ PARTITION_TUNING()
 	fi;
 
 	# efs check and fix, do not change
-	$BB sh -c "/sbin/e2fsck -fyc /dev/block/mmcblk0p1" > /tmp/efs_check;
+	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
 	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
 
 	# only if asked by user via stweaks
@@ -365,20 +384,22 @@ PARTITION_TUNING()
 		# reset the lock-file
 		$BB rm -f /system/run_fs_check;
 
+		$BB mount -t ext4 $DEVICE_DATA /data;
+		$BB rm -f /data/dalvik-cache/*;
+		sync;
+		umount /data;
+
 		# check cache
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE"
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_CACHE" >> $LOG_CACHE;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 
 		# check data
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA"
 		$BB sh -c "/sbin/e2fsck -fyc $DEVICE_DATA" >> $LOG_DATA;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
-
-		$BB mount -t ext4 $DEVICE_DATA /data;
-		$BB rm -f /data/dalvik-cache/*;
-		sync;
-		umount /data;
+		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 }
 

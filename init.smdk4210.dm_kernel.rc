@@ -1,6 +1,7 @@
 on init
 
     write /proc/sys/kernel/randomize_va_space 2
+    write /proc/sys/vm/mmap_min_addr 32768
 
 on boot
 # Need for Sound changes and other stuff, found by GM!
