@@ -725,8 +725,6 @@
 
 	<settingsPane description="Here you can find some settings and options for your apps." name="Apps">
 
-		<button description="Push to Reinstall or Update STweaks app. Here you can Reinstall or Update your STweak app to one that is added in the kernel. It will be installed to system and if you had STweaks in data, it will be removed. Application will close and you will have it back from kernel in 5sec." name="STweaks Reinstall or Update" action="push-actions/stweaks_update" label="STweaks Reinstall or Update"/>
-
 		<button description="Click here to start fixing. Here you can run Fix Permissions, please click one time only, scripts will finish in max 2~3min, no reboot is needed." name="FIX PERMISSIONS" action="push-actions/fix_permissions" label="FIX PERMISSIONS"/>
 
 		<button description="Click here to start Zipaligning ONLY user apps. System may be unresponsive, it is OK, do not use phone for 2 minutes. WARNING! Backup all user applications before use! This process will remove applications that are BROKEN and not compressed or compiled correctly, so you may find some apps missing. USE it AT YOUR OWN RISK, and update the broken applications!." name="ZIPALIGN" action="push-actions/zipalign" label="ZIPALIGN ALL APPS"/>

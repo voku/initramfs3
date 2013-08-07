@@ -137,27 +137,6 @@ if [ ! -e /data/gesture_set.sh ]; then
 	$BB cp -a /res/misc/gesture_set.sh /data/;
 fi;
 
-if [ -f /system/app/STweaks.apk ]; then
-	stmd5sum=`$BB md5sum /system/app/STweaks.apk | $BB awk '{print $1}'`
-	stmd5sum_kernel=`cat /res/stweaks_md5`;
-	if [ "$stmd5sum" != "$stmd5sum_kernel" ]; then
-		$BB rm -f /system/app/STweaks.apk > /dev/null 2>&1;
-		$BB rm -f /data/app/com.gokhanmoral.*weaks*.apk > /dev/null 2>&1;
-		$BB rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
-		$BB rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
-	fi;
-fi;
-
-if [ ! -f /system/app/STweaks.apk ]; then
-	$BB rm -f /data/app/com.gokhanmoral.*weak*.apk > /dev/null 2>&1;
-	$BB rm -rf /data/data/com.gokhanmoral.*weak* > /dev/null 2>&1;
-	$BB rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
-	$BB rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
-	$BB cp -a /res/misc/payload/STweaks.apk /system/app/STweaks.apk;
-	$BB chown 0.0 /system/app/STweaks.apk;
-	$BB chmod 644 /system/app/STweaks.apk;
-fi;
-
 if [ -f /system/app/Extweaks.apk ] || [ -f /data/app/com.darekxan.extweaks.ap*.apk ]; then
 	$BB rm -f /system/app/Extweaks.apk > /dev/null 2>&1;
 	$BB rm -f /data/app/com.darekxan.extweaks.ap*.apk > /dev/null 2>&1;
@@ -165,10 +144,16 @@ if [ -f /system/app/Extweaks.apk ] || [ -f /data/app/com.darekxan.extweaks.ap*.a
 	$BB rm -f /data/dalvik-cache/*com.darekxan.extweaks.app* > /dev/null 2>&1;
 fi;
 
-if [ ! -e /system/xbin/ntfs-3g ]; then
-		$BB cp -a /res/misc/payload/ntfs-3g /system/xbin/ntfs-3g;
-		$BB chown 0.0 /system/xbin/ntfs-3g;
-		$BB chmod 755 /system/xbin/ntfs-3g;
+if [ ! -f /system/app/STweaks.apk ]; then
+	if [ -f /res/misc/payload/STweaks.apk ]; then
+		$BB rm -f /data/app/com.gokhanmoral.*weak*.apk > /dev/null 2>&1;
+		$BB rm -rf /data/data/com.gokhanmoral.*weak* > /dev/null 2>&1;
+		$BB rm -f /data/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
+		$BB rm -f /cache/dalvik-cache/*gokhanmoral.*weak*.apk* > /dev/null 2>&1;
+		$BB cp -a /res/misc/payload/STweaks.apk /system/app/STweaks.apk;
+		$BB chown 0.0 /system/app/STweaks.apk;
+		$BB chmod 644 /system/app/STweaks.apk;
+	fi;
 fi;
 
 $BB mount -t rootfs -o remount,rw rootfs;
