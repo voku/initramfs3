@@ -897,8 +897,6 @@
 
 		<checkbox description="Enable or Disable Usb to Serial Modules. This will allow you to use usb to serial adapter to connect to ROUTERS and SWITCHES via console port. Effect only after reboot!" name="USB to Serial" action="generic_cortex /tmp/usbserial_module" label="Usb to Serial Modules"/>
 
-		<checkbox description="Enable or Disable Usb to Network Module This will allow to use limited number of usb to network card adapters. No support, and no info if it will work. Effect only after reboot!" name="USB to NetStick" action="generic_cortex /tmp/usbnet_module" label="USB to Net Stick"/>
-
 		<checkbox description="Enable or Disable CIFS Module. This will allow to use apps that can mount internal storage and publish over network. User can access data and system over network. No support, effect only after reboot!" name="CIFS Module" action="generic_cortex /tmp/cifs_module" label="CIFS Module"/>
 
 		<checkbox description="Enable or Disable EDS Module, (Encrypted Data Store) lets you store your files in the encrypted container to prevent unauthorized access to sensitive information. you need app from google store (EDS, Paid or Lite)" name="EDS Module" action="generic_cortex /tmp/eds_module" label="EDS Module"/>
