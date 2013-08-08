@@ -23,13 +23,11 @@ done;
 
 if [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /data;
-	$BB mount -o remount,rw,noauto_da_alloc /system;
+	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /system;
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /efs;
 else
-	$BB mount -o remount,rw,noauto_da_alloc /data;
-	$BB mount -o remount,rw,noauto_da_alloc /system;
-	$BB mount -o remount,rw,noauto_da_alloc /preload;
-	$BB mount -o remount,rw,noauto_da_alloc /efs;
+	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /system;
+	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /preload;
 fi;
 
 # allow user and admin to use all free mem.
