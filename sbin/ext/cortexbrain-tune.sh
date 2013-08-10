@@ -491,6 +491,16 @@ CPU_GOV_TWEAKS()
 			down_threshold_hp_fst_tmp="/dev/null";
 		fi;
 
+		local up_threshold_hp_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_hotplug_freq1";
+		if [ ! -e $up_threshold_hp_freq_fst_tmp ]; then
+			up_threshold_hp_freq_fst_tmp="/dev/null";
+		fi;
+
+		local down_threshold_hp_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold_hotplug_freq1";
+		if [ ! -e $down_threshold_hp_freq_fst_tmp ]; then
+			down_threshold_hp_freq_fst_tmp="/dev/null";
+		fi;
+
 		local smooth_up_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/smooth_up";
 		if [ ! -e $smooth_up_tmp ]; then
 			smooth_up_tmp="/dev/null";
@@ -555,6 +565,8 @@ CPU_GOV_TWEAKS()
 			echo "$sampling_down_mom_sens_sleep" > $sampling_down_mom_sens_tmp;
 			echo "$up_threshold_hp_fst_sleep" > $up_threshold_hp_fst_tmp;
 			echo "$down_threshold_hp_fst_sleep" > $down_threshold_hp_fst_tmp;
+			echo "$up_threshold_hp_freq_fst_sleep" > $up_threshold_hp_freq_fst_tmp;
+			echo "$down_threshold_hp_freq_fst_sleep" > $down_threshold_hp_freq_fst_tmp;
 			echo "$smooth_up_sleep" > $smooth_up_tmp;
 			echo "$freq_limit_sleep" > $freq_limit_tmp;
 			echo "$fast_scaling_sleep" > $fast_scaling_tmp;
@@ -595,6 +607,8 @@ CPU_GOV_TWEAKS()
 			echo "$sampling_down_mom_sens" > $sampling_down_mom_sens_tmp;
 			echo "$up_threshold_hp_fst" > $up_threshold_hp_fst_tmp;
 			echo "$down_threshold_hp_fst" > $down_threshold_hp_fst_tmp;
+			echo "$up_threshold_hp_freq_fst" > $up_threshold_hp_freq_fst_tmp;
+			echo "$down_threshold_hp_freq_fst" > $down_threshold_hp_freq_fst_tmp;
 			echo "$smooth_up" > $smooth_up_tmp;
 			echo "$freq_limit" > $freq_limit_tmp;
 			echo "$fast_scaling" > $fast_scaling_tmp;
