@@ -161,19 +161,19 @@ $BB chmod -R 755 /lib;
 (
 	sleep 40;
 	# order of modules load is important
-#	$BB insmod /lib/modules/j4fs.ko;
+#	$BB insmod /system/lib/modules/j4fs.ko;
 #	$BB mount -t j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 
 	if [ "$usbserial_module" == "on" ]; then
-		$BB insmod /lib/modules/usbserial.ko;
-		$BB insmod /lib/modules/ftdi_sio.ko;
-		$BB insmod /lib/modules/pl2303.ko;
+		$BB insmod /system/lib/modules/usbserial.ko;
+		$BB insmod /system/lib/modules/ftdi_sio.ko;
+		$BB insmod /system/lib/modules/pl2303.ko;
 	fi;
 	if [ "$cifs_module" == "on" ]; then
-		$BB insmod /lib/modules/cifs.ko;
+		$BB insmod /system/lib/modules/cifs.ko;
 	fi;
 	if [ "$eds_module" == "on" ]; then
-		$BB insmod /lib/modules/eds.ko;
+		$BB insmod /system/lib/modules/eds.ko;
 	fi;
 
 	# remount external sdcard if exist
