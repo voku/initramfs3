@@ -61,14 +61,6 @@ $BB chmod -R 0777 /data/.siyah/;
 read_defaults;
 read_config;
 
-# HACK: we have problem on boot with stuck service GoogleBackupTransport if many apps installed
-# here i will rename the GoogleBackupTransport.apk to boot without it and then restore to prevent
-# system not responding popup on after boot.
-if [ -e /data/dalvik-cache/not_first_boot ]; then
-	mount -o remount,rw /system;
-	mv /system/app/GoogleBackupTransport.apk /system/app/GoogleBackupTransport.apk.off
-fi;
-
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
@@ -307,14 +299,6 @@ chmod 666 /tmp/uci_done;
 		echo "$scaling_max_freq_oc" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 	else
 		echo "$scaling_max_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-	fi;
-
-	# HACK: restore GoogleBackupTransport.apk after boot.
-	if [ -e /data/dalvik-cache/not_first_boot ]; then
-		mv /system/app/GoogleBackupTransport.apk.off /system/app/GoogleBackupTransport.apk
-	else
-		touch /data/dalvik-cache/not_first_boot;
-		chmod 777 /data/dalvik-cache/not_first_boot;
 	fi;
 
 	# ROOTBOX fix notification_wallpaper
