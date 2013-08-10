@@ -247,14 +247,21 @@ $BB chmod 755 /system/vendor/firmware/mfc_fw.bin;
 # fix permission to services.jar in case user did a mess, after using my MOD!
 $BB chmod 644 /system/framework/services.jar;
 
-# copy new Kernel modules to /system/lib/modules and to second rom system if exist
+# move new Kernel modules to /system/lib/modules if possible
+SYSTEM_FREE=`$BB df -h | $BB grep system | $BB cut -d " " -f14 | $BB cut -c 1-3`;
 if [ ! -d /system/lib/modules ]; then
 	mkdir /system/lib/modules;
-	$BB mv /lib/modules/*.ko /system/lib/modules/;
-	$BB chmod 755 /system/lib/modules/*.ko;
+	if [ "$SYSTEM_FREE" -le "492" ]; then
+		$BB mv /lib/modules/*.ko /system/lib/modules/;
+		$BB chmod 755 /system/lib/modules/*.ko;
+		$BB mount --bind /system/lib/modules /lib/modules;
+	fi;
 else
-	$BB mv /lib/modules/*.ko /system/lib/modules/;
-	$BB chmod 755 /system/lib/modules/*.ko;
+	if [ "$SYSTEM_FREE" -le "492" ]; then
+		$BB mv /lib/modules/*.ko /system/lib/modules/;
+		$BB chmod 755 /system/lib/modules/*.ko;
+		$BB mount --bind /system/lib/modules /lib/modules;
+	fi;
 fi;
 
 if [ -f /system/recovery.cpio.gz ]; then
@@ -445,7 +452,7 @@ BOOTROM()
 POWER_SQL_JB()
 {
 	$BB cp -a /res/misc/sql/jb/libsqlite.so /system/lib/libsqlite.so;
-	$BB cp -a /res/misc/sql/sqlite3 /system/xbin/sqlite3;
+	$BB cp -a /res/misc/sql/jb/sqlite3 /system/xbin/sqlite3;
 	$BB chmod 755 /system/lib/libsqlite.so;
 	$BB chmod 755 /system/xbin/sqlite3;
 }
@@ -453,7 +460,7 @@ POWER_SQL_JB()
 POWER_SAMMY_SQL_JB()
 {
 	$BB cp -a /res/misc/sql/sammy-jb/libsqlite.so /system/lib/libsqlite.so;
-	$BB cp -a /res/misc/sql/sqlite3 /system/xbin/sqlite3;
+	$BB cp -a /res/misc/sql/sammy-jb/sqlite3 /system/xbin/sqlite3;
 	$BB chmod 755 /system/lib/libsqlite.so;
 	$BB chmod 755 /system/xbin/sqlite3;
 }

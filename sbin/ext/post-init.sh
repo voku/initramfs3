@@ -340,10 +340,12 @@ chmod 666 /tmp/uci_done;
 	echo "booting" > /data/.siyah/booting;
 	chmod 777 /data/.siyah/booting;
 	pkill -f "com.gokhanmoral.stweaks.app";
+	export CONFIG_BOOTING=1;
 	nohup $BB sh /res/uci.sh restore;
 	UCI_PID=`pgrep -f "/res/uci.sh"`;
 	echo "-1000" > /proc/$UCI_PID/oom_score_adj;
 	echo "1" > /tmp/uci_done;
+	export CONFIG_BOOTING=
 
 	# restore all the PUSH Button Actions back to there location
 	$BB mount -o remount,rw rootfs;
