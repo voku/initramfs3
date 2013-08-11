@@ -176,4 +176,3 @@ $BB mount -t rootfs -o remount,rw rootfs;
 $BB mount -o remount,rw /system;
 
 $BB rm -f /res/misc/payload/*;
-

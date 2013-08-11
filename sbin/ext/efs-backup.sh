@@ -16,4 +16,3 @@ if [ ! -f /data/.siyah/efsbackup.tar.gz ]; then
 		cp /data/media/efs* /sdcard/;
 	)&
 fi;
-

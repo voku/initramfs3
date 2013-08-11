@@ -21,4 +21,3 @@ if [ -f /data/local/customboot.sh ]; then
 	chmod 755 /data/local/customboot.sh;
 	$BB sh /data/local/customboot.sh;
 fi;
-

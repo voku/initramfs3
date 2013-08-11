@@ -16,4 +16,3 @@ if [ "$REPLY" == "y" ]; then
 		echo "DATA Partition is MOUNTED! you can't run this script, reboot to recovery, them run via ADB"
 	fi;
 fi;
-

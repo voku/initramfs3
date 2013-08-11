@@ -103,4 +103,3 @@ else
 		SDCARD_FIX;
 	fi;
 fi;
-

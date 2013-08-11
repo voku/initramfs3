@@ -64,7 +64,7 @@ MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
 # ==============================================================
-# I/O-TWEAKS 
+# I/O-TWEAKS
 # ==============================================================
 IO_TWEAKS()
 {
@@ -642,7 +642,7 @@ MEMORY_TWEAKS()
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "1" > /proc/sys/vm/overcommit_memory; # default: 1
-		echo "950" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
 
@@ -802,7 +802,7 @@ UKSMCTL()
 WIFI_SET()
 {
 	local state="$1";
-	
+
 	if [ "$state" == "off" ]; then
 		service call wifi 13 i32 0 > /dev/null;
 		svc wifi disable;
@@ -1134,7 +1134,7 @@ CENTRAL_CPU_FREQ()
 			fi;
 		elif [ "$state" == "standby_freq" ]; then
 			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
-				echo "$standby_freq" > $min_freq_limit_tmp;	
+				echo "$standby_freq" > $min_freq_limit_tmp;
 			else
 				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 			fi;
@@ -1147,14 +1147,14 @@ CENTRAL_CPU_FREQ()
 				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			fi;
 		elif [ "$state" == "sleep_call" ]; then
-			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then				
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
 				echo "$standby_freq" > $min_freq_limit_tmp;
 				# brain cooking prevention during call
-				echo "500000" > $max_freq_limit_tmp;	
+				echo "800000" > $max_freq_limit_tmp;
 			else
 				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				# brain cooking prevention during call
-				echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			fi;
 		fi;
 
@@ -1200,7 +1200,7 @@ SWAPPINESS()
 }
 SWAPPINESS;
 
-# disable/enable ipv6  
+# disable/enable ipv6
 IPV6()
 {
 	local state='';
