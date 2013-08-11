@@ -247,6 +247,15 @@ $BB chmod 755 /system/vendor/firmware/mfc_fw.bin;
 # fix permission to services.jar in case user did a mess, after using my MOD!
 $BB chmod 644 /system/framework/services.jar;
 
+# extract modules from tar.xz
+$BB xzcat /modules.tar.xz > /modules.tar;
+$BB mv /modules.tar /lib/;
+cd /lib/;
+$BB tar -xvf modules.tar;
+$BB rm /modules.ta*;
+$BB rm /lib/modules.tar;
+cd /;
+
 # move new Kernel modules to /system/lib/modules if possible
 SYSTEM_FREE=`$BB df -h | $BB grep system | $BB cut -d " " -f14 | $BB cut -c 1-3`;
 if [ ! -d /system/lib/modules ]; then
@@ -254,12 +263,14 @@ if [ ! -d /system/lib/modules ]; then
 	if [ "$SYSTEM_FREE" -le "492" ]; then
 		$BB mv /lib/modules/*.ko /system/lib/modules/;
 		$BB chmod 755 /system/lib/modules/*.ko;
+		$BB chmod 755 /lib/exfat_modules/*;
 		$BB mount --bind /system/lib/modules /lib/modules;
 	fi;
 else
 	if [ "$SYSTEM_FREE" -le "492" ]; then
 		$BB mv /lib/modules/*.ko /system/lib/modules/;
 		$BB chmod 755 /system/lib/modules/*.ko;
+		$BB chmod 755 /lib/exfat_modules/*;
 		$BB mount --bind /system/lib/modules /lib/modules;
 	fi;
 fi;
