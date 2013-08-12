@@ -248,13 +248,13 @@ $BB chmod 755 /system/vendor/firmware/mfc_fw.bin;
 $BB chmod 644 /system/framework/services.jar;
 
 # extract modules from tar.xz
-$BB xzcat /modules.tar.xz > /modules.tar;
-$BB mv /modules.tar /lib/;
-cd /lib/;
-$BB tar -xvf modules.tar;
-$BB rm /modules.ta*;
-$BB rm /lib/modules.tar;
-cd /;
+#$BB xzcat /modules.tar.xz > /modules.tar;
+#$BB mv /modules.tar /lib/;
+#cd /lib/;
+#$BB tar -xvf modules.tar;
+#$BB rm /modules.ta*;
+#$BB rm /lib/modules.tar;
+#cd /;
 
 # move new Kernel modules to /system/lib/modules if possible
 SYSTEM_FREE=`$BB df -h | $BB grep system | $BB cut -d " " -f14 | $BB cut -c 1-3`;
@@ -461,9 +461,9 @@ BOOTROM()
 }
 
 # extract hacked sql
-$BB xzcat /sql.tar.xz > /sql.tar;
-$BB tar -xvf /sql.tar;
-$BB rm /sql.ta*;
+#$BB xzcat /sql.tar.xz > /sql.tar;
+#$BB tar -xvf /sql.tar;
+#$BB rm /sql.ta*;
 
 POWER_SQL_JB()
 {

@@ -11,7 +11,7 @@ $BB mount -t rootfs -o remount,rw rootfs;
 
 cd /;
 
-extract_payload()
+extract_kernel_payload()
 {
 	chmod 755 /sbin/read_boot_headers;
 	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
@@ -20,7 +20,19 @@ extract_payload()
 	cd /;
 	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | xzcat | tar x;
 }
-extract_payload;
+#extract_kernel_payload; #disabled
+
+
+extract_payload()
+{
+	cd /res/misc/payload/;
+	$BB xzcat SuperSU.apk.tar.xz > SuperSU.apk.tar;
+	$BB xzcat su.tar.xz > su.tar;
+	$BB tar -xvf SuperSU.apk.tar;
+	$BB tar -xvf su.tar;
+	cd /;
+}
+#extract_payload; #disabled
 
 # copy cron files
 $BB cp -a /res/crontab/ /data/
@@ -33,11 +45,11 @@ fi;
 # check if new SuperSU exist in kernel, and if Superuser installed, then replace with new SuperSu.
 NEW_SU=1;
 if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/su ]; then
-	su_app_md5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`
-	su_app_md5sum_kernel=`cat /res/SuperSU_md5`;
-	if [ "$su_app_md5sum" == "$su_app_md5sum_kernel" ]; then
+#	su_app_md5sum=`$BB md5sum /system/app/SuperSU.apk | $BB awk '{print $1}'`
+#	su_app_md5sum_kernel=`cat /res/SuperSU_md5`;
+#	if [ "$su_app_md5sum" == "$su_app_md5sum_kernel" ]; then
 		NEW_SU=0;
-	fi;
+#	fi;
 fi;
 
 SU_APP_NEEDED=1;
@@ -56,6 +68,7 @@ if [ "$install_root" == "on" ]; then
 			chmod 6755 /system/xbin/su;
 		else
 			echo "CM10.1 NOT detected, Installing/Updating SuperSU";
+			#extract_payload;
 			# clean su traces
 			$BB rm -f /system/bin/su > /dev/null 2>&1;
 			$BB rm -f /system/xbin/su > /dev/null 2>&1;

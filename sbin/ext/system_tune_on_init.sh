@@ -87,8 +87,10 @@ BOOT_ROM()
 }
 
 if [ -e /tmp/wrong_kernel ]; then
-	mv /res/images/wrong_kernel.png /res/images/icon_clockwork.png;
-	/sbin/choose_rom 0;
+	if [ -e /system/bin/wrong_kernel.png ]; then
+		cp /system/bin/wrong_kernel.png /res/images/icon_clockwork.png;
+		/sbin/choose_rom 0;
+	fi;
 	sleep 15;
 	sync;
 	$BB rm -f /tmp/wrong_kernel;
