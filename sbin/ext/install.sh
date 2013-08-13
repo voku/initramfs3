@@ -11,27 +11,27 @@ $BB mount -t rootfs -o remount,rw rootfs;
 
 cd /;
 
-extract_kernel_payload()
-{
-	chmod 755 /sbin/read_boot_headers;
-	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
-	load_offset=$boot_offset;
-	load_len=$boot_len;
-	cd /;
-	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | xzcat | tar x;
-}
+#extract_kernel_payload()
+#{
+#	chmod 755 /sbin/read_boot_headers;
+#	eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5);
+#	load_offset=$boot_offset;
+#	load_len=$boot_len;
+#	cd /;
+#	dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | xzcat | tar x;
+#}
 #extract_kernel_payload; #disabled
 
 
-extract_payload()
-{
-	cd /res/misc/payload/;
-	$BB xzcat SuperSU.apk.tar.xz > SuperSU.apk.tar;
-	$BB xzcat su.tar.xz > su.tar;
-	$BB tar -xvf SuperSU.apk.tar;
-	$BB tar -xvf su.tar;
-	cd /;
-}
+#extract_payload()
+#{
+#	cd /res/misc/payload/;
+#	$BB xzcat SuperSU.apk.tar.xz > SuperSU.apk.tar;
+#	$BB xzcat su.tar.xz > su.tar;
+#	$BB tar -xvf SuperSU.apk.tar;
+#	$BB tar -xvf su.tar;
+#	cd /;
+#}
 #extract_payload; #disabled
 
 # copy cron files
@@ -157,7 +157,7 @@ if [ -f /system/app/Extweaks.apk ] || [ -f /data/app/com.darekxan.extweaks.ap*.a
 	$BB rm -f /data/dalvik-cache/*com.darekxan.extweaks.app* > /dev/null 2>&1;
 fi;
 
-STWEAKS_CHECK=`find /data/app/ -name com.gokhanmoral.stweaks* | wc -l`;
+STWEAKS_CHECK=`$BB find /data/app/ -name com.gokhanmoral.stweaks* | wc -l`;
 
 if [ "$STWEAKS_CHECK" -eq "1" ]; then
 	$BB rm -f /data/app/com.gokhanmoral.stweaks* > /dev/null 2>&1;
@@ -187,5 +187,3 @@ fi;
 
 $BB mount -t rootfs -o remount,rw rootfs;
 $BB mount -o remount,rw /system;
-
-$BB rm -f /res/misc/payload/*;
