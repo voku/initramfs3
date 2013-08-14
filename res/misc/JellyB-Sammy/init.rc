@@ -201,9 +201,13 @@ on post-fs-data
     mkdir /data/app-private 0771 system system
     mkdir /data/app-asec 0700 root root
     mkdir /data/app 0771 system system
-    mkdir /data/property 0700 root root
+    mkdir /data/property 0770 root radio
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
+
+# set correct permissions on /data/property
+    chown root radio /data/property
+    chmod 0770 /data/property
 
 # SA, System SW, SAMSUNG create log directory
     mkdir /data/log 0775 system log

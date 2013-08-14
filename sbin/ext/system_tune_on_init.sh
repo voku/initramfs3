@@ -6,9 +6,6 @@ stop;
 # set busybox location
 BB=/sbin/busybox
 
-$BB chmod -R 777 /tmp/;
-$BB chmod -R 6755 /sbin/ext/;
-
 mount -o remount,rw,nosuid,nodev /cache;
 mount -o remount,rw,nosuid,nodev /data;
 mount -o remount,rw /;
@@ -18,28 +15,20 @@ $BB rm -rf /cache/lost+found/* 2> /dev/null;
 $BB rm -rf /data/lost+found/* 2> /dev/null;
 $BB rm -rf /data/tombstones/* 2> /dev/null;
 $BB rm -rf /data/anr/* 2> /dev/null;
-$BB chmod -R 400 /data/tombstones;
 
 # critical Permissions fix
+$BB chown -R root:system /sys/devices/system/cpu/;
+$BB chown -R system:system /data/anr;
+$BB chown -R root:radio /data/property/;
+$BB chmod -R 777 /tmp/;
+$BB chmod -R 6755 /sbin/ext/;
 $BB chmod -R 0777 /dev/cpuctl/;
 $BB chmod -R 0777 /data/system/inputmethod/;
-$BB chown -R root:system /sys/devices/system/cpu/;
 $BB chmod -R 0777 /sys/devices/system/cpu/;
-$BB chown -R system:system /data/anr;
 $BB chmod -R 0777 /data/anr/;
-$BB chmod 744 /proc/cmdline;
-
-MIUI_JB=0;
-JELLY=0;
-JBSAMMY=0;
-CM_AOKP_10_JB=0;
-
-[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
-if [ `cat /tmp/sammy_rom` -eq "1" ]; then
-	JBSAMMY=1;
-fi;
-JELLY=`$BB ls /system/lib/ssl/engines/libkeystore.so | wc -l`;
-CM_AOKP_10_JB=`$BB ls /system/bin/wfd | wc -l`;
+$BB chmod 0744 /proc/cmdline;
+$BB chmod -R 0770 /data/property/;
+$BB chmod -R 0400 /data/tombstones;
 
 LOG_SDCARDS=/log-sdcards
 FIX_BINARY=/sbin/fsck_msdos
@@ -88,7 +77,7 @@ BOOT_ROM()
 
 if [ -e /tmp/wrong_kernel ]; then
 	if [ -e /system/bin/wrong_kernel.png ]; then
-		cp /system/bin/wrong_kernel.png /res/images/icon_clockwork.png;
+		$BB cp /system/bin/wrong_kernel.png /res/images/icon_clockwork.png;
 		/sbin/choose_rom 0;
 	fi;
 	sleep 15;

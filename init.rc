@@ -114,7 +114,6 @@ loglevel 3
 on fs
 # mount ext4 partitions
 # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
     mkdir /efs
@@ -132,7 +131,6 @@ on fs
     exec check_encryption_status /res/dev/data
 
 on post-fs
-    exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait
 
 # once everything is setup, no need to modify /

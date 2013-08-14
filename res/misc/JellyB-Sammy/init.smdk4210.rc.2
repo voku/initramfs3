@@ -117,6 +117,8 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
 
 # Permisions for sensors
+    chown system radio /sys/devices/platform/s5p-ehci/ehci_power
+    chown system radio /sys/devices/platform/s5p-ehci/ehci_runtime
     chown system radio /dev/accelerometer
     chown radio system /sys/devices/virtual/accelerometer/accelerometer/acc_file
     chown radio system /sys/devices/virtual/sec/gsensorcal/calibration
