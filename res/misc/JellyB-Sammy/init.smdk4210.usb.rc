@@ -1,4 +1,5 @@
 on init
+    write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/android0/f_rndis/manufacturer "Samsung"
     write /sys/class/android_usb/android0/f_rndis/vendorID 04e8
     write /sys/class/android_usb/android0/f_rndis/wceis 1
@@ -6,6 +7,7 @@ on init
 on boot
     write /sys/class/android_usb/android0/iManufacturer "Samsung"
     write /sys/class/android_usb/android0/iProduct "GT-I9100"
+    write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/f_mass_storage/inquiry_string "Samsung"
 
 on property:sys.usb.config=mtp

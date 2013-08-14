@@ -13,6 +13,7 @@ on init
     mkdir /sdcard
     mkdir /sdcard1
     mkdir /usbdisk
+    mkdir /sd-ext
     mkdir /system
     mkdir /data
     mkdir /cache
@@ -62,7 +63,6 @@ service recovery /sbin/recovery-loader
 service adbd /sbin/adbd recovery
     disabled
 
-
 # Always start adbd on userdebug and eng builds
 # In recovery, always run adbd as root.
 on property:ro.debuggable=1
@@ -81,4 +81,3 @@ on property:service.adb.root=1
     write /sys/class/android_usb/android0/enable 0
     restart adbd
     write /sys/class/android_usb/android0/enable 1
-

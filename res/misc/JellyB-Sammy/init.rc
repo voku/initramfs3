@@ -216,6 +216,13 @@ on post-fs-data
     chmod 0775 /data/log
     chmod 0775 /data/anr
 
+# For Factorymode
+    mkdir /efs/FactoryApp 0775
+    chown radio system /efs/FactoryApp
+    chmod 0775 /efs/FactoryApp
+    write /efs/FactoryApp/factorymode ON
+    chown system system /efs/FactoryApp/factorymode
+    chmod 0744 /efs/FactoryApp/factorymode
 
 # create dalvik-cache, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -545,7 +552,7 @@ service mobex-daemon /system/bin/npsmobex
 service surfaceflinger /system/bin/surfaceflinger
     class main
     user system
-    group graphics drmrpc
+    group graphics
     onrestart restart zygote
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server

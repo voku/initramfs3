@@ -144,7 +144,6 @@ on boot
 on fs
 # Mount all
     mount_all /fstab.smdk4210
-
     setprop ro.crypto.fuse_sdcard false
 
 # for LogMeIn
@@ -201,7 +200,7 @@ on fs
     chown system media_rw /sys/class/mdnie/mdnie/mode
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
     chown system media_rw /sys/class/mdnie/mdnie/scenario
-    chown system media_rw /sys/class/mdnie/mdnie/negative
+    chown system system /sys/class/mdnie/mdnie/negative
     write /sys/class/mdnie/mdnie/scenario 0
     write /sys/class/mdnie/mdnie/mode 0
 
@@ -220,9 +219,6 @@ on fs
     chmod 0664 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
-#   insmod /lib/modules/exfat_core.ko
-#   insmod /lib/modules/exfat_fs.ko
-
     chown radio system /efs
     chmod 0771 /efs
 
