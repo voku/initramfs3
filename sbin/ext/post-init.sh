@@ -250,7 +250,7 @@ $BB sh /sbin/ext/properties.sh;
 
 (
 	# Apps Install
-	#$BB sh /sbin/ext/install.sh;
+	$BB sh /sbin/ext/install.sh;
 
 	# EFS Backup
 	$BB sh /sbin/ext/efs-backup.sh;
