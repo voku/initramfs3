@@ -11,8 +11,7 @@ on boot
 
 on post-fs-data
 # insmod kernel modules
-    insmod /lib/exfat_modules/exfat_core.ko
-    insmod /lib/exfat_modules/exfat_fs.ko
+    insmod /lib/exfat_modules/exfat.ko
     insmod /system/lib/modules/Si4709_driver.ko
 
 on fs
