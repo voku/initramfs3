@@ -183,20 +183,20 @@ if [ "$SECONDROM" -eq "1" ]; then
 	SEC_DATA=/mnt/tmp/.secondrom/data.img
 
 	if [ -e "$SEC_DATA" ]; then
-		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'features' | grep 'has_journal'" > /fix_data_log;
-		if [ "a`cat /fix_data_log`" == "a" ]; then
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'features' | grep 'has_journal' | wc -l" > /fix_data_log;
+		if [ "`cat /fix_data_log`" -eq "0" ]; then
 			$BB sh -c "/sbin/tune2fs -O has_journal $SEC_DATA";
 		fi;
-		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'features' | grep 'dir_index'" > /fix_data_log;
-		if [ "a`cat /fix_data_log`" == "a" ]; then
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'features' | grep 'dir_index' | wc -l" > /fix_data_log;
+		if [ "`cat /fix_data_log`" -eq "0" ]; then
 			$BB sh -c "/sbin/tune2fs -O dir_index $SEC_DATA";
 		fi;
-		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'Default mount options' | grep 'journal_data_writeback'" > /fix_data_log;
-		if [ "a`cat /fix_data_log`" == "a" ]; then
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'Default mount options' | grep 'journal_data_writeback' | wc -l" > /fix_data_log;
+		if [ "`cat /fix_data_log`" -eq "0" ]; then
 			$BB sh -c "/sbin/tune2fs -o journal_data_writeback $SEC_DATA";
 		fi;
-		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'Inode size' | grep '256'" > /fix_data_log;
-		if [ "a`cat /fix_data_log`" == "a" ]; then
+		$BB sh -c "/sbin/tune2fs -l $SEC_DATA | grep 'Inode size' | grep '256' | wc -l" > /fix_data_log;
+		if [ "`cat /fix_data_log`" -eq "0" ]; then
 			$BB sh -c "/sbin/tune2fs -I 256 $SEC_DATA";
 		fi;
 
@@ -296,6 +296,11 @@ CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
 # Partition global tuning!
 #############################
 
+NEED_CHECK()
+{
+	echo "1" > /tmp/need_check_part;
+}
+
 PARTITION_TUNING()
 {
 	DEVICE_DATA="/res/dev/data";
@@ -313,82 +318,81 @@ PARTITION_TUNING()
 	$BB sh -c "/sbin/date" > $LOG_CACHE;
 
 	# umount 
-	$BB umount -l $DIR_DATA >> $LOG_DATA;
-	$BB umount -l $DIR_CACHE >> $LOG_CACHE;
-
-	# triggers
-	NEED_CHECK_CACHE=0;
-	NEED_CHECK_DATA=0;
+	$BB umount -l $DIR_DATA;
+	$BB umount -l $DIR_CACHE;
 
 	# set fs-feature -> [^]has_journal
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal'" > $LOG_CACHE_TMP;
-	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'has_journal' | wc -l" > $LOG_CACHE_TMP;
+	if [ "`cat $LOG_CACHE_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_CACHE" >> $LOG_CACHE;
-		NEED_CHECK_CACHE=1;
+		NEED_CHECK;
 	fi;
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal'" > $LOG_DATA_TMP;
-	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'has_journal' | wc -l" > $LOG_DATA_TMP;
+	if [ "`cat $LOG_DATA_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -O has_journal $DEVICE_DATA" >> $LOG_DATA;
-		NEED_CHECK_DATA=1;
+		NEED_CHECK;
 	fi;
 
 	# set fs-feature -> [^]dir_index
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index'" > $LOG_CACHE_TMP;
-	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then	
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'dir_index' | wc -l" > $LOG_CACHE_TMP;
+	if [ "`cat $LOG_CACHE_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_CACHE" >> $LOG_CACHE;
-		NEED_CHECK_CACHE=1;
+		NEED_CHECK;
 	fi;
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index'" > $LOG_DATA_TMP;
-	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'dir_index' | wc -l" > $LOG_DATA_TMP;
+	if [ "`cat $LOG_DATA_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -O dir_index $DEVICE_DATA" >> $LOG_DATA;
-		NEED_CHECK_DATA=1;
+		NEED_CHECK;
 	fi;
 
 	# check if jornal recover needed
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'features' | grep 'needs_recovery'" > $LOG_CACHE_TMP;
-	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		NEED_CHECK_CACHE=1;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'state' | grep 'clean' | wc -l" > $LOG_CACHE_TMP;
+	if [ "`cat $LOG_CACHE_TMP`" -eq "0" ]; then
+		NEED_CHECK;
 	fi;
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'features' | grep 'needs_recovery'" > $LOG_DATA_TMP;
-	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
-		NEED_CHECK_DATA=1;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'state' | grep 'clean' | wc -l" > $LOG_DATA_TMP;
+	if [ "`cat $LOG_DATA_TMP`" -eq "0" ]; then
+		NEED_CHECK;
 	fi;
 
-	# set mount option -> [^]journal_data_ordered
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_writeback'" > $LOG_CACHE_TMP;
-	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
-		$BB sh -c "/sbin/tune2fs -o journal_data_writeback $DEVICE_CACHE" >> $LOG_CACHE;
-		NEED_CHECK_CACHE=1;
+	$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'state' | grep 'clean' | wc -l" > /tmp/efs_check;
+	if [ "`cat /tmp/efs_check`" -eq "0" ]; then
+		echo "need" > /tmp/efs_check;
 	fi;
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_writeback'" > $LOG_DATA_TMP;
-	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+
+	# set mount option -> [^]journal_data_writeback
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Default mount options' | grep 'journal_data_writeback' | wc -l" > $LOG_CACHE_TMP;
+	if [ "`cat $LOG_CACHE_TMP`" -eq "0" ]; then
+		$BB sh -c "/sbin/tune2fs -o journal_data_writeback $DEVICE_CACHE" >> $LOG_CACHE;
+		NEED_CHECK;
+	fi;
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Default mount options' | grep 'journal_data_writeback' | wc -l" > $LOG_DATA_TMP;
+	if [ "`cat $LOG_DATA_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -o journal_data_writeback $DEVICE_DATA" >> $LOG_DATA;
-		NEED_CHECK_DATA=1;
+		NEED_CHECK;
 	fi;
 
 	# set inode to 256
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256'" > $LOG_CACHE_TMP;
-	if [ "a`cat $LOG_CACHE_TMP`" == "a" ]; then
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_CACHE | grep 'Inode size' | grep '256' | wc -l" > $LOG_CACHE_TMP;
+	if [ "`cat $LOG_CACHE_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_CACHE" >> $LOG_CACHE;
 	fi;
-	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256'" > $LOG_DATA_TMP;
-	if [ "a`cat $LOG_DATA_TMP`" == "a" ]; then
+	$BB sh -c "/sbin/tune2fs -l $DEVICE_DATA | grep 'Inode size' | grep '256' | wc -l" > $LOG_DATA_TMP;
+	if [ "`cat $LOG_DATA_TMP`" -eq "0" ]; then
 		$BB sh -c "/sbin/tune2fs -I 256 $DEVICE_DATA" >> $LOG_DATA;
 	fi;
 
 	# check 'X2' partitions, if needed
-	if [ "$NEED_CHECK_CACHE" -eq "1" ]; then
+	if [ "`cat /tmp/need_check_part`" -eq "1" ]; then
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_CACHE" >> $LOG_CACHE;
-	fi;
-	if [ "$NEED_CHECK_DATA" -eq "1" ]; then
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 		$BB sh -c "/sbin/e2fsck -p $DEVICE_DATA" >> $LOG_DATA;
 	fi;
-
-	# efs check and fix, do not change
-	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
-	$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
+	if [ "`cat /tmp/efs_check`" == "need" ]; then
+		$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" > /tmp/efs_check;
+		$BB sh -c "/sbin/e2fsck -p /dev/block/mmcblk0p1" >> /tmp/efs_check;
+	fi;
 
 	# only if asked by user via stweaks
 	if [ -e /system/run_fs_check ]; then
@@ -492,8 +496,9 @@ $BB sed -i "s/ro.ril.gprsclass=[0-9]*//g" /system/build.prop;
 
 # system dalvik.vm tuning.
 $BB sed -i "s/dalvik.vm.heapsize=[0-9a-zA-Z]*/dalvik.vm.heapsize=128m/g" /system/build.prop;
-$BB sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=16m/g" /system/build.prop;
-$BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=64m/g" /system/build.prop;
+$BB sed -i "s/dalvik.vm.heapstartsize=[0-9a-zA-Z]*/dalvik.vm.heapstartsize=5m/g" /system/build.prop;
+$BB sed -i "s/dalvik.vm.heapgrowthlimit=[0-9a-zA-Z]*/dalvik.vm.heapgrowthlimit=48m/g" /system/build.prop;
+$BB sed -i "s/dalvik.vm.heapminfree=[0-9a-zA-Z]*/dalvik.vm.heapminfree=1m/g" /system/build.prop;
 
 # we can OC to 1.5Ghz.
 $BB sed -i "s/ro.device.cpu=Dual-core 1.2GHz ARM Cortex-A9/ro.device.cpu=Dual-core 1.5GHz ARM Cortex-A9/g" /system/build.prop;

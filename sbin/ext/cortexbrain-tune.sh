@@ -14,7 +14,7 @@
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
 # change mode for /tmp/
-chmod -R 1777 /tmp/;
+chmod -R 777 /tmp/;
 
 # ==============================================================
 # GLOBAL VARIABLES || without "local" also a variable in a function is global
@@ -47,7 +47,7 @@ fi;
 
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
+echo "2000" > /proc/sys/vm/dirty_expire_centisecs;
 
 # ==============================================================
 # FILES FOR VARIABLES || we need this for write variables from child-processes to parent
@@ -102,7 +102,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "128" > $i/queue/nr_requests; # default: 128
+				echo "64" > $i/queue/nr_requests; # default: 128
 			fi;
 		done;
 
@@ -668,11 +668,11 @@ ENTROPY()
 			echo "256" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
 		else
-			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
+			echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
 			echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
 		fi;
 	elif [ "$state" == "sleep" ]; then
-		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
+		echo "64" > /proc/sys/kernel/random/read_wakeup_threshold;
 		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
 	fi;
 
