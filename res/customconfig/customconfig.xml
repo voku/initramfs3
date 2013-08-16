@@ -46,7 +46,7 @@
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (Default: 25%)" name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="23" reversed="false" step="1" max="90"/>
 
-		<seekBar description="Maximum DEEP SLEEP CPU speed. Default is Linux Kernel default value: 600000kHz. Samsung default value is 800000kHz. Setting this too low will stuck your device!" name="scaling_max_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
+		<seekBar description="Maximum DEEP SLEEP CPU speed. Samsung default value is 800000kHz. Setting this too low will stuck your device!" name="scaling_max_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU speed. (Default: 200.000 kHz)" name="scaling_min_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
@@ -356,7 +356,7 @@
 			<spinnerItem name="2560 kB" value="2560"/> 
 		</spinner>
 
-		<spinner description="This will set the default AWAKE IO scheduler for internal, system, data and external sdcard. For best stability use ROW. (Default: ROW)" name="Default Awake IO Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+		<spinner description="This will set the default AWAKE IO scheduler for internal, system, data and external sdcard. (Default: BFQ)" name="Default Awake IO Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
 			<spinnerItem name="CFQ" value="cfq"/> 
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
@@ -368,7 +368,7 @@
 			<spinnerItem name="FIFO" value="fifo"/> 
 		</spinner>
 
-		<spinner description="This will set the STANDBY and DEEPSLEEP IO scheduler for internal, system, data and external sdcard. (Default: ROW) !!! Depends on CortexBrain-Background-Process !!!" name="STANDBY and DEEPSLEEP IO Scheduler" action="generic_cortex /tmp/sleep_scheduler">
+		<spinner description="This will set the STANDBY and DEEPSLEEP IO scheduler for internal, system, data and external sdcard. (Default: BFQ) !!! Depends on CortexBrain-Background-Process !!!" name="STANDBY and DEEPSLEEP IO Scheduler" action="generic_cortex /tmp/sleep_scheduler">
 			<spinnerItem name="CFQ" value="cfq"/> 
 			<spinnerItem name="BFQ" value="bfq"/> 
 			<spinnerItem name="DEADLINE" value="deadline"/> 
@@ -975,8 +975,6 @@
 		<button description="Bug-Report for Kernel" name="Kernel-Bug" action="push-actions/debug_to_sd 1" label="KERNEL-BUG"/>
 
 		<button description="Bug-Report for Apps" name="App-Bug" action="push-actions/debug_to_sd 2" label="APP-BUG"/>
-
-		<button description="Bug-Report after kernel crash!, use this to report sods or random restarts, if you had to push power key for 10sec to reset or after a random reboot. In case phone lost power!, then no log exist!, debug log will be stored to SDCARD dorimanx_last_kmsg_log, upload it to forum, it is can help us to resovle SODs/Reboots bugs" name="LAST_KERNEL_LOG" action="push-actions/last_kmsg" label="LAST_KMSG_LOG"/>
 
 	</settingsPane>
 
