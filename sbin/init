@@ -86,27 +86,32 @@ $BB mount -t ext4 -o rw /dev/block/mmcblk0p12 /preload;
 # prevent from media storage to dig in clockworkmod backup dir
 $BB mount -t vfat /dev/block/mmcblk0p11 /mnt/tmp && ( mkdir -p /mnt/tmp/clockworkmod/blobs/ ) && ( touch /mnt/tmp/clockworkmod/.nomedia ) && ( touch /mnt/tmp/clockworkmod/blobs/.nomedia );
 
-if [ -e /dev/block/mmcblk1p1 ]; then
-	$BB mount -t vfat /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
+EXSDCARD()
+{
+	if [ -e /dev/block/mmcblk1p1 ]; then
+		$BB mount -t auto /dev/block/mmcblk1p1 /mnt/tmp2 && ( mkdir -p /mnt/tmp2/clockworkmod/blobs/ ) && ( touch /mnt/tmp2/clockworkmod/.nomedia ) && ( touch /mnt/tmp2/clockworkmod/blobs/.nomedia );
 
-	SDCARD_SIZE=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
-	if [ "$SDCARD_SIZE" -lt "1000000" ]; then
-		echo "1" > /tmp/sdcard_size;
-	elif [ "$SDCARD_SIZE" -lt "4000000" ]; then
-		echo "4" > /tmp/sdcard_size;
-	elif [ "$SDCARD_SIZE" -lt "8000000" ]; then
-		echo "8" > /tmp/sdcard_size;
-	elif [ "$SDCARD_SIZE" -lt "16000000" ]; then
-		echo "16" > /tmp/sdcard_size;
-	elif [ "$SDCARD_SIZE" -lt "32000000" ]; then
-		echo "32" > /tmp/sdcard_size;
-	elif [ "$SDCARD_SIZE" -lt "64000000" ]; then
-		echo "64" > /tmp/sdcard_size;
+		SDCARD_SIZE=`$BB df | $BB grep /dev/block/mmcblk1p1 | $BB cut -c 23-30`
+		if [ "$SDCARD_SIZE" -lt "1000000" ]; then
+			echo "1" > /tmp/sdcard_size;
+		elif [ "$SDCARD_SIZE" -lt "4000000" ]; then
+			echo "4" > /tmp/sdcard_size;
+		elif [ "$SDCARD_SIZE" -lt "8000000" ]; then
+			echo "8" > /tmp/sdcard_size;
+		elif [ "$SDCARD_SIZE" -lt "16000000" ]; then
+			echo "16" > /tmp/sdcard_size;
+		elif [ "$SDCARD_SIZE" -lt "32000000" ]; then
+			echo "32" > /tmp/sdcard_size;
+		elif [ "$SDCARD_SIZE" -lt "64000000" ]; then
+			echo "64" > /tmp/sdcard_size;
+		fi;
+
+		#umount only the external sd
+		$BB umount -l /mnt/tmp2;
+	else
+		echo "no external sdcard";
 	fi;
-
-	#umount only the external sd
-	$BB umount -l /mnt/tmp2;
-fi;
+}
 
 # dual boot check and run
 if [ -e /mnt/tmp/.nextboot ]; then
@@ -275,6 +280,11 @@ else
 	fi;
 fi;
 
+# load exfat
+$BB insmod /system/lib/modules/exfat.ko;
+# mount external sdcard
+EXSDCARD;
+
 if [ -f /system/recovery.cpio.gz ]; then
 	$BB mount -o remount,rw /;
 	$BB zcat /system/recovery.cpio.gz | cpio -idmu;
@@ -291,6 +301,7 @@ JBSAMMY=`ls /system/lib/libSamsungAnimation.so | wc -l`;
 JBSAMMY2=`ls /system/lib/lib_Samsung_Resampler.so | wc -l`;
 JBMIUI=`ls /system/framework/framework-miui-res.apk | wc -l`;
 CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
+CM_AOKP_10_2_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
 
 #############################
 # Partition global tuning!
@@ -424,6 +435,10 @@ USER_ACTIONS()
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
+	elif [ "$CM_AOKP_10_2_JB" -eq "1" ]; then
+		stop adbd;
+		$BB cp -a /sbin/adbd.cm10.2 /sbin/adbd;
+		$BB chmod 755 /sbin/adbd;
 	fi;
 
 	# only if asked by user via stweaks
@@ -530,6 +545,13 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; t
 			$BB sed -i 's/102/172/g' $GPIO_KEYS;
 		fi;
 	fi;
+
+	SECROM_FUNCTION_AOSP;
+
+elif [ "$CM_AOKP_10_2_JB" -eq "1" ]; then
+	echo "3" > /proc/sys/kernel/rom_feature_set;
+	$BB cp -a /res/misc/JellyB-CM-AOKP-10.2/* /;
+	touch /tmp/cm10.1-installed;
 
 	SECROM_FUNCTION_AOSP;
 

@@ -1,4 +1,5 @@
 import init.smdk4210.usb.rc
+#import init.gps.rc
 
 on init
     export EXTERNAL_STORAGE /storage/sdcard0
@@ -36,6 +37,21 @@ on fs
     mkdir /data/misc/vpn/profiles 0770 system system
     mkdir /data/misc/radio 0775 radio system
     chmod 0770 /data/misc/wifi
+
+# Restorecon
+    restorecon /efs/nv_data.bin
+    restorecon /efs/nv_data.bin.md5
+    restorecon /efs/.nv_core.bak
+    restorecon /efs/.nv_core.bak.md5
+    restorecon /efs/.nv_data.bak
+    restorecon /efs/.nv_data.bak.md5
+    restorecon /efs/.nv_state
+    restorecon /efs/bluetooth/bt_addr
+    restorecon /efs/FactoryApp/factorymode
+    restorecon /efs/FactoryApp/hw_ver
+    restorecon /efs/FactoryApp/keystr
+    restorecon /efs/FactoryApp/serial_no
+    restorecon /efs/imei/mps_code.dat
 
 on post-fs-data
 
@@ -289,7 +305,6 @@ on post-fs-data
     setprop vold.post_fs_data_done 1
 
 on boot
-    setprop ro.radio.noril yes
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"
