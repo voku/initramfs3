@@ -423,8 +423,8 @@ service console /system/bin/sh
     user shell
     group log
 
-service auditd /system/bin/auditd -k
-    class main
+#service auditd /system/bin/auditd -k
+#   class main
 
 on property:ro.debuggable=1
     start console
