@@ -2,6 +2,8 @@
 
 BB=/sbin/busybox
 
+mount -o remount,rw /;
+
 echo "DATA Partition" > /tmp/storage_check;
 $BB sh -c "/sbin/tune2fs -l /res/dev/data | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
 echo "SYSTEM Partition" >> /tmp/storage_check;
