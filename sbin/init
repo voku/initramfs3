@@ -181,7 +181,7 @@ else
 fi;
 
 # mounting system!
-$BB mount -t ext4 /res/dev/system /system;
+$BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit /res/dev/system /system;
 
 # fixing second rom partitions
 if [ "$SECONDROM" -eq "1" ]; then

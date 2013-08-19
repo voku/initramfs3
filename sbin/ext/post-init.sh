@@ -23,10 +23,8 @@ done;
 
 if [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /data;
-	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /system;
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /efs;
 else
-	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /system;
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /preload;
 fi;
 
@@ -186,16 +184,16 @@ $BB chmod -R 755 /lib;
 	fi;
 
 	# remount external sdcard if exist
-	EXFAT_CHECK=`cat /proc/self/mounts | grep "exfat" | wc -l`;
-	if [ "$EXFAT_CHECK" -eq "1" ]; then
-		if [ `cat /tmp/sammy_rom` -eq "0" ]; then
-			umount /storage/sdcard1;
-			$BB mount -t exfat /dev/block/vold/179:9 /storage/sdcard1;
-		else
-			umount /storage/extSdCard
-			$BB mount -t exfat /dev/block/vold/179:9 /storage/extSdCard;
-		fi;
-	fi;
+#	EXFAT_CHECK=`cat /proc/self/mounts | grep "exfat" | wc -l`;
+#	if [ "$EXFAT_CHECK" -eq "1" ]; then
+#		if [ `cat /tmp/sammy_rom` -eq "0" ]; then
+#			umount /storage/sdcard1;
+#			$BB mount -t exfat /dev/block/vold/179:9 /storage/sdcard1;
+#		else
+#			umount /storage/extSdCard
+#			$BB mount -t exfat /dev/block/vold/179:9 /storage/extSdCard;
+#		fi;
+#	fi;
 
 )&
 
@@ -209,7 +207,7 @@ echo "0" > /proc/sys/kernel/kptr_restrict;
 # Cortex parent should be ROOT/INIT and not STweaks
 nohup /sbin/ext/cortexbrain-tune.sh;
 CORTEX=`pgrep -f "/sbin/ext/cortexbrain-tune.sh"`;
-echo "-1000" > /proc/$CORTEX/oom_score_adj;
+echo "-900" > /proc/$CORTEX/oom_score_adj;
 
 # enable screen color mode
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode;
@@ -221,10 +219,8 @@ if [ ! -d /system/etc/init.d ]; then
 fi;
 
 (
-	MIUI_JB=0;
-	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
-
-	if [ $init_d == on ] || [ "$MIUI_JB" -eq "1" ]; then
+	JBMIUI=`ls /system/framework/framework-miui-res.apk | wc -l`;
+	if [ "$init_d" == "on" ] || [ "$JBMIUI" -eq "1" ]; then
 		$BB sh /sbin/ext/run-init-scripts.sh;
 	fi;
 )&
@@ -274,14 +270,6 @@ chmod 666 /tmp/uci_done;
 		COUNTER=$(($COUNTER+1));
 	done;
 
-	# give home launcher, oom protection
-	ACORE_APPS=`pgrep acore`;
-	if [ "a$ACORE_APPS" != "a" ]; then
-		for c in `pgrep acore`; do
-			echo "-900" > /proc/${c}/oom_score_adj;
-		done;
-	fi;
-
 	# Mount Sec/Pri ROM DATA on Boot, we need to wait till sdcard is mounted.
 	if [ `cat /tmp/pri_rom_boot` -eq "1" ]; then
 		if [ -e /sdcard/.secondrom/data.img ] || [ -e /storage/sdcard0/.secondrom/data.img ]; then
@@ -306,8 +294,11 @@ chmod 666 /tmp/uci_done;
 	elif [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
 		mount -o remount,rw /
 		mkdir /data_pri_rom;
+		mkdir /system_pri_rom;
 		chmod 777 /data_pri_rom;
+		chmod 777 /system_pri_rom;
 		mount -t ext4 /dev/block/mmcblk0p10 /data_pri_rom;
+		mount -t ext4 /dev/block/mmcblk0p9 /system_pri_rom;
 	fi;
 
 	# restore normal freq
@@ -323,10 +314,24 @@ chmod 666 /tmp/uci_done;
 		chmod 777 /data/data/com.aokp.romcontrol/files/notification_wallpaper.jpg
 	fi;
 
-	# remount all partitions tweaked settings
-	for m in $($BB mount | grep ext[3-4] | cut -d " " -f1); do
-		$BB mount -o remount,rw,noauto_da_alloc,discard,barrier=1 $m;
-	done;
+	# tweaks all the dm partitions that hold moved to sdcard apps
+	sleep 40;
+	DM_COUNT=`ls -d /sys/block/dm* | wc -l`;
+	if [ "$DM_COUNT" -gt "0" ]; then
+		for d in $($BB mount | grep dm | cut -d " " -f1 | grep -v vold); do
+			$BB mount -o remount,ro,noauto_da_alloc $d;
+		done;
+
+		DM=`ls -d /sys/block/dm*`;
+		for i in ${DM}; do
+			echo "0" > ${i}/queue/rotational;
+			echo "0" > ${i}/queue/iostats;
+		done;
+	fi;
+
+	# script finish here, so let me know when
+        echo "Done Booting" > /data/dm-boot-check;
+        date >> /data/dm-boot-check;
 )&
 
 (
@@ -343,7 +348,7 @@ chmod 666 /tmp/uci_done;
 	pkill -f "com.gokhanmoral.stweaks.app";
 	nohup $BB sh /res/uci.sh restore;
 	UCI_PID=`pgrep -f "/res/uci.sh"`;
-	echo "-1000" > /proc/$UCI_PID/oom_score_adj;
+	echo "-800" > /proc/$UCI_PID/oom_score_adj;
 	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location
@@ -364,11 +369,8 @@ chmod 666 /tmp/uci_done;
 
 	# JB Sound Bug fix, 3 push VOL DOWN, 4 push VOL UP. and sound is fixed.
 
-	MIUI_JB=0;
-	JELLY=0;
-	[ "`$BB grep -i cMIUI /system/build.prop`" ] && MIUI_JB=1;
-	[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1;
-	if [ "$JELLY" -eq "1" ] || [ "$MIUI_JB" -eq "1" ]; then
+	CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
+	if [ "$CM_AOKP_10_JB" -eq "1" ]; then
 		if [ "$jb_sound_fix" == "on" ]; then
 			input keyevent 25
 			input keyevent 25
@@ -378,22 +380,13 @@ chmod 666 /tmp/uci_done;
 			input keyevent 24
 			input keyevent 24
 		fi;
+	else
+		echo "jb_sound_fix not used";
 	fi;
 
 	# ###############################################################
 	# I/O related tweaks
 	# ###############################################################
-
-	DM=`ls -d /sys/block/dm*`;
-	for i in ${DM}; do
-		if [ -e $i/queue/rotational ]; then
-			echo "0" > ${i}/queue/rotational;
-		fi;
-
-		if [ -e $i/queue/iostats ]; then
-			echo "0" > ${i}/queue/iostats;
-		fi;
-	done;
 
 	mount -o remount,rw /system;
 	mount -o remount,rw /;
@@ -404,7 +397,4 @@ chmod 666 /tmp/uci_done;
 	# correct oom tuning, if changed by apps/rom
 	$BB sh /res/uci.sh oom_config_screen_on $oom_config_screen_on;
 	$BB sh /res/uci.sh oom_config_screen_off $oom_config_screen_off;
-
-	echo "Done Booting" > /data/dm-boot-check;
-	date >> /data/dm-boot-check;
 )&

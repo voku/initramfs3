@@ -165,7 +165,7 @@ KERNEL_TWEAKS()
 		fi;
 
 		if [ "$cortexbrain_memory" == on ]; then
-			echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
+			echo "48 48" > /proc/sys/vm/lowmem_reserve_ratio;
 		fi;
 
 		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: $state ***: enabled";
