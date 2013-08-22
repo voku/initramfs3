@@ -27,6 +27,7 @@ DATA_DIR=/data/.siyah;
 WAS_IN_SLEEP_MODE=1;
 NOW_CALL_STATE=0;
 USB_POWER=0;
+TELE_DATA=init;
 # read sd-card size, set via boot
 SDCARD_SIZE=`cat /tmp/sdcard_size`;
 
@@ -924,20 +925,16 @@ MOBILE_DATA()
 LOGGER()
 {
 	local state="$1";
-	local dev_log_sleep="/dev/log-sleep";
-	local dev_log="/dev/log";
 
 	if [ "$state" == "awake" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == debug ]; then
-			if [ -e $dev_log_sleep ] && [ ! -e $dev_log ]; then
-				mv $dev_log_sleep $dev_log
-			fi;
+			echo "1" > /sys/module/logger/parameters/log_enabled;
+		elif [ "$android_logger" == disabled ]; then
+			echo "0" > /sys/module/logger/parameters/log_enabled;
 		fi;
 	elif [ "$state" == "sleep" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == disabled ]; then
-			if [ -e $dev_log ]; then
-				mv $dev_log $dev_log_sleep;
-			fi;
+			echo "0" > /sys/module/logger/parameters/log_enabled;
 		fi;
 	fi;
 
@@ -1527,7 +1524,7 @@ AWAKE_MODE()
 
 			log -p i -t $FILE_NAME "*** USB_POWER_WAKE: done ***";
 		fi;
-		#Didn't sleep, and was not powered by USB
+		# Didn't sleep, and was not powered by USB
 	fi;
 }
 
