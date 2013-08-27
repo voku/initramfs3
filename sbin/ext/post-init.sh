@@ -41,11 +41,11 @@ if [ -f /data/.siyah/restore_running ]; then
 	rm -f /data/.siyah/restore_running;
 fi;
 
-ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
-if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
-	rm -f /data/.siyah/*.profile;
-	echo "$ccxmlsum" > /data/.siyah/.ccxmlsum;
-fi;
+#ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
+#if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
+#	rm -f /data/.siyah/*.profile;
+#	echo "$ccxmlsum" > /data/.siyah/.ccxmlsum;
+#fi;
 
 [ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/default.profile;
 [ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/battery.profile;
