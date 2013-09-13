@@ -304,12 +304,12 @@ CPU_GOV_TWEAKS()
 			sampling_rate_tmp="/dev/null";
 		fi;
 
-		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate";
+		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_up_rate";
 		if [ ! -e $cpu_up_rate_tmp ]; then
 			cpu_up_rate_tmp="/dev/null";
 		fi;
 
-		local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate";
+		local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_down_rate";
 		if [ ! -e $cpu_down_rate_tmp ]; then
 			cpu_down_rate_tmp="/dev/null";
 		fi;
@@ -334,22 +334,22 @@ CPU_GOV_TWEAKS()
 			inc_cpu_load_at_min_freq_tmp="/dev/null";
 		fi;
 
-		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_1_1";
+		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_1_1";
 		if [ ! -e $hotplug_freq_fst_tmp ]; then
 			hotplug_freq_fst_tmp="/dev/null";
 		fi;
 
-		local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_2_0";
+		local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_2_0";
 		if [ ! -e $hotplug_freq_snd_tmp ]; then
 			hotplug_freq_snd_tmp="/dev/null";
 		fi;
 
-		local up_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_load_1_1";
+		local up_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_1_1";
 		if [ ! -e $up_load_tmp ]; then
 			up_load_tmp="/dev/null";
 		fi;
 
-		local down_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_load_2_0";
+		local down_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_2_0";
 		if [ ! -e $down_load_tmp ]; then
 			down_load_tmp="/dev/null";
 		fi;
