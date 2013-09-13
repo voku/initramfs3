@@ -264,6 +264,7 @@ CPU_INTELLI_PLUG_TWEAKS()
 
 		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_enable";
 		local gov_check="0";
+		local lhotplug_enable="$hotplug_enable"; 
 
 		if [ ! -e $hotplug_enable_tmp ]; then
 			hotplug_enable_tmp="/dev/null";
@@ -271,10 +272,11 @@ CPU_INTELLI_PLUG_TWEAKS()
 
 		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
 			gov_check=1;
+			lhotplug_enable="0";
 		fi;
 
 		if [ "a$IPA_CHECK" == "a1" ]; then
-			if [ "$hotplug_enable" -eq "1" ]; then
+			if [ "$lhotplug_enable" -eq "1" ]; then
 				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
 					echo "0" > $intelli_plug_active_tmp;
 
@@ -282,13 +284,13 @@ CPU_INTELLI_PLUG_TWEAKS()
 				fi;
 			fi;
 		else
-			if [ "$hotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
+			if [ "$lhotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
 				echo "1" > $intelli_plug_active_tmp;
 
 				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: enabled";
 			fi;
 		fi;
-		echo "$hotplug_enable" > $hotplug_enable_tmp;
+		echo "$lhotplug_enable" > $hotplug_enable_tmp;
 	fi;
 }
 
