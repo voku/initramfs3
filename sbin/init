@@ -411,10 +411,10 @@ PARTITION_TUNING()
 PARTITION_TUNING;
 
 # mounting preloaded partition
-$BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit,discard /dev/block/mmcblk0p12 /preload;
+$BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit /dev/block/mmcblk0p12 /preload;
 
 # mounting system partition
-$BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit,discard /res/dev/system /system;
+$BB mount -t ext4 -o rw,noauto_da_alloc,journal_async_commit /res/dev/system /system;
 
 # fixing second rom partitions
 if [ "$SECONDROM" -eq "1" ]; then
