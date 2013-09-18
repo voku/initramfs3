@@ -256,7 +256,7 @@ fi;
 
 CPU_INTELLI_PLUG_TWEAKS()
 {
-	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_all_cpus`;
 	local intelli_plug_active_tmp="/sys/module/intelli_plug/parameters/intelli_plug_active";
 
 	if [ -e $intelli_plug_active_tmp ]; then
@@ -299,7 +299,7 @@ CPU_GOV_TWEAKS()
 	local state="$1";
 
 	if [ "$cortexbrain_cpu" == on ]; then
-		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+		local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_all_cpus`;
 
 		local sampling_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_rate";
 		if [ ! -e $sampling_rate_tmp ]; then
@@ -1068,7 +1068,7 @@ CENTRAL_CPU_FREQ()
 {
 	local state="$1";
 
-	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_all_cpus`;
 
 	local tmp_max_freq=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`;
 	local tmp_min_freq=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq`;
@@ -1412,21 +1412,21 @@ IO_SCHEDULER()
 CPU_GOVERNOR()
 {
 	local state="$1";
-	local scaling_governor_tmp="/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor";
-	local tmp_governor=`cat $scaling_governor_tmp`;
+	local scaling_governor_all_cpus_tmp="/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_all_cpus";
+	local tmp_governor=`cat $scaling_governor_all_cpus_tmp`;
 
 	if [ "$cortexbrain_cpu" == on ]; then
 		if [ "$state" == "awake" ]; then
-			if [ "$tmp_governor" != $scaling_governor ]; then
-				echo "$scaling_governor" > $scaling_governor_tmp;
+			if [ "$tmp_governor" != $scaling_governor_all_cpus ]; then
+				echo "$scaling_governor_all_cpus" > $scaling_governor_tmp;
 			fi;
 		elif [ "$state" == "sleep" ]; then
-			if [ "$tmp_governor" != $scaling_governor_sleep ]; then
-				echo "$scaling_governor_sleep" > $scaling_governor_tmp;
+			if [ "$tmp_governor" != $scaling_governor_all_cpus_sleep ]; then
+				echo "$scaling_governor_all_cpus_sleep" > $scaling_governor_tmp;
 			fi;
 		fi;
 
-		local USED_GOV_NOW=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+		local USED_GOV_NOW=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor_all_cpus`;
 
 		log -p i -t $FILE_NAME "*** CPU_GOVERNOR: set $state GOV $USED_GOV_NOW ***: done";
 	else
