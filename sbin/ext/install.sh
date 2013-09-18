@@ -52,20 +52,14 @@ if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/su ]; then
 #	fi;
 fi;
 
-SU_APP_NEEDED=1;
-if [ -e /tmp/cm10.1-installed ]; then
-	SU_APP_NEEDED=0;
-fi;
-
 if [ "$install_root" == "on" ]; then
 	if [ "$NEW_SU" -eq "0" ]; then
 		echo "SuperSU already exists and updated";
 		chmod 6755 /system/xbin/su;
 	else
-		echo "SuperSU update/install needed, check if CM10.1 detected";
-		if [ "$SU_APP_NEEDED" -eq "0" ]; then
-			echo "CM10.1 detected, Super User already exists in ROM";
-			chmod 6755 /system/xbin/su;
+		echo "SuperSU update/install needed, check if CM detected";
+		if [ -e /tmp/cm-installed ]; then
+			echo "CM detected, Super User already exists in ROM";
 		else
 			echo "CM10.1 NOT detected, Installing/Updating SuperSU";
 			#extract_payload;
