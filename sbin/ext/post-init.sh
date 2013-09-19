@@ -62,6 +62,17 @@ read_config;
 # custom boot booster stage 1
 echo "$boot_boost" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 
+(
+	# Apps and ROOT Install
+	$BB sh /sbin/ext/install.sh;
+	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
+		/system/xbin/daemonsu --auto-daemon &
+	fi;
+
+	# EFS Backup
+	$BB sh /sbin/ext/efs-backup.sh;
+)&
+
 # mdnie sharpness tweak
 if [ "$mdniemod" == "on" ]; then
 	$BB sh /sbin/ext/mdnie-sharpness-tweak.sh;
@@ -143,16 +154,6 @@ if [ "$cpu_voltage_switch" == "off" ] && [ "$VDD_INT" != "3" ]; then
 		$BB sh /res/uci.sh cpu-voltage 15 925;
 		$BB sh /res/uci.sh cpu-voltage 16 925;
 	fi;
-fi;
-
-# STweaks check su only at /system/xbin/su make it so
-if [ -e /system/xbin/su ]; then
-	echo "root for STweaks found";
-elif [ -e /system/bin/su ]; then
-	cp /system/bin/su /system/xbin/su;
-	chmod 6755 /system/xbin/su;
-else
-	echo "ROM without ROOT";
 fi;
 
 # busybox addons
@@ -243,17 +244,6 @@ fi;
 mount -t tmpfs -o mode=0777,gid=1000 tmpfs /mnt/ntfs
 
 $BB sh /sbin/ext/properties.sh;
-
-(
-	# Apps Install
-	$BB sh /sbin/ext/install.sh;
-	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
-		/system/xbin/daemonsu --auto-daemon &
-	fi;
-
-	# EFS Backup
-	$BB sh /sbin/ext/efs-backup.sh;
-)&
 
 echo "0" > /tmp/uci_done;
 chmod 666 /tmp/uci_done;
