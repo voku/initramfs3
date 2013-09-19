@@ -58,10 +58,10 @@ if [ "$install_root" == "on" ]; then
 		chmod 6755 /system/xbin/su;
 	else
 		echo "SuperSU update/install needed, check if CM detected";
-		if [ -e /tmp/cm-installed ]; then
-			echo "CM detected, Super User already exists in ROM";
+		if [ -e /tmp/cm10.1-installed ]; then
+			echo "CM10.1 detected, Super User already exists in ROM";
 		else
-			echo "CM10.1 NOT detected, Installing/Updating SuperSU";
+			echo "ROOT NOT detected, Installing/Updating SuperSU";
 			#extract_payload;
 			# clean su traces
 			$BB rm -f /system/bin/su > /dev/null 2>&1;
@@ -69,18 +69,10 @@ if [ "$install_root" == "on" ]; then
 			$BB rm -f /system/bin/.ext/su > /dev/null 2>&1;
 			$BB mkdir /system/xbin > /dev/null 2>&1;
 			$BB chmod 755 /system/xbin;
-
-			# extract SU binary
 			if [ ! -d /system/bin/.ext ]; then
 				$BB mkdir /system/bin/.ext;
 				$BB chmod 777 /system/bin/.ext;
 			fi;
-			$BB cp -a /res/misc/payload/su /system/bin/.ext/su;
-			$BB cp -a /res/misc/payload/su /system/xbin/su;
-			$BB chown 0.0 /system/xbin/su;
-			$BB chmod 6755 /system/xbin/su;
-			$BB chown 0.0 /system/bin/.ext/su;
-			$BB chmod 6755 /system/bin/.ext/su;
 
 			# clean super user old apps
 			$BB rm -f /system/app/*uper?ser.apk > /dev/null 2>&1;
@@ -94,10 +86,37 @@ if [ "$install_root" == "on" ]; then
 			$BB rm -rf /data/data/com.noshufou.android.su > /dev/null 2>&1;
 			$BB rm -rf /data/data/eu.chinfire.supersu > /dev/null 2>&1;
 
-			# extract super user app
-			$BB cp -a /res/misc/payload/SuperSU.apk /system/app/SuperSU.apk;
-			$BB chown 0.0 /system/app/SuperSU.apk;
-			$BB chmod 644 /system/app/SuperSU.apk;
+			if [ -e /system/chainfire/SuperSU.apk ]; then
+				$BB cp /system/chainfire/SuperSU.apk /system/app/;
+				$BB cp /system/chainfire/SuperSUNoNag-v1.00.apk /system/app/;
+				$BB cp /system/chainfire/xbin/access /system/xbin/su;
+				$BB cp /system/chainfire/xbin/access /system/xbin/daemonsu;
+				if [ ! -e /system/xbin/chattr ]; then
+					cp /system/chainfire/xbin/chattr /system/xbin/;
+					$BB chmod 6755 /system/xbin/chattr;
+				fi;
+				$BB chmod 6755 /system/xbin/su;
+				$BB chmod 6755 /system/xbin/daemonsu;
+				$BB chmod 644 /system/app/SuperSU.apk;
+				$BB chmod 644 /system/app/SuperSUNoNag-v1.00.apk;
+				$BB chown 0.0 /system/app/SuperSU.apk;
+				$BB chown 0.0 /system/app/SuperSUNoNag-v1.00.apk;
+				$BB cp -a /system/xbin/su /system/bin/.ext/;
+			else
+
+				# extract SU binary
+				$BB cp -a /res/misc/payload/su /system/bin/.ext/su;
+				$BB cp -a /res/misc/payload/su /system/xbin/su;
+				$BB chown 0.0 /system/xbin/su;
+				$BB chmod 6755 /system/xbin/su;
+				$BB chown 0.0 /system/bin/.ext/su;
+				$BB chmod 6755 /system/bin/.ext/su;
+
+				# extract super user app
+				$BB cp -a /res/misc/payload/SuperSU.apk /system/app/SuperSU.apk;
+				$BB chown 0.0 /system/app/SuperSU.apk;
+				$BB chmod 644 /system/app/SuperSU.apk;
+			fi;
 
 			if [ ! -e /data/app/*chainfire?supersu.pr*.apk ]; then
 				if [ -e /data/system/chain_pro.apk_bkp ]; then

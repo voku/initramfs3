@@ -247,6 +247,9 @@ $BB sh /sbin/ext/properties.sh;
 (
 	# Apps Install
 	$BB sh /sbin/ext/install.sh;
+	if [ -e /system/app/SuperSU.apk ] && [ -e /system/xbin/daemonsu ]; then
+		/system/xbin/daemonsu --auto-daemon &
+	fi;
 
 	# EFS Backup
 	$BB sh /sbin/ext/efs-backup.sh;

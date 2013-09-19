@@ -663,7 +663,6 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; t
 elif [ "$CM_AOKP_10_2_JB" -eq "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.2/* /;
-	echo "1" > /tmp/cm-installed;
 
 	SECROM_FUNCTION_AOSP;
 
@@ -672,7 +671,7 @@ elif [ "$CM_AOKP_10_JB" -eq "1" ]; then
 	POWER_SQL_JB;
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.1/* /;
-	echo "1" > /tmp/cm-installed;
+	echo "1" > /tmp/cm10.1-installed;
 
 	SECROM_FUNCTION_AOSP;
 else
