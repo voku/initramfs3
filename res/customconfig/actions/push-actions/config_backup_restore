@@ -20,7 +20,7 @@ case "${config_backup_restore}" in
 			if [ `pgrep -f push-actions/config_backup_restore |  wc -l` -lt "4" ]; then
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
-				$BB sh /res/user_uci_test_run.sh > /null;
+				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
 		)&
 	;;
@@ -31,7 +31,7 @@ case "${config_backup_restore}" in
 			if [ `pgrep -f push-actions/config_backup_restore |  wc -l` -lt "4" ]; then
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will will restart with new settings.";
-				$BB sh /res/user_uci_test_run.sh > /null;
+				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
 
 		)&
@@ -43,7 +43,7 @@ case "${config_backup_restore}" in
 			if [ `pgrep -f push-actions/config_backup_restore |  wc -l` -lt "4" ]; then
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
-				$BB sh /res/user_uci_test_run.sh > /null;
+				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
 
 		)&
@@ -55,7 +55,7 @@ case "${config_backup_restore}" in
 			if [ `pgrep -f push-actions/config_backup_restore |  wc -l` -lt "4" ]; then
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
-				$BB sh /res/user_uci_test_run.sh > /null;
+				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
 
 		)&
@@ -67,7 +67,7 @@ case "${config_backup_restore}" in
 			if [ `pgrep -f push-actions/config_backup_restore |  wc -l` -lt "4" ]; then
 				echo "Updating configuration, please wait ~50sec"
 				echo "STweaks will restart with new settings.";
-				$BB sh /res/user_uci_test_run.sh > /null;
+				$BB sh /res/user_uci_test_run.sh > /dev/null;
 			fi;
 
 		)&
