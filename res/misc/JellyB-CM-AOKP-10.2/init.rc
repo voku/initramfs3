@@ -98,6 +98,8 @@ loglevel 3
     mkdir /mnt/fuse 0700 root system
     mount tmpfs tmpfs /mnt/fuse mode=0775,gid=1000
 
+    write /proc/sys/vm/legacy_va_layout 0
+    write /proc/sys/kernel/randomize_va_space 2
     write /proc/sys/kernel/panic_on_oops 0
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4

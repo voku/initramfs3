@@ -23,6 +23,9 @@ on init
     chmod 0775 /tmp
     mount /tmp /tmp tmpfs
 
+    write /proc/sys/vm/legacy_va_layout 0
+    write /proc/sys/kernel/randomize_va_space 2
+
 on post-fs-data
 # insmod kernel modules
     insmod /lib/modules/exfat.ko
