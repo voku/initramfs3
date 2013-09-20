@@ -15,7 +15,7 @@ read_defaults;
 read_config;
 
 UCI_PID=`pgrep "uci.sh"`;
-renice -n 15 -p $UCI_PID;
+renice -n -15 -p $UCI_PID;
 
 case "${1}" in
 	rename)

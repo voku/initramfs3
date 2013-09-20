@@ -41,11 +41,18 @@ if [ -f /data/.siyah/restore_running ]; then
 	rm -f /data/.siyah/restore_running;
 fi;
 
-#ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
-#if [ "a$ccxmlsum" != "a`cat /data/.siyah/.ccxmlsum`" ]; then
-#	rm -f /data/.siyah/*.profile;
-#	echo "$ccxmlsum" > /data/.siyah/.ccxmlsum;
-#fi;
+# reset profiles auto trigger to be used by kernel ADMIN, in case of need, if new value added in default profiles
+# just set numer $RESET_MAGIC + 1 and profiles will be reset one time on next boot with new kernel.
+RESET_MAGIC=1;
+if [ ! -e /data/.siyah/reset_profiles ]; then
+	echo "0" > /data/.siyah/reset_profiles;
+fi;
+if [ `cat /data/.siyah/reset_profiles` -eq "$RESET_MAGIC" ]; then
+	echo "no need to reset profiles";
+else
+	rm -f /data/.siyah/*.profile;
+	echo "$RESET_MAGIC" > /data/.siyah/reset_profiles;
+fi;
 
 [ ! -f /data/.siyah/default.profile ] && cp -a /res/customconfig/default.profile /data/.siyah/default.profile;
 [ ! -f /data/.siyah/battery.profile ] && cp -a /res/customconfig/battery.profile /data/.siyah/battery.profile;
