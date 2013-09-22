@@ -24,6 +24,13 @@ done;
 if [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /data;
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /efs;
+	$BB mount -o remount,rw /
+	mkdir /data_pri_rom;
+	mkdir /system_pri_rom;
+	chmod 777 /data_pri_rom;
+	chmod 777 /system_pri_rom;
+	$BB mount -t ext4 /dev/block/mmcblk0p10 /data_pri_rom;
+	$BB mount -t ext4 /dev/block/mmcblk0p9 /system_pri_rom;
 else
 	$BB mount -o remount,rw,noauto_da_alloc,journal_async_commit /preload;
 fi;
@@ -291,14 +298,6 @@ chmod 666 /tmp/uci_done;
 		else
 			echo "no sec data image found! abort."
 		fi;
-	elif [ `cat /tmp/sec_rom_boot` -eq "1" ]; then
-		mount -o remount,rw /
-		mkdir /data_pri_rom;
-		mkdir /system_pri_rom;
-		chmod 777 /data_pri_rom;
-		chmod 777 /system_pri_rom;
-		mount -t ext4 /dev/block/mmcblk0p10 /data_pri_rom;
-		mount -t ext4 /dev/block/mmcblk0p9 /system_pri_rom;
 	fi;
 
 	# restore normal freq
