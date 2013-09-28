@@ -46,6 +46,8 @@
 
 		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (Default: 25%)" name="busfreq_up_threshold" action="generic /sys/devices/system/cpu/cpufreq/busfreq_up_threshold" unit="%" min="23" reversed="false" step="1" max="90"/>
 
+		<seekBar description="This is for CPU BUS-FREQ UP-FREQ-Scaling on sleep, based on CPU load. It sets the the load threshold on which BUS frequency will rise. (Default sleep: 30%)" name="busfreq_up_threshold" action="generic_cortex /tmp/busfreq_up_threshold_sleep" unit="%" min="23" reversed="false" step="1" max="90"/>
+
 		<seekBar description="Maximum DEEP SLEEP CPU speed. Samsung default value is 800000kHz. Setting this too low will stuck your device!" name="scaling_max_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>
 
 		<seekBar description="Minimum DEEP SLEEP CPU speed. (Default: 200.000 kHz)" name="scaling_min_suspend_freq" action="genericfreq /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_suspend_freq" unit="kHz" min="100000" reversed="false" step="100000" max="1000000"/>

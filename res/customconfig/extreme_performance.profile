@@ -8,6 +8,7 @@ ARCH_POWER=on
 enable_mask=3
 enable_mask_sleep=3
 busfreq_up_threshold=23
+busfreq_up_threshold_sleep=25
 scaling_max_suspend_freq=800000
 scaling_min_suspend_freq=200000
 standby_freq=200000

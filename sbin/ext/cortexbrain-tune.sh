@@ -989,7 +989,7 @@ BUS_THRESHOLD()
 	if [ "$state" == "awake" ]; then
 		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "$state" == "sleep" ]; then
-		echo "50" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "$busfreq_up_threshold_sleep" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "$state" == "wake_boost" ]; then
 		echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	fi;
