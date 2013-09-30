@@ -26,6 +26,10 @@ $BB rm -rf /sd-ext
 $BB mkdir /sd-ext
 $BB chmod -R 777 /sd-ext
 
+$BB rm -rf /storage
+$BB mkdir /storage
+$BB chmod -R 777 /storage
+
 $BB rm -rf /etc
 $BB mkdir /etc
 $BB cat /res/etc/recovery.fstab > /etc/recovery.fstab
@@ -64,6 +68,8 @@ if [ -e /dev/block/mmcblk1p1 ]; then
 	echo "/dev/block/mmcblk1p1" > /sys/devices/virtual/android_usb/android0/f_mass_storage/lun1/file;
 	$BB mount -t vfat /dev/block/mmcblk0p11 /emmc-tmp;
 	$BB mount -t auto /dev/block/mmcblk1p1 /sdcard;
+	$BB ln -s /emmc-tmp /storage/sdcard0;
+	$BB ln -s /sdcard /storage/sdcard1;
 	if [ ! -e /sdcard/.android_secure ]; then
 		mkdir /sdcard/.android_secure;
 	fi;
@@ -77,4 +83,3 @@ else
 	echo 1 > /sbin/recovery-is-running
 	recovery
 fi;
-
