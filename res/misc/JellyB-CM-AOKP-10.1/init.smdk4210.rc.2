@@ -48,9 +48,6 @@ on fs
 
 on post-fs-data
 
-# MDNS
-    socket mdns stream 0660 root system
-
 # GPS
     chown root system /dev/ttySAC1
     chmod 0660 /dev/ttySAC1
@@ -319,14 +316,6 @@ service cpboot-daemon /sbin/cbd -d -p 8
     class main
     user root
     group radio cache inet misc audio sdcard_rw log sdcard_r
-
-service mdnsd /system/bin/mdnsd
-    class main
-    user mdnsr
-    group inet net_raw
-    socket mdnsd stream 0660 mdnsr inet
-    disabled
-    oneshot
 
 service p2p_supplicant /system/bin/wpa_supplicant \
         -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
