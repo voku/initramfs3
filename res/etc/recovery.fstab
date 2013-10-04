@@ -10,6 +10,9 @@
 /emmc		vfat		/dev/block/mmcblk0p11
 /sdcard		auto		/dev/block/mmcblk1p1
 
+/storage/sdcard0	vfat	/dev/block/mmcblk0p11
+/storage/sdcard1	auto	/dev/block/mmcblk1p1
+
 /secondrom_cache	ext4	/mnt/.secondrom/.secondrom/cache.img	fs_options=loop,length=104857600
 /secondrom_data		ext4	/mnt/.secondrom/.secondrom/data.img	fs_options=loop,length=2147483648
 /secondrom_system	ext4	/dev/block/mmcblk0p12
