@@ -540,7 +540,8 @@ JBSAMMY=`ls /system/lib/libSamsungAnimation.so | wc -l`;
 JBSAMMY2=`ls /system/lib/lib_Samsung_Resampler.so | wc -l`;
 JBMIUI=`ls /system/framework/framework-miui-res.apk | wc -l`;
 CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
-CM_AOKP_10_2_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
+CM_AOKP_4_3_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
+CM_AOKP_4_3_1_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.1" | wc -l`;
 
 USER_ACTIONS()
 {
@@ -548,7 +549,7 @@ USER_ACTIONS()
 		stop adbd;
 		$BB cp -a /sbin/adbd.jb /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
-	elif [ "$CM_AOKP_10_2_JB" -eq "1" ]; then
+	elif [ "$CM_AOKP_4_3_JB" -eq "1" ] || [ "$CM_AOKP_4_3_1_JB" -eq "1" ]; then
 		stop adbd;
 		$BB cp -a /sbin/adbd.cm10.2 /sbin/adbd;
 		$BB chmod 755 /sbin/adbd;
@@ -660,7 +661,7 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; t
 
 	SECROM_FUNCTION_AOSP;
 
-elif [ "$CM_AOKP_10_2_JB" -eq "1" ]; then
+elif [ "$CM_AOKP_4_3_JB" -eq "1" ] || [ "$CM_AOKP_4_3_1_JB" -eq "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.2/* /;
 

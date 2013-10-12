@@ -164,6 +164,7 @@ if [ "$install_root" == "on" ]; then
 			# kill superuser pid
 			pkill -f "com.noshufou.android.su";
 			pkill -f "eu.chinfire.supersu";
+			/sbin/ext/root-run.sh;
 		fi;
 	fi;
 fi;
