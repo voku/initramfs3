@@ -1165,7 +1165,7 @@ CENTRAL_CPU_FREQ()
 			else
 				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
 				# brain cooking prevention during call
-				echo "800000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
 			fi;
 		fi;
 
@@ -1514,8 +1514,6 @@ AWAKE_MODE()
 	CALL_STATE;
 	VIBRATE_FIX;
 	SLIDE2WAKE_FIX "offline";
-	MOUNT_SD_CARD;
-	TOUCH_KEYS_CORRECTION;
 	GAMMA_FIX;
 
 	# Check call state, if on call dont sleep
@@ -1547,6 +1545,8 @@ AWAKE_MODE()
 			BUS_THRESHOLD "awake";
 			ECO_TWEAKS;
 			MOUNT_FIX;
+			MOUNT_SD_CARD;
+			TOUCH_KEYS_CORRECTION;
 		else
 			# Was powered by USB, and half sleep
 			ENABLEMASK "awake";
@@ -1558,6 +1558,7 @@ AWAKE_MODE()
 			CENTRAL_CPU_FREQ "awake_normal";
 			ECO_TWEAKS;
 			MOUNT_FIX;
+			TOUCH_KEYS_CORRECTION;
 			USB_POWER=0;
 
 			log -p i -t $FILE_NAME "*** USB_POWER_WAKE: done ***";
