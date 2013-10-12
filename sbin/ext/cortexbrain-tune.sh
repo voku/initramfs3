@@ -966,6 +966,8 @@ MOUNT_SD_CARD()
 		log -p i -t $FILE_NAME "*** MOUNT_SD_CARD ***";
 	fi;
 }
+# run dual mount on boot
+MOUNT_SD_CARD;
 
 MALI_TIMEOUT()
 {
@@ -1536,6 +1538,7 @@ AWAKE_MODE()
 			MEGA_BOOST_CPU_TWEAKS;
 			IO_SCHEDULER "awake";
 			GESTURES "awake";
+			MOUNT_SD_CARD;
 			BOOST_DELAY;
 			ENTROPY "awake";
 			VFS_CACHE_PRESSURE "awake";
@@ -1545,7 +1548,6 @@ AWAKE_MODE()
 			BUS_THRESHOLD "awake";
 			ECO_TWEAKS;
 			MOUNT_FIX;
-			MOUNT_SD_CARD;
 			TOUCH_KEYS_CORRECTION;
 		else
 			# Was powered by USB, and half sleep
