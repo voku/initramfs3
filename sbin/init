@@ -542,6 +542,7 @@ JBMIUI=`ls /system/framework/framework-miui-res.apk | wc -l`;
 CM_AOKP_10_JB=`ls /system/bin/wfd | wc -l`;
 CM_AOKP_4_3_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3" | wc -l`;
 CM_AOKP_4_3_1_JB=`$BB cat /system/build.prop | $BB grep "ro.build.version.release=4.3.1" | wc -l`;
+CM_AOKP_4_3_1_JB_PAC=`ls /system/framework/framework-pac.jar | wc -l`;
 
 USER_ACTIONS()
 {
@@ -664,6 +665,9 @@ if [ "$JBSAMMY" -eq "1" ] || [ "$JBSAMMY2" -eq "1" ] || [ "$JBMIUI" -eq "1" ]; t
 elif [ "$CM_AOKP_4_3_JB" -eq "1" ] || [ "$CM_AOKP_4_3_1_JB" -eq "1" ]; then
 	echo "3" > /proc/sys/kernel/rom_feature_set;
 	$BB cp -a /res/misc/JellyB-CM-AOKP-10.2/* /;
+	if [ "$CM_AOKP_4_3_1_JB_PAC" -eq "1" ]; then
+		$BB cp -a res/misc/JellyB-CM-AOKP-PAC-4-3/* /;
+	fi;
 
 	SECROM_FUNCTION_AOSP;
 
