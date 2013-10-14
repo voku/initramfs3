@@ -14,6 +14,7 @@
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
 # change mode for /tmp/
+mount -o remount,rw /;
 chmod -R 777 /tmp/;
 
 # ==============================================================
@@ -1665,11 +1666,11 @@ if [ "$cortexbrain_background_process" -eq "1" ] && [ `pgrep -f "cat /sys/power/
 		# AWAKE State. all system ON
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
 		AWAKE_MODE;
-		sleep 2;
+		sleep 3;
 
 		# SLEEP state. All system to power save
 		cat /sys/power/wait_for_fb_sleep > /dev/null 2>&1;
-		sleep 2;
+		sleep 3;
 		/sbin/ext/wakecheck.sh;
 		SLEEP_MODE;
 	done &);

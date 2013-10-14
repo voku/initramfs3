@@ -1,6 +1,7 @@
 #!/sbin/busybox sh
 
 (
+	/sbin/busybox mount -o remount,rw /;
 	MEM_FREE=`free | grep Mem | awk '{ print $4 }'`;
 	CALC_MEM=`echo $(($MEM_FREE/1024))M`;
 	echo "FREE BEFORE $CALC_MEM" > /tmp/ram_clean;

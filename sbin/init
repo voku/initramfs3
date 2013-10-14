@@ -9,7 +9,7 @@ if [ -e /sys/devices/virtual/sec/sec_key/set_homekey ]; then
 	echo 102 > /sys/devices/virtual/sec/sec_key/set_homekey;
 fi;
 
-# set "/" rw
+# mount root as rw
 $BB mount -t rootfs -o remount,rw rootfs;
 
 if $BB grep -q bootmode=2 /proc/cmdline; then

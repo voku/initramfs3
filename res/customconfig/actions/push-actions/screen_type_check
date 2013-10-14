@@ -1,7 +1,7 @@
 #!/sbin/busybox sh
 
 (
-	mount -t remount,rw /;
+	/sbin/busybox mount -o remount,rw /;
 	SCREEN_TYPE=`cat /sys/devices/virtual/sec/sec_touchscreen/tsp_touchtype`;
 	SCREEN_CONFIG=`cat /sys/devices/virtual/sec/sec_touchscreen/tsp_touch_config`;
 

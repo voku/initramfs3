@@ -1,19 +1,22 @@
 #!/sbin/busybox sh
 
-BB=/sbin/busybox
+(
+	BB=/sbin/busybox
 
-mount -o remount,rw /;
+	$BB mount -o remount,rw /;
 
-echo "DATA Partition" > /tmp/storage_check;
-$BB sh -c "/sbin/tune2fs -l /res/dev/data | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
-echo "SYSTEM Partition" >> /tmp/storage_check;
-$BB sh -c "/sbin/tune2fs -l /res/dev/system | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
-echo "CACHE Partition" >> /tmp/storage_check;
-$BB sh -c "/sbin/tune2fs -l /res/dev/cache | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
-echo "EFS Partition" >> /tmp/storage_check;
-$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
-echo "Preloaded Partition" >> /tmp/storage_check;
-$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p12 | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
+	echo "DATA Partition" > /tmp/storage_check;
+	$BB sh -c "/sbin/tune2fs -l /res/dev/data | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
+	echo "SYSTEM Partition" >> /tmp/storage_check;
+	$BB sh -c "/sbin/tune2fs -l /res/dev/system | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
+	echo "CACHE Partition" >> /tmp/storage_check;
+	$BB sh -c "/sbin/tune2fs -l /res/dev/cache | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
+	echo "EFS Partition" >> /tmp/storage_check;
+	$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p1 | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
+	echo "Preloaded Partition" >> /tmp/storage_check;
+	$BB sh -c "/sbin/tune2fs -l /dev/block/mmcblk0p12 | grep 'Filesystem state' | cut -c 27-44" >> /tmp/storage_check;
+)&
 
+sleep 2;
 SYSTEM_STATE=`cat /tmp/storage_check`;
 echo $SYSTEM_STATE;

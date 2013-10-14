@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 
-mount -o remount,rw /
+/sbin/busybox mount -o remount,rw /;
 echo "0" > /tmp/early_wakeup;
 
 (

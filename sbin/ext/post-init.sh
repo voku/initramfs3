@@ -5,11 +5,16 @@ BB=/sbin/busybox
 # first mod the partitions then boot
 $BB sh /sbin/ext/system_tune_on_init.sh;
 
+ROOT_RW()
+{
+	$BB mount -o remount,rw /;
+}
+ROOT_RW;
+
 # oom and mem perm fix, we have auto adj code, do not allow changes in adj
 $BB chmod 777 /sys/module/lowmemorykiller/parameters/cost;
 $BB chmod 444 /sys/module/lowmemorykiller/parameters/adj;
 $BB chmod 777 /proc/sys/vm/mmap_min_addr;
-$BB chmod -R 777 /tmp/;
 
 # protect init from oom
 echo "-1000" > /proc/1/oom_score_adj;
@@ -96,6 +101,7 @@ fi;
 (
 	# check cpu voltage group and report to tmp file, and set defaults for STweaks
 	sleep 5;
+	ROOT_RW;
 	dmesg | grep VDD_INT | cut -c 19-50 > /tmp/cpu-voltage_group;
 	$BB chmod 777 /tmp/cpu-voltage_group;
 
@@ -263,6 +269,7 @@ mount -t tmpfs -o mode=0777,gid=1000 tmpfs /mnt/ntfs
 
 $BB sh /sbin/ext/properties.sh;
 
+ROOT_RW;
 echo "0" > /tmp/uci_done;
 chmod 666 /tmp/uci_done;
 
@@ -352,6 +359,7 @@ chmod 666 /tmp/uci_done;
 	nohup $BB sh /res/uci.sh restore;
 	UCI_PID=`pgrep -f "/res/uci.sh"`;
 	echo "-800" > /proc/$UCI_PID/oom_score_adj;
+	ROOT_RW;
 	echo "1" > /tmp/uci_done;
 
 	# restore all the PUSH Button Actions back to there location

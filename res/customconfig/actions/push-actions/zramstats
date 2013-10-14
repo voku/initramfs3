@@ -7,6 +7,7 @@ if [ "$zramtweaks" != 4 ]; then
 	if [ -e /system/xbin/bash ] || [ -e /system/bin/bash ]; then
 		/sbin/zram_stats_ex;
 	else
+		/sbin/busybox mount -o remount,rw /;
 		echo "total         used         free" > /tmp/Swap_Check;
 		free | grep Swap: | cut -c 13-44 >> /tmp/Swap_Check;
 		chmod 777 /tmp/Swap_Check;
