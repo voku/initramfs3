@@ -9,23 +9,26 @@ on init
     export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
-
-
     mkdir /emmc
     mkdir /sdcard
     mkdir /sdcard1
     mkdir /usbdisk
+    mkdir /sd-ext
     mkdir /system
     mkdir /data
     mkdir /cache
     mkdir /preload
-    mkdir /efs
-    mkdir /tmp
 
     chown root shell /tmp
     chmod 0775 /tmp
-
     mount /tmp /tmp tmpfs
+
+    write /proc/sys/vm/legacy_va_layout 0
+    write /proc/sys/kernel/randomize_va_space 2
+
+on post-fs-data
+# insmod kernel modules
+    insmod /lib/modules/exfat.ko
 
 on fs
     # check encryption status, checking UMS & data should be excuted after this command 
@@ -35,6 +38,9 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on boot
+    setprop ro.build.product GT-I9100
+    setprop ro.product.device GT-I9100
+
 # Permissions for mDNIe
     chown system media_rw /sys/class/mdnie/mdnie/mode
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
@@ -51,6 +57,15 @@ on boot
 service ueventd /sbin/ueventd
     critical
 
+service console /sbin/sh
+    class core
+    console
+    disabled
+    group log
+
+on property:ro.debuggable=1
+    start console
+
 service recovery /sbin/recovery-loader
 
 service adbd /sbin/adbd recovery
@@ -64,9 +79,8 @@ on property:ro.debuggable=1
     write /sys/class/android_usb/android0/idProduct 685e
     write /sys/class/android_usb/android0/functions mass_storage,adb
     write /sys/class/android_usb/android0/enable 1
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
+    write /sys/class/android_usb/android0/iManufacturer Samsung
+    write /sys/class/android_usb/android0/iProduct GT-I9100
     start adbd
     setprop service.adb.root 1
 
@@ -75,4 +89,3 @@ on property:service.adb.root=1
     write /sys/class/android_usb/android0/enable 0
     restart adbd
     write /sys/class/android_usb/android0/enable 1
-

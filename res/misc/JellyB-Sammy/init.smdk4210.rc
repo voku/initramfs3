@@ -117,6 +117,8 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
 
 # Permisions for sensors
+    chown system radio /sys/devices/platform/s5p-ehci/ehci_power
+    chown system radio /sys/devices/platform/s5p-ehci/ehci_runtime
     chown system radio /dev/accelerometer
     chown radio system /sys/devices/virtual/accelerometer/accelerometer/acc_file
     chown radio system /sys/devices/virtual/sec/gsensorcal/calibration
@@ -127,8 +129,6 @@ on boot
     chown system radio /sys/class/sensors/magnetic_sensor/raw_data
     chown system radio /sys/class/sensors/magnetic_sensor/vendor
     chown system radio /sys/class/sensors/magnetic_sensor/name
-    chmod 0660 /sys/vibrator/pwm_val
-    chown system system /sys/vibrator/pwm_val
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"
@@ -140,14 +140,8 @@ on boot
     chown root shell /dev/tspdrv
 
 on fs
-# check all
-    exec sfsck /res/dev/cache ext4
-    exec sfsck /dev/block/mmcblk0p1 ext4
-    exec sfsck /res/dev/data ext4
-
 # Mount all
     mount_all /fstab.smdk4210
-
     setprop ro.crypto.fuse_sdcard false
 
 # for LogMeIn
@@ -204,7 +198,7 @@ on fs
     chown system media_rw /sys/class/mdnie/mdnie/mode
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
     chown system media_rw /sys/class/mdnie/mdnie/scenario
-    chown system media_rw /sys/class/mdnie/mdnie/negative
+    chown system system /sys/class/mdnie/mdnie/negative
     write /sys/class/mdnie/mdnie/scenario 0
     write /sys/class/mdnie/mdnie/mode 0
 
@@ -223,9 +217,6 @@ on fs
     chmod 0664 /sys/class/host_notify/usb_otg/booster
 
 on post-fs
-#   insmod /lib/modules/exfat_core.ko
-#   insmod /lib/modules/exfat_fs.ko
-
     chown radio system /efs
     chmod 0771 /efs
 

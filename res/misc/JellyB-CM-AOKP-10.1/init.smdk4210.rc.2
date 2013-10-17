@@ -31,9 +31,9 @@ on fs
     mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
 # mount partitions.
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime journal_async_commit wait
-    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev wait
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev wait
+    mount ext4 loop@/res/dev/data /data nosuid nodev wait
 
     mkdir /efs/bluetooth
     mkdir /efs/wifi
@@ -47,9 +47,6 @@ on fs
     chmod 0770 /data/misc/wifi
 
 on post-fs-data
-
-# MDNS
-    socket mdns stream 0660 root system
 
 # GPS
     chown root system /dev/ttySAC1
@@ -168,6 +165,7 @@ on post-fs-data
     chown system radio /sys/devices/virtual/sec/sec_key/sec_key_pressed
 
     chown system radio /sys/devices/virtual/sec/sec_touchkey/force_disable
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/enable_disable
     chown system radio /sys/devices/virtual/sec/sec_touchkey/recommended_version
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touch_sensitivity
     chown system radio /sys/devices/virtual/sec/sec_touchkey/brightness
@@ -180,7 +178,6 @@ on post-fs-data
     chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_update
     chown system radio /sys/devices/virtual/sec/sec_touchkey/updated_version
     chown system radio /sys/devices/virtual/sec/sec_touchkey/led_timeout
-    chown system radio /sys/devices/virtual/sec/sec_touchkey/timeout
 
     chown system radio /sys/devices/virtual/sec/tsp_noise_test/set_firm_version
     chown system radio /sys/devices/virtual/sec/tsp_noise_test/set_threshould
@@ -221,8 +218,8 @@ on post-fs-data
 # Vibetonz
     chmod 0660 /dev/tspdrv
     chown root shell /dev/tspdrv
-    chmod 0660 /sys/vibrator/pwm_val
-    chown system system /sys/vibrator/pwm_val
+    chmod 0660 /sys/class/timed_output/vibrator/pwm_value
+    chown system system /sys/class/timed_output/vibrator/pwm_value
 
 # Permissions for LCD
     chown system radio /sys/class/lcd/panel/lcd_power
@@ -317,14 +314,6 @@ service cpboot-daemon /sbin/cbd -d -p 8
     class main
     user root
     group radio cache inet misc audio sdcard_rw log sdcard_r
-
-service mdnsd /system/bin/mdnsd
-    class main
-    user mdnsr
-    group inet net_raw
-    socket mdnsd stream 0660 mdnsr inet
-    disabled
-    oneshot
 
 service p2p_supplicant /system/bin/wpa_supplicant \
         -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \

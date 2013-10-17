@@ -74,16 +74,15 @@
 /dev/HPD                  0666   system     system
 /dev/fimg2d               0666   system     graphics
 /dev/fmradio              0660   system     audio
-/dev/input/*              0660   root       input
 
 #Audio
-/dev/snd/controlC0        0660   system     audio
-/dev/snd/hwC0D0           0660   system     audio
-/dev/snd/pcmC0D0c         0660   system     audio
-/dev/snd/pcmC0D0p         0660   system     audio
-/dev/snd/pcmC0D1c         0660   system     audio
-/dev/snd/pcmC0D1p         0660   system     audio
-/dev/snd/timer            0660   system     audio
+/dev/snd/controlC0        0770   system     audio
+/dev/snd/hwC0D0           0770   system     audio
+/dev/snd/pcmC0D0c         0770   system     audio
+/dev/snd/pcmC0D0p         0770   system     audio
+/dev/snd/pcmC0D1c         0770   system     audio
+/dev/snd/pcmC0D1p         0770   system     audio
+/dev/snd/timer            0770   system     audio
 
 #ALP Audio
 /dev/srp                  0666   system     audio
@@ -94,6 +93,7 @@
 
 /dev/umts*                0660   system     radio
 /dev/ttyUSB0              0666   system     system
+/dev/usb/lp*              0660   system     usb
 /dev/block/mmcblk0p4	  0660	 system	    system
 /dev/block/mmcblk0p8	  0660	 system	    radio
 /dev/link_pm              0660   system     radio
@@ -101,3 +101,4 @@
 /dev/accelerometer        0660   system     system
 /dev/graphics/fb0         0777   root       graphics
 /dev/rfkill               0666   root       root
+/dev/input/*              0660   root       input

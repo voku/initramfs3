@@ -1,11 +1,12 @@
 on early-init
+on init
     export EXTERNAL_STORAGE /mnt/sdcard
     mkdir /mnt/sdcard 0000 system system
-    # for backwards compatibility
+# for backwards compatibility
     symlink /mnt/sdcard /sdcard
 
 on boot
-    setsebool in_qemu=1
+    setsebool in_qemu 1
     restorecon /sys/qemu_trace/process_name
     restorecon /sys/qemu_trace/state
     restorecon /sys/qemu_trace/symbol

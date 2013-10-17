@@ -1,8 +1,6 @@
 #!/sbin/busybox sh
 
-mount -o remount,rw /system;
-
-fixFS="/system/run_fs_check";
+fixFS="$EXTERNAL_STORAGE/.run_fs_check";
 
 if [ ! -e $fixFS ]; then
 	echo "fix fs" > $fixFS;
@@ -11,4 +9,3 @@ else
 	rm -f $fixFS;
 	echo "ABORT, ABORT, ABORT :)"
 fi;
-

@@ -74,6 +74,8 @@ loglevel 3
     mkdir /mnt/obb 0700 root system
     mount tmpfs tmpfs /mnt/obb mode=0755,gid=1000
 
+    write /proc/sys/vm/legacy_va_layout 1
+    write /proc/sys/kernel/randomize_va_space 2
     write /proc/sys/kernel/panic_on_oops 0
     write /proc/sys/kernel/hung_task_timeout_secs 0
     write /proc/cpu/alignment 4
@@ -201,9 +203,13 @@ on post-fs-data
     mkdir /data/app-private 0771 system system
     mkdir /data/app-asec 0700 root root
     mkdir /data/app 0771 system system
-    mkdir /data/property 0700 root root
+    mkdir /data/property 0770 root radio
     mkdir /data/ssh 0750 root shell
     mkdir /data/ssh/empty 0700 root root
+
+# set correct permissions on /data/property
+    chown root radio /data/property
+    chmod 0770 /data/property
 
 # SA, System SW, SAMSUNG create log directory
     mkdir /data/log 0775 system log
@@ -212,6 +218,13 @@ on post-fs-data
     chmod 0775 /data/log
     chmod 0775 /data/anr
 
+# For Factorymode
+    mkdir /efs/FactoryApp 0775
+    chown radio system /efs/FactoryApp
+    chmod 0775 /efs/FactoryApp
+    write /efs/FactoryApp/factorymode ON
+    chown system system /efs/FactoryApp/factorymode
+    chmod 0744 /efs/FactoryApp/factorymode
 
 # create dalvik-cache, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -364,18 +377,20 @@ on boot
     write /sys/class/sec/sec_epen/epen_firm_update R
 
 # Permissions for Touchkey
-    chown system radio /sys/class/sec/sec_touchkey/enable_disable
-    chown system radio /sys/class/sec/sec_touchkey/recommended_version
-    chown system radio /sys/class/sec/sec_touchkey/touch_sensitivity
-    chown system radio /sys/class/sec/sec_touchkey/brightness
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_brightness
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_back
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_menu
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_version_panel
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_version_phone
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_update_status
-    chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_update
-    chown system radio /sys/class/sec/sec_touchkey/updated_version
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/force_disable
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/enable_disable
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/recommended_version
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touch_sensitivity
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/brightness
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_back
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_menu
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_version_panel
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_version_phone
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_update_status
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/touchkey_firm_update
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/updated_version
+    chown system radio /sys/devices/virtual/sec/sec_touchkey/led_timeout
 
     chown system radio /sys/class/sec/tsp_noise_test/set_firm_version
     chown system radio /sys/class/sec/tsp_noise_test/set_threshould
@@ -541,7 +556,7 @@ service mobex-daemon /system/bin/npsmobex
 service surfaceflinger /system/bin/surfaceflinger
     class main
     user system
-    group graphics drmrpc
+    group graphics
     onrestart restart zygote
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server

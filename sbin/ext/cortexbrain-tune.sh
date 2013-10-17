@@ -14,7 +14,8 @@
 # This script must be activated after init start =< 25sec or parameters from /sys/* will not be loaded.
 
 # change mode for /tmp/
-chmod -R 1777 /tmp/;
+mount -o remount,rw /;
+chmod -R 777 /tmp/;
 
 # ==============================================================
 # GLOBAL VARIABLES || without "local" also a variable in a function is global
@@ -27,8 +28,11 @@ DATA_DIR=/data/.siyah;
 WAS_IN_SLEEP_MODE=1;
 NOW_CALL_STATE=0;
 USB_POWER=0;
+TELE_DATA=init;
 # read sd-card size, set via boot
 SDCARD_SIZE=`cat /tmp/sdcard_size`;
+EXTERNAL_SDCARD_CM=`mount | grep "/storage/sdcard1" | wc -l`;
+EXTERNAL_SDCARD_STOCK=`mount | grep "/storage/extSdCard" | wc -l`;
 
 # ==============================================================
 # INITIATE
@@ -47,7 +51,7 @@ fi;
 
 # set initial vm.dirty vales
 echo "500" > /proc/sys/vm/dirty_writeback_centisecs;
-echo "1000" > /proc/sys/vm/dirty_expire_centisecs;
+echo "2000" > /proc/sys/vm/dirty_expire_centisecs;
 
 # ==============================================================
 # FILES FOR VARIABLES || we need this for write variables from child-processes to parent
@@ -64,7 +68,7 @@ MOBILE_HELPER_TMP="$DATA_DIR/MOBILE_HELPER_TMP";
 echo "1" > $MOBILE_HELPER_TMP;
 
 # ==============================================================
-# I/O-TWEAKS 
+# I/O-TWEAKS
 # ==============================================================
 IO_TWEAKS()
 {
@@ -102,7 +106,7 @@ IO_TWEAKS()
 			fi;
 
 			if [ -e $i/queue/nr_requests ]; then
-				echo "128" > $i/queue/nr_requests; # default: 128
+				echo "64" > $i/queue/nr_requests; # default: 128
 			fi;
 		done;
 
@@ -146,33 +150,21 @@ IO_TWEAKS;
 # ==============================================================
 KERNEL_TWEAKS()
 {
-	local state="$1";
-
 	if [ "$cortexbrain_kernel_tweaks" == on ]; then
+		echo "0" > /proc/sys/vm/oom_kill_allocating_task;
+		echo "0" > /proc/sys/vm/panic_on_oom;
+		echo "30" > /proc/sys/kernel/panic;
 
-		if [ "$state" == "awake" ]; then
-			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "120" > /proc/sys/kernel/panic;
-		elif [ "$state" == "sleep" ]; then
-			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "90" > /proc/sys/kernel/panic;
-		else
-			echo "0" > /proc/sys/vm/oom_kill_allocating_task;
-			echo "0" > /proc/sys/vm/panic_on_oom;
-			echo "120" > /proc/sys/kernel/panic;
-		fi;
-
-		if [ "$cortexbrain_memory" == on ]; then
-			echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
-		fi;
-
-		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: $state ***: enabled";
-
-		return 1;
+		log -p i -t $FILE_NAME "*** KERNEL_TWEAKS ***: enabled";
 	else
-		return 0;
+		echo "kernel_tweaks disabled";
+	fi;
+	if [ "$cortexbrain_memory" == on ]; then
+		echo "32 32" > /proc/sys/vm/lowmem_reserve_ratio;
+
+		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
+	else
+		echo "memory_tweaks disabled";
 	fi;
 }
 KERNEL_TWEAKS;
@@ -189,10 +181,8 @@ SYSTEM_TWEAKS()
 		setprop profiler.force_disable_ulog 1;
 
 		log -p i -t $FILE_NAME "*** SYSTEM_TWEAKS ***: enabled";
-
-		return 1;
 	else
-		return 0;
+		echo "system_tweaks disabled";
 	fi;
 }
 SYSTEM_TWEAKS;
@@ -203,12 +193,11 @@ SYSTEM_TWEAKS;
 BATTERY_TWEAKS()
 {
 	if [ "$cortexbrain_battery" == on ]; then
-
 		# battery-calibration if battery is full
 		local LEVEL=`cat /sys/class/power_supply/battery/capacity`;
 		local CURR_ADC=`cat /sys/class/power_supply/battery/batt_current_adc`;
 		local BATTFULL=`cat /sys/class/power_supply/battery/batt_full_check`;
-		loacl i="";
+		local i="";
 		local bus="";
 
 		log -p i -t $FILE_NAME "*** BATTERY - LEVEL: $LEVEL - CUR: $CURR_ADC ***";
@@ -274,8 +263,9 @@ CPU_INTELLI_PLUG_TWEAKS()
 	if [ -e $intelli_plug_active_tmp ]; then
 		local IPA_CHECK=`cat $intelli_plug_active_tmp`;
 
-		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_enable";
+		local hotplug_enable_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_enable";
 		local gov_check="0";
+		local lhotplug_enable="$hotplug_enable"; 
 
 		if [ ! -e $hotplug_enable_tmp ]; then
 			hotplug_enable_tmp="/dev/null";
@@ -283,10 +273,11 @@ CPU_INTELLI_PLUG_TWEAKS()
 
 		if [ "$SYSTEM_GOVERNOR" != "nightmare" ] && [ "$SYSTEM_GOVERNOR" != "darkness" ]; then
 			gov_check=1;
+			lhotplug_enable="0";
 		fi;
 
 		if [ "a$IPA_CHECK" == "a1" ]; then
-			if [ "$hotplug_enable" -eq "1" ]; then
+			if [ "$lhotplug_enable" -eq "1" ]; then
 				if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
 					echo "0" > $intelli_plug_active_tmp;
 
@@ -294,13 +285,13 @@ CPU_INTELLI_PLUG_TWEAKS()
 				fi;
 			fi;
 		else
-			if [ "$hotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
+			if [ "$lhotplug_enable" -eq "0" ] || [ "$gov_check" -eq "1" ]; then
 				echo "1" > $intelli_plug_active_tmp;
 
 				log -p i -t $FILE_NAME "*** CPU_INTELLI_PLUG ***: enabled";
 			fi;
 		fi;
-		echo "$hotplug_enable" > $hotplug_enable_tmp;
+		echo "$lhotplug_enable" > $hotplug_enable_tmp;
 	fi;
 }
 
@@ -316,12 +307,12 @@ CPU_GOV_TWEAKS()
 			sampling_rate_tmp="/dev/null";
 		fi;
 
-		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_up_rate";
+		local cpu_up_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_up_rate";
 		if [ ! -e $cpu_up_rate_tmp ]; then
 			cpu_up_rate_tmp="/dev/null";
 		fi;
 
-		local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/cpu_down_rate";
+		local cpu_down_rate_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/cpu_down_rate";
 		if [ ! -e $cpu_down_rate_tmp ]; then
 			cpu_down_rate_tmp="/dev/null";
 		fi;
@@ -341,42 +332,27 @@ CPU_GOV_TWEAKS()
 			up_threshold_min_freq_tmp="/dev/null";
 		fi;
 
-		local up_soft_scal_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_soft_scal";
-		if [ ! -e $up_soft_scal_tmp ]; then
-			up_soft_scal_tmp="/dev/null";
-		fi;
-
 		local inc_cpu_load_at_min_freq_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/inc_cpu_load_at_min_freq";
 		if [ ! -e $inc_cpu_load_at_min_freq_tmp ]; then
 			inc_cpu_load_at_min_freq_tmp="/dev/null";
 		fi;
 
-		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_1_1";
+		local hotplug_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_1_1";
 		if [ ! -e $hotplug_freq_fst_tmp ]; then
 			hotplug_freq_fst_tmp="/dev/null";
 		fi;
 
-		local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_freq_2_0";
+		local hotplug_freq_snd_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_freq_2_0";
 		if [ ! -e $hotplug_freq_snd_tmp ]; then
 			hotplug_freq_snd_tmp="/dev/null";
 		fi;
 
-		local hotplug_rq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_1_1";
-		if [ ! -e $hotplug_rq_fst_tmp ]; then
-			hotplug_rq_fst_tmp="/dev/null";
-		fi;
-
-		local hotplug_rq_snd_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/hotplug_rq_2_0";
-		if [ ! -e $hotplug_rq_snd_tmp ]; then
-			hotplug_rq_snd_tmp="/dev/null";
-		fi;
-
-		local up_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_load";
+		local up_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_1_1";
 		if [ ! -e $up_load_tmp ]; then
 			up_load_tmp="/dev/null";
 		fi;
 
-		local down_load_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_load";
+		local down_load_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/hotplug_load_2_0";
 		if [ ! -e $down_load_tmp ]; then
 			down_load_tmp="/dev/null";
 		fi;
@@ -466,6 +442,16 @@ CPU_GOV_TWEAKS()
 			freq_up_brake_tmp="/dev/null";
 		fi;
 
+		local maxcoreslimit_tmp="/sys/devices/system/cpu/cpufreq/alucard_hotplug/maxcoreslimit";
+		if [ ! -e $maxcoreslimit_tmp ]; then
+			maxcoreslimit_tmp="/dev/null";
+		fi;
+
+		local force_freqs_step_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/force_freqs_step";
+		if [ ! -e $force_freqs_step_tmp ]; then
+			force_freqs_step_tmp="/dev/null";
+		fi;
+
 		# merge up_threshold_at_min_freq & up_threshold_min_freq => up_threshold_at_min_freq_tmp
 		if [ $up_threshold_at_min_freq_tmp == "/dev/null" ] && [ $up_threshold_min_freq_tmp != "/dev/null" ]; then
 			up_threshold_at_min_freq_tmp=$up_threshold_min_freq_tmp;
@@ -476,6 +462,66 @@ CPU_GOV_TWEAKS()
 			freq_for_responsiveness_tmp=$freq_responsiveness_tmp;
 		fi;
 
+		local sampling_down_max_mom_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_max_mom";
+		if [ ! -e $sampling_down_max_mom_tmp ]; then
+			sampling_down_max_mom_tmp="/dev/null";
+		fi;
+
+		local sampling_down_mom_sens_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/sampling_down_mom_sens";
+		if [ ! -e $sampling_down_mom_sens_tmp ]; then
+			sampling_down_mom_sens_tmp="/dev/null";
+		fi;
+
+		local up_threshold_hp_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_hotplug1";
+		if [ ! -e $up_threshold_hp_fst_tmp ]; then
+			up_threshold_hp_fst_tmp="/dev/null";
+		fi;
+
+		local down_threshold_hp_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold_hotplug1";
+		if [ ! -e $down_threshold_hp_fst_tmp ]; then
+			down_threshold_hp_fst_tmp="/dev/null";
+		fi;
+
+		local up_threshold_hp_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/up_threshold_hotplug_freq1";
+		if [ ! -e $up_threshold_hp_freq_fst_tmp ]; then
+			up_threshold_hp_freq_fst_tmp="/dev/null";
+		fi;
+
+		local down_threshold_hp_freq_fst_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/down_threshold_hotplug_freq1";
+		if [ ! -e $down_threshold_hp_freq_fst_tmp ]; then
+			down_threshold_hp_freq_fst_tmp="/dev/null";
+		fi;
+
+		local smooth_up_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/smooth_up";
+		if [ ! -e $smooth_up_tmp ]; then
+			smooth_up_tmp="/dev/null";
+		fi;
+
+		local freq_limit_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/freq_limit";
+		if [ ! -e $freq_limit_tmp ]; then
+			freq_limit_tmp="/dev/null";
+		fi;
+
+		local fast_scaling_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/fast_scaling";
+		if [ ! -e $fast_scaling_tmp ]; then
+			fast_scaling_tmp="/dev/null";
+		fi;
+
+		local early_demand_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/early_demand";
+		if [ ! -e $early_demand_tmp ]; then
+			early_demand_tmp="/dev/null";
+		fi;
+
+		local grad_up_threshold_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/grad_up_threshold";
+		if [ ! -e $grad_up_threshold_tmp ]; then
+			grad_up_threshold_tmp="/dev/null";
+		fi;
+
+		local disable_hotplug_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/disable_hotplug";
+		if [ ! -e $disable_hotplug_tmp ]; then
+			disable_hotplug_tmp="/dev/null";
+		fi;
+
 		# sleep-settings
 		if [ "$state" == "sleep" ]; then
 			echo "$sampling_rate_sleep" > $sampling_rate_tmp;
@@ -483,12 +529,9 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate_sleep" > $cpu_down_rate_tmp;
 			echo "$up_threshold_sleep" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq_sleep" > $up_threshold_at_min_freq_tmp;
-			echo "$up_soft_scal_sleep" > $up_soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq_sleep" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst_sleep" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd_sleep" > $hotplug_freq_snd_tmp;
-			echo "$hotplug_rq_fst_sleep" > $hotplug_rq_fst_tmp;
-			echo "$hotplug_rq_snd_sleep" > $hotplug_rq_snd_tmp;
 			echo "$up_load_sleep" > $up_load_tmp;
 			echo "$down_load_sleep" > $down_load_tmp;
 			echo "$down_threshold_sleep" > $down_threshold_tmp;
@@ -507,6 +550,20 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load_sleep" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq_sleep" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake_sleep" > $freq_up_brake_tmp;
+			echo "1" > $maxcoreslimit_tmp;
+			echo "$force_freqs_step" > $force_freqs_step_tmp;
+			echo "$sampling_down_max_mom_sleep" > $sampling_down_max_mom_tmp;
+			echo "$sampling_down_mom_sens_sleep" > $sampling_down_mom_sens_tmp;
+			echo "$up_threshold_hp_fst_sleep" > $up_threshold_hp_fst_tmp;
+			echo "$down_threshold_hp_fst_sleep" > $down_threshold_hp_fst_tmp;
+			echo "$up_threshold_hp_freq_fst_sleep" > $up_threshold_hp_freq_fst_tmp;
+			echo "$down_threshold_hp_freq_fst_sleep" > $down_threshold_hp_freq_fst_tmp;
+			echo "$smooth_up_sleep" > $smooth_up_tmp;
+			echo "$freq_limit_sleep" > $freq_limit_tmp;
+			echo "$fast_scaling_sleep" > $fast_scaling_tmp;
+			echo "$early_demand_sleep" > $early_demand_tmp;
+			echo "$grad_up_threshold_sleep" > $grad_up_threshold_tmp;
+			echo "$disable_hotplug_sleep" > $disable_hotplug_tmp;
 		# awake-settings
 		elif [ "$state" == "awake" ]; then
 			echo "$sampling_rate" > $sampling_rate_tmp;
@@ -514,12 +571,9 @@ CPU_GOV_TWEAKS()
 			echo "$cpu_down_rate" > $cpu_down_rate_tmp;
 			echo "$up_threshold" > $up_threshold_tmp;
 			echo "$up_threshold_at_min_freq" > $up_threshold_at_min_freq_tmp;
-			echo "$up_soft_scal" > $up_soft_scal_tmp;
 			echo "$inc_cpu_load_at_min_freq" > $inc_cpu_load_at_min_freq_tmp;
 			echo "$hotplug_freq_fst" > $hotplug_freq_fst_tmp;
 			echo "$hotplug_freq_snd" > $hotplug_freq_snd_tmp;
-			echo "$hotplug_rq_fst" > $hotplug_rq_fst_tmp;
-			echo "$hotplug_rq_snd" > $hotplug_rq_snd_tmp;
 			echo "$up_load" > $up_load_tmp;
 			echo "$down_load" > $down_load_tmp;
 			echo "$down_threshold" > $down_threshold_tmp;
@@ -527,7 +581,11 @@ CPU_GOV_TWEAKS()
 			echo "$sampling_down_factor" > $sampling_down_factor_tmp;
 			echo "$down_differential" > $down_differential_tmp;
 			echo "$freq_step_at_min_freq" > $freq_step_at_min_freq_tmp;
-			echo "$freq_step" > $freq_step_tmp;
+			if [ "$SYSTEM_GOVERNOR" == zzmoove ]; then
+				echo "5" > $freq_step_tmp;
+			else
+				echo "$freq_step" > $freq_step_tmp;
+			fi;
 			echo "$freq_step_dec" > $freq_step_dec_tmp;
 			echo "$freq_step_dec_at_max_freq" > $freq_step_dec_at_max_freq_tmp;
 			echo "$freq_for_responsiveness" > $freq_for_responsiveness_tmp;
@@ -538,6 +596,20 @@ CPU_GOV_TWEAKS()
 			echo "$dec_cpu_load" > $dec_cpu_load_tmp;
 			echo "$freq_up_brake_at_min_freq" > $freq_up_brake_at_min_freq_tmp;
 			echo "$freq_up_brake" > $freq_up_brake_tmp;
+			echo "2" > $maxcoreslimit_tmp;
+			echo "$force_freqs_step" > $force_freqs_step_tmp;
+			echo "$sampling_down_max_mom" > $sampling_down_max_mom_tmp;
+			echo "$sampling_down_mom_sens" > $sampling_down_mom_sens_tmp;
+			echo "$up_threshold_hp_fst" > $up_threshold_hp_fst_tmp;
+			echo "$down_threshold_hp_fst" > $down_threshold_hp_fst_tmp;
+			echo "$up_threshold_hp_freq_fst" > $up_threshold_hp_freq_fst_tmp;
+			echo "$down_threshold_hp_freq_fst" > $down_threshold_hp_freq_fst_tmp;
+			echo "$smooth_up" > $smooth_up_tmp;
+			echo "$freq_limit" > $freq_limit_tmp;
+			echo "$fast_scaling" > $fast_scaling_tmp;
+			echo "$early_demand" > $early_demand_tmp;
+			echo "$grad_up_threshold" > $grad_up_threshold_tmp;
+			echo "$disable_hotplug" > $disable_hotplug_tmp;
 		fi;
 
 		CPU_INTELLI_PLUG_TWEAKS;
@@ -565,10 +637,9 @@ MEMORY_TWEAKS()
 		echo "$dirty_ratio" > /proc/sys/vm/dirty_ratio; # default: 20
 		echo "4" > /proc/sys/vm/min_free_order_shift; # default: 4
 		echo "1" > /proc/sys/vm/overcommit_memory; # default: 1
-		echo "950" > /proc/sys/vm/overcommit_ratio; # default: 50
+		echo "50" > /proc/sys/vm/overcommit_ratio; # default: 50
 		echo "3" > /proc/sys/vm/page-cluster; # default: 3
 		echo "8192" > /proc/sys/vm/min_free_kbytes;
-		echo "16384" > /proc/sys/vm/mmap_min_addr;
 
 		log -p i -t $FILE_NAME "*** MEMORY_TWEAKS ***: enabled";
 
@@ -593,11 +664,11 @@ ENTROPY()
 			echo "512" > /proc/sys/kernel/random/write_wakeup_threshold;
 		else
 			echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-			echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
+			echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
 		fi;
 	elif [ "$state" == "sleep" ]; then
 		echo "128" > /proc/sys/kernel/random/read_wakeup_threshold;
-		echo "128" > /proc/sys/kernel/random/write_wakeup_threshold;
+		echo "256" > /proc/sys/kernel/random/write_wakeup_threshold;
 	fi;
 
 	log -p i -t $FILE_NAME "*** ENTROPY ***: $state - $PROFILE";
@@ -610,34 +681,58 @@ TCP_TWEAKS()
 {
 	if [ "$cortexbrain_tcp" == on ]; then
 		echo "0" > /proc/sys/net/ipv4/tcp_timestamps;
+		echo "1" > /proc/sys/net/ipv4/tcp_rfc1337;
+		echo "1" > /proc/sys/net/ipv4/tcp_workaround_signed_windows;
+		echo "1" > /proc/sys/net/ipv4/tcp_low_latency;
+		echo "1" > /proc/sys/net/ipv4/tcp_mtu_probing;
+		echo "2" > /proc/sys/net/ipv4/tcp_frto_response;
+		echo "1" > /proc/sys/net/ipv4/tcp_no_metrics_save;
 		echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse;
-		echo "1" > /proc/sys/net/ipv4/tcp_sack;
 		echo "1" > /proc/sys/net/ipv4/tcp_tw_recycle;
-		echo "1" > /proc/sys/net/ipv4/tcp_window_scaling;
-		echo "1" > /proc/sys/net/ipv4/tcp_moderate_rcvbuf;
-		echo "1" > /proc/sys/net/ipv4/route/flush;
-		echo "2" > /proc/sys/net/ipv4/tcp_syn_retries;
-		echo "2" > /proc/sys/net/ipv4/tcp_synack_retries;
-		echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout;
+		echo "30" > /proc/sys/net/ipv4/tcp_fin_timeout;
 		echo "0" > /proc/sys/net/ipv4/tcp_ecn;
-		echo "3" > /proc/sys/net/ipv4/tcp_keepalive_probes;
-		echo "20" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "5" > /proc/sys/net/ipv4/tcp_keepalive_probes;
+		echo "40" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "2500" > /proc/sys/net/core/netdev_max_backlog;
+		echo "1" > /proc/sys/net/ipv4/route/flush;
 
 		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: enabled";
+	else
+		echo "1" > /proc/sys/net/ipv4/tcp_timestamps;
+		echo "0" > /proc/sys/net/ipv4/tcp_rfc1337;
+		echo "0" > /proc/sys/net/ipv4/tcp_workaround_signed_windows;
+		echo "0" > /proc/sys/net/ipv4/tcp_low_latency;
+		echo "0" > /proc/sys/net/ipv4/tcp_mtu_probing;
+		echo "0" > /proc/sys/net/ipv4/tcp_frto_response;
+		echo "0" > /proc/sys/net/ipv4/tcp_no_metrics_save;
+		echo "0" > /proc/sys/net/ipv4/tcp_tw_reuse;
+		echo "0" > /proc/sys/net/ipv4/tcp_tw_recycle;
+		echo "60" > /proc/sys/net/ipv4/tcp_fin_timeout;
+		echo "2" > /proc/sys/net/ipv4/tcp_ecn;
+		echo "9" > /proc/sys/net/ipv4/tcp_keepalive_probes;
+		echo "75" > /proc/sys/net/ipv4/tcp_keepalive_intvl;
+		echo "1000" > /proc/sys/net/core/netdev_max_backlog;
+		echo "0" > /proc/sys/net/ipv4/route/flush;
+
+		log -p i -t $FILE_NAME "*** TCP_TWEAKS ***: disabled";
 	fi;
 
 	if [ "$cortexbrain_tcp_ram" == on ]; then
-		echo "1048576" > /proc/sys/net/core/wmem_max;
-		echo "1048576" > /proc/sys/net/core/rmem_max;
-		echo "262144" > /proc/sys/net/core/rmem_default;
-		echo "262144" > /proc/sys/net/core/wmem_default;
+		echo "4194304" > /proc/sys/net/core/wmem_max;
+		echo "4194304" > /proc/sys/net/core/rmem_max;
 		echo "20480" > /proc/sys/net/core/optmem_max;
-		echo "262144 524288 1048576" > /proc/sys/net/ipv4/tcp_wmem;
-		echo "262144 524288 1048576" > /proc/sys/net/ipv4/tcp_rmem;
-		echo "4096" > /proc/sys/net/ipv4/udp_rmem_min;
-		echo "4096" > /proc/sys/net/ipv4/udp_wmem_min;
+		echo "4096 87380 4194304" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "4096 87380 4194304" > /proc/sys/net/ipv4/tcp_rmem;
 
 		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: enabled";
+	else
+		echo "131071" > /proc/sys/net/core/wmem_max;
+		echo "131071" > /proc/sys/net/core/rmem_max;
+		echo "10240" > /proc/sys/net/core/optmem_max;
+		echo "4096 16384 262144" > /proc/sys/net/ipv4/tcp_wmem;
+		echo "4096 87380 704512" > /proc/sys/net/ipv4/tcp_rmem;
+
+		log -p i -t $FILE_NAME "*** TCP_RAM_TWEAKS ***: disable";
 	fi;
 }
 TCP_TWEAKS;
@@ -702,7 +797,7 @@ UKSMCTL()
 WIFI_SET()
 {
 	local state="$1";
-	
+
 	if [ "$state" == "off" ]; then
 		service call wifi 13 i32 0 > /dev/null;
 		svc wifi disable;
@@ -824,20 +919,16 @@ MOBILE_DATA()
 LOGGER()
 {
 	local state="$1";
-	local dev_log_sleep="/dev/log-sleep";
-	local dev_log="/dev/log";
 
 	if [ "$state" == "awake" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == debug ]; then
-			if [ -e $dev_log_sleep ] && [ ! -e $dev_log ]; then
-				mv $dev_log_sleep $dev_log
-			fi;
+			echo "1" > /sys/module/logger/parameters/log_enabled;
+		elif [ "$android_logger" == disabled ]; then
+			echo "0" > /sys/module/logger/parameters/log_enabled;
 		fi;
 	elif [ "$state" == "sleep" ]; then
 		if [ "$android_logger" == auto ] || [ "$android_logger" == disabled ]; then
-			if [ -e $dev_log ]; then
-				mv $dev_log $dev_log_sleep;
-			fi;
+			echo "0" > /sys/module/logger/parameters/log_enabled;
 		fi;
 	fi;
 
@@ -876,6 +967,8 @@ MOUNT_SD_CARD()
 		log -p i -t $FILE_NAME "*** MOUNT_SD_CARD ***";
 	fi;
 }
+# run dual mount on boot
+MOUNT_SD_CARD;
 
 MALI_TIMEOUT()
 {
@@ -886,7 +979,7 @@ MALI_TIMEOUT()
 	elif [ "$state" == "sleep" ]; then
 		echo "1000" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	elif [ "$state" == "wake_boost" ]; then
-		echo "250" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
+		echo "200" > /sys/module/mali/parameters/mali_gpu_utilization_timeout;
 	fi;
 
 	log -p i -t $FILE_NAME "*** MALI_TIMEOUT: $state ***";
@@ -899,7 +992,7 @@ BUS_THRESHOLD()
 	if [ "$state" == "awake" ]; then
 		echo "$busfreq_up_threshold" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "$state" == "sleep" ]; then
-		echo "30" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
+		echo "$busfreq_up_threshold_sleep" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	elif [ "$state" == "wake_boost" ]; then
 		echo "23" > /sys/devices/system/cpu/cpufreq/busfreq_up_threshold;
 	fi;
@@ -978,6 +1071,31 @@ CENTRAL_CPU_FREQ()
 {
 	local state="$1";
 
+	local SYSTEM_GOVERNOR=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`;
+
+	local tmp_max_freq=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`;
+	local tmp_min_freq=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq`;
+
+	local min_freq_limit_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_freq_limit_0";
+	if [ ! -e $min_freq_limit_0_tmp ]; then
+			min_freq_limit_0_tmp="/dev/null";
+	fi;
+
+	local min_freq_limit_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/min_freq_limit_1";
+	if [ ! -e $min_freq_limit_1_tmp ]; then
+			min_freq_limit_1_tmp="/dev/null";
+	fi;
+
+	local max_freq_limit_0_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/max_freq_limit_0";
+	if [ ! -e $max_freq_limit_0_tmp ]; then
+			max_freq_limit_0_tmp="/dev/null";
+	fi;
+
+	local max_freq_limit_1_tmp="/sys/devices/system/cpu/cpufreq/$SYSTEM_GOVERNOR/max_freq_limit_1";
+	if [ ! -e $max_freq_limit_1_tmp ]; then
+			max_freq_limit_1_tmp="/dev/null";
+	fi;
+
 	if [ "$cortexbrain_cpu" == on ]; then
 		if [ "$scaling_max_freq" -eq "1000000" ] && [ "$scaling_max_freq_oc" -gt "1000000" ]; then
 			MAX_FREQ=`echo $scaling_max_freq_oc`;
@@ -985,26 +1103,73 @@ CENTRAL_CPU_FREQ()
 			MAX_FREQ=`echo $scaling_max_freq`;
 		fi;
 
-		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" -le "0" ]; then
-			if [ "$MAX_FREQ" -gt "1000000" ]; then
-				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+		if [ "$state" == "wake_boost" ] && [ "$wakeup_boost" -ge "0" ]; then
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				if [ "$MAX_FREQ" -gt "1000000" ]; then
+					echo "$MAX_FREQ" > $max_freq_limit_0_tmp;
+					echo "$MAX_FREQ" > $max_freq_limit_1_tmp;
+					echo "$MAX_FREQ" > $min_freq_limit_0_tmp;
+					echo "$MAX_FREQ" > $min_freq_limit_1_tmp;
+				else
+					echo "1000000" > $max_freq_limit_0_tmp;
+					echo "1000000" > $max_freq_limit_1_tmp;
+					echo "1000000" > $min_freq_limit_0_tmp;
+					echo "1000000" > $min_freq_limit_1_tmp;
+				fi;
 			else
-				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				if [ "$MAX_FREQ" -gt "1000000" ]; then
+					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				else
+					echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+					echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				fi;
 			fi;
 		elif [ "$state" == "awake_normal" ]; then
-			echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-			echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				echo "$MAX_FREQ" > $max_freq_limit_0_tmp;
+				echo "$MAX_FREQ" > $max_freq_limit_1_tmp;
+				echo "$scaling_min_freq" > $min_freq_limit_0_tmp;
+				echo "$scaling_min_freq" > $min_freq_limit_1_tmp;
+				if [ "$tmp_max_freq" != "$MAX_FREQ" ]; then
+					echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				fi;
+				if [ "$tmp_min_freq" != "$scaling_min_freq" ]; then
+					echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				fi;
+			else
+				echo "$MAX_FREQ" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+				echo "$scaling_min_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			fi;
 		elif [ "$state" == "standby_freq" ]; then
-			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				echo "$standby_freq" > $min_freq_limit_0_tmp;
+				echo "$standby_freq" > $min_freq_limit_1_tmp;
+			else
+				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+			fi;
 		elif [ "$state" == "sleep_freq" ]; then
-			echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				echo "$scaling_min_suspend_freq" > $min_freq_limit_0_tmp;
+				echo "$scaling_min_suspend_freq" > $min_freq_limit_1_tmp;
+				echo "$scaling_max_suspend_freq" > $max_freq_limit_0_tmp;
+				echo "$scaling_max_suspend_freq" > $max_freq_limit_1_tmp;
+			else
+				echo "$scaling_min_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				echo "$scaling_max_suspend_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			fi;
 		elif [ "$state" == "sleep_call" ]; then
-			echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
-			# brain cooking prevention during call
-			echo "500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			if [ "$SYSTEM_GOVERNOR" == "nightmare" ] || [ "$SYSTEM_GOVERNOR" == "darkness" ]; then
+				echo "$standby_freq" > $min_freq_limit_0_tmp;
+				echo "$standby_freq" > $min_freq_limit_1_tmp;
+				# brain cooking prevention during call
+				echo "800000" > $max_freq_limit_0_tmp;
+				echo "800000" > $max_freq_limit_1_tmp;
+			else
+				echo "$standby_freq" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+				# brain cooking prevention during call
+				echo "1000000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+			fi;
 		fi;
 
 		log -p i -t $FILE_NAME "*** CENTRAL_CPU_FREQ: $state ***: done";
@@ -1049,7 +1214,7 @@ SWAPPINESS()
 }
 SWAPPINESS;
 
-# disable/enable ipv6  
+# disable/enable ipv6
 IPV6()
 {
 	local state='';
@@ -1221,10 +1386,6 @@ IO_SCHEDULER()
 		local tmp_scheduler="";
 		local new_scheduler="";
 
-		if [ -e $sys_mmc0_scheduler_tmp ]; then
-			sys_mmc0_scheduler_tmp="/dev/null";
-		fi;
-
 		if [ -e $sys_mmc1_scheduler_tmp ]; then
 			sys_mmc1_scheduler_tmp="/dev/null";
 		fi;
@@ -1318,9 +1479,33 @@ CALL_STATE()
 
 VIBRATE_FIX()
 {
-	echo "$pwm_val" > /sys/vibrator/pwm_val;
+	echo "$pwm_value" > /sys/class/timed_output/vibrator/pwm_value;
 
-	log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_val ***";
+	log -p i -t $FILE_NAME "*** VIBRATE_FIX: $pwm_value ***";
+}
+
+MOUNT_FIX()
+{
+	local CHECK_SYSTEM=`mount | grep /system | grep ro | wc -l`;
+	local CHECK_DATA=`mount | grep /data | cut -c 26-27 | grep ro | grep -v ec | wc -l`;
+	local PRELOAD_CHECK=`mount | grep /preload | grep ro | wc -l`;
+
+	if [ "$CHECK_SYSTEM" -eq "1" ]; then
+		mount -o remount,rw /system;
+	fi;
+	if [ "$CHECK_DATA" -eq "1" ]; then
+		mount -o remount,rw /data;
+	fi;
+	if [ "$PRELOAD_CHECK" -eq "1" ]; then
+		mount -o remount,rw /preload;
+	fi;
+	if [ "$EXTERNAL_SDCARD_CM" -eq "1" ]; then
+		mount -o remount,rw,nosuid,nodev,noexec /storage/sdcard1;
+	elif [ "$EXTERNAL_SDCARD_STOCK" -eq "1" ]; then
+		mount -o remount,rw,nosuid,nodev,noexec /storage/extSdCard;
+	fi;
+
+	mount -o remount,rw,nosuid,nodev,noexec /storage/sdcard0;
 }
 
 # ==============================================================
@@ -1332,8 +1517,6 @@ AWAKE_MODE()
 	CALL_STATE;
 	VIBRATE_FIX;
 	SLIDE2WAKE_FIX "offline";
-	MOUNT_SD_CARD;
-	TOUCH_KEYS_CORRECTION;
 	GAMMA_FIX;
 
 	# Check call state, if on call dont sleep
@@ -1350,13 +1533,13 @@ AWAKE_MODE()
 			MALI_TIMEOUT "wake_boost";
 			BUS_THRESHOLD "wake_boost";
 #			KERNEL_SCHED "awake";
-			KERNEL_TWEAKS "awake";
 			NET "awake";
 			MOBILE_DATA "awake";
 			WIFI "awake";
 			MEGA_BOOST_CPU_TWEAKS;
 			IO_SCHEDULER "awake";
 			GESTURES "awake";
+			MOUNT_SD_CARD;
 			BOOST_DELAY;
 			ENTROPY "awake";
 			VFS_CACHE_PRESSURE "awake";
@@ -1365,6 +1548,8 @@ AWAKE_MODE()
 			MALI_TIMEOUT "awake";
 			BUS_THRESHOLD "awake";
 			ECO_TWEAKS;
+			MOUNT_FIX;
+			TOUCH_KEYS_CORRECTION;
 		else
 			# Was powered by USB, and half sleep
 			ENABLEMASK "awake";
@@ -1372,15 +1557,16 @@ AWAKE_MODE()
 			MALI_TIMEOUT "wake_boost";
 			GESTURES "awake";
 			BOOST_DELAY;
-			BATTERY_TWEAKS;
 			MALI_TIMEOUT "awake";
 			CENTRAL_CPU_FREQ "awake_normal";
 			ECO_TWEAKS;
+			MOUNT_FIX;
+			TOUCH_KEYS_CORRECTION;
 			USB_POWER=0;
 
 			log -p i -t $FILE_NAME "*** USB_POWER_WAKE: done ***";
 		fi;
-		#Didn't sleep, and was not powered by USB
+		# Didn't sleep, and was not powered by USB
 	fi;
 }
 
@@ -1413,7 +1599,6 @@ SLEEP_MODE()
 		CENTRAL_CPU_FREQ "standby_freq";
 		MALI_TIMEOUT "sleep";
 		GESTURES "sleep";
-		BATTERY_TWEAKS;
 		BLN_CORRECTION;
 		CROND_SAFETY;
 		SWAPPINESS;
@@ -1437,11 +1622,11 @@ SLEEP_MODE()
 			ENTROPY "sleep";
 			NET "sleep";
 			WIFI "sleep";
+			BATTERY_TWEAKS;
 			MOBILE_DATA "sleep";
 			IPV6;
 			TWEAK_HOTPLUG_ECO "sleep";
 			VFS_CACHE_PRESSURE "sleep";
-			KERNEL_TWEAKS "sleep";
 
 			log -p i -t $FILE_NAME "*** SLEEP mode ***";
 
@@ -1481,11 +1666,11 @@ if [ "$cortexbrain_background_process" -eq "1" ] && [ `pgrep -f "cat /sys/power/
 		# AWAKE State. all system ON
 		cat /sys/power/wait_for_fb_wake > /dev/null 2>&1;
 		AWAKE_MODE;
-		sleep 2;
+		sleep 3;
 
 		# SLEEP state. All system to power save
 		cat /sys/power/wait_for_fb_sleep > /dev/null 2>&1;
-		sleep 2;
+		sleep 3;
 		/sbin/ext/wakecheck.sh;
 		SLEEP_MODE;
 	done &);

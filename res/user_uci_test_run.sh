@@ -9,11 +9,8 @@ chmod -R 6755 /res/customconfig/actions/;
 mv /res/customconfig/actions/push-actions/* /res/no-push-on-boot/;
 chmod 6755 /res/no-push-on-boot/*;
 
-UCI_PID=`pgrep "uci.sh"`;
-renice -n 15 -p $UCI_PID;
-
-# apply STweaks settings
-pkill -f "com.gokhanmoral.stweaks.app";
+UCI_PID=`pgrep "user_uci_test_run.sh"`;
+renice -n -15 -p $UCI_PID;
 
 ACTION_SCRIPTS=/res/customconfig/actions;
 source /res/customconfig/customconfig-helper;
@@ -23,7 +20,6 @@ read_defaults;
 
 # read the config from the active profile
 read_config;
-
 apply_config;
 write_config;
 
@@ -31,4 +27,4 @@ write_config;
 mount -o remount,rw rootfs;
 mv /res/no-push-on-boot/* /res/customconfig/actions/push-actions/;
 pkill -f "com.gokhanmoral.stweaks.app";
-
+am start -a android.intent.action.MAIN -n com.gokhanmoral.stweaks.app/.MainActivity;
