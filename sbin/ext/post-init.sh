@@ -62,7 +62,7 @@ fi;
 
 # reset profiles auto trigger to be used by kernel ADMIN, in case of need, if new value added in default profiles
 # just set numer $RESET_MAGIC + 1 and profiles will be reset one time on next boot with new kernel.
-RESET_MAGIC=3;
+RESET_MAGIC=4;
 if [ ! -e /data/.siyah/reset_profiles ]; then
 	echo "0" > /data/.siyah/reset_profiles;
 fi;
